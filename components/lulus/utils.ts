@@ -141,7 +141,7 @@ export const participants: Person[] = [
     favorite_color: 'Green',
     hobbies: 'Gardening, Yoga',
     picture: '/fotos/Stella.jpg',
-    instagram: 'stellabr',
+    instagram: 'stellarbr',
   },
   {
     id: 4,
