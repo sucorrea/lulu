@@ -53,7 +53,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             value={filterMonth}
             onChange={(e) => setFilterMonth(e.target.value)}
           >
-            <option value="all">All Months</option>
+            <option value="all">Todos os meses</option>
             {months.map((month) => (
               <option key={month.value} value={month.value}>
                 {month.label}
