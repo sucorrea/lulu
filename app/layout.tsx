@@ -2,9 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ReactNode } from 'react';
 import './globals.css';
-import { Link } from 'lucide-react';
 
-import Image from 'next/image';
 const ano = new Date().getFullYear();
 
 const geistSans = Geist({

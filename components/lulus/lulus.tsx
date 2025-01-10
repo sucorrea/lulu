@@ -7,13 +7,6 @@ import { ArrowRight, Calendar, Gift } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import PersonDetails from './peron-details';
-import {
   filteredAndSortedParticipants,
   getGivesToPicture,
   getSigno,

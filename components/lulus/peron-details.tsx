@@ -1,16 +1,6 @@
 import Image from 'next/image';
-import {
-  ArrowRight,
-  Calendar,
-  Coffee,
-  Gift,
-  Heart,
-  Mail,
-  Phone,
-  Star,
-} from 'lucide-react';
+import { Calendar, Coffee, Heart, Mail, Phone, Star } from 'lucide-react';
 import { Person } from './types';
-import { getGivesToPicture } from './utils';
 
 interface PersonDetailsProps {
   person: Person;
