@@ -225,7 +225,7 @@ export const participants: Person[] = [
     favorite_color: 'Burgundy',
     hobbies: 'Chess, Reading',
     picture: '/fotos/Sylvia.jpg',
-    instagram: '',
+    instagram: 'yarasylvia',
   },
   {
     id: 11,

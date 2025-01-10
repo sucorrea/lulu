@@ -10,7 +10,7 @@ const LinkIconWithText = ({ link, text, children }: LinkIconWithTextProps) => (
   <Link href={link} target="_blank">
     <div className="flex items-center flex-colgap-2">
       {children}
-      <p className="text-gray-600 text-sm">{text}</p>
+      <p className="text-gray-600 md:text-sm xs: text-xs">{text}</p>
     </div>
   </Link>
 );
