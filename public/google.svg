@@ -1,0 +1,12 @@
+<svg id="Icon_Filled_Brand_Google" data-name="Icon / Filled / Brand / Google" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="Mockup_Icon" data-name="Mockup / Icon" opacity="0">
+    <rect id="Box" width="24" height="24" fill="rgba(255,0,0,0.1)"/>
+  </g>
+  <g id="logo_googleg_48dp" transform="translate(1 1)">
+    <path id="Shape" d="M19.56,9.614a12.639,12.639,0,0,0-.2-2.25H9v4.255h5.92a5.06,5.06,0,0,1-2.195,3.32V17.7H16.28a10.728,10.728,0,0,0,3.28-8.085Z" transform="translate(2 1.636)" fill="#4285f4" fill-rule="evenodd"/>
+    <path id="Shape-2" data-name="Shape" d="M10.787,19.62a10.5,10.5,0,0,0,7.28-2.665l-3.555-2.76a6.636,6.636,0,0,1-9.88-3.485H.957v2.85a11,11,0,0,0,9.83,6.06Z" transform="translate(0.213 2.38)" fill="#34a853" fill-rule="evenodd"/>
+    <path id="Shape-3" data-name="Shape" d="M4.845,11.988a6.5,6.5,0,0,1,0-4.18V4.958H1.17a11.014,11.014,0,0,0,0,9.88l3.675-2.85Z" transform="translate(0 1.102)" fill="#fbbc05" fill-rule="evenodd"/>
+    <path id="Shape-4" data-name="Shape" d="M10.787,4.375a5.942,5.942,0,0,1,4.2,1.645l3.155-3.155A10.572,10.572,0,0,0,10.787,0,11,11,0,0,0,.957,6.06L4.632,8.91a6.556,6.556,0,0,1,6.155-4.535Z" transform="translate(0.213)" fill="#ea4335" fill-rule="evenodd"/>
+    <path id="Shape-5" data-name="Shape" d="M0,0H22V22H0Z" fill="none" fill-rule="evenodd"/>
+  </g>
+</svg>

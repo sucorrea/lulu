@@ -1,0 +1,342 @@
+import { Person } from './types';
+export type Signos =
+  | 'aries'
+  | 'touro'
+  | 'gemeos'
+  | 'cancer'
+  | 'leao'
+  | 'virgem'
+  | 'libra'
+  | 'escorpiao'
+  | 'sagitario'
+  | 'capricornio'
+  | 'aquario'
+  | 'peixes';
+
+type SignoValues = {
+  value: Signos;
+  label: string;
+  icon: string;
+};
+
+export function getSigno(dataNascimento: Date): SignoValues {
+  const dia = dataNascimento.getDate();
+  const mes = dataNascimento.getMonth() + 1; // Meses em JavaScript são indexados a partir de 0
+
+  if ((dia >= 21 && mes === 3) || (dia <= 20 && mes === 4)) {
+    return { value: 'aries', label: 'Áries', icon: 'noto-v1:aries' };
+  } else if ((dia >= 21 && mes === 4) || (dia <= 20 && mes === 5)) {
+    return { value: 'touro', label: 'Touro', icon: 'noto-v1:taurus' };
+  } else if ((dia >= 21 && mes === 5) || (dia <= 20 && mes === 6)) {
+    return { value: 'gemeos', label: 'Gêmeos', icon: 'noto-v1:gemini' };
+  } else if ((dia >= 21 && mes === 6) || (dia <= 22 && mes === 7)) {
+    return { value: 'cancer', label: 'Câncer', icon: 'noto-v1:cancer' };
+  } else if ((dia >= 23 && mes === 7) || (dia <= 22 && mes === 8)) {
+    return { value: 'leao', label: 'Leão', icon: 'noto-v1:leo' };
+  } else if ((dia >= 23 && mes === 8) || (dia <= 22 && mes === 9)) {
+    return { value: 'virgem', label: 'Virgem', icon: 'noto-v1:virgo' };
+  } else if ((dia >= 23 && mes === 9) || (dia <= 22 && mes === 10)) {
+    return { value: 'libra', label: 'Libra', icon: 'noto-v1:libra' };
+  } else if ((dia >= 23 && mes === 10) || (dia <= 21 && mes === 11)) {
+    return { value: 'escorpiao', label: 'Escorpião', icon: 'noto-v1:scorpio' };
+  } else if ((dia >= 22 && mes === 11) || (dia <= 21 && mes === 12)) {
+    return {
+      value: 'sagitario',
+      label: 'Sagitário',
+      icon: 'noto-v1:sagittarius',
+    };
+  } else if ((dia >= 22 && mes === 12) || (dia <= 20 && mes === 1)) {
+    return {
+      value: 'capricornio',
+      label: 'Capricórnio',
+      icon: 'noto-v1:capricorn',
+    };
+  } else if ((dia >= 21 && mes === 1) || (dia <= 18 && mes === 2)) {
+    return { value: 'aquario', label: 'Aquário', icon: 'noto-v1:aquarius' };
+  } else if ((dia >= 19 && mes === 2) || (dia <= 20 && mes === 3)) {
+    return { value: 'peixes', label: 'Peixes', icon: 'noto-v1:pisces' };
+  } else {
+    throw new Error('Data de nascimento inválida');
+  }
+}
+
+export function getIconeSigno(signo: string): string {
+  switch (signo) {
+    case 'Áries':
+      return 'aries';
+    case 'Touro':
+      return 'taurus';
+    case 'Géréos':
+      return 'gemini';
+    case 'Câncer':
+      return 'cancer';
+    case 'Leão':
+      return 'leo';
+    case 'Virgem':
+      return 'virgo';
+    case 'Libra':
+      return 'libra';
+    case 'Escorpião':
+      return 'scorpio';
+    case 'Sagitário':
+      return 'sagittarius';
+    case 'Capricórnio':
+      return 'capricorn';
+    case 'Aquário':
+      return 'aquarius';
+    case 'Peixes':
+      return 'pisces';
+    default:
+      throw new Error('Signo inválido');
+  }
+}
+
+export const months = [
+  { value: '01', label: 'January' },
+  { value: '02', label: 'February' },
+  { value: '03', label: 'March' },
+  { value: '04', label: 'April' },
+  { value: '05', label: 'May' },
+  { value: '06', label: 'June' },
+  { value: '07', label: 'July' },
+  { value: '08', label: 'August' },
+  { value: '09', label: 'September' },
+  { value: '10', label: 'October' },
+  { value: '11', label: 'November' },
+  { value: '12', label: 'December' },
+];
+export const participants: Person[] = [
+  {
+    id: 1,
+    name: 'Deborah',
+    date: new Date('1980-01-10'),
+    month: '01',
+    gives_to: 'Stella',
+    gives_to_id: 3,
+    favorite_color: 'Blue',
+    hobbies: 'Reading, Cooking',
+    phone: '123456789',
+    picture: '/fotos/Deborah.jpg',
+  },
+  {
+    id: 2,
+    name: 'Ana Paula',
+    date: new Date('1980-01-18'),
+    month: '01',
+    gives_to: 'Aninha',
+    gives_to_id: 8,
+    favorite_color: 'Purple',
+    hobbies: 'Photography, Travel',
+    picture: '/fotos/AnaPaulaMaita.jpg',
+  },
+  {
+    id: 3,
+    name: 'Stella',
+    date: new Date('1980-04-04'),
+    month: '04',
+    gives_to: 'Sueli',
+    gives_to_id: 4,
+    favorite_color: 'Green',
+    hobbies: 'Gardening, Yoga',
+    picture: '/fotos/Stella.jpg',
+  },
+  {
+    id: 4,
+    name: 'Sueli',
+    date: new Date('1980-04-09'),
+    month: '04',
+    gives_to: 'Camila',
+    gives_to_id: 15,
+    favorite_color: 'Red',
+    hobbies: 'Dancing, Music',
+    picture: '/fotos/Sueli.jpg',
+  },
+  {
+    id: 5,
+    name: 'Deia',
+    date: new Date('1980-05-15'),
+    month: '05',
+    gives_to: 'Aline',
+    gives_to_id: 17,
+    favorite_color: 'Pink',
+    hobbies: 'Painting, Swimming',
+    picture: '/fotos/Deia.jpg',
+  },
+  {
+    id: 6,
+    name: 'Carol Maita',
+    date: new Date('1980-05-28'),
+    month: '05',
+    gives_to: 'Nani',
+    gives_to_id: 14,
+    favorite_color: 'Yellow',
+    hobbies: 'Running, Baking',
+    picture: '/fotos/CarolMaita.jpg',
+  },
+  {
+    id: 7,
+    name: 'Josy',
+    date: new Date('1980-07-15'),
+    month: '07',
+    gives_to: 'Carol Maita',
+    gives_to_id: 6,
+    favorite_color: 'Orange',
+    hobbies: 'Tennis, Writing',
+    picture: '/fotos/Josy.jpg',
+  },
+  {
+    id: 8,
+    name: 'Aninha',
+    date: new Date('1980-08-09'),
+    month: '08',
+    gives_to: 'Carol Mori',
+    gives_to_id: 12,
+    favorite_color: 'Teal',
+    hobbies: 'Hiking, Drawing',
+    picture: '/fotos/Aninha.png',
+  },
+  {
+    id: 9,
+    name: 'Letícia',
+    date: new Date('1980-08-24'),
+    month: '08',
+    gives_to: 'Deborah',
+    gives_to_id: 1,
+    favorite_color: 'Navy',
+    hobbies: 'Singing, Dancing',
+    picture: '/fotos/Leticia.jpg',
+  },
+  {
+    id: 10,
+    name: 'Sylvia',
+    date: new Date('1980-09-03'),
+    month: '09',
+    gives_to: 'Vládia',
+    gives_to_id: 16,
+    favorite_color: 'Burgundy',
+    hobbies: 'Chess, Reading',
+    picture: '/fotos/Sylvia.jpg',
+  },
+  {
+    id: 11,
+    name: 'Vanessa',
+    date: new Date('1980-09-07'),
+    month: '09',
+    gives_to: 'Josy',
+    gives_to_id: 7,
+    favorite_color: 'Violet',
+    hobbies: 'Cycling, Cooking',
+    picture: '/fotos/Vanessa.jpg',
+  },
+  {
+    id: 12,
+    name: 'Carol Mori',
+    date: new Date('1980-09-26'),
+    month: '09',
+    gives_to: 'Ana Paula',
+    gives_to_id: 2,
+    favorite_color: 'Mint',
+    hobbies: 'Pottery, Yoga',
+    picture: '/fotos/CarolMori.jpg',
+  },
+  {
+    id: 13,
+    name: 'Vivi',
+    date: new Date('1980-09-30'),
+    month: '09',
+    gives_to: 'Cássia',
+    gives_to_id: 18,
+    favorite_color: 'Coral',
+    hobbies: 'Photography, Art',
+    picture: '/fotos/Vivi.jpg',
+  },
+  {
+    id: 14,
+    name: 'Nani',
+    date: new Date('1980-10-26'),
+    month: '10',
+    gives_to: 'Vanessa',
+    gives_to_id: 11,
+    favorite_color: 'Lavender',
+    hobbies: 'Gaming, Music',
+    picture: '/fotos/Nani.jpg',
+  },
+  {
+    id: 15,
+    name: 'Camila',
+    date: new Date('1980-11-15'),
+    month: '11',
+    gives_to: 'Deia',
+    gives_to_id: 5,
+    favorite_color: 'Turquoise',
+    hobbies: 'Dancing, Travel',
+    picture: '/fotos/Camila.jpg',
+  },
+  {
+    id: 16,
+    name: 'Vládia',
+    date: new Date('1980-11-16'),
+    month: '11',
+    gives_to: 'Sylvia',
+    gives_to_id: 10,
+    favorite_color: 'Gold',
+    hobbies: 'Writing, Running',
+    picture: '/fotos/Vladia.jpg',
+  },
+  {
+    id: 17,
+    name: 'Aline',
+    date: new Date('1980-11-27'),
+    month: '11',
+    gives_to: 'Letícia',
+    gives_to_id: 9,
+    favorite_color: 'Silver',
+    hobbies: 'Swimming, Reading',
+    picture: '/fotos/Aline.jpg',
+  },
+  {
+    id: 18,
+    name: 'Cássia',
+    date: new Date('1980-12-11'),
+    month: '12',
+    gives_to: 'Vivi',
+    gives_to_id: 13,
+    favorite_color: 'Indigo',
+    hobbies: 'Yoga, Painting',
+    picture: '/fotos/Cassia.jpg',
+  },
+];
+
+export const getGivesToPicture = (id: number): Person => {
+  return participants.find((p) => p.id === id) ?? ({} as Person);
+};
+
+export const filteredAndSortedParticipants = (
+  searchTerm: string,
+  filterMonth: string,
+  sortBy: string
+) =>
+  participants
+    .filter((p) => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.gives_to.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesMonth = filterMonth === 'all' || p.month === filterMonth;
+      return matchesSearch && matchesMonth;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'date':
+          return (
+            parseInt(a.month) * 100 +
+            a.date.getDate() -
+            (parseInt(b.month) * 100 + b.date.getDate())
+          );
+        case 'gives_to':
+          return a.gives_to.localeCompare(b.gives_to);
+        default:
+          return 0;
+      }
+    });
