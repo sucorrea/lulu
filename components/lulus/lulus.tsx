@@ -85,11 +85,11 @@ const Lulus = () => {
                             </div>
                             <div>
                               <LinkIconWithText
-                                link={`${LINK_INSTAGRAM}${participant.instagram})}`}
+                                link={`${LINK_INSTAGRAM}${participant.instagram}`}
                                 text={`@${participant.instagram}`}
                               >
                                 <Image
-                                  src="/instagram.svg"
+                                  src="instagram.svg"
                                   alt="Instagram"
                                   width={20}
                                   height={20}
@@ -97,7 +97,7 @@ const Lulus = () => {
                               </LinkIconWithText>
                             </div>
                           </div>
-                          <div className=" py-3">
+                          {/* <div className=" py-3">
                             <p className="text-sm text-gray-600">
                               <span className="font-medium">
                                 Favorite Color:
@@ -108,7 +108,7 @@ const Lulus = () => {
                               <span className="font-medium">Hobbies:</span>{' '}
                               {participant.hobbies}
                             </p>
-                          </div>
+                          </div> */}
                         </div>
 
                         <div className="flex items-center justify-between bg-amber-50 p-3 rounded-lg">

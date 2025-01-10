@@ -117,6 +117,7 @@ export const participants: Person[] = [
     hobbies: 'Reading, Cooking',
     phone: '123456789',
     picture: '/fotos/Deborah.jpg',
+    instagram: 'deborahcarvalho181',
   },
   {
     id: 2,
@@ -128,6 +129,7 @@ export const participants: Person[] = [
     favorite_color: 'Purple',
     hobbies: 'Photography, Travel',
     picture: '/fotos/AnaPaulaMaita.jpg',
+    instagram: 'anapaulamaita',
   },
   {
     id: 3,
@@ -139,6 +141,7 @@ export const participants: Person[] = [
     favorite_color: 'Green',
     hobbies: 'Gardening, Yoga',
     picture: '/fotos/Stella.jpg',
+    instagram: 'stellabr',
   },
   {
     id: 4,
@@ -150,6 +153,7 @@ export const participants: Person[] = [
     favorite_color: 'Red',
     hobbies: 'Dancing, Music',
     picture: '/fotos/Sueli.jpg',
+    instagram: 'suelli_correaa',
   },
   {
     id: 5,
@@ -161,6 +165,7 @@ export const participants: Person[] = [
     favorite_color: 'Pink',
     hobbies: 'Painting, Swimming',
     picture: '/fotos/Deia.jpg',
+    instagram: 'deia_morales',
   },
   {
     id: 6,
@@ -172,6 +177,7 @@ export const participants: Person[] = [
     favorite_color: 'Yellow',
     hobbies: 'Running, Baking',
     picture: '/fotos/CarolMaita.jpg',
+    instagram: 'carolmaita',
   },
   {
     id: 7,
@@ -183,6 +189,7 @@ export const participants: Person[] = [
     favorite_color: 'Orange',
     hobbies: 'Tennis, Writing',
     picture: '/fotos/Josy.jpg',
+    instagram: '',
   },
   {
     id: 8,
@@ -194,6 +201,7 @@ export const participants: Person[] = [
     favorite_color: 'Teal',
     hobbies: 'Hiking, Drawing',
     picture: '/fotos/Aninha.png',
+    instagram: 'ac_munhozmori',
   },
   {
     id: 9,
@@ -205,6 +213,7 @@ export const participants: Person[] = [
     favorite_color: 'Navy',
     hobbies: 'Singing, Dancing',
     picture: '/fotos/Leticia.jpg',
+    instagram: 'leticiagbatista',
   },
   {
     id: 10,
@@ -216,6 +225,7 @@ export const participants: Person[] = [
     favorite_color: 'Burgundy',
     hobbies: 'Chess, Reading',
     picture: '/fotos/Sylvia.jpg',
+    instagram: '',
   },
   {
     id: 11,
@@ -227,6 +237,7 @@ export const participants: Person[] = [
     favorite_color: 'Violet',
     hobbies: 'Cycling, Cooking',
     picture: '/fotos/Vanessa.jpg',
+    instagram: 'van_reboucas',
   },
   {
     id: 12,
@@ -238,6 +249,7 @@ export const participants: Person[] = [
     favorite_color: 'Mint',
     hobbies: 'Pottery, Yoga',
     picture: '/fotos/CarolMori.jpg',
+    instagram: 'moricarol',
   },
   {
     id: 13,
@@ -249,6 +261,7 @@ export const participants: Person[] = [
     favorite_color: 'Coral',
     hobbies: 'Photography, Art',
     picture: '/fotos/Vivi.jpg',
+    instagram: 'vivisilvestrecortez',
   },
   {
     id: 14,
@@ -260,6 +273,7 @@ export const participants: Person[] = [
     favorite_color: 'Lavender',
     hobbies: 'Gaming, Music',
     picture: '/fotos/Nani.jpg',
+    instagram: 'nacasadanani',
   },
   {
     id: 15,
@@ -271,6 +285,7 @@ export const participants: Person[] = [
     favorite_color: 'Turquoise',
     hobbies: 'Dancing, Travel',
     picture: '/fotos/Camila.jpg',
+    instagram: 'camilapgatti',
   },
   {
     id: 16,
@@ -282,6 +297,7 @@ export const participants: Person[] = [
     favorite_color: 'Gold',
     hobbies: 'Writing, Running',
     picture: '/fotos/Vladia.jpg',
+    instagram: 'vladianutri',
   },
   {
     id: 17,
@@ -293,6 +309,7 @@ export const participants: Person[] = [
     favorite_color: 'Silver',
     hobbies: 'Swimming, Reading',
     picture: '/fotos/Aline.jpg',
+    instagram: 'alinneribeirosemijoias',
   },
   {
     id: 18,
@@ -304,6 +321,7 @@ export const participants: Person[] = [
     favorite_color: 'Indigo',
     hobbies: 'Yoga, Painting',
     picture: '/fotos/Cassia.jpg',
+    instagram: 'cassiavieiraandrade',
   },
 ];
 

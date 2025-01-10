@@ -8,9 +8,9 @@ interface LinkIconWithTextProps {
 }
 const LinkIconWithText = ({ link, text, children }: LinkIconWithTextProps) => (
   <Link href={link} target="_blank">
-    <div className="flex items-center gap-2">
+    <div className="flex items-center flex-colgap-2">
       {children}
-      <p>{text}</p>
+      <p className="text-gray-600 text-sm">{text}</p>
     </div>
   </Link>
 );
