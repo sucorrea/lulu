@@ -10,7 +10,7 @@ import {
   filteredAndSortedParticipants,
   getGivesToPicture,
   getSigno,
-  months,
+  meses,
 } from './utils';
 import FilterBar from './filter-component';
 import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from './constants';
@@ -32,13 +32,13 @@ const Lulus = () => {
             width={100}
             height={100}
           />
-          <h1 className="text-4xl font-bold text-center mb-8 text-rose-600 animate-fade-in">
+          <h1 className="text-4xl font-bold text-center mb-8 text-rose-600 animate-fade-in font-baloo">
             Luluzinha 2025
           </h1>
         </div>
         <FilterBar
           filterMonth={filterMonth}
-          months={months}
+          months={meses}
           searchTerm={searchTerm}
           setFilterMonth={setFilterMonth}
           setSearchTerm={setSearchTerm}
@@ -51,7 +51,10 @@ const Lulus = () => {
               // <Dialog key={participant.id}>
               //   <DialogTrigger asChild>
               <>
-                <Card className="bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+                <Card
+                  className="bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                  key={participant.id}
+                >
                   <CardContent className="p-6">
                     <div className="flex flex-col gap-4">
                       <div className="flex items-center justify-between">
@@ -86,19 +89,21 @@ const Lulus = () => {
                                 <Icon icon={getSigno(participant.date).icon} />
                               </LinkIconWithText>
                             </div>
-                            <div>
-                              <LinkIconWithText
-                                link={`${LINK_INSTAGRAM}${participant.instagram}`}
-                                text={`@${participant.instagram}`}
-                              >
-                                <Image
-                                  src="instagram.svg"
-                                  alt="Instagram"
-                                  width={20}
-                                  height={20}
-                                />
-                              </LinkIconWithText>
-                            </div>
+                            {!!participant.instagram && (
+                              <div>
+                                <LinkIconWithText
+                                  link={`${LINK_INSTAGRAM}${participant.instagram}`}
+                                  text={`@${participant.instagram}`}
+                                >
+                                  <Image
+                                    src="instagram.svg"
+                                    alt="Instagram"
+                                    width={20}
+                                    height={20}
+                                  />
+                                </LinkIconWithText>
+                              </div>
+                            )}
                           </div>
                         </div>
                         {/* <div className=" py-3">

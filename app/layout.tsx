@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Roboto, Roboto_Mono } from 'next/font/google';
 import { ReactNode } from 'react';
 import './globals.css';
 
 const ano = new Date().getFullYear();
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const robotoSans = Roboto({
+  variable: '--font-roboto-sans',
   subsets: ['latin'],
+  weight: '400',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const geistMono = Roboto_Mono({
+  variable: '--font-roboto-mono',
   subsets: ['latin'],
 });
 
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${robotoSans.variable} ${geistMono.variable} antialiased`}
       >
         <main>
           {/* <nav className="bg-gradient-to-bl from-rose-400 to-amber-500">

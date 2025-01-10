@@ -21,7 +21,7 @@ type SignoValues = {
 
 export function getSigno(dataNascimento: Date): SignoValues {
   const dia = dataNascimento.getDate();
-  const mes = dataNascimento.getMonth() + 1; // Meses em JavaScript são indexados a partir de 0
+  const mes = dataNascimento.getMonth() + 1;
 
   if ((dia >= 21 && mes === 3) || (dia <= 20 && mes === 4)) {
     return { value: 'aries', label: 'Áries', icon: 'noto-v1:aries' };
@@ -57,37 +57,6 @@ export function getSigno(dataNascimento: Date): SignoValues {
     return { value: 'peixes', label: 'Peixes', icon: 'noto-v1:pisces' };
   } else {
     throw new Error('Data de nascimento inválida');
-  }
-}
-
-export function getIconeSigno(signo: string): string {
-  switch (signo) {
-    case 'Áries':
-      return 'aries';
-    case 'Touro':
-      return 'taurus';
-    case 'Géréos':
-      return 'gemini';
-    case 'Câncer':
-      return 'cancer';
-    case 'Leão':
-      return 'leo';
-    case 'Virgem':
-      return 'virgo';
-    case 'Libra':
-      return 'libra';
-    case 'Escorpião':
-      return 'scorpio';
-    case 'Sagitário':
-      return 'sagittarius';
-    case 'Capricórnio':
-      return 'capricorn';
-    case 'Aquário':
-      return 'aquarius';
-    case 'Peixes':
-      return 'pisces';
-    default:
-      throw new Error('Signo inválido');
   }
 }
 
