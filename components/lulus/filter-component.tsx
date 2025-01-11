@@ -28,7 +28,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           <input
             type="text"
             placeholder="Buscar por nome..."
-            className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-600"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -37,11 +37,11 @@ const FilterBar: React.FC<FilterBarProps> = ({
         <div className="flex items-center gap-2">
           <SortAsc className="h-4 w-4 text-gray-400" />
           <select
-            className="w-full p-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full p-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-600"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="date">Ordenar por Data</option>
+            <option value="date">Ordenar por data</option>
             <option value="name">Ordenar por nome</option>
           </select>
         </div>
@@ -49,7 +49,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-gray-400" />
           <select
-            className="w-full p-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full p-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-600"
             value={filterMonth}
             onChange={(e) => setFilterMonth(e.target.value)}
           >

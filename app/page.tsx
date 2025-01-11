@@ -1,10 +1,5 @@
-import Lulus from "@/components/lulus/lulus";
+import Lulus from '@/components/lulus/lulus';
 
+const Home = () => <Lulus />;
 
-const Home = () => {
-
-  return (
-     <Lulus />  )
-}
-
-export default Home
+export default Home;
