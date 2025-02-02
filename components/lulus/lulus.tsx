@@ -74,10 +74,13 @@ const Lulus = () => {
                             </h2>
                             <div className="flex items-center text-gray-600 text-sm">
                               <Calendar className="w-4 h-4 mr-1" />
-                              {new Date(participant.date).toLocaleDateString(
-                                'pt-BR',
-                                { day: '2-digit', month: '2-digit' }
-                              )}
+                              {new Date(
+                                participant.date.getTime() +
+                                  participant.date.getTimezoneOffset() * 60000
+                              ).toLocaleDateString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                              })}
                             </div>
                           </div>
                           <div className="md:flex flex-row gap-3">
