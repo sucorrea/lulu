@@ -1,0 +1,12 @@
+name: CI
+
+on:
+push:
+  branches:[main]
+pullrequest:
+  branches:[main]
+
+  workflow_dispatch: 
+  jobs:
+    build:
+    
