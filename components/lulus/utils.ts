@@ -296,7 +296,7 @@ export const filteredAndSortedParticipants = (
       }
     });
 
-export const formatDate = (date: Date): string =>
+export const formatDate = (date: Date) =>
   new Date(
     date.getTime() + date.getTimezoneOffset() * 60000
   ).toLocaleDateString('pt-BR', {
