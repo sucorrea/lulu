@@ -263,7 +263,7 @@ export const participants: Person[] = [
   },
 ];
 
-export const getGivesToPicture = (id?: number): Person =>
+export const getGivesToPicture = (id: number): Person =>
   participants.find((p) => p.id === id) ?? ({} as Person);
 
 export const filteredAndSortedParticipants = (
@@ -296,10 +296,39 @@ export const filteredAndSortedParticipants = (
       }
     });
 
-export const formatDate = (date: Date) =>
+export const formatDate = (date: Date): string =>
   new Date(
     date.getTime() + date.getTimezoneOffset() * 60000
   ).toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
   });
+
+export function getNextBirthday(participants: Person[]): Person | null {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  const upcomingBirthdays = participants
+    .map((person) => {
+      const birthDate = new Date(person.date);
+      const birthdayThisYear = new Date(
+        currentYear,
+        birthDate.getMonth(),
+        birthDate.getDate()
+      );
+
+      // Se o aniversário já passou este ano, calcula para o próximo ano
+      if (birthdayThisYear < today) {
+        birthdayThisYear.setFullYear(currentYear + 1);
+      }
+
+      return {
+        person,
+        nextBirthday: birthdayThisYear,
+        timeUntil: birthdayThisYear.getTime() - today.getTime(),
+      };
+    })
+    .sort((a, b) => a.timeUntil - b.timeUntil);
+
+  return upcomingBirthdays.length > 0 ? upcomingBirthdays[0].person : null;
+}

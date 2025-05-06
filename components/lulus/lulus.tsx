@@ -15,9 +15,11 @@ import {
   filteredAndSortedParticipants,
   formatDate,
   getGivesToPicture,
+  getNextBirthday,
   getSigno,
   meses,
 } from './utils';
+import { twMerge } from 'tailwind-merge';
 
 const Lulus = () => {
   const { isMobile } = useIsMobile();
@@ -29,6 +31,11 @@ const Lulus = () => {
   const getfilteredAndSortedParticipants = useMemo(
     () => filteredAndSortedParticipants(searchTerm, filterMonth, sortBy),
     [searchTerm, filterMonth, sortBy]
+  );
+
+  console.log(
+    'filteredAndSortedParticipants:',
+    getNextBirthday(getfilteredAndSortedParticipants)?.id
   );
 
   return (
@@ -67,88 +74,101 @@ const Lulus = () => {
           />
         )}
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 overflow-auto">
-          {getfilteredAndSortedParticipants.map((participant, key) => (
-            <Card
-              className="bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
-              key={`${participant.id}-${key}`}
-            >
-              <CardContent className="p-6">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-400 to-amber-500 flex items-center justify-center">
-                        <Image
-                          src={participant.picture ?? ''}
-                          alt={participant.name}
-                          className="w-16 h-16 rounded-full"
-                          width={64}
-                          height={64}
-                        />
-                      </div>
-                      <div>
-                        <h2 className="font-semibold text-xl text-rose-800">
-                          {participant.name}
-                        </h2>
-                        <div className="flex items-center text-gray-600 text-sm">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {formatDate(participant.date)}
+          {getfilteredAndSortedParticipants.map((participant, key) => {
+            return (
+              <Card
+                className={twMerge(
+                  'bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer',
+                  participant.id ===
+                    getNextBirthday(getfilteredAndSortedParticipants)?.id &&
+                    'bg-white/40 border-rose-500 border-2 shadow-lg'
+                )}
+                key={`${participant.id}-${key}`}
+              >
+                <CardContent className="p-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-400 to-amber-500 flex items-center justify-center">
+                          <Image
+                            src={participant.picture ?? ''}
+                            alt={participant.name}
+                            className="w-16 h-16 rounded-full"
+                            width={64}
+                            height={64}
+                          />
                         </div>
-                      </div>
-                      <div className="md:flex flex-row gap-3">
                         <div>
-                          <LinkIconWithText
-                            showDescription
-                            link={`${LINK_HOROSCOPO_DIARIO}${getSigno(participant.date).value}/`}
-                            text={getSigno(participant.date).label ?? ''}
-                          >
-                            <Icon icon={getSigno(participant.date).icon} />
-                          </LinkIconWithText>
+                          <h2 className="font-semibold text-xl text-rose-800">
+                            {participant.name}
+                          </h2>
+                          <div className="flex items-center text-gray-600 text-sm">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            {formatDate(participant.date)}
+                          </div>
                         </div>
-                        {!!participant.instagram && (
+                        <div className="md:flex flex-row gap-3">
                           <div>
                             <LinkIconWithText
-                              showDescription={!isMobile}
-                              link={`${LINK_INSTAGRAM}${participant.instagram}`}
-                              text={`@${participant.instagram}`}
+                              showDescription
+                              link={`${LINK_HOROSCOPO_DIARIO}${getSigno(participant.date).value}/`}
+                              text={getSigno(participant.date).label ?? ''}
                             >
-                              <Image
-                                src="instagram.svg"
-                                alt="Instagram"
-                                width={20}
-                                height={20}
-                              />
+                              <Icon icon={getSigno(participant.date).icon} />
                             </LinkIconWithText>
                           </div>
-                        )}
+                          {!!participant.instagram && (
+                            <div>
+                              <LinkIconWithText
+                                showDescription={!isMobile}
+                                link={`${LINK_INSTAGRAM}${participant.instagram}`}
+                                text={`@${participant.instagram}`}
+                              >
+                                <Image
+                                  src="instagram.svg"
+                                  alt="Instagram"
+                                  width={20}
+                                  height={20}
+                                />
+                              </LinkIconWithText>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between bg-amber-50 p-3 rounded-lg">
+                      <Gift className="w-5 h-5 text-amber-600" />
+                      <ArrowRight className="w-5 h-5 text-amber-600" />
+                      <div className="flex  gap-3">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-400 to-rose-500 flex items-center justify-center">
+                          <Image
+                            src={
+                              getGivesToPicture(participant.gives_to_id)
+                                .picture ?? ''
+                            }
+                            alt={
+                              getGivesToPicture(participant.gives_to_id).name
+                            }
+                            className="w-12 h-12 rounded-full"
+                            width={56}
+                            height={56}
+                          />
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium text-rose-800">
+                            Responsável
+                          </p>
+                          <p className="text-rose-600">
+                            {participant.gives_to}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between bg-amber-50 p-3 rounded-lg">
-                    <Gift className="w-5 h-5 text-amber-600" />
-                    <ArrowRight className="w-5 h-5 text-amber-600" />
-                    <div className="flex  gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-400 to-rose-500 flex items-center justify-center">
-                        <Image
-                          src={
-                            getGivesToPicture(participant.gives_to_id)
-                              .picture ?? ''
-                          }
-                          alt={getGivesToPicture(participant.gives_to_id).name}
-                          className="w-12 h-12 rounded-full"
-                          width={56}
-                          height={56}
-                        />
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-rose-800">Responsável</p>
-                        <p className="text-rose-600">{participant.gives_to}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {getfilteredAndSortedParticipants.length === 0 && (
