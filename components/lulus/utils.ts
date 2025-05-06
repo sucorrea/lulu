@@ -263,7 +263,7 @@ export const participants: Person[] = [
   },
 ];
 
-export const getGivesToPicture = (id: number): Person =>
+export const getGivesToPicture = (id?: number): Person =>
   participants.find((p) => p.id === id) ?? ({} as Person);
 
 export const filteredAndSortedParticipants = (
@@ -295,6 +295,7 @@ export const filteredAndSortedParticipants = (
           return 0;
       }
     });
+
 export const formatDate = (date: Date): string =>
   new Date(
     date.getTime() + date.getTimezoneOffset() * 60000

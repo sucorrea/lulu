@@ -7,6 +7,7 @@ import { Icon } from '@iconify/react';
 import { ArrowRight, Calendar, Filter, Gift } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { useIsMobile } from '@/providers/device-provider';
 import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from './constants';
 import FilterBar from './filter-component';
 import LinkIconWithText from './link-with-icon';
@@ -17,14 +18,13 @@ import {
   getSigno,
   meses,
 } from './utils';
-import { useIsMobile } from '@/providers/device-provider';
 
 const Lulus = () => {
+  const { isMobile } = useIsMobile();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
-  const { isMobile } = useIsMobile();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-100 via-amber-100 to-violet-100 p-8">
