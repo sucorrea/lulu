@@ -5,8 +5,8 @@ export interface Person {
   month: string;
   gives_to: string;
   gives_to_id: number;
-  favorite_color: string;
-  hobbies: string;
+  favorite_color?: string;
+  hobbies?: string;
   email?: string;
   phone?: string;
   preferences?: string;

@@ -74,6 +74,7 @@ export const meses = [
   { value: '11', label: 'Novembro' },
   { value: '12', label: 'Dezembro' },
 ];
+
 export const participants: Person[] = [
   {
     id: 1,
@@ -82,8 +83,7 @@ export const participants: Person[] = [
     month: '01',
     gives_to: 'Stella',
     gives_to_id: 3,
-    favorite_color: 'Blue',
-    hobbies: 'Reading, Cooking',
+
     phone: '123456789',
     picture: '/fotos/Deborah.jpg',
     instagram: 'deborahcarvalho181',
@@ -95,8 +95,6 @@ export const participants: Person[] = [
     month: '01',
     gives_to: 'Aninha',
     gives_to_id: 8,
-    favorite_color: 'Purple',
-    hobbies: 'Photography, Travel',
     picture: '/fotos/AnaPaulaMaita.jpg',
     instagram: 'anapaulamaita',
   },
@@ -107,8 +105,6 @@ export const participants: Person[] = [
     month: '04',
     gives_to: 'Sueli',
     gives_to_id: 4,
-    favorite_color: 'Green',
-    hobbies: 'Gardening, Yoga',
     picture: '/fotos/Stella.jpg',
     instagram: 'stellarbr',
   },
@@ -119,8 +115,7 @@ export const participants: Person[] = [
     month: '04',
     gives_to: 'Camila',
     gives_to_id: 15,
-    favorite_color: 'Red',
-    hobbies: 'Dancing, Music',
+
     picture: '/fotos/Sueli.jpg',
     instagram: 'suelli_correaa',
   },
@@ -131,8 +126,6 @@ export const participants: Person[] = [
     month: '05',
     gives_to: 'Aline',
     gives_to_id: 17,
-    favorite_color: 'Pink',
-    hobbies: 'Painting, Swimming',
     picture: '/fotos/Deia.jpg',
     instagram: 'deia_morales',
   },
@@ -143,8 +136,6 @@ export const participants: Person[] = [
     month: '05',
     gives_to: 'Nani',
     gives_to_id: 14,
-    favorite_color: 'Yellow',
-    hobbies: 'Running, Baking',
     picture: '/fotos/CarolMaita.jpg',
     instagram: 'carolmaita',
   },
@@ -155,8 +146,7 @@ export const participants: Person[] = [
     month: '07',
     gives_to: 'Carol Maita',
     gives_to_id: 6,
-    favorite_color: 'Orange',
-    hobbies: 'Tennis, Writing',
+
     picture: '/fotos/Josy.jpg',
     instagram: '',
   },
@@ -167,8 +157,6 @@ export const participants: Person[] = [
     month: '08',
     gives_to: 'Carol Mori',
     gives_to_id: 12,
-    favorite_color: 'Teal',
-    hobbies: 'Hiking, Drawing',
     picture: '/fotos/Aninha.png',
     instagram: 'ac_munhozmori',
   },
@@ -179,8 +167,6 @@ export const participants: Person[] = [
     month: '08',
     gives_to: 'Deborah',
     gives_to_id: 1,
-    favorite_color: 'Navy',
-    hobbies: 'Singing, Dancing',
     picture: '/fotos/Leticia.jpg',
     instagram: 'leticiagbatista',
   },
@@ -191,8 +177,6 @@ export const participants: Person[] = [
     month: '09',
     gives_to: 'Vládia',
     gives_to_id: 16,
-    favorite_color: 'Burgundy',
-    hobbies: 'Chess, Reading',
     picture: '/fotos/Sylvia.jpg',
     instagram: 'yarasylvia',
   },
@@ -203,8 +187,6 @@ export const participants: Person[] = [
     month: '09',
     gives_to: 'Josy',
     gives_to_id: 7,
-    favorite_color: 'Violet',
-    hobbies: 'Cycling, Cooking',
     picture: '/fotos/Vanessa.jpg',
     instagram: 'van_reboucas',
   },
@@ -215,8 +197,6 @@ export const participants: Person[] = [
     month: '09',
     gives_to: 'Ana Paula',
     gives_to_id: 2,
-    favorite_color: 'Mint',
-    hobbies: 'Pottery, Yoga',
     picture: '/fotos/CarolMori.jpg',
     instagram: 'moricarol',
   },
@@ -227,8 +207,6 @@ export const participants: Person[] = [
     month: '09',
     gives_to: 'Cássia',
     gives_to_id: 18,
-    favorite_color: 'Coral',
-    hobbies: 'Photography, Art',
     picture: '/fotos/Vivi.jpg',
     instagram: 'vivisilvestrecortez',
   },
@@ -239,8 +217,6 @@ export const participants: Person[] = [
     month: '10',
     gives_to: 'Vanessa',
     gives_to_id: 11,
-    favorite_color: 'Lavender',
-    hobbies: 'Gaming, Music',
     picture: '/fotos/Nani.jpg',
     instagram: 'nacasadanani',
   },
@@ -251,8 +227,6 @@ export const participants: Person[] = [
     month: '11',
     gives_to: 'Deia',
     gives_to_id: 5,
-    favorite_color: 'Turquoise',
-    hobbies: 'Dancing, Travel',
     picture: '/fotos/Camila.jpg',
     instagram: 'camilapgatti',
   },
@@ -263,8 +237,6 @@ export const participants: Person[] = [
     month: '11',
     gives_to: 'Sylvia',
     gives_to_id: 10,
-    favorite_color: 'Gold',
-    hobbies: 'Writing, Running',
     picture: '/fotos/Vladia.jpg',
     instagram: 'vladianutri',
   },
@@ -275,8 +247,7 @@ export const participants: Person[] = [
     month: '11',
     gives_to: 'Letícia',
     gives_to_id: 9,
-    favorite_color: 'Silver',
-    hobbies: 'Swimming, Reading',
+
     picture: '/fotos/Aline.jpg',
     instagram: 'alinneribeirosemijoias',
   },
@@ -287,16 +258,13 @@ export const participants: Person[] = [
     month: '12',
     gives_to: 'Vivi',
     gives_to_id: 13,
-    favorite_color: 'Indigo',
-    hobbies: 'Yoga, Painting',
     picture: '/fotos/Cassia.jpg',
     instagram: 'cassiavieiraandrade',
   },
 ];
 
-export const getGivesToPicture = (id: number): Person => {
-  return participants.find((p) => p.id === id) ?? ({} as Person);
-};
+export const getGivesToPicture = (id: number): Person =>
+  participants.find((p) => p.id === id) ?? ({} as Person);
 
 export const filteredAndSortedParticipants = (
   searchTerm: string,
@@ -327,3 +295,10 @@ export const filteredAndSortedParticipants = (
           return 0;
       }
     });
+export const formatDate = (date: Date): string =>
+  new Date(
+    date.getTime() + date.getTimezoneOffset() * 60000
+  ).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+  });

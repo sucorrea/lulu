@@ -1,16 +1,26 @@
-import Link from 'next/link';
 import { ReactNode } from 'react';
+
+import Link from 'next/link';
 
 interface LinkIconWithTextProps {
   link: string;
   text: string;
   children: ReactNode;
+  showDescription?: boolean;
 }
-const LinkIconWithText = ({ link, text, children }: LinkIconWithTextProps) => (
+
+const LinkIconWithText = ({
+  link,
+  text,
+  children,
+  showDescription,
+}: LinkIconWithTextProps) => (
   <Link href={link} target="_blank">
     <div className="flex items-center flex-colgap-2">
       {children}
-      <p className="text-gray-600 md:text-sm xs: text-xs">{text}</p>
+      {showDescription && (
+        <p className="text-gray-600 md:text-sm xs: text-xs">{text}</p>
+      )}
     </div>
   </Link>
 );
