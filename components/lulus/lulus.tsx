@@ -127,16 +127,16 @@ const Lulus = () => {
                     <Gift className="w-5 h-5 text-amber-600" />
                     <ArrowRight className="w-5 h-5 text-amber-600" />
                     <div className="flex  gap-3">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-400 to-rose-500 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-400 to-rose-500 flex items-center justify-center">
                         <Image
                           src={
                             getGivesToPicture(participant.gives_to_id)
                               .picture ?? ''
                           }
                           alt={getGivesToPicture(participant.gives_to_id).name}
-                          className="w-16 h-16 rounded-full"
-                          width={64}
-                          height={64}
+                          className="w-12 h-12 rounded-full"
+                          width={56}
+                          height={56}
                         />
                       </div>
                       <div className="text-right">
