@@ -23,8 +23,15 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
     <div>
       {payload && (
         <>
-          <QRCodeCanvas value={payload} size={100} />
-          {/* <p style={{ wordBreak: 'break-all' }}>{payload}</p> */}
+          <QRCodeCanvas
+            value={payload}
+            size={100}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              navigator.clipboard.writeText(payload);
+              alert('Conteúdo copiado!');
+            }}
+          />
         </>
       )}
     </div>
