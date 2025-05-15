@@ -29,13 +29,15 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
 
   return (
     <>
-      <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] mb-5">
+      <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] ">
         <Button
           variant="link"
           onClick={() => setshowQRCodePix((prev) => !prev)}
           className="no-underline"
         >
-          {showQRCodePix ? 'fechar QRCode Pix' : 'mostrar QRCode Pix'}
+          {showQRCodePix
+            ? 'fechar QRCode Pix'
+            : `mostrar QRCode Pix ${participant.name}`}
         </Button>
         {showQRCodePix && payload && (
           <div className="flex flex-col items-center justify-center gap-1">
