@@ -94,8 +94,8 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <h2 className="text-2xl font-bold text-center mb-6">
-            {isLogin ? 'Sign In' : 'Create Account'}
+          <h2 className="text-2xl text-rose-600 animate-fade-in font-baloo text-center mb-6">
+            {isLogin ? 'Entrar' : 'Criar Conta'}
           </h2>
 
           {error && (
@@ -151,7 +151,12 @@ export default function LoginPage() {
                 </button>
               </div>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              variant="default"
+              className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition w-full"
+              disabled={loading}
+            >
               {loading ? (
                 <span className="flex items-center justify-center">
                   <svg
@@ -167,12 +172,12 @@ export default function LoginPage() {
                       r="10"
                       stroke="currentColor"
                       strokeWidth="4"
-                    ></circle>
+                    />
                     <path
                       className="opacity-75"
                       fill="currentColor"
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
+                    />
                   </svg>
                   Processando...
                 </span>
