@@ -171,7 +171,13 @@ const Lulus = () => {
                             />
                             {NameKey[participant.pix_key_type ?? 'none']}
                           </div>
-                          <span className="ml-1 text-xs">
+                          <span
+                            className="ml-1 text-xs"
+                            onClick={() =>
+                              participant.pix_key &&
+                              navigator.clipboard.writeText(participant.pix_key)
+                            }
+                          >
                             {participant.pix_key}
                           </span>
                         </div>
