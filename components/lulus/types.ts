@@ -17,6 +17,8 @@ export interface Person {
   instagram?: string;
   pix_key?: string;
   pix_key_type?: PixTypes;
+  fullName: string;
+  city: string;
 }
 
 export type PixTypes = 'cpf' | 'email' | 'phone' | 'random' | 'none';

@@ -24,6 +24,8 @@ import {
   getSigno,
   NameKey,
 } from './utils';
+import PixQRCode from '../qrcode-pix';
+import { Button } from '../ui/button';
 
 const ano = new Date().getFullYear();
 
@@ -33,6 +35,7 @@ const Lulus = () => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
   const { user, isLoading } = useUserVerification();
+  const [showQRCodePix, setshowQRCodePix] = useState(false);
 
   const getfilteredAndSortedParticipants = useMemo(
     () => filteredAndSortedParticipants(searchTerm, filterMonth, sortBy),
@@ -83,6 +86,14 @@ const Lulus = () => {
                 key={`${participant.id}-${key}`}
               >
                 <CardContent className="p-6">
+                  {getNextBirthday(getfilteredAndSortedParticipants)?.id ===
+                    participant.id && (
+                    <div className="flex items-center justify-center">
+                      <h3 className="font-semibold text-xl text-rose-800">
+                        Próxima aniversariante
+                      </h3>
+                    </div>
+                  )}
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
@@ -168,6 +179,21 @@ const Lulus = () => {
                         </div>
                       )}
                     </div>
+                    {user && participant.pix_key && (
+                      <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] mb-5">
+                        <Button
+                          variant="link"
+                          onClick={() => setshowQRCodePix((prev) => !prev)}
+                        >
+                          {showQRCodePix
+                            ? 'fechar QRCode Pix'
+                            : 'mostrar QRCode Pix'}
+                        </Button>
+                        {showQRCodePix && (
+                          <PixQRCode participant={participant} />
+                        )}
+                      </div>
+                    )}
                     <div className="flex items-center justify-between bg-amber-50 p-3 rounded-lg">
                       <Gift className="w-5 h-5 text-amber-600" />
                       <ArrowRight className="w-5 h-5 text-amber-600" />
