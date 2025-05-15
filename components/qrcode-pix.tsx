@@ -13,7 +13,7 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
       version: '01',
       key: participant.pix_key ?? '',
       name: participant.fullName,
-      city: 'OURINHOS',
+      city: participant.city,
       transactionId: participant.id.toString(),
     });
     setPayload(qrCodePix.payload());
