@@ -35,21 +35,19 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
         >
           {showQRCodePix ? 'fechar QRCode Pix' : 'mostrar QRCode Pix'}
         </Button>
-        {showQRCodePix && (
-          <div>
-            {payload && (
-              <>
-                <QRCodeCanvas
-                  value={payload}
-                  size={100}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    navigator.clipboard.writeText(payload);
-                    // alert('Conteúdo copiado!');
-                  }}
-                />
-              </>
-            )}
+        {showQRCodePix && payload && (
+          <div className="flex flex-col items-center justify-center gap-1">
+            <QRCodeCanvas
+              value={payload}
+              size={100}
+              style={{ cursor: 'pointer' }}
+            />
+            <Button
+              variant="ghost"
+              onClick={() => navigator.clipboard.writeText(payload)}
+            >
+              copiar QRCode Pix
+            </Button>
           </div>
         )}
       </div>
