@@ -16,11 +16,13 @@ export default function NavigationBar() {
       <div className="ml-auto flex gap-4">
         {user ? (
           <div className="flex justify-between items-center ml-2">
-            <span className="text-white font-bold">
-              {user.displayName
-                ? `Welcome, ${user.displayName}`
-                : 'Seja bem vindo!'}
-            </span>
+            <Link href="/">
+              <span className="text-white font-bold">
+                {user.displayName
+                  ? `Welcome, ${user.displayName}`
+                  : 'Seja bem vindo!'}
+              </span>
+            </Link>
             <div>
               <button
                 onClick={handleLogout}
