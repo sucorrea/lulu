@@ -15,4 +15,8 @@ export interface Person {
   allergies?: string;
   picture?: string;
   instagram?: string;
+  pix_key?: string;
+  pix_key_type?: PixTypes;
 }
+
+export type PixTypes = 'cpf' | 'email' | 'phone' | 'random' | 'none';

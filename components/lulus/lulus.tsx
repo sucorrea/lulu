@@ -8,6 +8,7 @@ import { ArrowRight, Calendar, Filter, Gift } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { useIsMobile } from '@/providers/device-provider';
+import { twMerge } from 'tailwind-merge';
 import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from './constants';
 import FilterBar from './filter-component';
 import LinkIconWithText from './link-with-icon';
@@ -18,8 +19,10 @@ import {
   getNextBirthday,
   getSigno,
   meses,
+  NameKey,
 } from './utils';
-import { twMerge } from 'tailwind-merge';
+import { useUserVerification } from '@/hooks/user-verify';
+const ano = new Date().getFullYear();
 
 const Lulus = () => {
   const { isMobile } = useIsMobile();
@@ -27,20 +30,16 @@ const Lulus = () => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
+  const { user } = useUserVerification();
 
   const getfilteredAndSortedParticipants = useMemo(
     () => filteredAndSortedParticipants(searchTerm, filterMonth, sortBy),
     [searchTerm, filterMonth, sortBy]
   );
 
-  console.log(
-    'filteredAndSortedParticipants:',
-    getNextBirthday(getfilteredAndSortedParticipants)?.id
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-100 via-amber-100 to-violet-100 p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-center gap-2">
           <Image
             src="/luluzinha_no_background.png"
@@ -51,7 +50,7 @@ const Lulus = () => {
             priority
           />
           <h1 className="text-4xl font-bold text-center mb-8 text-rose-600 animate-fade-in font-baloo">
-            Luluzinha 2025
+            Luluzinha {ano}
           </h1>
         </div>
         <div className="mb-4">
@@ -102,36 +101,48 @@ const Lulus = () => {
                           <h2 className="font-semibold text-xl text-rose-800">
                             {participant.name}
                           </h2>
-                          <div className="flex items-center text-gray-600 text-sm">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            {formatDate(participant.date)}
+                          <div>
+                            <div className="flex items-center text-gray-600 text-sm">
+                              <Calendar className="w-4 h-4 mr-1" />
+                              {formatDate(participant.date)}
+                            </div>
+                            <br />
                           </div>
+                          {user && participant.pix_key && (
+                            <div className="flex items-center text-gray-600 text-xs">
+                              <Image
+                                src="pix.svg"
+                                alt="Pix"
+                                width={15}
+                                height={20}
+                              />
+                              <span className="ml-1 text-xs">
+                                {`${NameKey[participant.pix_key_type ?? 'none']} ${participant.pix_key}`}
+                              </span>
+                            </div>
+                          )}
                         </div>
                         <div className="md:flex flex-row gap-3">
-                          <div>
-                            <LinkIconWithText
-                              showDescription
-                              link={`${LINK_HOROSCOPO_DIARIO}${getSigno(participant.date).value}/`}
-                              text={getSigno(participant.date).label ?? ''}
-                            >
-                              <Icon icon={getSigno(participant.date).icon} />
-                            </LinkIconWithText>
-                          </div>
+                          <LinkIconWithText
+                            showDescription
+                            link={`${LINK_HOROSCOPO_DIARIO}${getSigno(participant.date).value}/`}
+                            text={getSigno(participant.date).label ?? ''}
+                          >
+                            <Icon icon={getSigno(participant.date).icon} />
+                          </LinkIconWithText>
                           {!!participant.instagram && (
-                            <div>
-                              <LinkIconWithText
-                                showDescription={!isMobile}
-                                link={`${LINK_INSTAGRAM}${participant.instagram}`}
-                                text={`@${participant.instagram}`}
-                              >
-                                <Image
-                                  src="instagram.svg"
-                                  alt="Instagram"
-                                  width={20}
-                                  height={20}
-                                />
-                              </LinkIconWithText>
-                            </div>
+                            <LinkIconWithText
+                              showDescription={!isMobile}
+                              link={`${LINK_INSTAGRAM}${participant.instagram}`}
+                              text={`@${participant.instagram}`}
+                            >
+                              <Image
+                                src="instagram.svg"
+                                alt="Instagram"
+                                width={20}
+                                height={20}
+                              />
+                            </LinkIconWithText>
                           )}
                         </div>
                       </div>

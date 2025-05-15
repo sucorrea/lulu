@@ -1,4 +1,4 @@
-import { Person } from './types';
+import { Person, PixTypes } from './types';
 export type Signos =
   | 'aries'
   | 'touro'
@@ -87,6 +87,8 @@ export const participants: Person[] = [
     phone: '123456789',
     picture: '/fotos/Deborah.jpg',
     instagram: 'deborahcarvalho181',
+    pix_key: '14997551900',
+    pix_key_type: 'phone',
   },
   {
     id: 2,
@@ -97,6 +99,8 @@ export const participants: Person[] = [
     gives_to_id: 8,
     picture: '/fotos/AnaPaulaMaita.jpg',
     instagram: 'anapaulamaita',
+    pix_key: '',
+    pix_key_type: 'none',
   },
   {
     id: 3,
@@ -107,6 +111,8 @@ export const participants: Person[] = [
     gives_to_id: 4,
     picture: '/fotos/Stella.jpg',
     instagram: 'stellarbr',
+    pix_key: '',
+    pix_key_type: 'none',
   },
   {
     id: 4,
@@ -115,9 +121,10 @@ export const participants: Person[] = [
     month: '04',
     gives_to: 'Camila',
     gives_to_id: 15,
-
     picture: '/fotos/Sueli.jpg',
     instagram: 'suelli_correaa',
+    pix_key: '1899645075',
+    pix_key_type: 'phone',
   },
   {
     id: 5,
@@ -128,6 +135,8 @@ export const participants: Person[] = [
     gives_to_id: 17,
     picture: '/fotos/Deia.jpg',
     instagram: 'deia_morales',
+    pix_key: '27631283869',
+    pix_key_type: 'cpf',
   },
   {
     id: 6,
@@ -138,6 +147,8 @@ export const participants: Person[] = [
     gives_to_id: 14,
     picture: '/fotos/CarolMaita.jpg',
     instagram: 'carolmaita',
+    pix_key: '28375340804',
+    pix_key_type: 'cpf',
   },
   {
     id: 7,
@@ -146,9 +157,10 @@ export const participants: Person[] = [
     month: '07',
     gives_to: 'Carol Maita',
     gives_to_id: 6,
-
     picture: '/fotos/Josy.jpg',
     instagram: '',
+    pix_key: '',
+    pix_key_type: 'none',
   },
   {
     id: 8,
@@ -159,6 +171,8 @@ export const participants: Person[] = [
     gives_to_id: 12,
     picture: '/fotos/Aninha.png',
     instagram: 'ac_munhozmori',
+    pix_key: '11060647800',
+    pix_key_type: 'cpf',
   },
   {
     id: 9,
@@ -169,6 +183,8 @@ export const participants: Person[] = [
     gives_to_id: 1,
     picture: '/fotos/Leticia.jpg',
     instagram: 'leticiagbatista',
+    pix_key: '96385274155',
+    pix_key_type: 'cpf',
   },
   {
     id: 10,
@@ -179,6 +195,8 @@ export const participants: Person[] = [
     gives_to_id: 16,
     picture: '/fotos/Sylvia.jpg',
     instagram: 'yarasylvia',
+    pix_key: '',
+    pix_key_type: 'none',
   },
   {
     id: 11,
@@ -189,6 +207,8 @@ export const participants: Person[] = [
     gives_to_id: 7,
     picture: '/fotos/Vanessa.jpg',
     instagram: 'van_reboucas',
+    pix_key: '27423754811',
+    pix_key_type: 'cpf',
   },
   {
     id: 12,
@@ -199,6 +219,8 @@ export const participants: Person[] = [
     gives_to_id: 2,
     picture: '/fotos/CarolMori.jpg',
     instagram: 'moricarol',
+    pix_key: '14997402449',
+    pix_key_type: 'phone',
   },
   {
     id: 13,
@@ -209,6 +231,8 @@ export const participants: Person[] = [
     gives_to_id: 18,
     picture: '/fotos/Vivi.jpg',
     instagram: 'vivisilvestrecortez',
+    pix_key: 'Viviane',
+    pix_key_type: 'cpf',
   },
   {
     id: 14,
@@ -219,6 +243,8 @@ export const participants: Person[] = [
     gives_to_id: 11,
     picture: '/fotos/Nani.jpg',
     instagram: 'nacasadanani',
+    pix_key: 'nanicrivelli@uol.com.br',
+    pix_key_type: 'email',
   },
   {
     id: 15,
@@ -229,6 +255,8 @@ export const participants: Person[] = [
     gives_to_id: 5,
     picture: '/fotos/Camila.jpg',
     instagram: 'camilapgatti',
+    pix_key: '',
+    pix_key_type: 'none',
   },
   {
     id: 16,
@@ -239,6 +267,8 @@ export const participants: Person[] = [
     gives_to_id: 10,
     picture: '/fotos/Vladia.jpg',
     instagram: 'vladianutri',
+    pix_key: '19536701804',
+    pix_key_type: 'cpf',
   },
   {
     id: 17,
@@ -250,6 +280,8 @@ export const participants: Person[] = [
 
     picture: '/fotos/Aline.jpg',
     instagram: 'alinneribeirosemijoias',
+    pix_key: '14996119998',
+    pix_key_type: 'phone',
   },
   {
     id: 18,
@@ -260,8 +292,35 @@ export const participants: Person[] = [
     gives_to_id: 13,
     picture: '/fotos/Cassia.jpg',
     instagram: 'cassiavieiraandrade',
+    pix_key: '15832509803',
+    pix_key_type: 'cpf',
   },
 ];
+
+export const NameKey: Record<PixTypes, string> = {
+  cpf: 'CPF',
+  email: 'Email',
+  phone: 'Celular',
+  random: 'Aleatório',
+  none: 'Nenhum',
+};
+
+export const formatPixKey = (key: PixTypes) => {
+  switch (key) {
+    case 'cpf':
+      return key.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    case 'email':
+      return key;
+    case 'phone':
+      return key.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    case 'random':
+      return key;
+    case 'none':
+      return 'Nenhum';
+    default:
+      return key;
+  }
+};
 
 export const getGivesToPicture = (id: number): Person =>
   participants.find((p) => p.id === id) ?? ({} as Person);
