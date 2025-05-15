@@ -5,6 +5,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 
 import { Person } from './lulus/types';
 import { Button } from './ui/button';
+import { useIsMobile } from '@/providers/device-provider';
 
 interface PixQRCodeProps {
   participant: Person;
@@ -13,6 +14,7 @@ interface PixQRCodeProps {
 export default function PixQRCode({ participant }: PixQRCodeProps) {
   const [payload, setPayload] = useState('');
   const [showQRCodePix, setshowQRCodePix] = useState(false);
+  const { isMobile } = useIsMobile();
 
   useEffect(() => {
     const qrCodePix = QrCodePix({
@@ -41,10 +43,18 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
               value={payload}
               size={100}
               style={{ cursor: 'pointer' }}
+              onClick={() => {
+                navigator.clipboard.writeText(payload);
+              }}
             />
             <Button
               variant="ghost"
-              onClick={() => navigator.clipboard.writeText(payload)}
+              onClick={() => {
+                navigator.clipboard.writeText(payload);
+                if (!isMobile) {
+                  alert('QRCode copiado com sucesso!');
+                }
+              }}
             >
               copiar QRCode Pix
             </Button>

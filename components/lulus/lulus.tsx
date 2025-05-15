@@ -173,10 +173,15 @@ const Lulus = () => {
                           </div>
                           <span
                             className="ml-1 text-xs"
-                            onClick={() =>
-                              participant.pix_key &&
-                              navigator.clipboard.writeText(participant.pix_key)
-                            }
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                participant.pix_key ?? ''
+                              );
+                              if (!isMobile) {
+                                alert('QRCode copiado com sucesso!');
+                              }
+                            }}
+                            style={{ cursor: 'pointer' }}
                           >
                             {participant.pix_key}
                           </span>
