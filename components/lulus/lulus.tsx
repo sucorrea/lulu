@@ -25,7 +25,6 @@ import {
   NameKey,
 } from './utils';
 import PixQRCode from '../qrcode-pix';
-import { Button } from '../ui/button';
 
 const ano = new Date().getFullYear();
 
@@ -35,7 +34,6 @@ const Lulus = () => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
   const { user, isLoading } = useUserVerification();
-  const [showQRCodePix, setshowQRCodePix] = useState(false);
 
   const getfilteredAndSortedParticipants = useMemo(
     () => filteredAndSortedParticipants(searchTerm, filterMonth, sortBy),
@@ -180,19 +178,7 @@ const Lulus = () => {
                       )}
                     </div>
                     {user && participant.pix_key && (
-                      <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] mb-5">
-                        <Button
-                          variant="link"
-                          onClick={() => setshowQRCodePix((prev) => !prev)}
-                        >
-                          {showQRCodePix
-                            ? 'fechar QRCode Pix'
-                            : 'mostrar QRCode Pix'}
-                        </Button>
-                        {showQRCodePix && (
-                          <PixQRCode participant={participant} />
-                        )}
-                      </div>
+                      <PixQRCode participant={participant} />
                     )}
                     <div className="flex items-center justify-between bg-amber-50 p-3 rounded-lg">
                       <Gift className="w-5 h-5 text-amber-600" />

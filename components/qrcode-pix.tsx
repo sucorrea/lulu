@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
+
 import { QrCodePix } from 'qrcode-pix';
 import { QRCodeCanvas } from 'qrcode.react';
+
 import { Person } from './lulus/types';
+import { Button } from './ui/button';
+
 interface PixQRCodeProps {
   participant: Person;
 }
+
 export default function PixQRCode({ participant }: PixQRCodeProps) {
   const [payload, setPayload] = useState('');
+  const [showQRCodePix, setshowQRCodePix] = useState(false);
 
   useEffect(() => {
     const qrCodePix = QrCodePix({
@@ -20,20 +26,33 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
   }, []);
 
   return (
-    <div>
-      {payload && (
-        <>
-          <QRCodeCanvas
-            value={payload}
-            size={100}
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              navigator.clipboard.writeText(payload);
-              alert('Conteúdo copiado!');
-            }}
-          />
-        </>
-      )}
-    </div>
+    <>
+      <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] mb-5">
+        <Button
+          variant="link"
+          onClick={() => setshowQRCodePix((prev) => !prev)}
+          className="no-underline"
+        >
+          {showQRCodePix ? 'fechar QRCode Pix' : 'mostrar QRCode Pix'}
+        </Button>
+        {showQRCodePix && (
+          <div>
+            {payload && (
+              <>
+                <QRCodeCanvas
+                  value={payload}
+                  size={100}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(payload);
+                    // alert('Conteúdo copiado!');
+                  }}
+                />
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
