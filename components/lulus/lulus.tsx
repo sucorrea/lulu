@@ -2,15 +2,19 @@
 import { useMemo, useState } from 'react';
 
 import Image from 'next/image';
-import BounceLoader from 'react-spinners/BounceLoader';
+import Link from 'next/link';
+
 import { Icon } from '@iconify/react';
-import { ArrowRight, Calendar, Filter, Gift } from 'lucide-react';
 import { formatToPhone } from 'brazilian-values';
-import { Card, CardContent } from '@/components/ui/card';
-import { useIsMobile } from '@/providers/device-provider';
+import { ArrowRight, Calendar, Gift } from 'lucide-react';
+import BounceLoader from 'react-spinners/BounceLoader';
 import { twMerge } from 'tailwind-merge';
+
+import { Card, CardContent } from '@/components/ui/card';
+import { useUserVerification } from '@/hooks/user-verify';
+import { useIsMobile } from '@/providers/device-provider';
 import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from './constants';
-import FilterBar from './filter-component';
+import Filter from './filter/filter';
 import LinkIconWithText from './link-with-icon';
 import {
   filteredAndSortedParticipants,
@@ -18,11 +22,9 @@ import {
   getGivesToPicture,
   getNextBirthday,
   getSigno,
-  meses,
   NameKey,
 } from './utils';
-import { useUserVerification } from '@/hooks/user-verify';
-import Link from 'next/link';
+
 const ano = new Date().getFullYear();
 
 const Lulus = () => {
@@ -30,7 +32,6 @@ const Lulus = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
-  const [showFilter, setShowFilter] = useState(false);
   const { user, isLoading } = useUserVerification();
 
   const getfilteredAndSortedParticipants = useMemo(
@@ -61,25 +62,14 @@ const Lulus = () => {
             Luluzinha {ano}
           </h1>
         </div>
-        <div className="mb-4">
-          <button
-            onClick={() => setShowFilter((prev) => !prev)}
-            className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition"
-          >
-            <Filter className="w-5 h-5" />
-          </button>
-        </div>
-        {showFilter && (
-          <FilterBar
-            filterMonth={filterMonth}
-            months={meses}
-            searchTerm={searchTerm}
-            setFilterMonth={setFilterMonth}
-            setSearchTerm={setSearchTerm}
-            setSortBy={setSortBy}
-            sortBy={sortBy}
-          />
-        )}
+        <Filter
+          filterMonth={filterMonth}
+          setFilterMonth={setFilterMonth}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 overflow-auto">
           {getfilteredAndSortedParticipants.map((participant, key) => {
             return (
@@ -117,7 +107,6 @@ const Lulus = () => {
                             <br />
                           </div>
                         </div>
-
                         <div className="md:flex flex-row gap-3">
                           <LinkIconWithText
                             showDescription
@@ -213,7 +202,6 @@ const Lulus = () => {
             );
           })}
         </div>
-
         {getfilteredAndSortedParticipants.length === 0 && (
           <Card className="bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
             <CardContent className="p-6">
