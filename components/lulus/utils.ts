@@ -83,8 +83,7 @@ export const participants: Person[] = [
     month: '01',
     gives_to: 'Stella',
     gives_to_id: 3,
-
-    phone: '123456789',
+    phone: '14997551900',
     picture: '/fotos/Deborah.jpg',
     instagram: 'deborahcarvalho181',
     pix_key: '14997551900',
@@ -101,6 +100,7 @@ export const participants: Person[] = [
     instagram: 'anapaulamaita',
     pix_key: '',
     pix_key_type: 'none',
+    phone: ' 14997418201',
   },
   {
     id: 3,
@@ -111,8 +111,9 @@ export const participants: Person[] = [
     gives_to_id: 4,
     picture: '/fotos/Stella.jpg',
     instagram: 'stellarbr',
-    pix_key: '',
-    pix_key_type: 'none',
+    pix_key: '34061032860',
+    pix_key_type: 'cpf',
+    phone: '14997107007',
   },
   {
     id: 4,
@@ -125,6 +126,7 @@ export const participants: Person[] = [
     instagram: 'suelli_correaa',
     pix_key: '1899645075',
     pix_key_type: 'phone',
+    phone: '1899645075',
   },
   {
     id: 5,
@@ -137,6 +139,7 @@ export const participants: Person[] = [
     instagram: 'deia_morales',
     pix_key: '27631283869',
     pix_key_type: 'cpf',
+    phone: '11974644729',
   },
   {
     id: 6,
@@ -149,6 +152,7 @@ export const participants: Person[] = [
     instagram: 'carolmaita',
     pix_key: '28375340804',
     pix_key_type: 'cpf',
+    phone: '11971514607',
   },
   {
     id: 7,
@@ -161,6 +165,7 @@ export const participants: Person[] = [
     instagram: '',
     pix_key: '',
     pix_key_type: 'none',
+    phone: '14998731381',
   },
   {
     id: 8,
@@ -173,6 +178,7 @@ export const participants: Person[] = [
     instagram: 'ac_munhozmori',
     pix_key: '11060647800',
     pix_key_type: 'cpf',
+    phone: '14981169234',
   },
   {
     id: 9,
@@ -185,6 +191,7 @@ export const participants: Person[] = [
     instagram: 'leticiagbatista',
     pix_key: '96385274155',
     pix_key_type: 'cpf',
+    phone: '14997738588',
   },
   {
     id: 10,
@@ -197,6 +204,7 @@ export const participants: Person[] = [
     instagram: 'yarasylvia',
     pix_key: '',
     pix_key_type: 'none',
+    phone: '14998250476',
   },
   {
     id: 11,
@@ -209,6 +217,7 @@ export const participants: Person[] = [
     instagram: 'van_reboucas',
     pix_key: '27423754811',
     pix_key_type: 'cpf',
+    phone: '11994919832',
   },
   {
     id: 12,
@@ -221,6 +230,7 @@ export const participants: Person[] = [
     instagram: 'moricarol',
     pix_key: '14997402449',
     pix_key_type: 'phone',
+    phone: '14997402449',
   },
   {
     id: 13,
@@ -233,6 +243,7 @@ export const participants: Person[] = [
     instagram: 'vivisilvestrecortez',
     pix_key: 'Viviane',
     pix_key_type: 'cpf',
+    phone: '14996896707',
   },
   {
     id: 14,
@@ -245,6 +256,7 @@ export const participants: Person[] = [
     instagram: 'nacasadanani',
     pix_key: 'nanicrivelli@uol.com.br',
     pix_key_type: 'email',
+    phone: '14981647980',
   },
   {
     id: 15,
@@ -257,6 +269,7 @@ export const participants: Person[] = [
     instagram: 'camilapgatti',
     pix_key: '',
     pix_key_type: 'none',
+    phone: '14997093599',
   },
   {
     id: 16,
@@ -269,6 +282,7 @@ export const participants: Person[] = [
     instagram: 'vladianutri',
     pix_key: '19536701804',
     pix_key_type: 'cpf',
+    phone: '14991721673',
   },
   {
     id: 17,
@@ -277,11 +291,11 @@ export const participants: Person[] = [
     month: '11',
     gives_to: 'Letícia',
     gives_to_id: 9,
-
     picture: '/fotos/Aline.jpg',
     instagram: 'alinneribeirosemijoias',
     pix_key: '14996119998',
     pix_key_type: 'phone',
+    phone: '14996119998',
   },
   {
     id: 18,
@@ -294,6 +308,7 @@ export const participants: Person[] = [
     instagram: 'cassiavieiraandrade',
     pix_key: '15832509803',
     pix_key_type: 'cpf',
+    phone: '14 996060175',
   },
 ];
 

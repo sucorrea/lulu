@@ -2,10 +2,10 @@
 import { useMemo, useState } from 'react';
 
 import Image from 'next/image';
-
+import BounceLoader from 'react-spinners/BounceLoader';
 import { Icon } from '@iconify/react';
 import { ArrowRight, Calendar, Filter, Gift } from 'lucide-react';
-
+import { formatToPhone } from 'brazilian-values';
 import { Card, CardContent } from '@/components/ui/card';
 import { useIsMobile } from '@/providers/device-provider';
 import { twMerge } from 'tailwind-merge';
@@ -22,6 +22,7 @@ import {
   NameKey,
 } from './utils';
 import { useUserVerification } from '@/hooks/user-verify';
+import Link from 'next/link';
 const ano = new Date().getFullYear();
 
 const Lulus = () => {
@@ -30,12 +31,19 @@ const Lulus = () => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
-  const { user } = useUserVerification();
+  const { user, isLoading } = useUserVerification();
 
   const getfilteredAndSortedParticipants = useMemo(
     () => filteredAndSortedParticipants(searchTerm, filterMonth, sortBy),
     [searchTerm, filterMonth, sortBy]
   );
+
+  if (isLoading)
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <BounceLoader color="#FF0000" />
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-100 via-amber-100 to-violet-100 p-8">
@@ -108,20 +116,8 @@ const Lulus = () => {
                             </div>
                             <br />
                           </div>
-                          {user && participant.pix_key && (
-                            <div className="flex items-center text-gray-600 text-xs">
-                              <Image
-                                src="pix.svg"
-                                alt="Pix"
-                                width={15}
-                                height={20}
-                              />
-                              <span className="ml-1 text-xs">
-                                {`${NameKey[participant.pix_key_type ?? 'none']} ${participant.pix_key}`}
-                              </span>
-                            </div>
-                          )}
                         </div>
+
                         <div className="md:flex flex-row gap-3">
                           <LinkIconWithText
                             showDescription
@@ -146,6 +142,42 @@ const Lulus = () => {
                           )}
                         </div>
                       </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      {user && participant.phone && (
+                        <div className="flex items-center text-gray-600 text-xs pb-2">
+                          <Link
+                            href={`https://api.whatsapp.com/send?phone=55${participant.phone}`}
+                            target="_blank"
+                          >
+                            <Image
+                              src="whatsapp.svg"
+                              alt="Whatsapp"
+                              width={15}
+                              height={20}
+                            />
+                            <span className="ml-1 text-xs">
+                              {formatToPhone(participant.phone)}
+                            </span>
+                          </Link>
+                        </div>
+                      )}
+                      {user && participant.pix_key && (
+                        <div className="flex-col items-center text-gray-600 text-xs">
+                          <div className="flex gap-2">
+                            <Image
+                              src="pix.svg"
+                              alt="Pix"
+                              width={15}
+                              height={20}
+                            />
+                            {NameKey[participant.pix_key_type ?? 'none']}
+                          </div>
+                          <span className="ml-1 text-xs">
+                            {participant.pix_key}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center justify-between bg-amber-50 p-3 rounded-lg">
                       <Gift className="w-5 h-5 text-amber-600" />
