@@ -3,9 +3,10 @@ import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Roboto, Roboto_Mono } from 'next/font/google';
 
-import { DeviceProvider } from '@/providers/device-provider';
-import './globals.css';
 import NavigationBar from '@/components/navigation-bar/navigation-bar';
+import { DeviceProvider } from '@/providers/device-provider';
+import { ReactQueryProvider } from '@/providers/react-query-provider';
+import './globals.css';
 
 const ano = new Date().getFullYear();
 
@@ -35,17 +36,19 @@ export default function RootLayout({
       <body
         className={`${robotoSans.variable} ${geistMono.variable} antialiased`}
       >
-        <DeviceProvider>
-          <main>
-            <NavigationBar />
-            {children}
-            <footer className="mx-auto flex w-full items-center justify-center gap-4 border-t text-center text-xs">
-              <p className="text-center text-xs">
-                &copy; {ano} Luluzinha. All rights reserved.
-              </p>
-            </footer>
-          </main>
-        </DeviceProvider>
+        <ReactQueryProvider>
+          <DeviceProvider>
+            <main>
+              <NavigationBar />
+              {children}
+              <footer className="mx-auto flex w-full items-center justify-center gap-4 border-t text-center text-xs">
+                <p className="text-center text-xs">
+                  &copy; {ano} Luluzinha. All rights reserved.
+                </p>
+              </footer>
+            </main>
+          </DeviceProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

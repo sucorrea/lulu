@@ -5,3 +5,5 @@ export const LINK_HOROSCOPO_DIARIO =
 
 export const LINK_LULU =
   'https://vttyctdmifvabhlvcmzd.supabase.co/storage/v1/object/public/app_storage/images/faLulu.jpg?t=2024-09-12T23%3A58%3A45.103Z';
+
+export const LINK_WHATSAPP = 'https://api.whatsapp.com/send?phone=55';

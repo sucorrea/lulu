@@ -1,4 +1,3 @@
-import { participants } from './mockdata';
 import { Person, PixTypes } from './types';
 export type Signos =
   | 'aries'
@@ -84,27 +83,11 @@ export const NameKey: Record<PixTypes, string> = {
   none: 'Nenhum',
 };
 
-export const formatPixKey = (key: PixTypes) => {
-  switch (key) {
-    case 'cpf':
-      return key.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    case 'email':
-      return key;
-    case 'phone':
-      return key.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-    case 'random':
-      return key;
-    case 'none':
-      return 'Nenhum';
-    default:
-      return key;
-  }
-};
-
-export const getGivesToPicture = (id: number): Person =>
+export const getGivesToPicture = (id: number, participants: Person[]): Person =>
   participants.find((p) => p.id === id) ?? ({} as Person);
 
 export const filteredAndSortedParticipants = (
+  participants: Person[],
   searchTerm: string,
   filterMonth: string,
   sortBy: string
@@ -124,8 +107,8 @@ export const filteredAndSortedParticipants = (
         case 'date':
           return (
             parseInt(a.month) * 100 +
-            a.date.getDate() -
-            (parseInt(b.month) * 100 + b.date.getDate())
+            new Date(a.date).getDate() -
+            (parseInt(b.month) * 100 + new Date(b.date).getDate())
           );
         case 'gives_to':
           return a.gives_to.localeCompare(b.gives_to);
