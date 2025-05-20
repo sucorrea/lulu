@@ -1,88 +1,67 @@
 'use client';
 
-import Image from 'next/image';
+import BounceLoader from 'react-spinners/BounceLoader';
 
-import { Icon } from '@iconify/react';
-import { Calendar } from 'lucide-react';
-
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import PixInfo from '../pix-info';
-import PixQRCode from '../qrcode-pix';
-import WhatsappInfo from '../whatsapp-info';
-import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from './constants';
-import LinkIconWithText from './link-with-icon';
+import { useGetParticipantById } from '@/services/queries/fetchParticipants';
+import EditPhoto from './edit-photo';
+import PersonForm from './form-edit-data/person-form';
 import { Person } from './types';
-import { formatDate, getSigno } from './utils';
-import { useIsMobile } from '@/providers/device-provider';
 
 interface LulusCardEditProps {
-  participante: Person | null;
+  participantId: string;
 }
 
-const LulusCardEdit = ({ participante }: LulusCardEditProps) => {
-  const { isMobile } = useIsMobile();
-  const participant = participante ?? ({} as Person);
+const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
+  const { data: participantData, isLoading } =
+    useGetParticipantById(participantId);
+
+  const participant = participantData ?? ({} as Person);
+
+  if (isLoading)
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <BounceLoader color="#F43F5E" />
+      </div>
+    );
+
   return (
-    <Card className="bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+    <Card className="bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer m-4">
       <CardContent className="p-6">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-400 to-amber-500 flex items-center justify-center">
-                  <Image
+            <div>
+              <div className="flex flex-row items-center gap-3">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage
                     src={participant?.photoURL ?? ''}
                     alt={participant?.name}
-                    className="w-16 h-16 rounded-full"
                     width={64}
                     height={64}
                   />
-                </div>
-              </div>
-              <div>
+                  <AvatarFallback>{participant?.name.charAt(0)}</AvatarFallback>
+                </Avatar>
                 <h2 className="font-semibold text-xl text-rose-800">
                   {participant?.name}
                 </h2>
-                <div>
-                  <div className="flex items-center text-gray-600 text-sm">
-                    <Calendar className="w-4 h-4 mr-1" />
-                    {formatDate(new Date(participant.date))}
-                  </div>
-                  <br />
-                </div>
               </div>
-              <div className="md:flex flex-row gap-3">
-                <LinkIconWithText
-                  showDescription
-                  link={`${LINK_HOROSCOPO_DIARIO}${getSigno(new Date(participant.date)).value}/`}
-                  text={getSigno(new Date(participant.date)).label ?? ''}
-                >
-                  <Icon icon={getSigno(new Date(participant.date)).icon} />
-                </LinkIconWithText>
-                {!!participant.instagram && (
-                  <LinkIconWithText
-                    showDescription={!isMobile}
-                    link={`${LINK_INSTAGRAM}${participant.instagram}`}
-                    text={`@${participant.instagram}`}
-                  >
-                    <Image
-                      src="/instagram.svg"
-                      alt="Instagram"
-                      width={20}
-                      height={20}
-                    />
-                  </LinkIconWithText>
-                )}
+              <EditPhoto participant={participant} />
+              <div>
+                <PersonForm
+                  initialData={participantData ?? ({} as Person)}
+                  onSubmit={() => {}}
+                />
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between gap-2">
-            {participant.phone && <WhatsappInfo participant={participant} />}
-            {participant.pix_key && <PixInfo participant={participant} />}
-          </div>
-          {participant.pix_key && <PixQRCode participant={participant} />}
         </div>
       </CardContent>
+      {/* <CardFooter className="p-6 flex justify-end">
+        <Button variant="outline" onClick={() => (window.location.href = '/')}>
+          Voltar
+        </Button>
+      </CardFooter> */}
     </Card>
   );
 };

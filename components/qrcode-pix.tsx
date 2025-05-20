@@ -6,6 +6,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import { Person } from './lulus/types';
 import { Button } from './ui/button';
 import { useIsMobile } from '@/providers/device-provider';
+import { useDisclosure } from '@/hooks/use-disclosure';
 
 interface PixQRCodeProps {
   participant: Person;
@@ -13,7 +14,7 @@ interface PixQRCodeProps {
 
 export default function PixQRCode({ participant }: PixQRCodeProps) {
   const [payload, setPayload] = useState('');
-  const [showQRCodePix, setshowQRCodePix] = useState(false);
+  const { isOpen, onToggle } = useDisclosure();
   const { isMobile } = useIsMobile();
 
   useEffect(() => {
@@ -30,16 +31,12 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
   return (
     <>
       <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] ">
-        <Button
-          variant="link"
-          onClick={() => setshowQRCodePix((prev) => !prev)}
-          className="no-underline"
-        >
-          {showQRCodePix
+        <Button variant="link" onClick={onToggle} className="no-underline">
+          {isOpen
             ? 'fechar QRCode Pix'
             : `mostrar QRCode Pix ${participant.name}`}
         </Button>
-        {showQRCodePix && payload && (
+        {isOpen && payload && (
           <div className="flex flex-col items-center justify-center gap-1">
             <QRCodeCanvas
               value={payload}

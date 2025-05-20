@@ -13,7 +13,7 @@ const PixInfo = ({ participant }: PixInfoProps) => {
   const { isMobile } = useIsMobile();
 
   return (
-    <div className="flex-col items-center text-gray-600 text-xs">
+    <div className="flex-col items-center text-xs">
       <div className="flex gap-2">
         <Image
           src="/pix.svg"

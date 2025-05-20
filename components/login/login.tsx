@@ -89,12 +89,12 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-card rounded-lg shadow-lg p-8">
           <div className="flex justify-center mb-6">
-            <h1 className="text-4xl font-bold text-center mb-8 text-rose-600 animate-fade-in font-baloo">
+            <h1 className="text-4xl font-bold text-center mb-8 text-primary animate-fade-in font-baloo">
               Luluzinha
             </h1>
           </div>
 
-          <h2 className="text-2xl text-rose-600 animate-fade-in font-baloo text-center mb-6">
+          <h2 className="text-2xl text-primary animate-fade-in font-baloo text-center mb-6">
             {isLogin ? 'Entrar' : 'Criar Conta'}
           </h2>
 
@@ -154,7 +154,8 @@ export default function LoginPage() {
             <Button
               type="submit"
               variant="default"
-              className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition w-full"
+              className="w-full"
+              //   className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition w-full"
               disabled={loading}
             >
               {loading ? (

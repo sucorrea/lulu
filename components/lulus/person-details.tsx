@@ -20,7 +20,7 @@ const PersonDetails = ({ person }: PersonDetailsProps) => (
       </div>
       <div>
         <h2 className="text-2xl font-bold text-rose-800">{person.name}</h2>
-        <div className="flex items-center text-gray-600 mt-1">
+        <div className="flex items-center mt-1">
           <Calendar className="w-4 h-4 mr-2" />
           {new Date(person.date).toLocaleDateString('pt-BR', {
             day: '2-digit',

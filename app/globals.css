@@ -2,63 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
-    /* Chart colors */
-    --chart-1: 221.2 83.2% 53.3%;
-    --chart-2: 280 83.2% 53.3%;
-    --chart-3: 338 83.2% 53.3%;
-    --chart-4: 50 83.2% 53.3%;
-    --chart-5: 115 83.2% 53.3%;
-  }
+:root {
+  /* Little Lulu Light Theme */
+  --primary: #e53935; /* Lulu's red dress */
+  --primary-foreground: #ffffff;
+  --secondary: #4caf50; /* Green accents from environment */
+  --secondary-foreground: #ffffff;
+  --muted: #f5f5dc; /* Beige backgrounds */
+  --muted-foreground: #655b4e;
+  --accent: #3f51b5; /* Blue accents from Tubby's outfit */
+  --accent-foreground: #ffffff;
+  --destructive: #ff9800; /* Orange warning color */
+  --destructive-foreground: #ffffff;
+  --success: #4caf50; /* Green success messages */
+  --success-foreground: #ffffff;
+  --warning: #ff9800; /* Orange warning messages */
+  --warning-foreground: #ffffff;
+  
+  --background: #fffbf0; /* Vintage paper-like background */
+  --foreground: #2c2416; /* Dark brown text */
+  
+  --card: #ffffff;
+  --card-foreground: #2c2416;
+  
+  --popover: #ffffff;
+  --popover-foreground: #2c2416;
+  
+  --border: #d0c8b9; /* Light brown borders */
+  --input: #d0c8b9;
+  
+  --ring: #e53935; /* Lulu's red as focus ring */
+  
+  --radius: 0.75rem; /* Rounded corners like cartoon style */
+}
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    /* Chart colors in dark mode */
-    --chart-1: 217.2 91.2% 59.8%;
-    --chart-2: 280 91.2% 59.8%;
-    --chart-3: 338 91.2% 59.8%;
-    --chart-4: 50 91.2% 59.8%;
-    --chart-5: 115 91.2% 59.8%;
-  }
+.dark {
+  /* Little Lulu Dark Theme */
+  --primary: #ff6b6b; /* Brighter red for dark mode */
+  --primary-foreground: #ffffff;
+  --secondary: #69db70; /* Brighter green for dark mode */
+  --secondary-foreground: #ffffff;
+  --muted: #3a3426; /* Dark beige backgrounds */
+  --muted-foreground: #d5ccbe;
+  --accent: #7986cb; /* Lighter
+  --accent-foreground: #ffffff;
+  --destructive: #ffb74d; /* Lighter orange for dark mode */
+  --destructive-foreground: #ffffff;
+  --success: #81c784; /* Lighter green for success in dark mode */
+  --success-foreground: #ffffff;
+  --warning: #ffb74d; /* Lighter orange for warnings in dark mode */
+  --warning-foreground: #ffffff;
+  
+  --background: #272219; /* Dark vintage paper-like background */
+  --foreground: #f0e6d2; /* Light cream text */
+  
+  --card: #332d22; /* Dark card backgrounds */
+  --card-foreground: #f0e6d2;
+  
+  --popover: #332d22;
+  --popover-foreground: #f0e6d2;
+  
+  --border: #5a5041; /* Darker brown borders */
+  --input: #5a5041;
+  
+  --ring: #ff6b6b; /* Brighter red focus ring */
 }
 
 @layer base {
@@ -67,5 +74,25 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+  }
+  
+  /* Little Lulu-style button */
+  .lulu-button {
+    @apply rounded-xl border-2 border-primary bg-primary text-primary-foreground 
+           shadow-md transition-all hover:bg-opacity-90 hover:shadow-lg 
+           focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    padding: 0.5rem 1.25rem;
+  }
+  
+  /* Little Lulu-style card */
+  .lulu-card {
+    @apply rounded-xl border-2 border-border bg-card p-4 shadow-md;
+  }
+  
+  /* Little Lulu-style header */
+  .lulu-header {
+    @apply font-bold text-primary;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
   }
 }

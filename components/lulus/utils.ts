@@ -1,3 +1,5 @@
+import { months } from './constants';
+import { participants } from './mockdata';
 import { Person, PixTypes } from './types';
 export type Signos =
   | 'aries'
@@ -152,4 +154,76 @@ export function getNextBirthday(participants: Person[]): Person | null {
     .sort((a, b) => a.timeUntil - b.timeUntil);
 
   return upcomingBirthdays.length > 0 ? upcomingBirthdays[0].person : null;
+}
+
+export const birthdayStats = months.map((month, index) => ({
+  name: month,
+  total: participants.filter((p) => new Date(p.date).getMonth() === index)
+    .length,
+}));
+
+function getSign(day: number, month: number): string {
+  const signs = [
+    { name: 'Capricórnio', start: [12, 22], end: [1, 19] },
+    { name: 'Aquário', start: [1, 20], end: [2, 18] },
+    { name: 'Peixes', start: [2, 19], end: [3, 20] },
+    { name: 'Áries', start: [3, 21], end: [4, 19] },
+    { name: 'Touro', start: [4, 20], end: [5, 20] },
+    { name: 'Gêmeos', start: [5, 21], end: [6, 20] },
+    { name: 'Câncer', start: [6, 21], end: [7, 22] },
+    { name: 'Leão', start: [7, 23], end: [8, 22] },
+    { name: 'Virgem', start: [8, 23], end: [9, 22] },
+    { name: 'Libra', start: [9, 23], end: [10, 22] },
+    { name: 'Escorpião', start: [10, 23], end: [11, 21] },
+    { name: 'Sagitário', start: [11, 22], end: [12, 21] },
+  ];
+
+  for (const sign of signs) {
+    const [startMonth, startDay] = sign.start;
+    const [endMonth, endDay] = sign.end;
+
+    if (
+      (month === startMonth && day >= startDay) ||
+      (month === endMonth && day <= endDay)
+    ) {
+      return sign.name;
+    }
+  }
+
+  return 'Desconhecido';
+}
+const signsMap: Record<string, number> = {};
+
+participants.forEach((p) => {
+  const date = new Date(p.date);
+  const sign = getSign(date.getDate(), date.getMonth() + 1);
+  signsMap[sign] = (signsMap[sign] || 0) + 1;
+});
+
+export const signsStats = Object.entries(signsMap).map(([name, total]) => ({
+  name,
+  total,
+}));
+
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export function formatDates(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    day: 'numeric',
+    month: 'long',
+  }).format(date);
+}
+
+export function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 }

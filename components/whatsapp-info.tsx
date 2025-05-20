@@ -14,7 +14,7 @@ interface WhatsappInfoProps {
 
 const WhatsappInfo = ({ participant }: WhatsappInfoProps) => {
   return (
-    <div className="flex items-center text-gray-600 text-xs pb-2">
+    <div className="flex items-center text-xs pb-2">
       <Link href={`${LINK_WHATSAPP}${participant.phone}`} target="_blank">
         <Image
           src="/whatsapp.svg"

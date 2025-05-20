@@ -18,9 +18,7 @@ const LinkIconWithText = ({
   <Link href={link} target="_blank">
     <div className="flex items-center flex-colgap-2">
       {children}
-      {!!showDescription && (
-        <p className="text-gray-600 md:text-sm xs: text-xs">{text}</p>
-      )}
+      {!!showDescription && <p className="md:text-sm xs: text-xs">{text}</p>}
     </div>
   </Link>
 );
