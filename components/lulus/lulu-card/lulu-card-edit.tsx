@@ -27,7 +27,7 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
     );
 
   return (
-    <Card className="backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer m-4">
+    <Card className="m-4">
       <CardContent className="p-4">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">

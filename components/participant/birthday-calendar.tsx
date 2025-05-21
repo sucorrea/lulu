@@ -57,12 +57,12 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
   return (
     <Card>
       <CardHeader className="p-2">
-        <CardTitle className="text-xl  font-semibold mb-4 text-primary">
+        <CardTitle className="lulu-header text-primary text-xl mb-2">
           Aniversariantes por mês
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2">
-        <div className="grid grid-cols-2 gap-4 ">
+        <div className="grid grid-cols-2 gap-2 ">
           {months.map((month) => (
             <div key={month.number}>
               <div className="space-y-2 ">
@@ -71,9 +71,9 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
                   {month.participants.map((participant) => (
                     <div
                       key={participant.id}
-                      className="flex items-center py-1"
+                      className="flex items-center py-0.5"
                     >
-                      <div className="w-8 h-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full text-sm font-bold">
+                      <div className="w-6 h-6 flex items-center justify-center bg-primary text-primary-foreground rounded-full text-sm font-bold">
                         {new Date(participant.date).getDate()}
                       </div>
                       <span className="ml-3">{participant.name}</span>

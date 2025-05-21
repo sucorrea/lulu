@@ -1,20 +1,19 @@
 import React from 'react';
-import LulusCardEdit from '@/components/lulus/lulu-card/lulu-card-edit';
 
-interface Params {
-  id: string;
-}
+import LulusCardEdit from '@/components/lulus/lulu-card/lulu-card-edit';
+import { fetchParticipantById } from '@/services/queries/fetchParticipants';
 
 interface PageProps {
-  params: Params;
+  params: { id: string };
 }
 
 export async function generateMetadata(props: PageProps) {
-  // Await the params object to ensure it's resolved
   const resolvedParams = await Promise.resolve(props.params);
   const { id } = resolvedParams;
+  const participant = await fetchParticipantById(id);
+
   return {
-    title: `Editar Participante ${id}`,
+    title: participant ? participant?.name : 'Editar participante',
     description: 'Página para editar os dados do participante',
   };
 }
@@ -26,13 +25,7 @@ async function Page({ params }: PageProps) {
     return <div>Erro: ID do participante não encontrado</div>;
   }
 
-  return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex flex-col items-center justify-center gap-2">
-        <LulusCardEdit participantId={id} />
-      </div>
-    </div>
-  );
+  return <LulusCardEdit participantId={id} />;
 }
 
 export default Page;

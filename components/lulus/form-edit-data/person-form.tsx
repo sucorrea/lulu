@@ -19,25 +19,13 @@ import { Person, PixTypes } from '../types';
 import { NameKey } from '../utils';
 import { personSchema } from './validation';
 import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
+import { defaultValuesPerson } from './utils';
 
 export type PersonFormData = z.infer<typeof personSchema>;
 
 interface PersonFormProps {
   initialData: Person;
-  // onSubmit?: (data: PersonFormData) => void;
 }
-
-const defaultValuesPerson = (initialValues: Person) => ({
-  fullName: initialValues.fullName ?? '',
-  date: initialValues.date
-    ? new Date(initialValues.date).toISOString().split('T')[0]
-    : '',
-  email: initialValues.email ?? '',
-  phone: initialValues.phone ?? '',
-  instagram: initialValues.instagram ?? '',
-  pix_key_type: initialValues.pix_key_type ?? 'none',
-  pix_key: initialValues.pix_key ?? '',
-});
 
 const PersonForm = ({ initialData }: PersonFormProps) => {
   const router = useRouter();
@@ -64,9 +52,7 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           date: new Date(data.date).toISOString(),
         },
       },
-      {
-        onSuccess: () => router.push('/'),
-      }
+      { onSuccess: () => router.push('/') }
     );
   }
 

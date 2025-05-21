@@ -117,7 +117,7 @@ export function ParticipantProfile({ participant }: ParticipantProfileProps) {
               <div className="ml-3">
                 <p className="font-medium">{givesTo.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {formatDates(givesTo.date)}
+                  {formatDates(new Date(givesTo.date))}
                 </p>
               </div>
             </div>
@@ -140,7 +140,7 @@ export function ParticipantProfile({ participant }: ParticipantProfileProps) {
               <div className="ml-3">
                 <p className="font-medium">{receivesFrom.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {formatDates(receivesFrom.date)}
+                  {formatDates(new Date(receivesFrom.date))}
                 </p>
               </div>
             </div>

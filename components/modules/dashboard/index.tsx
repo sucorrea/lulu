@@ -24,12 +24,12 @@ type DashboardPageProps = {
 
 const DashboardPage = ({ participants }: DashboardPageProps) => {
   return (
-    <div className="max-h-screen p-8 mb-10 ">
+    <div className="max-h-screen p-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <BirthdayCalendar participants={participants} />
         <Card>
           <CardHeader className="p-2">
-            <CardTitle className="text-xl  font-semibold mb-4 text-primary">
+            <CardTitle className="lulu-header text-primary text-xl mb-2">
               Número de Aniversários por mês
             </CardTitle>
           </CardHeader>
@@ -46,7 +46,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => {
         </Card>
         <Card>
           <CardHeader className="p-2">
-            <CardTitle className="text-xl  font-semibold mb-4 text-primary">
+            <CardTitle className="lulu-header text-primary text-xl mb-2">
               Distribuição por Signo
             </CardTitle>
           </CardHeader>

@@ -26,6 +26,7 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
       transactionId: participant.id.toString(),
     });
     setPayload(qrCodePix.payload());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
