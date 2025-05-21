@@ -27,9 +27,9 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
     );
 
   return (
-    <Card className="bg-white/90 backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer m-4">
+    <Card className="backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer m-4">
       <CardContent className="p-6">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex flex-row items-center gap-3">
@@ -48,20 +48,12 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
               </div>
               <EditPhoto participant={participant} />
               <div>
-                <PersonForm
-                  initialData={participantData ?? ({} as Person)}
-                  onSubmit={() => {}}
-                />
+                <PersonForm initialData={participantData ?? ({} as Person)} />
               </div>
             </div>
           </div>
         </div>
       </CardContent>
-      {/* <CardFooter className="p-6 flex justify-end">
-        <Button variant="outline" onClick={() => (window.location.href = '/')}>
-          Voltar
-        </Button>
-      </CardFooter> */}
     </Card>
   );
 };

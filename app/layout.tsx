@@ -8,7 +8,7 @@ import { ReactQueryProvider } from '@/providers/react-query-provider';
 import './globals.css';
 import Footer from '@/components/layout/footer';
 import { ThemeProvider } from '@/providers/theme-provider';
-import { Navbar } from '@/components/navigation-bar/navbar';
+import { Navbar } from '@/components/layout/navigation-bar/navbar';
 
 const ano = new Date().getFullYear();
 

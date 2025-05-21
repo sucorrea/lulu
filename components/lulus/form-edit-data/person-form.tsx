@@ -1,146 +1,176 @@
-import React, { ChangeEvent, useState } from 'react';
-import { Person, PixTypes } from '../types';
+import { useRouter } from 'next/navigation';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { NameKey } from '../utils';
 import { Label } from '@/components/ui/label';
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
+import { Person, PixTypes } from '../types';
+import { NameKey } from '../utils';
+import { personSchema } from './validation';
+
+type PersonFormData = z.infer<typeof personSchema>;
+
 interface PersonFormProps {
   initialData: Person;
-  onSubmit: (data: Person) => void;
+  // onSubmit?: (data: PersonFormData) => void;
 }
 
-const pixTypes: PixTypes[] = ['cpf', 'email', 'phone', 'random', 'none'];
+const defaultValuesPerson = (initialValues: Person) => ({
+  fullName: initialValues.fullName ?? '',
+  date: initialValues.date
+    ? new Date(initialValues.date).toISOString().split('T')[0]
+    : '',
+  email: initialValues.email ?? '',
+  phone: initialValues.phone ?? '',
+  instagram: initialValues.instagram ?? '',
+  pix_key_type: initialValues.pix_key_type ?? 'none',
+  pix_key: initialValues.pix_key ?? '',
+});
 
-export default function PersonForm({ initialData, onSubmit }: PersonFormProps) {
-  const [form, setForm] = useState<Person>(initialData);
+const PersonForm = ({ initialData }: PersonFormProps) => {
+  const router = useRouter();
+  const defaultValues = defaultValuesPerson(initialData);
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<PersonFormData>({
+    resolver: zodResolver(personSchema),
+    defaultValues,
+  });
 
-  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-  function handleSelectChange(name: string, value: string) {
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    onSubmit(form);
+  const selectedPixKeyType = watch('pix_key_type');
+
+  function onSubmit(data: PersonFormData) {
+    console.log('Validated form data', data);
+    // Call your onSubmit callback or perform further actions.
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+      <Label htmlFor="fullName">Nome completo</Label>
       <Input
+        id="fullName"
         type="text"
-        name="fullName"
-        value={form.fullName}
-        onChange={handleChange}
+        {...register('fullName')}
         placeholder="Nome completo"
         className="input"
         required
         maxLength={80}
       />
+      {errors.fullName && (
+        <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+      )}
+
+      <Label htmlFor="date">Data</Label>
       <Input
+        id="date"
         type="date"
-        name="date"
-        value={
-          form.date instanceof Date
-            ? form.date.toISOString().substring(0, 10)
-            : form.date
-        }
-        onChange={handleChange}
+        {...register('date')}
         className="input"
         required
       />
+      {errors.date && (
+        <p className="text-red-500 text-sm">{errors.date.message}</p>
+      )}
 
-      <Label htmlFor="email">
-        Email
-        <Input
-          id="email"
-          type="email"
-          name="email"
-          value={form.email || ''}
-          onChange={handleChange}
-          placeholder="Email"
-          className="input"
+      <Label htmlFor="email">Email</Label>
+      <Input
+        id="email"
+        type="email"
+        {...register('email')}
+        placeholder="Email"
+        className="input"
+      />
+      {errors.email && (
+        <p className="text-red-500 text-sm">{errors.email.message}</p>
+      )}
+
+      <Label htmlFor="phone">Celular</Label>
+      <Input
+        id="phone"
+        type="tel"
+        {...register('phone')}
+        placeholder="Telefone"
+        className="input"
+      />
+      {errors.phone && (
+        <p className="text-red-500 text-sm">{errors.phone.message}</p>
+      )}
+
+      <Label htmlFor="instagram">Instagram</Label>
+      <Input
+        id="instagram"
+        type="text"
+        {...register('instagram')}
+        placeholder="Instagram"
+        className="input"
+        disabled={!!initialData.instagram}
+      />
+      {errors.instagram && (
+        <p className="text-red-500 text-sm">{errors.instagram.message}</p>
+      )}
+
+      <div className="border-2 rounded-sm p-2 gap-2">
+        <p className="text-sm font-bold">Pix</p>
+        <Label>Tipo de chave Pix</Label>
+        <Controller
+          control={control}
+          name="pix_key_type"
+          render={({ field }) => (
+            <Select
+              value={field.value}
+              onValueChange={field.onChange}
+              defaultValue="none"
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione um tipo de chave Pix" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {(
+                    ['cpf', 'email', 'phone', 'random', 'none'] as PixTypes[]
+                  ).map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {NameKey[type ?? 'none']}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
         />
-      </Label>
-      <Label htmlFor="phone">
-        Celular
-        <Input
-          id="phone"
-          type="tel"
-          name="phone"
-          value={form.phone || ''}
-          onChange={handleChange}
-          placeholder="Telefone"
-          className="input"
-        />
-      </Label>
-      <Label htmlFor="instagram">
-        Instagram
+        {errors.pix_key_type && (
+          <p className="text-red-500 text-sm">{errors.pix_key_type.message}</p>
+        )}
+        <Label>Chave Pix</Label>
         <Input
           type="text"
-          id="instagram"
-          name="instagram"
-          value={`@${form.instagram || ''}`}
-          onChange={handleChange}
-          placeholder="Instagram"
+          {...register('pix_key')}
+          placeholder="Chave Pix"
           className="input"
-          disabled={!!form.instagram}
+          disabled={selectedPixKeyType === 'none'}
         />
-      </Label>
-      <div className="border-2 rounded-sm border- p-2 gap-2">
-        <p className="text-sm font-bold">Pix</p>
-        <Label>
-          Tipo de chave Pix
-          <Select
-            value={form.pix_key_type}
-            onValueChange={(value) => handleSelectChange('pix_key_type', value)}
-            defaultValue="none"
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecione um tipo de chave Pix" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {pixTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {NameKey[type ?? 'none']}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Label>
-
-        <Label>
-          Chave Pix
-          <Input
-            type="text"
-            name="pix_key"
-            value={form.pix_key || ''}
-            onChange={handleChange}
-            placeholder="Chave Pix"
-            className="input"
-            disabled={form.pix_key_type === 'none'}
-          />
-        </Label>
+        {errors.pix_key && (
+          <p className="text-red-500 text-sm">{errors.pix_key.message}</p>
+        )}
       </div>
+
       <div className="flex justify-between">
-        <Button variant="outline" onClick={() => (window.location.href = '/')}>
+        <Button variant="outline" onClick={() => router.push('/')}>
           Voltar
         </Button>
         <Button type="submit" className="btn btn-primary">
@@ -149,4 +179,6 @@ export default function PersonForm({ initialData, onSubmit }: PersonFormProps) {
       </div>
     </form>
   );
-}
+};
+
+export default PersonForm;

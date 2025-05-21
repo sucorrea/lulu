@@ -34,12 +34,9 @@ const Lulus = ({ participants }: LulusProps) => {
     [searchTerm, filterMonth, sortBy, luluData, participants]
   );
 
-  const isNextBirthday = useCallback(
-    (id: number) => {
-      return getNextBirthday(getfilteredAndSortedParticipants)?.id === id;
-    },
-    [getfilteredAndSortedParticipants]
-  );
+  const isNextBirthday = useCallback((id: number) => {
+    return getNextBirthday(particiantesMock)?.id === id;
+  }, []);
 
   if (isLoading || isLoadingParticipants)
     return (
@@ -59,7 +56,7 @@ const Lulus = ({ participants }: LulusProps) => {
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 overflow-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 overflow-auto">
           {getfilteredAndSortedParticipants.map((participant, key) => (
             <LulusCardHome
               key={key}
@@ -74,7 +71,7 @@ const Lulus = ({ participants }: LulusProps) => {
           getfilteredAndSortedParticipants.length === 0 && (
             <Card className="bg-card/90 backdrop-blur hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
               <CardContent className="p-6">
-                <div className="flex flex-col items-center justify-center gap-4">
+                <div className="flex flex-col items-center justify-center gap-2">
                   <h2 className="text-2xl font-semibold text-primary animate-fade-in font-sans">
                     Nenhuma Lulu faz aniversário neste mês
                   </h2>

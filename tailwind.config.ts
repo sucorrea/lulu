@@ -106,9 +106,9 @@ const config: Config = {
           },
         },
       },
-      //   backgroundImage: {
-      //     'lulu-pattern': "url('/patterns/lulu-pattern.png')",
-      //   },
+      backgroundImage: {
+        'lulu-pattern': "url('/patterns/lulu-pattern.png')",
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

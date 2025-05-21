@@ -5,19 +5,19 @@ import Link from 'next/link';
 interface LinkIconWithTextProps {
   link: string;
   text: string;
-  children: ReactNode;
+  icon: ReactNode;
   showDescription?: boolean;
 }
 
 const LinkIconWithText = ({
   link,
   text,
-  children,
+  icon,
   showDescription,
 }: LinkIconWithTextProps) => (
   <Link href={link} target="_blank">
     <div className="flex items-center flex-colgap-2">
-      {children}
+      {icon}
       {!!showDescription && <p className="md:text-sm xs: text-xs">{text}</p>}
     </div>
   </Link>
