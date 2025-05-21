@@ -1,12 +1,27 @@
-'use client';
-import LulusCardEdit from '@/components/lulus/lulu-card-edit';
 import React from 'react';
+import LulusCardEdit from '@/components/lulus/lulu-card/lulu-card-edit';
 
-const Page = ({ params }: { params: { id: string } }) => {
-  //eslint-disable-next-line
-  // @ts-ignore
-  const { id } = React.use(params);
+interface Params {
+  id: string;
+}
 
+interface PageProps {
+  params: Params;
+}
+
+export async function generateMetadata(props: PageProps) {
+  // Await the params object to ensure it's resolved
+  const resolvedParams = await Promise.resolve(props.params);
+  const { id } = resolvedParams;
+  return {
+    title: `Editar Participante ${id}`,
+    description: 'Página para editar os dados do participante',
+  };
+}
+
+async function Page({ params }: PageProps) {
+  const resolvedParams = await Promise.resolve(params);
+  const { id } = resolvedParams;
   if (!id) {
     return <div>Erro: ID do participante não encontrado</div>;
   }
@@ -18,6 +33,6 @@ const Page = ({ params }: { params: { id: string } }) => {
       </div>
     </div>
   );
-};
+}
 
 export default Page;

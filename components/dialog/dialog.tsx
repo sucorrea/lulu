@@ -17,6 +17,7 @@ type GenericDialogProps = {
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
+  className?: string;
 };
 
 export function GenericDialog({
@@ -26,10 +27,11 @@ export function GenericDialog({
   description,
   children,
   footer,
+  className = '',
 }: GenericDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className={className}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

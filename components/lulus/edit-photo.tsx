@@ -36,9 +36,7 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
     );
   }, [mutate, file, participant.id, onClose]);
 
-  const handleConfirmar = useCallback(() => {
-    handleUpload();
-  }, [handleUpload]);
+  const handleConfirmar = useCallback(() => handleUpload(), [handleUpload]);
 
   return (
     <>
@@ -51,11 +49,12 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
         Alterar foto
       </Button>
       <GenericDialog
+        className="max-w-[80%] rounded"
         open={isOpen}
         onOpenChange={(open) => (open ? onOpen() : onClose())}
         title={participant.name}
         footer={
-          <>
+          <div className="flex justify-between gap-2">
             <Button variant="outline" onClick={onClose}>
               Cancelar
             </Button>
@@ -66,7 +65,7 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
             >
               Confirmar
             </Button>
-          </>
+          </div>
         }
       >
         <div className="flex-col flex justify-center items-center">

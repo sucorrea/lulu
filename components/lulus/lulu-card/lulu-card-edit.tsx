@@ -5,9 +5,9 @@ import BounceLoader from 'react-spinners/BounceLoader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { useGetParticipantById } from '@/services/queries/fetchParticipants';
-import EditPhoto from './edit-photo';
-import PersonForm from './form-edit-data/person-form';
-import { Person } from './types';
+import EditPhoto from '../edit-photo';
+import PersonForm from '../form-edit-data/person-form';
+import { Person } from '../types';
 
 interface LulusCardEditProps {
   participantId: string;
@@ -28,7 +28,7 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
 
   return (
     <Card className="backdrop-blur hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer m-4">
-      <CardContent className="p-6">
+      <CardContent className="p-4">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div>
@@ -42,14 +42,12 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
                   />
                   <AvatarFallback>{participant?.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <h2 className="font-semibold text-xl text-rose-800">
+                <h2 className="font-semibold text-xl text-primary ">
                   {participant?.name}
                 </h2>
               </div>
               <EditPhoto participant={participant} />
-              <div>
-                <PersonForm initialData={participantData ?? ({} as Person)} />
-              </div>
+              <PersonForm initialData={participantData ?? ({} as Person)} />
             </div>
           </div>
         </div>

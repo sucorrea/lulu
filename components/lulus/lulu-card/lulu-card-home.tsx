@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { CakeIcon, Edit2Icon, GiftIcon } from 'lucide-react';
 
+import Tooltip from '@/components/tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import PixInfo from '../../pix-info';
@@ -35,15 +36,17 @@ const LulusCardHome = ({
 
   return (
     <Card className={styleCard}>
-      <CardContent className="p-4 flex flex-col justify-between h-full">
+      <CardContent className="p-4 flex flex-col justify-between h-full gap-2">
         {user && (
-          <Link
-            href={`participants/${participant.id}`}
-            title="Editar"
-            className=" flex text-xs gap-1 items-end justify-end"
-          >
-            <Edit2Icon size="0.75rem" className="text-primary" />
-          </Link>
+          <Tooltip content="Editar">
+            <Link
+              href={`participants/${participant.id}`}
+              title="Editar"
+              className=" flex text-xs gap-1 items-end justify-end"
+            >
+              <Edit2Icon size="0.75rem" className="text-primary" />
+            </Link>
+          </Tooltip>
         )}
         {isNextBirthday && (
           <div className="flex flex-row items-center justify-center pb-2">
@@ -53,37 +56,22 @@ const LulusCardHome = ({
             </h3>
           </div>
         )}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
+        <div className="flex gap-4 items-center">
+          <Avatar className="h-16 w-16 border-2 border-primary">
+            <AvatarImage
+              src={participant.photoURL ?? ''}
+              alt={participant.name}
+            />
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              {participant.name.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <div>
-                <Avatar className="h-16 w-16 border-2 border-primary">
-                  <AvatarImage
-                    src={participant.photoURL ?? ''}
-                    alt={participant.name}
-                  />
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {participant.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-              <div>
-                <h2 className="font-semibold text-xl text-primary">
-                  {participant.name}
-                </h2>
-                <div>
-                  <div className="flex items-center text-sm gap-1">
-                    <CakeIcon size="1rem" className="text-primary" />
-                    {formatDate(new Date(participant.date))}
-                  </div>
-                  <br />
-                </div>
-              </div>
-            </div>
-          </div>
-          <MoreInforAccordion>
-            <>
-              <div className="flex items-center justify-between gap-2">
+              <h2 className="font-semibold text-xl text-primary">
+                {participant.name}
+              </h2>
+              <div className="flex items-center gap-1">
                 <LinkIconWithText
                   showDescription
                   link={`${LINK_HOROSCOPO_DIARIO}${getSigno(new Date(participant.date)).value}/`}
@@ -92,7 +80,15 @@ const LulusCardHome = ({
                     <Icon icon={getSigno(new Date(participant.date)).icon} />
                   }
                 />
-                {!!participant.instagram && (
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center text-sm gap-1">
+                <CakeIcon size="1rem" className="text-primary" />
+                <span>{formatDate(new Date(participant.date))}</span>
+              </div>
+              {participant.instagram && (
+                <div className="flex items-center text-sm gap-1">
                   <LinkIconWithText
                     showDescription
                     link={`${LINK_INSTAGRAM}${participant.instagram}`}
@@ -106,21 +102,29 @@ const LulusCardHome = ({
                       />
                     }
                   />
-                )}
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                {user && participant.phone && (
-                  <WhatsappInfo participant={participant} />
-                )}
-                {user && participant.pix_key && (
-                  <PixInfo participant={participant} />
-                )}
-              </div>
-              {user && participant.pix_key && (
-                <PixQRCode participant={participant} />
+                </div>
               )}
-            </>
-          </MoreInforAccordion>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          {user && (
+            <MoreInforAccordion>
+              <>
+                <div className="flex items-center justify-between gap-2">
+                  {user && participant.phone && (
+                    <WhatsappInfo participant={participant} />
+                  )}
+                  {user && participant.pix_key && (
+                    <PixInfo participant={participant} />
+                  )}
+                </div>
+                {user && participant.pix_key && (
+                  <PixQRCode participant={participant} />
+                )}
+              </>
+            </MoreInforAccordion>
+          )}
           <ResponsableGift
             participant={participant}
             participants={participants}

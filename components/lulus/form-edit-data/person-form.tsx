@@ -18,8 +18,9 @@ import {
 import { Person, PixTypes } from '../types';
 import { NameKey } from '../utils';
 import { personSchema } from './validation';
+import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
 
-type PersonFormData = z.infer<typeof personSchema>;
+export type PersonFormData = z.infer<typeof personSchema>;
 
 interface PersonFormProps {
   initialData: Person;
@@ -41,6 +42,7 @@ const defaultValuesPerson = (initialValues: Person) => ({
 const PersonForm = ({ initialData }: PersonFormProps) => {
   const router = useRouter();
   const defaultValues = defaultValuesPerson(initialData);
+  const { mutate } = useUpdateParticipantData(String(initialData.id));
   const {
     control,
     register,
@@ -55,8 +57,17 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
   const selectedPixKeyType = watch('pix_key_type');
 
   function onSubmit(data: PersonFormData) {
-    console.log('Validated form data', data);
-    // Call your onSubmit callback or perform further actions.
+    mutate(
+      {
+        updatedData: {
+          ...data,
+          date: new Date(data.date).toISOString(),
+        },
+      },
+      {
+        onSuccess: () => router.push('/'),
+      }
+    );
   }
 
   return (

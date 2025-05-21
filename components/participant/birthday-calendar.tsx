@@ -1,11 +1,15 @@
 'use client';
 
-import { useMemo } from 'react';
 import _ from 'lodash';
-import { participants } from '../lulus/mockdata';
+import { useMemo } from 'react';
+import { Person } from '../lulus/types';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
-export function BirthdayCalendar() {
+type BirthdayCalendarProps = {
+  participants: Person[];
+};
+
+const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
   const sortedParticipants = useMemo(() => {
     return [...participants].sort((a, b) => {
       const monthA = parseInt(a.month);
@@ -15,11 +19,11 @@ export function BirthdayCalendar() {
         return monthA - monthB;
       }
 
-      const dayA = a.date.getDate();
-      const dayB = b.date.getDate();
+      const dayA = new Date(a.date).getDate();
+      const dayB = new Date(b.date).getDate();
       return dayA - dayB;
     });
-  }, []);
+  }, [participants]);
 
   const participantsByMonth = useMemo(() => {
     return _.groupBy(sortedParticipants, 'month');
@@ -70,7 +74,7 @@ export function BirthdayCalendar() {
                       className="flex items-center py-1"
                     >
                       <div className="w-8 h-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full text-sm font-bold">
-                        {participant.date.getDate()}
+                        {new Date(participant.date).getDate()}
                       </div>
                       <span className="ml-3">{participant.name}</span>
                     </div>
@@ -83,4 +87,5 @@ export function BirthdayCalendar() {
       </CardContent>
     </Card>
   );
-}
+};
+export default BirthdayCalendar;

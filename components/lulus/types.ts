@@ -1,7 +1,7 @@
 export interface Person {
   id: number;
   name: string;
-  date: Date;
+  date: Date | string;
   month: string;
   gives_to: string;
   gives_to_id: number;

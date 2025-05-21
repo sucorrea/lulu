@@ -12,16 +12,21 @@ import {
   YAxis,
 } from 'recharts';
 
-import { COLORS } from './constants';
-import { birthdayStats, signsStats } from './utils';
-import { BirthdayCalendar } from '../participant/birthday-calendar';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { COLORS } from '../../lulus/constants';
+import { birthdayStats, signsStats } from '../../lulus/utils';
+import BirthdayCalendar from '../../participant/birthday-calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Person } from '@/components/lulus/types';
 
-export default function DashboardPage() {
+type DashboardPageProps = {
+  participants: Person[];
+};
+
+const DashboardPage = ({ participants }: DashboardPageProps) => {
   return (
     <div className="max-h-screen p-8 mb-10 ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <BirthdayCalendar />
+        <BirthdayCalendar participants={participants} />
         <Card>
           <CardHeader className="p-2">
             <CardTitle className="text-xl  font-semibold mb-4 text-primary">
@@ -72,4 +77,5 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-}
+};
+export default DashboardPage;

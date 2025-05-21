@@ -155,7 +155,6 @@ export default function LoginPage() {
               type="submit"
               variant="default"
               className="w-full"
-              //   className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition w-full"
               disabled={loading}
             >
               {loading ? (

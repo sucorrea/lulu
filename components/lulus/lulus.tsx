@@ -20,18 +20,18 @@ const Lulus = ({ participants }: LulusProps) => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
   const { user, isLoading } = useUserVerification();
-  const { data: luluData, isLoading: isLoadingParticipants } =
+  const { data: participantsData, isLoading: isLoadingParticipants } =
     useGettAllParticipants();
 
   const getfilteredAndSortedParticipants = useMemo(
     () =>
       filteredAndSortedParticipants(
-        participants ?? luluData ?? [] ?? particiantesMock,
+        participants ?? participantsData ?? [] ?? particiantesMock,
         searchTerm,
         filterMonth,
         sortBy
       ),
-    [searchTerm, filterMonth, sortBy, luluData, participants]
+    [searchTerm, filterMonth, sortBy, participantsData, participants]
   );
 
   const isNextBirthday = useCallback((id: number) => {
@@ -63,7 +63,9 @@ const Lulus = ({ participants }: LulusProps) => {
               participant={participant}
               isNextBirthday={isNextBirthday(participant.id)}
               user={!!user}
-              participants={participants ?? luluData ?? [] ?? particiantesMock}
+              participants={
+                participants ?? participantsData ?? [] ?? particiantesMock
+              }
             />
           ))}
         </div>

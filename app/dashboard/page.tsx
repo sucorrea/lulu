@@ -4,11 +4,12 @@ import BounceLoader from 'react-spinners/BounceLoader';
 
 import { useUserVerification } from '@/hooks/user-verify';
 import { useGettAllParticipants } from '@/services/queries/fetchParticipants';
-import DashboardPage from '@/components/lulus/dashoard';
+import DashboardPage from '@/components/modules/dashboard';
 
 const Dashboard = () => {
   const { isLoading } = useUserVerification();
-  const { isLoading: isLoadingParticipants } = useGettAllParticipants();
+  const { data: participants, isLoading: isLoadingParticipants } =
+    useGettAllParticipants();
 
   if (isLoading || isLoadingParticipants)
     return (
@@ -17,7 +18,7 @@ const Dashboard = () => {
       </div>
     );
 
-  return <DashboardPage />;
+  return <DashboardPage participants={participants ?? []} />;
 };
 
 export default Dashboard;
