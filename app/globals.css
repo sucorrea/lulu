@@ -37,7 +37,6 @@
 }
 
 .dark {
-  /* Little Lulu Dark Theme */
   --primary: #ff6b6b;
   --primary-foreground: #ffffff;
   --secondary: #69db70;
@@ -52,19 +51,14 @@
   --success-foreground: #ffffff;
   --warning: #ffb74d;
   --warning-foreground: #ffffff;
-  
   --background: #272219; 
   --foreground: #f0e6d2; 
-  
   --card: #332d22; 
   --card-foreground: #f0e6d2;
-  
   --popover: #332d22;
   --popover-foreground: #f0e6d2;
-  
   --border: #5a5041; 
   --input: #5a5041;
-  
   --ring: #ff6b6b; 
 }
 

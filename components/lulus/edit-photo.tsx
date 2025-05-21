@@ -69,14 +69,12 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
         }
       >
         <div className="flex-col flex justify-center items-center">
-          <Avatar className="h-22 w-22 border-2 border-primary">
+          <Avatar className="h-32 w-32 border-4 border-primary">
             <AvatarImage
               src={
                 file ? URL.createObjectURL(file) : (participant?.photoURL ?? '')
               }
               alt={file ? 'Nova foto' : participant?.name}
-              width={64}
-              height={64}
             />
             <AvatarFallback>{participant?.name.charAt(0)}</AvatarFallback>
           </Avatar>

@@ -20,7 +20,7 @@ const ResponsableGift = ({
   );
 
   return (
-    <div className="flex items-center justify-center  border-2 p-3 rounded-lg">
+    <div className="bg-muted flex items-center justify-center  border-2 p-3 rounded-lg ">
       <div className="flex  gap-3">
         <Avatar className="w-12 h-12">
           <AvatarImage

@@ -33,16 +33,14 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex flex-row items-center gap-3">
-                <Avatar className="w-16 h-16">
+                <Avatar className="h-16 w-16 border-4 border-primary">
                   <AvatarImage
                     src={participant?.photoURL ?? ''}
                     alt={participant?.name}
-                    width={64}
-                    height={64}
                   />
                   <AvatarFallback>{participant?.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <h2 className="font-semibold text-xl text-primary ">
+                <h2 className="lulu-header text-3xl font-semibold text-primary ">
                   {participant?.name}
                 </h2>
               </div>
