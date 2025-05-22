@@ -1,9 +1,10 @@
 'use client';
+import { useMemo } from 'react';
 
 import _ from 'lodash';
-import { useMemo } from 'react';
-import { Person } from '../lulus/types';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+
+import { Person } from '@/components/lulus/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type BirthdayCalendarProps = {
   participants: Person[];

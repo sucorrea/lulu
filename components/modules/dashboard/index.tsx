@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Bar,
   BarChart,
@@ -12,11 +11,11 @@ import {
   YAxis,
 } from 'recharts';
 
+import { Person } from '@/components/lulus/types';
 import { COLORS } from '../../lulus/constants';
 import { birthdayStats, signsStats } from '../../lulus/utils';
-import BirthdayCalendar from '../../participant/birthday-calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { Person } from '@/components/lulus/types';
+import BirthdayCalendar from './birthday-calendar';
 
 type DashboardPageProps = {
   participants: Person[];
