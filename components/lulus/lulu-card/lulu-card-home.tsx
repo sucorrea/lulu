@@ -35,14 +35,18 @@ const LulusCardHome = ({
   const styleCard = isNextBirthday ? 'border-primary border-2 shadow-lg ' : '';
 
   return (
-    <Card className={styleCard}>
-      <CardContent className="p-4 flex flex-col justify-between h-full gap-2">
+    <Card className={styleCard + ' w-full max-w-md mx-auto'}>
+      {' '}
+      {/* Limita largura e centraliza */}
+      <CardContent className="p-4 flex flex-col justify-between h-full gap-2 overflow-x-auto">
+        {' '}
+        {/* Adiciona overflow-x-auto */}
         {user && (
           <Tooltip content="Editar">
             <Link
               href={`participants/${participant.id}`}
               title="Editar"
-              className=" flex text-xs gap-1 items-end justify-end"
+              className="flex text-xs gap-1 items-end justify-end"
             >
               <Edit2Icon size="0.75rem" className="text-primary" />
             </Link>
@@ -56,8 +60,10 @@ const LulusCardHome = ({
             </h3>
           </div>
         )}
-        <div className="flex gap-4 items-center">
-          <Avatar className="h-16 w-16 border-2 border-primary">
+        <div className="flex flex-col sm:flex-row gap-4 items-center flex-wrap">
+          {' '}
+          {/* Mobile first, wrap se necessário */}
+          <Avatar className="h-16 w-16 border-2 border-primary shrink-0">
             <AvatarImage
               src={participant.photoURL ?? ''}
               alt={participant.name}
@@ -66,9 +72,9 @@ const LulusCardHome = ({
               {participant.name.charAt(0)}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <h2 className="font-semibold text-xl text-primary">
+          <div className="flex flex-col min-w-0 w-full">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
+              <h2 className="font-semibold text-xl text-primary break-words max-w-full">
                 {participant.name}
               </h2>
               <div className="flex items-center gap-1">
@@ -82,10 +88,12 @@ const LulusCardHome = ({
                 />
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full">
               <div className="flex items-center text-sm gap-1">
                 <CakeIcon size="1rem" className="text-primary" />
-                <span>{formatDate(new Date(participant.date))}</span>
+                <span className="truncate">
+                  {formatDate(new Date(participant.date))}
+                </span>
               </div>
               {participant.instagram && (
                 <div className="flex items-center text-sm gap-1">
@@ -107,11 +115,11 @@ const LulusCardHome = ({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full">
           {user && (
             <MoreInforAccordion>
               <>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-2 w-full">
                   {user && participant.phone && (
                     <WhatsappInfo participant={participant} />
                   )}

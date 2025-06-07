@@ -1,7 +1,8 @@
+import GaleriaFotos from '@/components/galeria/galeria-fotos';
 import React from 'react';
 
 const Page = () => {
-  return <div>Galeria</div>;
+  return <GaleriaFotos />;
 };
 
 export default Page;

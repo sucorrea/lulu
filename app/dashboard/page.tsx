@@ -13,7 +13,7 @@ const Dashboard = () => {
 
   if (isLoading || isLoadingParticipants)
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen pb-20">
         <BounceLoader color="#FF0000" />
       </div>
     );

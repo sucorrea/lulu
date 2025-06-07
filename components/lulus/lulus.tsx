@@ -23,7 +23,7 @@ const Lulus = ({ participants }: LulusProps) => {
   const { data: participantsData, isLoading: isLoadingParticipants } =
     useGettAllParticipants();
 
-  const getfilteredAndSortedParticipants = useMemo(
+  const getFilteredAndSortedParticipants = useMemo(
     () =>
       filteredAndSortedParticipants(
         participants ?? participantsData ?? [] ?? particiantesMock,
@@ -47,7 +47,7 @@ const Lulus = ({ participants }: LulusProps) => {
 
   return (
     <div className="min-h-screen p-8">
-      <div className=" mx-auto">
+      <div>
         <Filter
           filterMonth={filterMonth}
           setFilterMonth={setFilterMonth}
@@ -57,7 +57,7 @@ const Lulus = ({ participants }: LulusProps) => {
           setSortBy={setSortBy}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 overflow-auto">
-          {getfilteredAndSortedParticipants.map((participant, key) => (
+          {getFilteredAndSortedParticipants.map((participant, key) => (
             <LulusCardHome
               key={key}
               participant={participant}
@@ -70,12 +70,12 @@ const Lulus = ({ participants }: LulusProps) => {
           ))}
         </div>
         {!isLoadingParticipants &&
-          getfilteredAndSortedParticipants.length === 0 && (
+          getFilteredAndSortedParticipants.length === 0 && (
             <Card className="bg-card/90 backdrop-blur hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
               <CardContent className="p-6">
                 <div className="flex flex-col items-center justify-center gap-2">
                   <h2 className="text-2xl font-semibold text-primary animate-fade-in font-sans">
-                    Nenhuma Lulu faz aniversário neste mês
+                    Nenhuma participante encontrada
                   </h2>
                 </div>
               </CardContent>

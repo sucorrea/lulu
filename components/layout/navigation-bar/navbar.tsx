@@ -14,9 +14,9 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur md:px-4">
-      <div className="container flex h-14 items-center">
-        <div className="mr-1 flex">
-          <Link href="/" className="flex items-center">
+      <div className="container flex h-14 items-center justify-between">
+        <div className="flex items-center mr-1">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/luluzinha_no_background.png"
               alt="luluzinha"
@@ -28,10 +28,10 @@ export function Navbar() {
             <span className="lulu-header text-2xl font-bold">Luluzinha</span>
           </Link>
         </div>
-        <nav className="flex flex-1 items-center justify-between md:justify-end">
-          <div className="flex items-center justify-between">
+        <nav className="flex items-center justify-end">
+          <div className="flex items-center gap-2 md:gap-4">
             {!!user ? (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-2 md:gap-4">
                 <span className="text-sm font-medium whitespace-nowrap">
                   Olá, {user.displayName?.split(' ')[0]}
                 </span>

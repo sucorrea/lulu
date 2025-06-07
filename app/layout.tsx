@@ -46,7 +46,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <DeviceProvider>
-              <main>
+              <main className="pb-20">
                 <Navbar />
                 {children}
                 <Footer />

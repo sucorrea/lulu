@@ -23,7 +23,7 @@ type DashboardPageProps = {
 
 const DashboardPage = ({ participants }: DashboardPageProps) => {
   return (
-    <div className="max-h-screen p-8">
+    <div className="p-8 pb-20">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <BirthdayCalendar participants={participants} />
         <Card>
@@ -50,7 +50,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2">
-            <ResponsiveContainer width="80%" height={250} minWidth={320}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={signsStats}
