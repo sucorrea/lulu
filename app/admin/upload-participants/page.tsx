@@ -19,7 +19,7 @@ export default function UploadParticipantsPage() {
       for (const person of participants) {
         const personData = {
           ...person,
-          date: person.date.toISOString(),
+          date: person.date.toString(),
         };
 
         // Usando o ID do participante como ID do documento

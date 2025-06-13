@@ -23,9 +23,9 @@ const LikeUnlikeButton = ({
       aria-label={liked[index] ? 'Descurtir' : 'Curtir'}
     >
       {liked[index] ? (
-        <HeartIcon color="red" size={15} />
-      ) : (
         <HeartIcon color="red" fill="red" size={15} />
+      ) : (
+        <HeartIcon color="red" size={15} />
       )}
       {likes[index]}
     </button>

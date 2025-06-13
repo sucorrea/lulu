@@ -2,7 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 
 import { Person } from '@/components/lulus/types';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
+import { getDownloadURL, ref } from 'firebase/storage';
 
 export async function fetchParticipants(): Promise<Person[]> {
   const querySnapshot = await getDocs(collection(db, 'participants'));
@@ -44,5 +45,26 @@ export function useGetParticipantById(id: string) {
   return useQuery<Person | null>({
     queryKey: ['get-participant-by-id', id],
     queryFn: () => fetchParticipantById(id),
+  });
+}
+
+export async function fetchGalleryImages() {
+  const listAll = (await import('firebase/storage')).listAll;
+
+  const galleryRef = ref(storage, 'galery');
+  const result = await listAll(galleryRef);
+  console.log('result', result);
+  const urls = await Promise.all(
+    result.items.map((itemRef) => getDownloadURL(itemRef))
+  );
+
+  return urls;
+}
+
+export function useGetGalleryImages() {
+  return useQuery<string[]>({
+    queryKey: ['get-gallery-images'],
+    queryFn: fetchGalleryImages,
+    retry: 2,
   });
 }
