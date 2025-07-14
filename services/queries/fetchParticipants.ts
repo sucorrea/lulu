@@ -51,7 +51,7 @@ export function useGetParticipantById(id: string) {
 export async function fetchGalleryImages() {
   const listAll = (await import('firebase/storage')).listAll;
 
-  const galleryRef = ref(storage, 'galery');
+  const galleryRef = ref(storage, 'gallery');
   const result = await listAll(galleryRef);
   console.log('result', result);
   const urls = await Promise.all(

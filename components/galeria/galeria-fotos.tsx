@@ -1,6 +1,8 @@
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -21,32 +23,6 @@ import {
   editCommentOnPhoto,
 } from '@/services/galeriaComments';
 
-// const photos = [
-//   'Aline.jpg',
-//   'AnaPaulaMaita.jpg',
-//   'Aninha.png',
-//   'Camila.jpg',
-//   'CarolMaita.jpg',
-//   'CarolMori.jpg',
-//   'Cassia.jpg',
-//   'Deborah.jpg',
-//   'Deia.jpg',
-//   'faLulu.jpg',
-//   'Izadora.jpg',
-//   'Josy.jpg',
-//   'Leticia.jpg',
-//   'lulu.jpg',
-//   'luluzinha.jpg',
-//   'Nani.jpg',
-//   'Stella.jpg',
-//   'Sueli.jpg',
-//   'Sylvia.jpg',
-//   'Vanessa.jpg',
-//   'Vivi.jpg',
-//   'Vladia.jpg',
-// ];
-
-// Ajuste no tipo GaleriaComment para incluir id e editedAt
 type GaleriaComment = {
   id: string;
   userId: string;
@@ -58,9 +34,12 @@ type GaleriaComment = {
 
 const GaleriaFotos = () => {
   const { data, isLoading } = useGetGalleryImages();
-
   const photos = useMemo(() => data || [], [data]);
+  const { user } = useUserVerification();
+  const router = useRouter();
+
   const [selected, setSelected] = useState<number | null>(null);
+  const [commentInput, setCommentInput] = useState('');
   const [liked, setLiked] = useState<boolean[]>(
     Array(photos.length).fill(false)
   );
@@ -68,31 +47,25 @@ const GaleriaFotos = () => {
   const [comments, setComments] = useState<string[][]>(
     Array(photos.length).fill([])
   );
-  const [commentInput, setCommentInput] = useState('');
-  const { user } = useUserVerification();
-  // Estado para likes vindos do Firestore
+
   const [firestoreLikes, setFirestoreLikes] = useState<{
     [photo: string]: string[];
   }>({});
-  // Estado para comentários vindos do Firestore
+
   const [firestoreComments, setFirestoreComments] = useState<{
     [photo: string]: GaleriaComment[];
   }>({});
 
-  // Utilitário para extrair o nome do arquivo de uma URL
   function getPhotoId(photo: string) {
-    // Se for uma URL, pega só o nome do arquivo
     try {
       const url = new URL(photo);
       const path = url.pathname;
       return path.substring(path.lastIndexOf('/') + 1);
     } catch {
-      // Se não for URL, retorna o próprio nome
       return photo;
     }
   }
 
-  // Ouve likes de todas as fotos em tempo real
   useEffect(() => {
     if (!photos.length) return;
     const unsubscribes = photos.map((photo: string) =>
@@ -105,18 +78,20 @@ const GaleriaFotos = () => {
     };
   }, [photos]);
 
-  // Atualiza liked/likes conforme Firestore
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
     setLiked(
       photos.map((photo) => firestoreLikes[photo]?.includes(user.uid) || false)
     );
     setLikes(photos.map((photo) => firestoreLikes[photo]?.length || 0));
   }, [firestoreLikes, user, photos]);
 
-  // Nova função para curtir/descurtir no Firestore
   const handleLike = async (idx: number) => {
-    if (!user) return;
+    if (!user) {
+      return router.push('/login');
+    }
     const photo = photos[idx];
     const photoId = getPhotoId(photo);
     if (liked[idx]) {
@@ -126,9 +101,10 @@ const GaleriaFotos = () => {
     }
   };
 
-  // Ouve comentários de todas as fotos em tempo real
   useEffect(() => {
-    if (!photos.length) return;
+    if (!photos.length) {
+      return;
+    }
     const unsubscribes = photos.map((photo: string) =>
       listenPhotoComments(getPhotoId(photo), (comments) => {
         setFirestoreComments((prev) => ({ ...prev, [photo]: comments }));
@@ -139,7 +115,6 @@ const GaleriaFotos = () => {
     };
   }, [photos]);
 
-  // Atualiza comentários conforme Firestore
   useEffect(() => {
     setComments(
       photos.map(
@@ -148,9 +123,8 @@ const GaleriaFotos = () => {
     );
   }, [firestoreComments, photos]);
 
-  // Nova função para comentar no Firestore
   const handleComment = async (idx: number) => {
-    if (!user || !commentInput.trim()) return;
+    if (!user || !commentInput.trim()) return null;
     const photo = photos[idx];
     const photoId = getPhotoId(photo);
     await addCommentToPhoto(photoId, {
@@ -161,12 +135,10 @@ const GaleriaFotos = () => {
     setCommentInput('');
   };
 
-  // Função para deletar comentário
   const handleDeleteComment = async (photoId: string, commentId: string) => {
     await deleteCommentFromPhoto(photoId, commentId);
   };
 
-  // Função para editar comentário
   const handleEditComment = async (
     photoId: string,
     commentId: string,
@@ -175,7 +147,6 @@ const GaleriaFotos = () => {
     await editCommentOnPhoto(photoId, commentId, newText);
   };
 
-  // Estado para edição
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editInput, setEditInput] = useState('');
 
@@ -190,7 +161,7 @@ const GaleriaFotos = () => {
   if (isLoading)
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <BounceLoader color="#F43F5E" />{' '}
+        <BounceLoader color="#F43F5E" />
       </div>
     );
 
@@ -205,7 +176,7 @@ const GaleriaFotos = () => {
               className="block w-full aspect-square overflow-hidden rounded shadow"
             >
               <Image
-                src={`${photo}`}
+                src={photo}
                 alt={photo}
                 width={300}
                 height={300}
@@ -223,7 +194,7 @@ const GaleriaFotos = () => {
                 onClick={() => setSelected(idx)}
                 className="flex justify-center items-center gap-1  text-sm"
               >
-                <MessageCircle size={15} color="blue" />{' '}
+                <MessageCircle size={15} color="blue" />
                 {comments[idx]?.length || 0}
               </button>
             </div>
@@ -248,7 +219,7 @@ const GaleriaFotos = () => {
             </button>
             <div className="flex-1 flex justify-center">
               <Image
-                src={`${photos[selected]}`}
+                src={photos[selected]}
                 alt={photos[selected]}
                 width={400}
                 height={400}
@@ -272,7 +243,7 @@ const GaleriaFotos = () => {
                 index={selected}
               />
 
-              <span className="text-gray-500 text-sm">{photos[selected]}</span>
+              {/* <span className="text-gray-500 text-sm">{photos[selected]}</span> */}
             </div>
             <div className="mb-2 max-h-24 overflow-y-auto">
               {firestoreComments[photos[selected]]?.map((c, i) => {
@@ -280,13 +251,13 @@ const GaleriaFotos = () => {
                 const isEditing = editingCommentId === c.id;
                 return (
                   <div
-                    key={c.id || i}
+                    key={c.id ?? i}
                     className="text-sm text-gray-700 border-b py-1 flex items-center justify-between gap-2"
                   >
                     <div className="flex-1">
                       <span className="font-semibold mr-1">
                         {c.displayName}:
-                      </span>{' '}
+                      </span>
                       {isEditing ? (
                         <>
                           <Input
@@ -359,9 +330,17 @@ const GaleriaFotos = () => {
                 value={commentInput}
                 onChange={(e) => setCommentInput(e.target.value)}
                 className="border rounded px-2 py-1 flex-1 text-sm"
-                placeholder="Comente algo..."
+                placeholder={
+                  !user ? 'Faça login para comentar' : 'Comente algo...'
+                }
+                disabled={!user}
               />
-              <Button onClick={() => handleComment(selected)}>Enviar</Button>
+              <Button
+                onClick={() => handleComment(selected)}
+                disabled={!user || !commentInput.trim()}
+              >
+                Enviar
+              </Button>
             </div>
           </div>
         </div>
