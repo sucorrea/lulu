@@ -25,7 +25,6 @@
     "@tanstack/react-query": "^5.76.1",
     "@tanstack/react-table": "^8.20.6",
     "@types/lodash": "^4.17.16",
-    "@vitejs/plugin-react": "^4.6.0",
     "brazilian-values": "^0.13.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -56,7 +56,7 @@ const GaleriaFotos = () => {
     [photo: string]: GaleriaComment[];
   }>({});
 
-  function getPhotoId(photo: string) {
+  const getPhotoId = useCallback((photo: string) => {
     try {
       const url = new URL(photo);
       const path = url.pathname;
@@ -64,7 +64,7 @@ const GaleriaFotos = () => {
     } catch {
       return photo;
     }
-  }
+  }, []);
 
   useEffect(() => {
     if (!photos.length) return;
@@ -76,7 +76,7 @@ const GaleriaFotos = () => {
     return () => {
       unsubscribes.forEach((u) => u());
     };
-  }, [photos]);
+  }, [photos, getPhotoId]);
 
   useEffect(() => {
     if (!user) {
@@ -88,18 +88,21 @@ const GaleriaFotos = () => {
     setLikes(photos.map((photo) => firestoreLikes[photo]?.length || 0));
   }, [firestoreLikes, user, photos]);
 
-  const handleLike = async (idx: number) => {
-    if (!user) {
-      return router.push('/login');
-    }
-    const photo = photos[idx];
-    const photoId = getPhotoId(photo);
-    if (liked[idx]) {
-      await unlikePhoto(photoId, user.uid);
-    } else {
-      await likePhoto(photoId, user.uid);
-    }
-  };
+  const handleLike = useCallback(
+    async (idx: number) => {
+      if (!user) {
+        return router.push('/login');
+      }
+      const photo = photos[idx];
+      const photoId = getPhotoId(photo);
+      if (liked[idx]) {
+        await unlikePhoto(photoId, user.uid);
+      } else {
+        await likePhoto(photoId, user.uid);
+      }
+    },
+    [user, router, photos, liked, getPhotoId]
+  );
 
   useEffect(() => {
     if (!photos.length) {
@@ -113,50 +116,57 @@ const GaleriaFotos = () => {
     return () => {
       unsubscribes.forEach((u) => u());
     };
-  }, [photos]);
+  }, [photos, getPhotoId]);
 
   useEffect(() => {
     setComments(
       photos.map(
-        (photo) => firestoreComments[photo]?.map((c) => c.comment) || []
+        (photo) =>
+          firestoreComments[photo]?.map((coments) => coments.comment) || []
       )
     );
   }, [firestoreComments, photos]);
 
-  const handleComment = async (idx: number) => {
-    if (!user || !commentInput.trim()) return null;
-    const photo = photos[idx];
-    const photoId = getPhotoId(photo);
-    await addCommentToPhoto(photoId, {
-      userId: user.uid,
-      displayName: user.displayName || user.email || 'Usuário',
-      comment: commentInput.trim(),
-    });
-    setCommentInput('');
-  };
+  const handleComment = useCallback(
+    async (idx: number) => {
+      if (!user || !commentInput.trim()) return null;
+      const photo = photos[idx];
+      const photoId = getPhotoId(photo);
+      await addCommentToPhoto(photoId, {
+        userId: user.uid,
+        displayName: user.displayName || user.email || 'Usuário',
+        comment: commentInput.trim(),
+      });
+      setCommentInput('');
+    },
+    [user, commentInput, photos, getPhotoId]
+  );
 
-  const handleDeleteComment = async (photoId: string, commentId: string) => {
-    await deleteCommentFromPhoto(photoId, commentId);
-  };
+  const handleDeleteComment = useCallback(
+    async (photoId: string, commentId: string) => {
+      await deleteCommentFromPhoto(photoId, commentId);
+    },
+    []
+  );
 
-  const handleEditComment = async (
-    photoId: string,
-    commentId: string,
-    newText: string
-  ) => {
-    await editCommentOnPhoto(photoId, commentId, newText);
-  };
+  const handleEditComment = useCallback(
+    async (photoId: string, commentId: string, newText: string) => {
+      await editCommentOnPhoto(photoId, commentId, newText);
+    },
+    []
+  );
 
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editInput, setEditInput] = useState('');
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (selected !== null)
       setSelected((selected - 1 + photos.length) % photos.length);
-  };
-  const handleNext = () => {
+  }, [selected, photos.length]);
+
+  const handleNext = useCallback(() => {
     if (selected !== null) setSelected((selected + 1) % photos.length);
-  };
+  }, [selected, photos.length]);
 
   if (isLoading)
     return (
@@ -242,21 +252,19 @@ const GaleriaFotos = () => {
                 likes={likes}
                 index={selected}
               />
-
-              {/* <span className="text-gray-500 text-sm">{photos[selected]}</span> */}
             </div>
             <div className="mb-2 max-h-24 overflow-y-auto">
-              {firestoreComments[photos[selected]]?.map((c, i) => {
-                const isAuthor = user && c.userId === user.uid;
-                const isEditing = editingCommentId === c.id;
+              {firestoreComments[photos[selected]]?.map((comentSelected, i) => {
+                const isAuthor = user && comentSelected.userId === user.uid;
+                const isEditing = editingCommentId === comentSelected.id;
                 return (
                   <div
-                    key={c.id ?? i}
+                    key={comentSelected.id ?? i}
                     className="text-sm text-gray-700 border-b py-1 flex items-center justify-between gap-2"
                   >
                     <div className="flex-1">
                       <span className="font-semibold mr-1">
-                        {c.displayName}:
+                        {comentSelected.displayName}:
                       </span>
                       {isEditing ? (
                         <>
@@ -271,7 +279,7 @@ const GaleriaFotos = () => {
                             onClick={async () => {
                               await handleEditComment(
                                 getPhotoId(photos[selected]),
-                                c.id,
+                                comentSelected.id,
                                 editInput
                               );
                               setEditingCommentId(null);
@@ -289,7 +297,7 @@ const GaleriaFotos = () => {
                           </Button>
                         </>
                       ) : (
-                        <span>{c.comment}</span>
+                        <span>{comentSelected.comment}</span>
                       )}
                     </div>
                     {isAuthor && !isEditing && (
@@ -299,8 +307,8 @@ const GaleriaFotos = () => {
                           variant="ghost"
                           className="px-2 py-0.5"
                           onClick={() => {
-                            setEditingCommentId(c.id);
-                            setEditInput(c.comment);
+                            setEditingCommentId(comentSelected.id);
+                            setEditInput(comentSelected.comment);
                           }}
                         >
                           Editar
@@ -312,7 +320,7 @@ const GaleriaFotos = () => {
                           onClick={async () => {
                             await handleDeleteComment(
                               getPhotoId(photos[selected]),
-                              c.id
+                              comentSelected.id
                             );
                           }}
                         >

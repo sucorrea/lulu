@@ -3,12 +3,12 @@ import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Roboto, Roboto_Mono } from 'next/font/google';
 
+import Footer from '@/components/layout/footer';
+import { Navbar } from '@/components/layout/navigation-bar/navbar';
 import { DeviceProvider } from '@/providers/device-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
-import './globals.css';
-import Footer from '@/components/layout/footer';
 import { ThemeProvider } from '@/providers/theme-provider';
-import { Navbar } from '@/components/layout/navigation-bar/navbar';
+import './globals.css';
 
 const ano = new Date().getFullYear();
 

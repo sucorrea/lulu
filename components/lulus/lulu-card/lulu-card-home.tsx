@@ -36,11 +36,7 @@ const LulusCardHome = ({
 
   return (
     <Card className={styleCard + ' w-full max-w-md mx-auto'}>
-      {' '}
-      {/* Limita largura e centraliza */}
       <CardContent className="p-4 flex flex-col justify-between h-full gap-2 overflow-x-auto">
-        {' '}
-        {/* Adiciona overflow-x-auto */}
         {user && (
           <Tooltip content="Editar">
             <Link
@@ -60,9 +56,7 @@ const LulusCardHome = ({
             </h3>
           </div>
         )}
-        <div className="flex flex-col sm:flex-row gap-4 items-center flex-wrap">
-          {' '}
-          {/* Mobile first, wrap se necessário */}
+        <div className="flex flex-row gap-4 items-center ">
           <Avatar className="h-16 w-16 border-2 border-primary shrink-0">
             <AvatarImage
               src={participant.photoURL ?? ''}
