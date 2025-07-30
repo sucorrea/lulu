@@ -22,7 +22,6 @@ export default function UploadParticipantsPage() {
           date: person.date.toString(),
         };
 
-        // Usando o ID do participante como ID do documento
         const ref = doc(collection(db, 'participants'), String(person.id));
         await setDoc(ref, personData);
       }

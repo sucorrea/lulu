@@ -57,7 +57,6 @@ const DataTable = <TData,>({
                   columnId={columnIdFilter as keyof TData & string}
                 />
               )}
-              {/* <ColumnVisibilityDropdown table={table} /> */}
             </div>
             <TableUi>
               <DataTableHeader table={table} className="bg-amber-100" />

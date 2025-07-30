@@ -3,7 +3,7 @@ import { Table } from '@tanstack/react-table';
 
 export type DataTableInputFilterProps<TData> = {
   table: Table<TData>;
-  columnId: keyof TData & string; // ID da coluna que será filtrada
+  columnId: keyof TData & string;
   placeholder?: string;
   className?: string;
 };

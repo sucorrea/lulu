@@ -5,7 +5,7 @@ import {
   deleteObject,
 } from 'firebase/storage';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { storage, db } from '../firebase'; // ajuste o caminho se necessário
+import { storage, db } from '../firebase';
 
 export async function replaceParticipantPhoto(
   participantId: string,
@@ -23,7 +23,7 @@ export async function replaceParticipantPhoto(
   if (data.picture && data.picture.includes('firebasestorage.googleapis.com')) {
     try {
       const url = new URL(data.picture);
-      const pathname = decodeURIComponent(url.pathname); // /v0/b/{bucket}/o/participants%2Fnome.jpg
+      const pathname = decodeURIComponent(url.pathname);
       const filePath = pathname
         .split('/o/')[1]
         .split('?')[0]
@@ -41,7 +41,6 @@ export async function replaceParticipantPhoto(
   await uploadBytes(newImageRef, file);
   const newDownloadURL = await getDownloadURL(newImageRef);
 
-  // 4. Atualizar o Firestore
   await updateDoc(participantRef, {
     picture: newDownloadURL,
   });

@@ -32,7 +32,6 @@ export default function NotFound() {
         </div>
       </div>
 
-      {/* Background decorative elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-primary/10"></div>
         <div className="absolute top-1/4 right-10 w-12 h-12 rounded-full bg-secondary/20"></div>

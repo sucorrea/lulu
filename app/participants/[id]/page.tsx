@@ -8,7 +8,6 @@ interface PageProps {
 }
 
 export async function generateMetadata(props: PageProps) {
-  // Await the params promise to get the actual parameters object
   const paramsObject = await props.params;
   const { id } = paramsObject;
   const participant = await fetchParticipantById(id);
@@ -19,7 +18,6 @@ export async function generateMetadata(props: PageProps) {
 }
 
 async function Page({ params }: PageProps) {
-  // Await the params promise to get the actual parameters object
   const paramsObject = await params;
   const { id } = paramsObject;
   if (!id) {

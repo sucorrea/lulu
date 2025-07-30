@@ -9,7 +9,6 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 
-// Adiciona curtida de um usuário
 export async function likePhoto(photoId: string, userId: string) {
   const ref = doc(db, 'galeria-likes', photoId);
   const snap = await getDoc(ref);
@@ -22,7 +21,6 @@ export async function likePhoto(photoId: string, userId: string) {
   }
 }
 
-// Remove curtida de um usuário
 export async function unlikePhoto(photoId: string, userId: string) {
   const ref = doc(db, 'galeria-likes', photoId);
   await updateDoc(ref, {
@@ -30,7 +28,6 @@ export async function unlikePhoto(photoId: string, userId: string) {
   });
 }
 
-// Busca curtidas em tempo real
 export function listenPhotoLikes(
   photoId: string,
   callback: (users: string[]) => void

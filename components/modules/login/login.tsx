@@ -30,11 +30,9 @@ export default function LoginPage() {
 
     try {
       if (isLogin) {
-        // Login
         await signInWithEmailAndPassword(auth, email, password);
         router.push('/');
       } else {
-        // Register
         await createUserWithEmailAndPassword(auth, email, password);
         router.push('/');
       }

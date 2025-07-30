@@ -140,7 +140,6 @@ export function getNextBirthday(participants: Person[]): Person | null {
         birthDate.getDate()
       );
 
-      // Se o aniversário já passou este ano, calcula para o próximo ano
       if (birthdayThisYear < today) {
         birthdayThisYear.setFullYear(currentYear + 1);
       }
