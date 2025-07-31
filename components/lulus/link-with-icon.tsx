@@ -15,7 +15,7 @@ const LinkIconWithText = ({
   icon,
   showDescription,
 }: LinkIconWithTextProps) => (
-  <Link href={link} target="_blank">
+  <Link href={link} target="_blank" rel="noopener noreferrer">
     <div className="flex items-center flex-colgap-2">
       {icon}
       {!!showDescription && <p className="md:text-sm xs: text-xs">{text}</p>}

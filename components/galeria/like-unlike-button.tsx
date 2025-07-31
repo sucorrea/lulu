@@ -19,7 +19,7 @@ const LikeUnlikeButton = ({
   return (
     <button
       onClick={() => handleLike(index)}
-      className={`flex justify-center items-center gap-1  text-lg transition-transform ${liked[index] ? 'scale-110' : ''}`}
+      className={`flex justify-center items-center gap-1 text-sm transition-transform ${liked[index] ? 'scale-110' : ''}`}
       aria-label={liked[index] ? 'Descurtir' : 'Curtir'}
     >
       {liked[index] ? (

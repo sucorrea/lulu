@@ -110,23 +110,17 @@ const LulusCardHome = ({
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          {user && (
-            <MoreInforAccordion>
-              <>
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-2 w-full">
-                  {user && participant.phone && (
-                    <WhatsappInfo participant={participant} />
-                  )}
-                  {user && participant.pix_key && (
-                    <PixInfo participant={participant} />
-                  )}
-                </div>
-                {user && participant.pix_key && (
-                  <PixQRCode participant={participant} />
+          <MoreInforAccordion>
+            <>
+              <div className="flex flex-col sm:flex-row  gap-2 w-full">
+                {participant.phone && (
+                  <WhatsappInfo participant={participant} />
                 )}
-              </>
-            </MoreInforAccordion>
-          )}
+                {participant.pix_key && <PixInfo participant={participant} />}
+              </div>
+              {participant.pix_key && <PixQRCode participant={participant} />}
+            </>
+          </MoreInforAccordion>
           <ResponsableGift
             participant={participant}
             participants={participants}

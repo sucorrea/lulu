@@ -8,6 +8,7 @@ import DashboardPage from '@/components/modules/dashboard';
 
 const Dashboard = () => {
   const { isLoading } = useUserVerification();
+
   const { data: participants, isLoading: isLoadingParticipants } =
     useGettAllParticipants();
 

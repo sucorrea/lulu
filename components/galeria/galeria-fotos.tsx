@@ -1,27 +1,28 @@
 'use client';
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { ChevronLeft, ChevronRight, MessageCircle, X } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-import Image from 'next/image';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { ChevronLeft, ChevronRight, MessageCircle, X } from 'lucide-react';
-import LikeUnlikeButton from './like-unlike-button';
-import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
-import BounceLoader from 'react-spinners/BounceLoader';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useUserVerification } from '@/hooks/user-verify';
 import {
-  likePhoto,
-  unlikePhoto,
-  listenPhotoLikes,
-} from '@/services/galeriaLikes';
-import {
   addCommentToPhoto,
-  listenPhotoComments,
   deleteCommentFromPhoto,
   editCommentOnPhoto,
+  listenPhotoComments,
 } from '@/services/galeriaComments';
+import {
+  likePhoto,
+  listenPhotoLikes,
+  unlikePhoto,
+} from '@/services/galeriaLikes';
+import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
+import LikeUnlikeButton from './like-unlike-button';
+import EditDeleteButtom from './edit-delete-buttom';
 
 type GaleriaComment = {
   id: string;
@@ -40,10 +41,10 @@ const GaleriaFotos = () => {
 
   const [selected, setSelected] = useState<number | null>(null);
   const [commentInput, setCommentInput] = useState('');
+  const [likes, setLikes] = useState(Array(photos.length).fill(0));
   const [liked, setLiked] = useState<boolean[]>(
     Array(photos.length).fill(false)
   );
-  const [likes, setLikes] = useState(Array(photos.length).fill(0));
   const [comments, setComments] = useState<string[][]>(
     Array(photos.length).fill([])
   );
@@ -167,61 +168,84 @@ const GaleriaFotos = () => {
   const handleNext = useCallback(() => {
     if (selected !== null) setSelected((selected + 1) % photos.length);
   }, [selected, photos.length]);
-
-  if (isLoading)
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <BounceLoader color="#F43F5E" />
-      </div>
-    );
-
+  const handleEditCommentSelected = useCallback(
+    (comentSelected: GaleriaComment) => {
+      setEditingCommentId(comentSelected.id);
+      setEditInput(comentSelected.comment);
+    },
+    [setEditingCommentId, setEditInput]
+  );
   return (
     <div className="p-2 max-w-3xl mx-auto">
-      <h1 className="text-xl font-bold mb-4 text-center">Galeria</h1>
+      <h1 className="lulu-header text-primary text-3xl mb-2 text-center">
+        Galeria
+      </h1>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
-        {photos.map((photo, idx) => (
-          <div key={photo} className="relative group">
-            <button
-              onClick={() => setSelected(idx)}
-              className="block w-full aspect-square overflow-hidden rounded shadow"
-            >
-              <Image
-                src={photo}
-                alt={photo}
-                width={300}
-                height={300}
-                className="object-cover w-full h-full"
-              />
-            </button>
-            <div className="flex justify-between items-center mt-1">
-              <LikeUnlikeButton
-                handleLike={() => handleLike(idx)}
-                liked={liked}
-                likes={likes}
-                index={idx}
-              />
-              <button
-                onClick={() => setSelected(idx)}
-                className="flex justify-center items-center gap-1  text-sm"
+        {isLoading
+          ? Array.from({ length: 15 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="relative group"
+                data-testid="skeleton-item"
               >
-                <MessageCircle size={15} color="blue" />
-                {comments[idx]?.length || 0}
-              </button>
-            </div>
-          </div>
-        ))}
+                <button
+                  onClick={() => setSelected(idx)}
+                  className="block w-full aspect-square overflow-hidden rounded shadow"
+                  disabled
+                >
+                  <Skeleton key={idx} className="w-full aspect-square" />
+                </button>
+              </div>
+            ))
+          : photos.map((photo, idx) => (
+              <div key={photo} className="relative group">
+                <button
+                  onClick={() => setSelected(idx)}
+                  className="block w-full aspect-square overflow-hidden rounded shadow"
+                >
+                  <Image
+                    src={photo}
+                    alt={photo}
+                    width={300}
+                    height={300}
+                    className="object-cover w-full h-full"
+                  />
+                </button>
+                <div className="flex justify-between items-center mt-1">
+                  <LikeUnlikeButton
+                    handleLike={() => handleLike(idx)}
+                    liked={liked}
+                    likes={likes}
+                    index={idx}
+                  />
+                  <button
+                    onClick={() => setSelected(idx)}
+                    className="flex justify-center items-center gap-1 text-sm"
+                  >
+                    <MessageCircle size={15} color="blue" />
+                    {comments[idx]?.length || 0}
+                  </button>
+                </div>
+              </div>
+            ))}
       </div>
       {selected !== null && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex flex-col items-center justify-center">
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-80 flex flex-col items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+        >
           <button
             className="absolute top-4 right-4 text-white text-2xl"
             onClick={() => setSelected(null)}
+            aria-label="Fechar"
           >
             <X />
           </button>
           <div className="relative flex items-center w-full max-w-md justify-center">
             <button
               onClick={handlePrev}
+              aria-label="Foto anterior"
               className="absolute left-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center"
               style={{ left: 8 }}
             >
@@ -238,6 +262,7 @@ const GaleriaFotos = () => {
             </div>
             <button
               onClick={handleNext}
+              aria-label="Próxima foto"
               className="absolute right-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center"
               style={{ right: 8 }}
             >
@@ -267,7 +292,7 @@ const GaleriaFotos = () => {
                         {comentSelected.displayName}:
                       </span>
                       {isEditing ? (
-                        <>
+                        <div>
                           <Input
                             value={editInput}
                             onChange={(e) => setEditInput(e.target.value)}
@@ -295,38 +320,22 @@ const GaleriaFotos = () => {
                           >
                             Cancelar
                           </Button>
-                        </>
+                        </div>
                       ) : (
                         <span>{comentSelected.comment}</span>
                       )}
                     </div>
                     {isAuthor && !isEditing && (
-                      <div className="flex gap-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="px-2 py-0.5"
-                          onClick={() => {
-                            setEditingCommentId(comentSelected.id);
-                            setEditInput(comentSelected.comment);
-                          }}
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          className="px-2 py-0.5"
-                          onClick={async () => {
-                            await handleDeleteComment(
-                              getPhotoId(photos[selected]),
-                              comentSelected.id
-                            );
-                          }}
-                        >
-                          Excluir
-                        </Button>
-                      </div>
+                      <EditDeleteButtom
+                        onEdit={handleEditCommentSelected}
+                        onDelete={async () => {
+                          await handleDeleteComment(
+                            getPhotoId(photos[selected]),
+                            comentSelected.id
+                          );
+                        }}
+                        comentSelected={comentSelected}
+                      />
                     )}
                   </div>
                 );
