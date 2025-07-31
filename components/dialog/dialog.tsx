@@ -31,7 +31,12 @@ export function GenericDialog({
 }: GenericDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={className}>
+      <DialogContent
+        className={className}
+        aria-describedby={title}
+        aria-description={description}
+      >
+        {/* Dialog Header */}
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

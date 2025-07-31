@@ -23,6 +23,8 @@ import {
 import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
 import LikeUnlikeButton from './like-unlike-button';
 import EditDeleteButtom from './edit-delete-buttom';
+import { onGetPhotoId } from './utils';
+import UploadPhotoGallery from './upload-photo-gallery';
 
 type GaleriaComment = {
   id: string;
@@ -57,15 +59,7 @@ const GaleriaFotos = () => {
     [photo: string]: GaleriaComment[];
   }>({});
 
-  const getPhotoId = useCallback((photo: string) => {
-    try {
-      const url = new URL(photo);
-      const path = url.pathname;
-      return path.substring(path.lastIndexOf('/') + 1);
-    } catch {
-      return photo;
-    }
-  }, []);
+  const getPhotoId = useCallback((photo: string) => onGetPhotoId(photo), []);
 
   useEffect(() => {
     if (!photos.length) return;
@@ -168,6 +162,7 @@ const GaleriaFotos = () => {
   const handleNext = useCallback(() => {
     if (selected !== null) setSelected((selected + 1) % photos.length);
   }, [selected, photos.length]);
+
   const handleEditCommentSelected = useCallback(
     (comentSelected: GaleriaComment) => {
       setEditingCommentId(comentSelected.id);
@@ -175,11 +170,15 @@ const GaleriaFotos = () => {
     },
     [setEditingCommentId, setEditInput]
   );
+
   return (
     <div className="p-2 max-w-3xl mx-auto">
-      <h1 className="lulu-header text-primary text-3xl mb-2 text-center">
-        Galeria
-      </h1>
+      <div className="flex justify-between mb-4">
+        <h1 className="lulu-header text-primary text-3xl mb-2 text-center">
+          Galeria
+        </h1>
+        <UploadPhotoGallery />
+      </div>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
         {isLoading
           ? Array.from({ length: 15 }).map((_, idx) => (
