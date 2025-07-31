@@ -1,7 +1,13 @@
 'use client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ChevronLeft, ChevronRight, MessageCircle, X } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  MessageCircle,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -23,7 +29,7 @@ import {
 import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
 import LikeUnlikeButton from './like-unlike-button';
 import EditDeleteButtom from './edit-delete-buttom';
-import { onGetPhotoId } from './utils';
+import { downloadPhoto, onGetPhotoId } from './utils';
 import UploadPhotoGallery from './upload-photo-gallery';
 
 type GaleriaComment = {
@@ -171,6 +177,10 @@ const GaleriaFotos = () => {
     [setEditingCommentId, setEditInput]
   );
 
+  const handleDownload = useCallback((url: string) => {
+    downloadPhoto(url);
+  }, []);
+
   return (
     <div className="p-2 max-w-3xl mx-auto">
       <div className="flex justify-between mb-4">
@@ -268,14 +278,21 @@ const GaleriaFotos = () => {
               <ChevronRight />
             </button>
           </div>
-          <div className="bg-white rounded p-4 mt-2 w-full max-w-md">
-            <div className="flex items-center gap-4 mb-2">
+          <div className="bg-white rounded p-4 mt-2 w-full max-w-md ">
+            <div className="flex justify-between gap-4 mb-2">
               <LikeUnlikeButton
                 handleLike={() => handleLike(selected)}
                 liked={liked}
                 likes={likes}
                 index={selected}
               />
+              <button
+                onClick={() => handleDownload(photos[selected])}
+                aria-label="Baixar foto"
+                className="bg-transparent"
+              >
+                <Download />
+              </button>
             </div>
             <div className="mb-2 max-h-24 overflow-y-auto">
               {firestoreComments[photos[selected]]?.map((comentSelected, i) => {
