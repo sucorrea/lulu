@@ -29,7 +29,9 @@ const ResponsableGift = ({
             width={56}
             height={56}
           />
-          <AvatarFallback>{responsable.name.charAt(0)}</AvatarFallback>
+          <AvatarFallback>
+            {responsable.name ?? (responsable.name as string).charAt(0)}
+          </AvatarFallback>
         </Avatar>
         <div>
           <p className="text-primary text-sm">Responsável pela vaquinha</p>
