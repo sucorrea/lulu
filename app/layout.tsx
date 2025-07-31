@@ -25,7 +25,7 @@ const geistMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: `Luluzinha ${ano}`,
-  description: 'O site das Lulus',
+  description: 'O blog da Luluzinha',
 };
 
 export default function RootLayout({
