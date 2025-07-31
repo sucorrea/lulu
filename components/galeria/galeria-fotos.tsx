@@ -24,6 +24,7 @@ import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
 import LikeUnlikeButton from './like-unlike-button';
 import EditDeleteButtom from './edit-delete-buttom';
 import { onGetPhotoId } from './utils';
+import UploadPhotoGallery from './upload-photo-gallery';
 
 type GaleriaComment = {
   id: string;
@@ -176,7 +177,7 @@ const GaleriaFotos = () => {
         <h1 className="lulu-header text-primary text-3xl mb-2 text-center">
           Galeria
         </h1>
-        {/* <UploadPhotoGallery /> */}
+        <UploadPhotoGallery />
       </div>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
         {isLoading
