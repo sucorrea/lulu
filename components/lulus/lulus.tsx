@@ -34,9 +34,10 @@ const Lulus = ({ participants }: LulusProps) => {
     [searchTerm, filterMonth, sortBy, participantsData, participants]
   );
 
-  const isNextBirthday = useCallback((id: number) => {
-    return getNextBirthday(particiantesMock)?.id === id;
-  }, []);
+  const isNextBirthday = useCallback(
+    (id: number) => getNextBirthday(particiantesMock)?.id === id,
+    []
+  );
 
   if (isLoading || isLoadingParticipants)
     return (
@@ -47,6 +48,19 @@ const Lulus = ({ participants }: LulusProps) => {
 
   return (
     <div className="min-h-screen p-8">
+      {getNextBirthday(participants) && (
+        <div className="mb-8">
+          <LulusCardHome
+            participant={getNextBirthday(participants) ?? ({} as Person)}
+            isNextBirthday={true}
+            user={!!user}
+            participants={
+              participants ?? participantsData ?? [] ?? particiantesMock
+            }
+            showDetails={false}
+          />
+        </div>
+      )}
       <div>
         <Filter
           filterMonth={filterMonth}

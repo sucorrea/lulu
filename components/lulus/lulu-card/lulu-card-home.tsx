@@ -1,10 +1,11 @@
 'use client';
+import { useCallback } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { Icon } from '@iconify/react';
-import { CakeIcon, Edit2Icon, GiftIcon } from 'lucide-react';
+import { CakeIcon, Edit2Icon, GiftIcon, Sparkles } from 'lucide-react';
 
 import Tooltip from '@/components/tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,7 +17,7 @@ import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
 import LinkIconWithText from '../link-with-icon';
 import { MoreInforAccordion } from '../more-info';
 import { Person } from '../types';
-import { formatDate, getSigno } from '../utils';
+import { formatDate, getNextBirthday, getSigno } from '../utils';
 import ResponsableGift from './responsable-gift';
 
 interface LulusCardHomeProps {
@@ -24,6 +25,7 @@ interface LulusCardHomeProps {
   isNextBirthday: boolean;
   user: boolean;
   participants: Person[];
+  showDetails?: boolean;
 }
 
 const LulusCardHome = ({
@@ -31,13 +33,33 @@ const LulusCardHome = ({
   isNextBirthday,
   user,
   participants,
+  showDetails = true,
 }: LulusCardHomeProps) => {
   const styleCard = isNextBirthday ? 'border-primary border-2 shadow-lg ' : '';
+
+  const calculateDaysUntilBirthday = useCallback((birthdayDate: Date) => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const nextBirthday = new Date(
+      currentYear,
+      birthdayDate.getMonth(),
+      birthdayDate.getDate()
+    );
+
+    if (today > nextBirthday) {
+      nextBirthday.setFullYear(currentYear + 1);
+    }
+
+    const diffTime = Math.abs(nextBirthday.getTime() - today.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }, []);
+  const dataNextBirthday = new Date(getNextBirthday(participants)?.date || '');
 
   return (
     <Card className={styleCard + ' w-full max-w-md mx-auto'}>
       <CardContent className="p-4 flex flex-col justify-between h-full gap-2 overflow-x-auto">
-        {user && (
+        {user && showDetails && (
           <Tooltip content="Editar">
             <Link
               href={`participants/${participant.id}`}
@@ -49,11 +71,17 @@ const LulusCardHome = ({
           </Tooltip>
         )}
         {isNextBirthday && (
-          <div className="flex flex-row items-center justify-center pb-2">
-            <GiftIcon size="1.5rem" className="text-primary" />
-            <h3 className="font-semibold text-xl text-primary">
-              Próxima aniversariante
-            </h3>
+          <div>
+            <div className="flex flex-row items-center justify-center pb-2">
+              <GiftIcon size="1.5rem" className="text-primary" />
+              <h3 className="font-semibold text-xl text-primary">
+                Próxima aniversariante
+              </h3>
+              <Sparkles className="w-6 h-6 animate-bounce text-primary" />
+            </div>
+            <p className="text-sm text-center text-primary">
+              {`Faltam ${calculateDaysUntilBirthday(dataNextBirthday)} dias para o próximo aniversário!`}
+            </p>
           </div>
         )}
         <div className="flex flex-row gap-4 items-center ">
@@ -109,23 +137,25 @@ const LulusCardHome = ({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 w-full">
-          <MoreInforAccordion>
-            <>
-              <div className="flex flex-col sm:flex-row  gap-2 w-full">
-                {participant.phone && (
-                  <WhatsappInfo participant={participant} />
-                )}
-                {participant.pix_key && <PixInfo participant={participant} />}
-              </div>
-              {participant.pix_key && <PixQRCode participant={participant} />}
-            </>
-          </MoreInforAccordion>
-          <ResponsableGift
-            participant={participant}
-            participants={participants}
-          />
-        </div>
+        {showDetails && (
+          <div className="flex flex-col gap-2 w-full">
+            <MoreInforAccordion>
+              <>
+                <div className="flex flex-col sm:flex-row  gap-2 w-full">
+                  {participant.phone && (
+                    <WhatsappInfo participant={participant} />
+                  )}
+                  {participant.pix_key && <PixInfo participant={participant} />}
+                </div>
+                {participant.pix_key && <PixQRCode participant={participant} />}
+              </>
+            </MoreInforAccordion>
+            <ResponsableGift
+              participant={participant}
+              participants={participants}
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
