@@ -10,6 +10,8 @@ import LulusCardHome from './lulu-card/lulu-card-home';
 import { participants as particiantesMock } from './mockdata';
 import { Person } from './types';
 import { filteredAndSortedParticipants, getNextBirthday } from './utils';
+import { Badge } from '../ui/badge';
+import { Users } from 'lucide-react';
 
 interface LulusProps {
   participants: Person[];
@@ -48,6 +50,12 @@ const Lulus = ({ participants }: LulusProps) => {
 
   return (
     <div className="min-h-screen p-8">
+      <div className="flex justify-end">
+        <Badge variant="secondary" className="mb-4 bg-primary ">
+          <Users className="w-4 h-4 mr-2" />
+          {participants.length} Participantes
+        </Badge>
+      </div>
       {getNextBirthday(participants) && (
         <div className="mb-8">
           <LulusCardHome
