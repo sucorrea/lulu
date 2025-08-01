@@ -80,7 +80,7 @@ const LulusCardHome = ({
               <Sparkles className="w-6 h-6 animate-bounce text-primary" />
             </div>
             <p className="text-sm text-center text-primary">
-              {`Faltam ${calculateDaysUntilBirthday(dataNextBirthday)} dias para o próximo aniversário!`}
+              {`Faltam ${calculateDaysUntilBirthday(dataNextBirthday)} dias para o aniversário da ${participant.name}!`}
             </p>
           </div>
         )}
