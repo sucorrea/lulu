@@ -68,7 +68,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-family: "Comic Sans MS", "Comic Sans";
   }
   
   .lulu-button {

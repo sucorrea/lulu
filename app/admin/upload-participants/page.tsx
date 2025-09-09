@@ -3,19 +3,22 @@
 import { useState } from 'react';
 import { getFirestore, collection, setDoc, doc } from 'firebase/firestore';
 import app from '@/services/firebase';
-import { participants } from '@/components/lulus/mockdata';
+import { fetchParticipants } from '@/services/queries/fetchParticipants';
 
 const db = getFirestore(app);
 
 export default function UploadParticipantsPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  // Remove fetching here, fetch inside the upload function
+  // const participants = fetchParticipants();
 
   async function uploadParticipants() {
     setLoading(true);
     setMessage(null);
 
     try {
+      const participants = await fetchParticipants();
       for (const person of participants) {
         const personData = {
           ...person,

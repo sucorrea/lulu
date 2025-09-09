@@ -34,7 +34,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => {
           </CardHeader>
           <CardContent className="p-2">
             <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={birthdayStats}>
+              <BarChart data={birthdayStats(participants)}>
                 <XAxis dataKey="name" />
                 <YAxis allowDecimals={false} />
                 <Tooltip />
@@ -53,7 +53,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => {
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={signsStats}
+                  data={signsStats(participants)}
                   dataKey="total"
                   nameKey="name"
                   cx="50%"
@@ -64,7 +64,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => {
                   label={({ name, value }) => `${name} (${value})`}
                   className="text-xs"
                 >
-                  {signsStats.map((_, index) => (
+                  {signsStats(participants).map((_, index) => (
                     <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>

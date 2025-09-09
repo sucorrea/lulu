@@ -34,7 +34,7 @@ const PixInfo = ({ participant }: PixInfoProps) => {
         }}
         style={{ cursor: 'pointer' }}
       >
-        {participant.pix_key}
+        {`: ${participant.pix_key}`}
       </span>
     </div>
   );

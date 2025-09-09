@@ -68,7 +68,7 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        comic: ['Comic Sans MS', 'Comic Sans', 'cursive'],
+        comic: ['Comic Sans MS', 'Comic Sans'],
       },
       boxShadow: {
         'lulu-sm': '2px 2px 0px rgba(0, 0, 0, 0.15)',

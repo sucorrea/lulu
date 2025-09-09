@@ -55,6 +55,7 @@ const LulusCardHome = ({
     return diffDays;
   }, []);
   const dataNextBirthday = new Date(getNextBirthday(participants)?.date || '');
+  const daysForBirthday = calculateDaysUntilBirthday(dataNextBirthday);
 
   return (
     <Card className={styleCard + ' w-full max-w-md mx-auto'}>
@@ -80,7 +81,9 @@ const LulusCardHome = ({
               <Sparkles className="w-6 h-6 animate-bounce text-primary" />
             </div>
             <p className="text-sm text-center text-primary">
-              {`Faltam ${calculateDaysUntilBirthday(dataNextBirthday)} dias para o aniversário da ${participant.name}!`}
+              {daysForBirthday === 1
+                ? `Falta ${daysForBirthday} dia para o aniversário da ${participant.name}!`
+                : `Faltam ${daysForBirthday} dias para o aniversário da ${participant.name}!`}
             </p>
           </div>
         )}

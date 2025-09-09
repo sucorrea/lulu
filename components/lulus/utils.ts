@@ -1,5 +1,4 @@
 import { months } from './constants';
-import { participants } from './mockdata';
 import { Person, PixTypes } from './types';
 export type Signos =
   | 'aries'
@@ -155,11 +154,12 @@ export function getNextBirthday(participants: Person[]): Person | null {
   return upcomingBirthdays.length > 0 ? upcomingBirthdays[0].person : null;
 }
 
-export const birthdayStats = months.map((month, index) => ({
-  name: month,
-  total: participants.filter((p) => new Date(p.date).getMonth() === index)
-    .length,
-}));
+export const birthdayStats = (participants: Person[]) =>
+  months.map((month, index) => ({
+    name: month,
+    total: participants.filter((p) => new Date(p.date).getMonth() === index)
+      .length,
+  }));
 
 function getSign(day: number, month: number): string {
   const signs = [
@@ -191,18 +191,21 @@ function getSign(day: number, month: number): string {
 
   return 'Desconhecido';
 }
-const signsMap: Record<string, number> = {};
 
-participants.forEach((p) => {
-  const date = new Date(p.date);
-  const sign = getSign(date.getDate(), date.getMonth() + 1);
-  signsMap[sign] = (signsMap[sign] || 0) + 1;
-});
+export const signsStats = (participants: Person[]) => {
+  const signsMap: Record<string, number> = {};
 
-export const signsStats = Object.entries(signsMap).map(([name, total]) => ({
-  name,
-  total,
-}));
+  participants.forEach((p) => {
+    const date = new Date(p.date);
+    const sign = getSign(date.getDate(), date.getMonth() + 1);
+    signsMap[sign] = (signsMap[sign] || 0) + 1;
+  });
+
+  return Object.entries(signsMap).map(([name, total]) => ({
+    name,
+    total,
+  }));
+};
 
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';

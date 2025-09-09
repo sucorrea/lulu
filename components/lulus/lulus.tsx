@@ -7,7 +7,6 @@ import { useUserVerification } from '@/hooks/user-verify';
 import { useGettAllParticipants } from '@/services/queries/fetchParticipants';
 import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
-import { participants as particiantesMock } from './mockdata';
 import { Person } from './types';
 import { filteredAndSortedParticipants, getNextBirthday } from './utils';
 import { Badge } from '../ui/badge';
@@ -28,7 +27,7 @@ const Lulus = ({ participants }: LulusProps) => {
   const getFilteredAndSortedParticipants = useMemo(
     () =>
       filteredAndSortedParticipants(
-        participants ?? participantsData ?? [] ?? particiantesMock,
+        participants ?? participantsData,
         searchTerm,
         filterMonth,
         sortBy
@@ -37,8 +36,8 @@ const Lulus = ({ participants }: LulusProps) => {
   );
 
   const isNextBirthday = useCallback(
-    (id: number) => getNextBirthday(particiantesMock)?.id === id,
-    []
+    (id: number) => getNextBirthday(participants)?.id === id,
+    [participants]
   );
 
   if (isLoading || isLoadingParticipants)
@@ -62,9 +61,7 @@ const Lulus = ({ participants }: LulusProps) => {
             participant={getNextBirthday(participants) ?? ({} as Person)}
             isNextBirthday={true}
             user={!!user}
-            participants={
-              participants ?? participantsData ?? [] ?? particiantesMock
-            }
+            participants={participants ?? participantsData ?? []}
             showDetails={false}
           />
         </div>
@@ -85,9 +82,7 @@ const Lulus = ({ participants }: LulusProps) => {
               participant={participant}
               isNextBirthday={isNextBirthday(participant.id)}
               user={!!user}
-              participants={
-                participants ?? participantsData ?? [] ?? particiantesMock
-              }
+              participants={participants ?? participantsData ?? []}
             />
           ))}
         </div>

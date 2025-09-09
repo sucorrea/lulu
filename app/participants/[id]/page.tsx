@@ -10,7 +10,9 @@ interface PageProps {
 export async function generateMetadata(props: PageProps) {
   const paramsObject = await props.params;
   const { id } = paramsObject;
+
   const participant = await fetchParticipantById(id);
+
   return {
     title: participant ? participant?.name : 'Editar participante',
     description: 'Página para editar os dados do participante',
