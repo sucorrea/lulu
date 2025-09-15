@@ -14,7 +14,7 @@ const PixInfo = ({ participant }: PixInfoProps) => {
 
   return (
     <div className="flex text-xs">
-      <div className="flex gap-2">
+      <div className="flex gap-1">
         <Image
           src="/pix.svg"
           alt="Pix"
@@ -25,7 +25,7 @@ const PixInfo = ({ participant }: PixInfoProps) => {
         {NameKey[participant.pix_key_type ?? 'none']}
       </div>
       <span
-        className="ml-1 text-xs"
+        className="text-xs"
         onClick={() => {
           navigator.clipboard.writeText(participant.pix_key ?? '');
           if (!isMobile) {

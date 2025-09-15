@@ -2,6 +2,7 @@ import React from 'react';
 
 import LulusCardEdit from '@/components/lulus/lulu-card/lulu-card-edit';
 import { fetchParticipantById } from '@/services/queries/fetchParticipants';
+import { decryptId } from '@/lib/crypto';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -25,8 +26,8 @@ async function Page({ params }: PageProps) {
   if (!id) {
     return <div>Erro: ID do participante não encontrado</div>;
   }
-
-  return <LulusCardEdit participantId={id} />;
+  const idDecrypted = decryptId(paramsObject.id);
+  return <LulusCardEdit participantId={idDecrypted} />;
 }
 
 export default Page;

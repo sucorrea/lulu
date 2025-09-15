@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { Icon } from '@iconify/react';
-import { CakeIcon, Edit2Icon, GiftIcon, Sparkles } from 'lucide-react';
+import { CakeIcon, Edit2Icon, GiftIcon } from 'lucide-react';
 
 import Tooltip from '@/components/tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,10 +15,12 @@ import PixQRCode from '../../qrcode-pix';
 import WhatsappInfo from '../../whatsapp-info';
 import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
 import LinkIconWithText from '../link-with-icon';
-import { MoreInforAccordion } from '../more-info';
+import MoreInforAccordion from '../more-info';
 import { Person } from '../types';
 import { formatDate, getNextBirthday, getSigno } from '../utils';
 import ResponsableGift from './responsable-gift';
+import Animation from '@/components/animation';
+import { encryptId } from '@/lib/crypto';
 
 interface LulusCardHomeProps {
   participant: Person;
@@ -56,6 +58,7 @@ const LulusCardHome = ({
   }, []);
   const dataNextBirthday = new Date(getNextBirthday(participants)?.date || '');
   const daysForBirthday = calculateDaysUntilBirthday(dataNextBirthday);
+  const token = encryptId(String(participant.id));
 
   return (
     <Card className={styleCard + ' w-full max-w-md mx-auto'}>
@@ -63,7 +66,7 @@ const LulusCardHome = ({
         {user && showDetails && (
           <Tooltip content="Editar">
             <Link
-              href={`participants/${participant.id}`}
+              href={`participants/${token}`}
               title="Editar"
               className="flex text-xs gap-1 items-end justify-end"
             >
@@ -78,12 +81,12 @@ const LulusCardHome = ({
               <h3 className="font-semibold text-xl text-primary">
                 Próxima aniversariante
               </h3>
-              <Sparkles className="w-6 h-6 animate-bounce text-primary" />
+              <Animation className="w-10 h-10 animate-bounce" />
             </div>
             <p className="text-sm text-center text-primary">
               {daysForBirthday === 1
-                ? `Falta ${daysForBirthday} dia para o aniversário da ${participant.name}!`
-                : `Faltam ${daysForBirthday} dias para o aniversário da ${participant.name}!`}
+                ? `Falta ${daysForBirthday} dia para o aniversário!`
+                : `Faltam ${daysForBirthday} dias para o aniversário!`}
             </p>
           </div>
         )}
