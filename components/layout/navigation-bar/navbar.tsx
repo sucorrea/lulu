@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useUserVerification } from '@/hooks/user-verify';
 import { ThemeToggle } from './mode-toggle';
 import { Button } from '../../ui/button';
-
+const ano = new Date().getFullYear();
 export function Navbar() {
   const pathname = usePathname();
   const { user, handleLogout } = useUserVerification();
@@ -25,7 +25,7 @@ export function Navbar() {
               style={{ width: 'auto', height: 'auto' }}
               priority
             />
-            <span className="lulu-header text-2xl font-bold">Luluzinha</span>
+            <span className="lulu-header text-2xl font-bold">{`Luluzinha ${ano}`}</span>
           </Link>
         </div>
         <nav className="flex items-center justify-end">
