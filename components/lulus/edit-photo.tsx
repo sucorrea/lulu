@@ -77,7 +77,7 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
               alt={file ? 'Nova foto' : participant?.name}
             />
             <AvatarFallback>
-              {participant?.name ?? participant?.name.charAt(0)}
+              {(participant?.name ?? '').charAt(0).toUpperCase() || '?'}
             </AvatarFallback>
           </Avatar>
 

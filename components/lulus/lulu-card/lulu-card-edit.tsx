@@ -40,7 +40,7 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
                       alt={participant?.name}
                     />
                     <AvatarFallback>
-                      {participant?.name ?? participant?.name.charAt(0)}
+                      {(participant?.name ?? '').charAt(0).toUpperCase() || '?'}
                     </AvatarFallback>
                   </Avatar>
                   <h2 className="lulu-header text-3xl font-semibold text-primary ">

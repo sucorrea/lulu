@@ -97,7 +97,7 @@ const LulusCardHome = ({
               alt={participant.name}
             />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              {participant.name ?? (participant.name as string).charAt(0)}
+              {(participant.name ?? '').charAt(0).toUpperCase() || '?'}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col min-w-0 w-full">
