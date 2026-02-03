@@ -1,8 +1,8 @@
 import Lulus from '@/components/lulus/lulus';
-import { fetchParticipants } from '@/services/queries/fetchParticipants';
+import { getParticipants } from '@/services/participants-server';
 
 const Home = async () => {
-  const participants = await fetchParticipants();
+  const participants = await getParticipants();
 
   return <Lulus participants={participants} />;
 };

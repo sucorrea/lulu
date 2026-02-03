@@ -1,21 +1,47 @@
-import React from 'react';
+import type { Metadata } from 'next';
 
 import LulusCardEdit from '@/components/lulus/lulu-card/lulu-card-edit';
-import { fetchParticipantById } from '@/services/queries/fetchParticipants';
 import { decryptId } from '@/lib/crypto';
+import { getParticipantById } from '@/services/participants-server';
 
-interface PageProps {
-  params: Promise<{ id: string }>;
+interface PageParams {
+  id: string;
 }
 
-export async function generateMetadata(props: PageProps) {
+interface PageProps {
+  params: Promise<PageParams>;
+}
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const paramsObject = await props.params;
   const { id } = paramsObject;
 
-  const participant = await fetchParticipantById(id);
+  if (!id) {
+    return {
+      title: 'Editar participante',
+      description: 'Página para editar os dados do participante',
+    };
+  }
+
+  let decryptedId: string | null = null;
+
+  try {
+    decryptedId = decryptId(id);
+  } catch {
+    decryptedId = null;
+  }
+
+  if (!decryptedId) {
+    return {
+      title: 'Editar participante',
+      description: 'Página para editar os dados do participante',
+    };
+  }
+
+  const participant = await getParticipantById(decryptedId);
 
   return {
-    title: participant ? participant?.name : 'Editar participante',
+    title: participant ? participant.name : 'Editar participante',
     description: 'Página para editar os dados do participante',
   };
 }
@@ -23,10 +49,31 @@ export async function generateMetadata(props: PageProps) {
 async function Page({ params }: PageProps) {
   const paramsObject = await params;
   const { id } = paramsObject;
+
   if (!id) {
-    return <div>Erro: ID do participante não encontrado</div>;
+    return (
+      <main className="flex w-full justify-center pt-10 text-sm text-destructive">
+        Erro: ID do participante não encontrado
+      </main>
+    );
   }
-  const idDecrypted = decryptId(paramsObject.id);
+
+  let idDecrypted: string | null = null;
+
+  try {
+    idDecrypted = decryptId(id);
+  } catch {
+    idDecrypted = null;
+  }
+
+  if (!idDecrypted) {
+    return (
+      <main className="flex w-full justify-center pt-10 text-sm text-destructive">
+        Erro: ID do participante inválido
+      </main>
+    );
+  }
+
   return <LulusCardEdit participantId={idDecrypted} />;
 }
 

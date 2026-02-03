@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getAuth, User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/services/firebase';
 
@@ -16,11 +16,11 @@ export function useUserVerification() {
     return () => unsubscribe();
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     auth.signOut().then(() => {
       setUser(null);
     });
-  };
+  }, []);
 
   return { user, isLogged: !!user, isLoading, handleLogout };
 }
