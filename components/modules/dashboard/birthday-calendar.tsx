@@ -56,17 +56,17 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
   }, [participantsByMonth]);
 
   return (
-    <Card>
+    <Card className="lulu-card">
       <CardHeader className="p-2">
-        <CardTitle className="lulu-header text-primary text-xl mb-2">
+        <CardTitle className="lulu-header mb-2 text-xl">
           Aniversariantes por mês
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2">
-        <div className="grid grid-cols-2 gap-2 ">
+        <div className="grid grid-cols-2 gap-2">
           {months.map((month) => (
             <div key={month.number}>
-              <div className="space-y-2 ">
+              <div className="space-y-2">
                 <h3 className="lulu-header text-lg">{month.name}</h3>
                 <div className="space-y-1">
                   {month.participants.map((participant) => (

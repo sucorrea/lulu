@@ -37,7 +37,9 @@ const LulusCardHome = ({
   participants,
   showDetails = true,
 }: LulusCardHomeProps) => {
-  const styleCard = isNextBirthday ? 'border-primary border-2 shadow-lg ' : '';
+  const styleCard = isNextBirthday
+    ? 'border-primary border-2 shadow-lulu-lg'
+    : 'shadow-lulu-sm';
 
   const calculateDaysUntilBirthday = useCallback((birthdayDate: Date) => {
     const today = new Date();
@@ -61,8 +63,8 @@ const LulusCardHome = ({
   const token = encryptId(String(participant.id));
 
   return (
-    <Card className={styleCard + ' w-full max-w-md mx-auto'}>
-      <CardContent className="p-4 flex flex-col justify-between h-full gap-2 overflow-x-auto">
+    <Card className={`lulu-card mx-auto w-full max-w-md ${styleCard}`}>
+      <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto p-4">
         {user && showDetails && (
           <Tooltip content="Editar">
             <Link

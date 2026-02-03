@@ -24,7 +24,9 @@ const ResponsableGift = ({
       <div className="flex  gap-3">
         {participant.gives_to_id === 0 ? (
           <div>
-            <p className="text-primary text-sm">Não participa da vaquinha</p>
+            <p className="text-primary text-sm">
+              Lulu não participa da vaquinha esse ano
+            </p>
           </div>
         ) : (
           <>

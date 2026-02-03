@@ -83,17 +83,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
-        <div className="bg-card rounded-lg shadow-lg p-8">
-          <div className="flex justify-center mb-6">
-            <h1 className="text-4xl font-bold text-center mb-8 text-primary animate-fade-in font-baloo">
-              Luluzinha
-            </h1>
+        <div className="lulu-card">
+          <div className="mb-6 flex flex-col items-center">
+            <h1 className="lulu-header mb-2 text-3xl">Luluzinha</h1>
+            <p className="text-sm text-muted-foreground">
+              {isLogin
+                ? 'Faça login para administrar as Lulus.'
+                : 'Crie sua conta para entrar no clube das Lulus.'}
+            </p>
           </div>
 
-          <h2 className="text-2xl text-primary animate-fade-in font-baloo text-center mb-6">
-            {isLogin ? 'Entrar' : 'Criar Conta'}
+          <h2 className="mb-6 text-center text-xl font-semibold text-foreground">
+            {isLogin ? 'Entrar' : 'Criar conta'}
           </h2>
 
           {error && (

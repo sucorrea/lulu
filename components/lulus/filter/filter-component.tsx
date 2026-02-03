@@ -29,20 +29,20 @@ const FilterBar: React.FC<FilterBarProps> = ({
   months,
 }) => {
   return (
-    <div className="backdrop-blur rounded-lg p-4 mb-8 shadow-lg">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="mb-8 rounded-2xl border border-border bg-card/90 p-4 shadow-lulu-sm backdrop-blur">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4" />
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Buscar por nome..."
-            className="w-full pl-10 pr-4 py-2 "
+            className="w-full py-2 pl-10 pr-4"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
-          <SortAsc className="h-4 w-4" />
+          <SortAsc className="h-4 w-4 text-muted-foreground" />
           <Select
             value={sortBy}
             onValueChange={(value) => setSortBy(value)}
@@ -60,7 +60,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           </Select>
         </div>
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4" />
+          <Filter className="h-4 w-4 text-muted-foreground" />
           <Select
             value={filterMonth}
             onValueChange={(value) => setFilterMonth(value)}

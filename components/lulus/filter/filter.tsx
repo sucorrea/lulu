@@ -29,8 +29,9 @@ const Filter = ({
   return (
     <>
       <div className="mb-4">
-        <Button onClick={onToggle} variant="default">
-          <FilterIcon className="w-5 h-5" />
+        <Button onClick={onToggle} variant="outline" className="gap-2">
+          <FilterIcon className="h-4 w-4" />
+          <span className="text-sm font-semibold">Filtros</span>
         </Button>
       </div>
       {isOpen && (

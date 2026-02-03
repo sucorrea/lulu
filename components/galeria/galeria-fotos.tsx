@@ -182,11 +182,9 @@ const GaleriaFotos = () => {
   }, []);
 
   return (
-    <div className="p-2 max-w-3xl mx-auto">
-      <div className="flex justify-between mb-4">
-        <h1 className="lulu-header text-primary text-3xl mb-2 text-center">
-          Galeria
-        </h1>
+    <div className="mx-auto max-w-3xl p-4 md:p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="lulu-header mb-0 text-2xl md:text-3xl">Galeria</h1>
         <UploadPhotoGallery />
       </div>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
@@ -220,7 +218,7 @@ const GaleriaFotos = () => {
                     className="object-cover w-full h-full"
                   />
                 </button>
-                <div className="flex justify-between items-center mt-1">
+                <div className="mt-1 flex items-center justify-between">
                   <LikeUnlikeButton
                     handleLike={() => handleLike(idx)}
                     liked={liked}
@@ -229,10 +227,11 @@ const GaleriaFotos = () => {
                   />
                   <button
                     onClick={() => setSelected(idx)}
-                    className="flex justify-center items-center gap-1 text-sm"
+                    className="flex items-center justify-center gap-1 rounded-full px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    aria-label="Ver comentários da foto"
                   >
-                    <MessageCircle size={15} color="blue" />
-                    {comments[idx]?.length || 0}
+                    <MessageCircle className="h-4 w-4" />
+                    <span>{comments[idx]?.length || 0}</span>
                   </button>
                 </div>
               </div>
@@ -240,18 +239,18 @@ const GaleriaFotos = () => {
       </div>
       {selected !== null && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-80 flex flex-col items-center justify-center"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/80 px-4"
           role="dialog"
           aria-modal="true"
         >
           <button
-            className="absolute top-4 right-4 text-white text-2xl"
+            className="absolute right-4 top-4 text-2xl text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-black/80"
             onClick={() => setSelected(null)}
             aria-label="Fechar"
           >
             <X />
           </button>
-          <div className="relative flex items-center w-full max-w-md justify-center">
+          <div className="relative flex w-full max-w-md items-center justify-center">
             <button
               onClick={handlePrev}
               aria-label="Foto anterior"
@@ -260,7 +259,7 @@ const GaleriaFotos = () => {
             >
               <ChevronLeft />
             </button>
-            <div className="flex-1 flex justify-center">
+            <div className="flex flex-1 justify-center">
               <Image
                 src={photos[selected]}
                 alt={photos[selected]}
@@ -278,21 +277,22 @@ const GaleriaFotos = () => {
               <ChevronRight />
             </button>
           </div>
-          <div className="bg-white rounded p-4 mt-2 w-full max-w-md ">
-            <div className="flex justify-between gap-4 mb-2">
+          <div className="mt-2 w-full max-w-md rounded-2xl border border-border bg-card p-4 shadow-lulu-md">
+            <div className="mb-2 flex justify-between gap-4">
               <LikeUnlikeButton
                 handleLike={() => handleLike(selected)}
                 liked={liked}
                 likes={likes}
                 index={selected}
               />
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => handleDownload(photos[selected])}
                 aria-label="Baixar foto"
-                className="bg-transparent"
               >
-                <Download />
-              </button>
+                <Download className="h-4 w-4" />
+              </Button>
             </div>
             <div className="mb-2 max-h-24 overflow-y-auto">
               {firestoreComments[photos[selected]]?.map((comentSelected, i) => {
@@ -312,7 +312,7 @@ const GaleriaFotos = () => {
                           <Input
                             value={editInput}
                             onChange={(e) => setEditInput(e.target.value)}
-                            className="text-sm px-1 py-0.5"
+                            className="px-1 py-0.5 text-sm"
                           />
                           <Button
                             size="sm"

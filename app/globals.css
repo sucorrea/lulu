@@ -3,87 +3,87 @@
 @tailwind utilities;
 
 :root {
-  
-  --primary: #e53935; 
+  --background: #fdfbf7;
+  --foreground: #111111;
+  --primary: #e4312b;
   --primary-foreground: #ffffff;
-  --secondary: #4caf50; 
+  --secondary: #2d7dd2;
   --secondary-foreground: #ffffff;
-  --muted: #f5f5dc; 
-  --muted-foreground: #655b4e;
-  --accent: #3f51b5; 
-  --accent-foreground: #ffffff;
-  --destructive: #ff9800; 
+  --accent: #f7c948;
+  --accent-foreground: #111111;
+  --muted: #f3ece0;
+  --muted-foreground: #6b6256;
+  --destructive: #c62828;
   --destructive-foreground: #ffffff;
-  --success: #4caf50; 
+  --success: #4bbf73;
   --success-foreground: #ffffff;
-  --warning: #ff9800; 
-  --warning-foreground: #ffffff;
-  
-  --background: #fffbf0; 
-  --foreground: #2c2416; 
-  
+  --warning: #ff9800;
+  --warning-foreground: #111111;
   --card: #ffffff;
-  --card-foreground: #2c2416;
-  
+  --card-foreground: #111111;
   --popover: #ffffff;
-  --popover-foreground: #2c2416;
-  
-  --border: #d0c8b9; 
-  --input: #d0c8b9;
-  
-  --ring: #e53935; 
-  
-  --radius: 0.75rem; 
+  --popover-foreground: #111111;
+  --border: #d6cec0;
+  --input: #d6cec0;
+  --ring: #e4312b;
+  --radius: 0.9rem;
 }
 
 .dark {
+  --background: #1f1a14;
+  --foreground: #f6efe3;
   --primary: #ff6b6b;
   --primary-foreground: #ffffff;
-  --secondary: #69db70;
+  --secondary: #4c8edb;
   --secondary-foreground: #ffffff;
+  --accent: #f8d478;
+  --accent-foreground: #1f1a14;
   --muted: #3a3426;
   --muted-foreground: #d5ccbe;
-  --accent: #7986cb;
-  --accent-foreground: #ffffff;
-  --destructive: #ffb74d;
-  --destructive-foreground: #ffffff;
+  --destructive: #ff8a65;
+  --destructive-foreground: #1f1a14;
   --success: #81c784;
-  --success-foreground: #ffffff;
+  --success-foreground: #1f1a14;
   --warning: #ffb74d;
-  --warning-foreground: #ffffff;
-  --background: #272219; 
-  --foreground: #f0e6d2; 
-  --card: #332d22; 
-  --card-foreground: #f0e6d2;
-  --popover: #332d22;
-  --popover-foreground: #f0e6d2;
-  --border: #5a5041; 
+  --warning-foreground: #1f1a14;
+  --card: #2b251d;
+  --card-foreground: #f6efe3;
+  --popover: #2b251d;
+  --popover-foreground: #f6efe3;
+  --border: #5a5041;
   --input: #5a5041;
-  --ring: #ff6b6b; 
+  --ring: #ff6b6b;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
-    font-family: "Comic Sans MS", "Comic Sans";
+    @apply bg-background text-foreground antialiased;
+
+    font-family: var(--font-roboto-sans), system-ui, -apple-system, BlinkMacSystemFont,
+      'Segoe UI', sans-serif;
   }
-  
+
+
   .lulu-button {
-    @apply rounded-xl border-2 border-primary bg-primary text-primary-foreground 
-           shadow-md transition-all hover:bg-opacity-90 hover:shadow-lg 
-           focus:ring-2 focus:ring-ring focus:ring-offset-2;
-    padding: 0.5rem 1.25rem;
+    @apply inline-flex items-center justify-center rounded-full border-2 border-primary bg-primary
+      px-5 py-2 text-sm font-semibold uppercase tracking-wide text-primary-foreground
+      shadow-lulu-md transition-all duration-150
+      hover:-translate-y-0.5 hover:shadow-lulu-lg
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
-  
+
+
   .lulu-card {
-    @apply rounded-xl border-2 border-border bg-card p-4 shadow-md;
+    @apply rounded-2xl border border-border bg-card p-4 shadow-lulu-sm md:p-6;
   }
-  
+
+
   .lulu-header {
-    @apply font-bold text-primary;
-    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+    @apply font-bold text-primary tracking-tight;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.06);
   }
 }

@@ -10,8 +10,6 @@ const db = getFirestore(app);
 export default function UploadParticipantsPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  // Remove fetching here, fetch inside the upload function
-  // const participants = fetchParticipants();
 
   async function uploadParticipants() {
     setLoading(true);

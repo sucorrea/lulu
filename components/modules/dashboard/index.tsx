@@ -23,12 +23,21 @@ type DashboardPageProps = {
 
 const DashboardPage = ({ participants }: DashboardPageProps) => {
   return (
-    <div className="p-8 pb-20">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+    <div className="min-h-screen bg-background px-4 pb-24 pt-6 md:px-8">
+      <div className="mb-4">
+        <h1 className="lulu-header text-2xl md:text-3xl">
+          Dashboard das Lulus
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Visão geral dos aniversários e signos das participantes, em um painel
+          simples e visual.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <BirthdayCalendar participants={participants} />
-        <Card>
+        <Card className="lulu-card">
           <CardHeader className="p-2">
-            <CardTitle className="lulu-header text-primary text-xl mb-2">
+            <CardTitle className="lulu-header mb-2 text-xl">
               Número de Aniversários por mês
             </CardTitle>
           </CardHeader>
@@ -38,14 +47,14 @@ const DashboardPage = ({ participants }: DashboardPageProps) => {
                 <XAxis dataKey="name" />
                 <YAxis allowDecimals={false} />
                 <Tooltip />
-                <Bar dataKey="total" fill="#00C49F" />
+                <Bar dataKey="total" fill="#4BBF73" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="lulu-card">
           <CardHeader className="p-2">
-            <CardTitle className="lulu-header text-primary text-xl mb-2">
+            <CardTitle className="lulu-header mb-2 text-xl">
               Distribuição por Signo
             </CardTitle>
           </CardHeader>

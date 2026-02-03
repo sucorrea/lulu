@@ -38,12 +38,10 @@ const UploadPhotoGallery = () => {
   return (
     <>
       {user && (
-        <div className="flex justify-start mb-4">
-          <Button
-            onClick={() => onOpen()}
-            className="bg-primary text-white px-4 gap-2 py-2 rounded-md hover:bg-primary/90 transition-colors"
-          >
-            <Upload />
+        <div className="mb-4 flex justify-start">
+          <Button onClick={() => onOpen()} className="gap-2">
+            <Upload className="h-4 w-4" />
+            <span className="text-sm font-semibold">Enviar foto</span>
           </Button>
         </div>
       )}
