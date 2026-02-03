@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -48,6 +49,10 @@ const mockPhotos = [
   'https://firebasestorage.googleapis.com/v0/b/app/o/galeria%2Fphoto1.jpg?alt=media',
   'https://firebasestorage.googleapis.com/v0/b/app/o/galeria%2Fphoto2.jpg?alt=media',
 ];
+
+// IDs retornados por onGetPhotoId(photo) para as URLs acima
+const photo1Id = 'galeria%2Fphoto1.jpg';
+const photo2Id = 'galeria%2Fphoto2.jpg';
 
 const mockUser = {
   uid: 'user1',
@@ -142,7 +147,7 @@ describe('GaleriaFotos', () => {
       mockUseUserVerification.mockReturnValue({ user: mockUser });
 
       mockListenPhotoLikes.mockImplementation((photoId, callback) => {
-        if (photoId.includes('photo1')) {
+        if (photoId === photo1Id) {
           callback(['user1']); // Liked by current user
         } else {
           callback(['user2']); // Not liked by current user
@@ -151,7 +156,7 @@ describe('GaleriaFotos', () => {
       });
 
       mockListenPhotoComments.mockImplementation((photoId, callback) => {
-        if (photoId.includes('photo1')) {
+        if (photoId === photo1Id) {
           callback([
             {
               id: 'c1',
@@ -175,24 +180,34 @@ describe('GaleriaFotos', () => {
 
     it('should handle liking a photo', async () => {
       render(<GaleriaFotos />);
-      const likeButtons = screen.getAllByRole('button', { name: /Curtir/i });
-      fireEvent.click(likeButtons[0]);
-
       await waitFor(() => {
-        expect(mockLikePhoto).toHaveBeenCalledWith('photo2.jpg', 'user1');
+        expect(
+          screen.getByRole('button', { name: 'Descurtir' })
+        ).toBeInTheDocument();
       });
+      const likeButton = screen.getByRole('button', { name: 'Curtir' });
+      mockLikePhoto.mockResolvedValue(undefined);
+      await act(async () => {
+        fireEvent.click(likeButton);
+      });
+
+      expect(mockLikePhoto).toHaveBeenCalledWith(photo2Id, 'user1');
     });
 
     it('should handle unliking a photo', async () => {
       render(<GaleriaFotos />);
-      const unlikeButtons = screen.getAllByRole('button', {
-        name: /Descurtir/i,
-      });
-      fireEvent.click(unlikeButtons[0]);
-
       await waitFor(() => {
-        expect(mockUnlikePhoto).toHaveBeenCalledWith('photo1.jpg', 'user1');
+        expect(
+          screen.getByRole('button', { name: 'Descurtir' })
+        ).toBeInTheDocument();
       });
+      const unlikeButton = screen.getByRole('button', { name: 'Descurtir' });
+      mockUnlikePhoto.mockResolvedValue(undefined);
+      await act(async () => {
+        fireEvent.click(unlikeButton);
+      });
+
+      expect(mockUnlikePhoto).toHaveBeenCalledWith(photo1Id, 'user1');
     });
 
     it('should open modal on photo click and display photo and comments', async () => {
@@ -201,7 +216,7 @@ describe('GaleriaFotos', () => {
       fireEvent.click(photoButtons[0]);
 
       await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeVisible();
+        expect(screen.getByTestId('photo-dialog')).toBeVisible();
         expect(screen.getByText('My own comment')).toBeInTheDocument();
         expect(screen.getByText('Nice!')).toBeInTheDocument();
       });
@@ -219,7 +234,7 @@ describe('GaleriaFotos', () => {
       fireEvent.click(sendButton);
 
       await waitFor(() => {
-        expect(mockAddCommentToPhoto).toHaveBeenCalledWith('photo1.jpg', {
+        expect(mockAddCommentToPhoto).toHaveBeenCalledWith(photo1Id, {
           userId: 'user1',
           displayName: 'Test User',
           comment: 'A new comment',

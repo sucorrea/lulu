@@ -23,7 +23,7 @@ describe('LikeUnlikeButton', () => {
   });
 
   it('shows filled heart icon when liked', () => {
-    const { container } = render(
+    const { getByRole } = render(
       <LikeUnlikeButton
         likes={likes}
         liked={liked}
@@ -31,12 +31,12 @@ describe('LikeUnlikeButton', () => {
         index={0}
       />
     );
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('fill', 'red');
+    const button = getByRole('button');
+    expect(button.querySelector('svg')).toHaveClass('fill-primary');
   });
 
   it('shows outlined heart icon when not liked', () => {
-    const { container } = render(
+    const { getByRole } = render(
       <LikeUnlikeButton
         likes={likes}
         liked={liked}
@@ -44,8 +44,8 @@ describe('LikeUnlikeButton', () => {
         index={1}
       />
     );
-    const svg = container.querySelector('svg');
-    expect(svg).not.toHaveAttribute('fill', 'red');
+    const button = getByRole('button');
+    expect(button.querySelector('svg')).not.toHaveClass('fill-primary');
   });
 
   it('calls handleLike with the correct index when clicked', () => {

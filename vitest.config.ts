@@ -15,16 +15,30 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
       enabled: true,
-      include: ['/**/*.ts', 'src/**/*.tsx'],
-      exclude: ['/**/*.spec.ts', '/**/*.spec.tsx'],
-      reporter: ['lcov', 'text-summary'],
+      include: [
+        'app/**/*.{ts,tsx}',
+        'components/**/*.{ts,tsx}',
+        'hooks/**/*.ts',
+        'lib/**/*.ts',
+        'providers/**/*.{ts,tsx}',
+        'services/**/*.ts',
+      ],
+      exclude: [
+        '**/*.spec.{ts,tsx}',
+        '**/*.test.{ts,tsx}',
+        '**/node_modules/**',
+        '**/coverage/**',
+        '**/.next/**',
+        '**/vitest.setup.ts',
+      ],
+      reporter: ['text', 'text-summary', 'lcov', 'html'],
       reportOnFailure: true,
       reportsDirectory: 'coverage',
     },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, '.'),
     },
   },
 });
