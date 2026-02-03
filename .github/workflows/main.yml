@@ -28,5 +28,5 @@ jobs:
         working-directory: .
 
       - name: Execução de Teste Unitário
-        run: yarn test
+        run: yarn vitest run --coverage
         working-directory: .

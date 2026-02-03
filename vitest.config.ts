@@ -31,7 +31,7 @@ export default defineConfig({
         '**/.next/**',
         '**/vitest.setup.ts',
       ],
-      reporter: ['text', 'text-summary', 'lcov', 'html'],
+      reporter: ['text-summary', 'lcov', 'html'],
       reportOnFailure: true,
       reportsDirectory: 'coverage',
     },
