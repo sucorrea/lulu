@@ -25,7 +25,18 @@ const geistMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: `Luluzinha ${ano}`,
-  description: 'O site das Lulus',
+  description: 'O site das Lulus.',
+  openGraph: {
+    title: `Luluzinha ${ano}`,
+    description: 'O site das Lulus. ',
+    type: 'website',
+    locale: 'pt_BR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Luluzinha ${ano}`,
+    description: 'O site das Lulus',
+  },
 };
 
 export default function RootLayout({
