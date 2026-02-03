@@ -17,7 +17,11 @@ export async function uploadPhoto({
 
   const db = getFirestore(app);
   const docRef = doc(db, 'participants', participantId);
-  await setDoc(docRef, { photoURL: downloadURL }, { merge: true });
+  await setDoc(
+    docRef,
+    { photoURL: downloadURL, photoUpdatedAt: Date.now() },
+    { merge: true }
+  );
 
   return downloadURL;
 }

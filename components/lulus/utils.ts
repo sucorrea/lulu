@@ -1,5 +1,15 @@
 import { months } from './constants';
 import { Person, PixTypes } from './types';
+
+/** Photo URL with cache-busting so updated Firebase images load immediately */
+export function getParticipantPhotoUrl(person: Person): string {
+  const base = person.photoURL ?? person.picture ?? '';
+  if (!base) return '';
+  const sep = base.includes('?') ? '&' : '?';
+  return person.photoUpdatedAt
+    ? `${base}${sep}v=${person.photoUpdatedAt}`
+    : base;
+}
 export type Signos =
   | 'aries'
   | 'touro'

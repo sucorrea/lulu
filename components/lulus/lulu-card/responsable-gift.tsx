@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Person } from '../types';
-import { getGivesToPicture } from '../utils';
+import { getGivesToPicture, getParticipantPhotoUrl } from '../utils';
 
 interface ResponsableGiftProps {
   participant: Person;
@@ -30,9 +30,12 @@ const ResponsableGift = ({
           </div>
         ) : (
           <>
-            <Avatar className="w-12 h-12">
+            <Avatar
+              className="w-12 h-12"
+              key={getParticipantPhotoUrl(responsable)}
+            >
               <AvatarImage
-                src={responsable.photoURL ?? ''}
+                src={getParticipantPhotoUrl(responsable)}
                 alt={responsable.name}
                 width={56}
                 height={56}

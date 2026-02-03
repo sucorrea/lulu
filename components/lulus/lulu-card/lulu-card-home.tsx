@@ -17,7 +17,12 @@ import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
 import LinkIconWithText from '../link-with-icon';
 import MoreInforAccordion from '../more-info';
 import { Person } from '../types';
-import { formatDate, getNextBirthday, getSigno } from '../utils';
+import {
+  formatDate,
+  getNextBirthday,
+  getParticipantPhotoUrl,
+  getSigno,
+} from '../utils';
 import ResponsableGift from './responsable-gift';
 import Animation from '@/components/animation';
 import { encryptId } from '@/lib/crypto';
@@ -58,6 +63,7 @@ const LulusCardHome = ({
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   }, []);
+
   const dataNextBirthday = new Date(getNextBirthday(participants)?.date || '');
   const daysForBirthday = calculateDaysUntilBirthday(dataNextBirthday);
   const token = encryptId(String(participant.id));
@@ -93,9 +99,12 @@ const LulusCardHome = ({
           </div>
         )}
         <div className="flex flex-row gap-4 items-center ">
-          <Avatar className="h-16 w-16 border-2 border-primary shrink-0">
+          <Avatar
+            className="h-16 w-16 border-2 border-primary shrink-0"
+            key={getParticipantPhotoUrl(participant)}
+          >
             <AvatarImage
-              src={participant.photoURL ?? ''}
+              src={getParticipantPhotoUrl(participant)}
               alt={participant.name}
             />
             <AvatarFallback className="bg-primary text-primary-foreground">

@@ -7,6 +7,8 @@ import { Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useUserVerification } from '@/hooks/user-verify';
+import { useQuery } from '@tanstack/react-query';
+import { fetchParticipants } from '@/services/queries/fetchParticipants';
 
 import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
@@ -24,25 +26,34 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
 
   const { user, isLoading } = useUserVerification();
 
+  const { data: participants = initialParticipants } = useQuery({
+    queryKey: ['get-all-participants'],
+    queryFn: fetchParticipants,
+    initialData: initialParticipants,
+    refetchOnMount: true,
+    staleTime: 0,
+  });
+  const participantsList = participants;
+
   const totalParticipants = useMemo(
-    () => initialParticipants.filter((p) => p.gives_to_id !== 0).length,
-    [initialParticipants]
+    () => participantsList.filter((p) => p.gives_to_id !== 0).length,
+    [participantsList]
   );
 
   const nextBirthday = useMemo(
-    () => getNextBirthday(initialParticipants),
-    [initialParticipants]
+    () => getNextBirthday(participantsList),
+    [participantsList]
   );
 
   const filteredParticipants = useMemo(
     () =>
       filteredAndSortedParticipants(
-        initialParticipants,
+        participantsList,
         searchTerm,
         filterMonth,
         sortBy
       ),
-    [initialParticipants, searchTerm, filterMonth, sortBy]
+    [participantsList, searchTerm, filterMonth, sortBy]
   );
 
   if (isLoading) {
@@ -68,7 +79,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
             participant={nextBirthday}
             isNextBirthday
             user={!!user}
-            participants={initialParticipants}
+            participants={participantsList}
             showDetails={false}
           />
         </div>
@@ -91,7 +102,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
               participant={participant}
               isNextBirthday={nextBirthday?.id === participant.id}
               user={!!user}
-              participants={initialParticipants}
+              participants={participantsList}
             />
           ))}
         </div>

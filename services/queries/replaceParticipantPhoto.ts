@@ -43,6 +43,8 @@ export async function replaceParticipantPhoto(
 
   await updateDoc(participantRef, {
     picture: newDownloadURL,
+    photoURL: newDownloadURL,
+    photoUpdatedAt: Date.now(),
   });
 
   return newDownloadURL;

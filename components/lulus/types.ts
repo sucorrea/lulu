@@ -14,6 +14,8 @@ export interface Person {
   fullName: string;
   city: string;
   photoURL?: string;
+  /** Timestamp when photo was last updated (for cache busting) */
+  photoUpdatedAt?: number;
 }
 
 export type PixTypes = 'cpf' | 'email' | 'phone' | 'random' | 'none';
