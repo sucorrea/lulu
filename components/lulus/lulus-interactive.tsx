@@ -65,11 +65,16 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   }
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="flex justify-end">
-        <Badge variant="secondary" className="mb-4 bg-primary">
-          <Users className="mr-2 h-4 w-4" />
-          {totalParticipants} Participantes na vaquinha
+        <Badge
+          variant="secondary"
+          className="mb-4 max-w-full bg-primary px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm"
+        >
+          <Users className="mr-1.5 h-3.5 w-3.5 shrink-0 sm:mr-2 sm:h-4 sm:w-4" />
+          <span className="truncate">
+            {totalParticipants} Participantes na vaquinha
+          </span>
         </Badge>
       </div>
 

@@ -84,9 +84,9 @@ const LulusCardHome = ({
         )}
         {isNextBirthday && (
           <div>
-            <div className="flex flex-row items-center justify-center pb-2">
+            <div className="flex xs:flex-col sm:flex-row items-center justify-center pb-2">
               <GiftIcon size="1.5rem" className="text-primary" />
-              <h3 className="font-semibold text-xl text-primary">
+              <h3 className="font-semibold xs:text-sm sm:text-xl text-primary">
                 Próxima aniversariante
               </h3>
               <Animation className="w-10 h-10 animate-bounce" />
