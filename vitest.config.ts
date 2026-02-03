@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import dynamicImport from 'vite-plugin-dynamic-import';
@@ -14,6 +14,7 @@ export default defineConfig({
     ],
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
+      provider: 'v8',
       enabled: true,
       include: [
         'app/**/*.{ts,tsx}',
