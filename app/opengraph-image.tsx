@@ -1,11 +1,17 @@
 import { ImageResponse } from 'next/og';
-
+import { readFileSync } from 'fs';
+import { join } from 'path';
 export const alt = 'Luluzinha - O site das Lulus';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 export default async function Image() {
   const year = new Date().getFullYear();
+
+  const imageBuffer = readFileSync(
+    join(process.cwd(), 'public', 'fotos', 'faLulu.jpg')
+  );
+  const faLuluSrc = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`;
 
   return new ImageResponse(
     (
@@ -14,15 +20,24 @@ export default async function Image() {
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: 48,
           background: '#fdfbf7',
           fontFamily: 'system-ui, sans-serif',
           border: '8px solid #e4312b',
           borderRadius: 24,
+          padding: 48,
         }}
       >
+        <img
+          src={faLuluSrc}
+          alt="Luluzinha"
+          width={280}
+          height={280}
+          style={{ borderRadius: 16, objectFit: 'cover' }}
+        />
         <div
           style={{
             display: 'flex',
@@ -30,12 +45,10 @@ export default async function Image() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: 16,
-            padding: 48,
           }}
         >
           <div
             style={{
-              display: 'flex',
               fontSize: 88,
               fontWeight: 800,
               color: '#e4312b',
@@ -47,7 +60,6 @@ export default async function Image() {
           </div>
           <div
             style={{
-              display: 'flex',
               fontSize: 42,
               color: '#111111',
               fontWeight: 600,
@@ -57,7 +69,6 @@ export default async function Image() {
           </div>
           <div
             style={{
-              display: 'flex',
               fontSize: 28,
               color: '#6b6256',
               marginTop: 8,
