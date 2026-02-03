@@ -149,8 +149,8 @@ const GaleriaFotos = () => {
   );
 
   const handleDeleteComment = useCallback(
-    (photoId: string, commentId: string) => {
-      deleteCommentFromPhoto(photoId, commentId);
+    async (photoId: string, commentId: string) => {
+      await deleteCommentFromPhoto(photoId, commentId);
     },
     []
   );
@@ -196,9 +196,9 @@ const GaleriaFotos = () => {
   }, [selectedPhotoId, editingCommentId, editInput]);
 
   const handleDeleteCommentInModal = useCallback(
-    (commentId: string) => {
+    async (commentId: string) => {
       if (selectedPhotoId == null) return;
-      handleDeleteComment(selectedPhotoId, commentId);
+      await handleDeleteComment(selectedPhotoId, commentId);
     },
     [selectedPhotoId, handleDeleteComment]
   );

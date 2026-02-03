@@ -46,5 +46,6 @@ next-env.d.ts
 components\lulus\mockdata.ts
 
 .cursor/*
-.github/*
-.vscode
+.vscode/*
+.vscode/settings.json
+.sonarlint
