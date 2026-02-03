@@ -22,7 +22,7 @@ export default function NotFound() {
           Oops!
         </h1>
         <p className="text-xl font-baloo mb-6 text-foreground ">
-          A páagina não foi encontrada
+          A página não foi encontrada
         </p>
 
         <div className="flex flex-col sm:flex-row  justify-center">
