@@ -6,11 +6,12 @@ import Image from 'next/image';
 import { useUserVerification } from '@/hooks/user-verify';
 import { ThemeToggle } from './mode-toggle';
 import { Button } from '../../ui/button';
-const ano = new Date().getFullYear();
+
 export function Navbar() {
   const pathname = usePathname();
   const { user, handleLogout } = useUserVerification();
   const isLoginPage = pathname === '/login';
+  const currentYear = new Date().getFullYear();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur md:px-4">
@@ -25,7 +26,7 @@ export function Navbar() {
               style={{ width: 'auto', height: 'auto' }}
               priority
             />
-            <span className="lulu-header text-2xl font-bold">{`Luluzinha ${ano}`}</span>
+            <span className="lulu-header text-2xl font-bold">{`Luluzinha ${currentYear}`}</span>
           </Link>
         </div>
         <nav className="flex items-center justify-end">
