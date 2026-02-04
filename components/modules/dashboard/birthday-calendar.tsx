@@ -11,6 +11,14 @@ type BirthdayCalendarProps = {
 };
 
 const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
+  const getDay = (date: string | Date): number => {
+    if (typeof date === 'string') {
+      const parts = date.split('-');
+      return Number.parseInt(parts[2], 10);
+    }
+    return new Date(date).getDate() + 1;
+  };
+
   const sortedParticipants = useMemo(() => {
     return [...participants].sort((a, b) => {
       const monthA = Number.parseInt(a.month);
@@ -20,8 +28,8 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
         return monthA - monthB;
       }
 
-      const dayA = new Date(a.date).getDate();
-      const dayB = new Date(b.date).getDate();
+      const dayA = getDay(a.date);
+      const dayB = getDay(b.date);
       return dayA - dayB;
     });
   }, [participants]);
@@ -75,7 +83,7 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
                       className="flex items-center py-0.5"
                     >
                       <div className="w-6 h-6 flex items-center justify-center bg-primary text-primary-foreground rounded-full text-sm font-bold">
-                        {new Date(participant.date).getDate() + 1}
+                        {getDay(participant.date)}
                       </div>
                       <span className="ml-3">{participant.name}</span>
                     </div>
