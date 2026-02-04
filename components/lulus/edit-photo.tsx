@@ -18,7 +18,7 @@ interface LulusCardEditProps {
 
 const EditPhoto = ({ participant }: LulusCardEditProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { mutate, isPending, error } = useUploadPhoto(String(participant.id));
+  const { mutate, isPending } = useUploadPhoto(String(participant.id));
   const [file, setFile] = useState<File | null>(null);
 
   const handleUpload = useCallback(() => {
@@ -36,10 +36,11 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
           setFile(null);
           onClose();
         },
-        onError: () => toast.error(error?.message ?? 'Erro ao alterar foto'),
+        onError: (err) =>
+          toast.error(err?.message ?? 'Erro ao alterar foto'),
       }
     );
-  }, [mutate, file, participant.id, onClose, error]);
+  }, [mutate, file, participant.id, onClose]);
 
   const handleConfirmar = useCallback(() => handleUpload(), [handleUpload]);
 

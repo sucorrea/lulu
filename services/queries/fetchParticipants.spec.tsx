@@ -83,7 +83,7 @@ describe('fetchParticipants', () => {
 
     it('should return empty array when no participants exist', async () => {
       mockGetDocs.mockResolvedValue({
-        forEach: (_callback: (doc: { data: () => unknown }) => void) => {
+        forEach: (_: (doc: { data: () => unknown }) => void) => {
           // Empty snapshot: forEach runs but callback is never called
         },
       });
