@@ -105,7 +105,9 @@ describe('PhotoModal', () => {
     it('should have open attribute when isOpen', () => {
       renderPhotoModal(true);
 
-      const dialog = screen.getByTestId('photo-dialog') as HTMLDialogElement;
+      const dialog = screen.getByTestId(
+        'photo-dialog'
+      ) as unknown as HTMLDialogElement;
       expect(dialog).toHaveAttribute('open');
     });
 
@@ -294,7 +296,7 @@ describe('PhotoModal', () => {
     });
 
     it('should have variant outline', () => {
-      const { container } = renderPhotoModal(true);
+      renderPhotoModal(true);
 
       const downloadButton = screen.getByRole('button', {
         name: 'Baixar foto',
@@ -313,28 +315,28 @@ describe('PhotoModal', () => {
 
   describe('Layout and Styling', () => {
     it('should have fixed positioning', () => {
-      const { container } = renderPhotoModal(true);
+      renderPhotoModal(true);
 
       const dialog = screen.getByTestId('photo-dialog');
       expect(dialog).toHaveClass('fixed', 'inset-0');
     });
 
     it('should have z-50 for layering', () => {
-      const { container } = renderPhotoModal(true);
+      renderPhotoModal(true);
 
       const dialog = screen.getByTestId('photo-dialog');
       expect(dialog).toHaveClass('z-50');
     });
 
     it('should have flex layout', () => {
-      const { container } = renderPhotoModal(true);
+      renderPhotoModal(true);
 
       const dialog = screen.getByTestId('photo-dialog');
       expect(dialog).toHaveClass('flex', 'flex-col');
     });
 
     it('should have dark background', () => {
-      const { container } = renderPhotoModal(true);
+      renderPhotoModal(true);
 
       const dialog = screen.getByTestId('photo-dialog');
       expect(dialog).toHaveClass('bg-black/80');
@@ -481,7 +483,7 @@ describe('PhotoModal', () => {
     });
 
     it('should have px-4 for responsive padding', () => {
-      const { container } = renderPhotoModal(true);
+      renderPhotoModal(true);
 
       const dialog = screen.getByTestId('photo-dialog');
       expect(dialog).toHaveClass('px-4');

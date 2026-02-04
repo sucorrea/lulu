@@ -34,7 +34,7 @@ vi.mock('lucide-react', () => ({
   EyeOff: () => <div data-testid="eye-off-icon" />,
 }));
 
-global.alert = vi.fn();
+globalThis.alert = vi.fn();
 
 const mockPush = vi.fn();
 const mockSignInWithEmailAndPassword = signInWithEmailAndPassword as Mock;
@@ -93,7 +93,7 @@ describe('LoginPage', () => {
 
       const passwordInput = screen.getByPlaceholderText(
         'Senha'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(passwordInput.type).toBe('password');
 
       const eyeButton = screen.getByTestId('eye-icon').closest('button');
@@ -195,7 +195,7 @@ describe('LoginPage', () => {
 
       const emailInput = screen.getByPlaceholderText(
         'Email'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 
       expect(emailInput.value).toBe('test@example.com');
@@ -206,7 +206,7 @@ describe('LoginPage', () => {
 
       const emailInput = screen.getByPlaceholderText(
         'Email'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(emailInput.type).toBe('email');
     });
   });
@@ -217,7 +217,7 @@ describe('LoginPage', () => {
 
       const passwordInput = screen.getByPlaceholderText(
         'Senha'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
       expect(passwordInput.value).toBe('password123');
@@ -320,7 +320,7 @@ describe('LoginPage', () => {
         message: 'Firebase: Error 1',
       });
 
-      const { rerender } = render(<LoginPage />);
+      render(<LoginPage />);
 
       let emailInput = screen.getByPlaceholderText('Email');
       let passwordInput = screen.getByPlaceholderText('Senha');
@@ -516,7 +516,7 @@ describe('LoginPage', () => {
       });
       const emailInput = screen.getByPlaceholderText(
         'Email'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 
@@ -529,7 +529,7 @@ describe('LoginPage', () => {
           expect.anything(),
           'test@example.com'
         );
-        expect(global.alert).toHaveBeenCalledWith(
+        expect(globalThis.alert).toHaveBeenCalledWith(
           'Senha de redefinição enviada para o seu email.'
         );
       });
@@ -652,7 +652,7 @@ describe('LoginPage', () => {
 
       const emailInput = screen.getByPlaceholderText(
         'Email'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(emailInput.required).toBe(true);
     });
 
@@ -661,7 +661,7 @@ describe('LoginPage', () => {
 
       const passwordInput = screen.getByPlaceholderText(
         'Senha'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(passwordInput.required).toBe(true);
     });
   });
@@ -711,7 +711,7 @@ describe('LoginPage', () => {
 
       await waitFor(() => {
         const errorDiv = container.querySelector(
-          '.bg-destructive\\/10.text-destructive'
+          String.raw`.bg-destructive\/10.text-destructive`
         );
         expect(errorDiv).toBeInTheDocument();
       });

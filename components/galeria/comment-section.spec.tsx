@@ -106,7 +106,7 @@ describe('CommentSection', () => {
 
       const input = screen.getByPlaceholderText(
         'Faça login para comentar'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(input).toBeDisabled();
     });
 
@@ -115,7 +115,7 @@ describe('CommentSection', () => {
 
       const input = screen.getByPlaceholderText(
         'Comente algo...'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(input).not.toBeDisabled();
     });
 
@@ -148,7 +148,7 @@ describe('CommentSection', () => {
 
       const input = screen.getByPlaceholderText(
         'Comente algo...'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'New comment' } });
 
       expect(input.value).toBe('New comment');
@@ -207,7 +207,7 @@ describe('CommentSection', () => {
 
       const submitButton = screen.getByRole('button', {
         name: 'Enviar comentário',
-      }) as HTMLButtonElement;
+      }) as unknown as HTMLButtonElement;
       expect(submitButton).toBeDisabled();
     });
 
@@ -219,7 +219,7 @@ describe('CommentSection', () => {
 
       const submitButton = screen.getByRole('button', {
         name: 'Enviar comentário',
-      }) as HTMLButtonElement;
+      }) as unknown as HTMLButtonElement;
       expect(submitButton).toBeDisabled();
     });
 
@@ -228,7 +228,7 @@ describe('CommentSection', () => {
 
       const submitButton = screen.getByRole('button', {
         name: 'Enviar comentário',
-      }) as HTMLButtonElement;
+      }) as unknown as HTMLButtonElement;
       expect(submitButton).toBeDisabled();
     });
 
@@ -240,7 +240,7 @@ describe('CommentSection', () => {
 
       const submitButton = screen.getByRole('button', {
         name: 'Enviar comentário',
-      }) as HTMLButtonElement;
+      }) as unknown as HTMLButtonElement;
       expect(submitButton).not.toBeDisabled();
     });
 

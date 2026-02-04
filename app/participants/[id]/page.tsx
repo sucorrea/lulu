@@ -46,7 +46,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   };
 }
 
-async function Page({ params }: PageProps) {
+async function Page({ params }: Readonly<PageProps>) {
   const paramsObject = await params;
   const { id } = paramsObject;
 

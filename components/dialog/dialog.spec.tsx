@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/components/ui/dialog', () => ({
@@ -202,7 +202,7 @@ describe('GenericDialog', () => {
       </div>
     );
 
-    render(<GenericDialog {...defaultProps} children={complexChildren} />);
+    render(<GenericDialog {...defaultProps}>{complexChildren}</GenericDialog>);
 
     const content = screen.getByTestId('complex-content');
     expect(content).toBeInTheDocument();

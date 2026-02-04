@@ -119,15 +119,14 @@ describe('utils', () => {
 
       // Mock fetch
       fetchMock = vi.fn();
-      global.fetch = fetchMock;
+      globalThis.fetch = fetchMock;
 
       // Mock URL.createObjectURL
       createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url');
-      global.URL.createObjectURL = createObjectURLMock;
-
+      globalThis.URL.createObjectURL = createObjectURLMock;
       // Mock URL.revokeObjectURL
       revokeObjectURLMock = vi.fn();
-      global.URL.revokeObjectURL = revokeObjectURLMock;
+      globalThis.URL.revokeObjectURL = revokeObjectURLMock;
 
       // Mock document.createElement
       createElementMock = vi.fn((tag) => {
@@ -143,7 +142,7 @@ describe('utils', () => {
       consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       // Mock window.open
-      vi.spyOn(window, 'open').mockImplementation(() => null);
+      vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     });
 
     afterEach(() => {

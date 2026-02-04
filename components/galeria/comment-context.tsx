@@ -5,6 +5,7 @@ import {
   useState,
   useCallback,
   ReactNode,
+  useMemo,
 } from 'react';
 import type { GaleriaComment } from '@/services/galeriaComments';
 
@@ -35,7 +36,7 @@ export function CommentProvider({
   onSubmitComment: handleSubmitComment,
   onEditComment: handleEditComment,
   onDeleteComment: handleDeleteComment,
-}: CommentProviderProps) {
+}: Readonly<CommentProviderProps>) {
   const [commentInput, setCommentInput] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editInput, setEditInput] = useState('');
@@ -80,18 +81,32 @@ export function CommentProvider({
     }
   }, [commentInput, handleSubmitComment]);
 
-  const value: CommentContextType = {
-    commentInput,
-    editingCommentId,
-    editInput,
-    onCommentInputChange,
-    onEditInputChange,
-    onEditComment,
-    onDeleteComment,
-    onSaveEdit,
-    onCancelEdit,
-    onSubmitComment,
-  };
+  const value: CommentContextType = useMemo(
+    () => ({
+      commentInput,
+      editingCommentId,
+      editInput,
+      onCommentInputChange,
+      onEditInputChange,
+      onEditComment,
+      onDeleteComment,
+      onSaveEdit,
+      onCancelEdit,
+      onSubmitComment,
+    }),
+    [
+      commentInput,
+      editingCommentId,
+      editInput,
+      onCommentInputChange,
+      onEditInputChange,
+      onEditComment,
+      onDeleteComment,
+      onSaveEdit,
+      onCancelEdit,
+      onSubmitComment,
+    ]
+  );
 
   return (
     <CommentContext.Provider value={value}>{children}</CommentContext.Provider>

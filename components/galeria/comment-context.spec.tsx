@@ -16,12 +16,9 @@ describe('CommentContext', () => {
   const onEditComment = vi.fn();
   const onDeleteComment = vi.fn();
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('should provide initial state', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
+  const createWrapper =
+    () =>
+    ({ children }: { children: React.ReactNode }) => (
       <CommentProvider
         onSubmitComment={onSubmitComment}
         onEditComment={onEditComment}
@@ -31,6 +28,12 @@ describe('CommentContext', () => {
       </CommentProvider>
     );
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should provide initial state', () => {
+    const wrapper = createWrapper();
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 
     expect(result.current.commentInput).toBe('');
@@ -39,16 +42,7 @@ describe('CommentContext', () => {
   });
 
   it('should update commentInput on onCommentInputChange', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
-
+    const wrapper = createWrapper();
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 
     act(() => {
@@ -59,17 +53,8 @@ describe('CommentContext', () => {
   });
 
   it('should submit comment with onSubmitComment callback', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
-
-    const { result, rerender } = renderHook(() => useCommentContext(), {
+    const wrapper = createWrapper();
+    const { result } = renderHook(() => useCommentContext(), {
       wrapper,
     });
 
@@ -109,16 +94,7 @@ describe('CommentContext', () => {
   });
 
   it('should update editInput on onEditInputChange', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
-
+    const wrapper = createWrapper();
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 
     act(() => {
@@ -129,16 +105,7 @@ describe('CommentContext', () => {
   });
 
   it('should set editing state on onEditComment', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
-
+    const wrapper = createWrapper();
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 
     act(() => {
@@ -150,15 +117,7 @@ describe('CommentContext', () => {
   });
 
   it('should save edit with onSaveEdit', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
+    const wrapper = createWrapper();
 
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 
@@ -185,16 +144,7 @@ describe('CommentContext', () => {
   });
 
   it('should not save edit with empty text', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
-
+    const wrapper = createWrapper();
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 
     act(() => {
@@ -207,16 +157,7 @@ describe('CommentContext', () => {
   });
 
   it('should cancel edit with onCancelEdit', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
-
+    const wrapper = createWrapper();
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 
     act(() => {
@@ -234,15 +175,7 @@ describe('CommentContext', () => {
   });
 
   it('should delete comment with onDeleteComment', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <CommentProvider
-        onSubmitComment={onSubmitComment}
-        onEditComment={onEditComment}
-        onDeleteComment={onDeleteComment}
-      >
-        {children}
-      </CommentProvider>
-    );
+    const wrapper = createWrapper();
 
     const { result } = renderHook(() => useCommentContext(), { wrapper });
 

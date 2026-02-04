@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import UploadPhotoGallery from './upload-photo-gallery';
 
@@ -91,7 +91,7 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should have gap-2 for button content spacing', () => {
-      const { container } = render(<UploadPhotoGallery />);
+      render(<UploadPhotoGallery />);
 
       const button = screen.getByRole('button', {
         name: /Enviar foto/i,
@@ -203,9 +203,7 @@ describe('UploadPhotoGallery', () => {
       render(<UploadPhotoGallery />);
 
       // Component renders regardless, check that it's present
-      const uploadButton = screen.queryByRole('button', {
-        name: /Enviar foto/i,
-      });
+
       // Button might render, verify component loads
       expect(screen.getByTestId('generic-dialog')).toBeInTheDocument();
     });
@@ -213,14 +211,14 @@ describe('UploadPhotoGallery', () => {
 
   describe('Dialog Interaction', () => {
     it('should have dialog with flex layout', () => {
-      const { container } = render(<UploadPhotoGallery />);
+      render(<UploadPhotoGallery />);
 
       const dialog = screen.getByTestId('generic-dialog');
       expect(dialog).toBeInTheDocument();
     });
 
     it('should have rounded class on dialog', () => {
-      const { container } = render(<UploadPhotoGallery />);
+      render(<UploadPhotoGallery />);
 
       const dialog = screen.getByTestId('generic-dialog');
       // Dialog should be rendered - it's a mocked component so we just verify it exists
@@ -237,7 +235,7 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should have fragment wrapping both button and dialog', () => {
-      const { container } = render(<UploadPhotoGallery />);
+      render(<UploadPhotoGallery />);
 
       // Check both components exist in the same render
       expect(
@@ -302,7 +300,7 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should have input element within dialog', () => {
-      const { container } = render(<UploadPhotoGallery />);
+      render(<UploadPhotoGallery />);
 
       const dialog = screen.getByTestId('generic-dialog');
       const fileInput = dialog.querySelector('input[type="file"]');

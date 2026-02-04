@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 export const alt = 'Luluzinha - O site das Lulus';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';

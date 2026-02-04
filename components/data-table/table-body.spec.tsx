@@ -40,23 +40,34 @@ describe('TableBody', () => {
     { id: 'name', header: 'Name' },
   ];
 
+  const createVisibleCell = (
+    index: number,
+    colIndex: number,
+    row: any,
+    col: any
+  ) => ({
+    id: `${index}-${colIndex}`,
+    column: { columnDef: { cell: (info: any) => info.getValue() } },
+    getValue: vi.fn(() => row[col.id]),
+    getContext: vi.fn(() => ({ getValue: () => row[col.id] })),
+    renderValue: vi.fn(() => row[col.id]),
+  });
+
+  const createTableRow = (row: any, index: number) => ({
+    id: `row-${index}`,
+    index,
+    original: row,
+    getIsSelected: vi.fn(() => false),
+    getVisibleCells: vi.fn(() =>
+      mockColumns.map((col, colIndex) =>
+        createVisibleCell(index, colIndex, row, col)
+      )
+    ),
+  });
+
   const createMockTable = (rows: any[] = []) => ({
     getRowModel: vi.fn(() => ({
-      rows: rows.map((row, index) => ({
-        id: `row-${index}`,
-        index,
-        original: row,
-        getIsSelected: vi.fn(() => false),
-        getVisibleCells: vi.fn(() =>
-          mockColumns.map((col, colIndex) => ({
-            id: `${index}-${colIndex}`,
-            column: { columnDef: { cell: (info: any) => info.getValue() } },
-            getValue: vi.fn(() => row[col.id]),
-            getContext: vi.fn(() => ({ getValue: () => row[col.id] })),
-            renderValue: vi.fn(() => row[col.id]),
-          }))
-        ),
-      })),
+      rows: rows.map((row, index) => createTableRow(row, index)),
     })),
   });
 
@@ -94,33 +105,32 @@ describe('TableBody', () => {
   });
 
   it('should set selected state when row is selected', () => {
+    const selectedRowData = { id: '1', name: 'John' };
+
+    const createSelectedVisibleCell = (col: any, i: number) => ({
+      id: `0-${i}`,
+      column: { columnDef: { cell: (info: any) => info.getValue() } },
+      getValue: vi.fn(
+        () => selectedRowData[col.id as keyof typeof selectedRowData]
+      ),
+      getContext: vi.fn(() => ({
+        getValue: () => selectedRowData[col.id as keyof typeof selectedRowData],
+      })),
+      renderValue: vi.fn(
+        () => selectedRowData[col.id as keyof typeof selectedRowData]
+      ),
+    });
+
     const mockTable = {
       getRowModel: vi.fn(() => ({
         rows: [
           {
             id: 'row-0',
             index: 0,
-            original: { id: '1', name: 'John' },
+            original: selectedRowData,
             getIsSelected: vi.fn(() => true),
             getVisibleCells: vi.fn(() =>
-              mockColumns.map((col, i) => ({
-                id: `0-${i}`,
-                column: { columnDef: { cell: (info: any) => info.getValue() } },
-                getValue: vi.fn(() => {
-                  const data = { id: '1', name: 'John' };
-                  return data[col.id as keyof typeof data];
-                }),
-                getContext: vi.fn(() => ({
-                  getValue: () => {
-                    const data = { id: '1', name: 'John' };
-                    return data[col.id as keyof typeof data];
-                  },
-                })),
-                renderValue: vi.fn(() => {
-                  const data = { id: '1', name: 'John' };
-                  return data[col.id as keyof typeof data];
-                }),
-              }))
+              mockColumns.map((col, i) => createSelectedVisibleCell(col, i))
             ),
           },
         ],
@@ -157,33 +167,30 @@ describe('TableBody', () => {
   });
 
   it('should render all visible cells', () => {
+    const allCellsData = { id: '1', name: 'John' };
+
+    const createAllCellsVisibleCell = (col: any, i: number) => ({
+      id: `0-${i}`,
+      column: { columnDef: { cell: (info: any) => info.getValue() } },
+      getValue: vi.fn(() => allCellsData[col.id as keyof typeof allCellsData]),
+      getContext: vi.fn(() => ({
+        getValue: () => allCellsData[col.id as keyof typeof allCellsData],
+      })),
+      renderValue: vi.fn(
+        () => allCellsData[col.id as keyof typeof allCellsData]
+      ),
+    });
+
     const mockTable = {
       getRowModel: vi.fn(() => ({
         rows: [
           {
             id: 'row-0',
             index: 0,
-            original: { id: '1', name: 'John' },
+            original: allCellsData,
             getIsSelected: vi.fn(() => false),
             getVisibleCells: vi.fn(() =>
-              mockColumns.map((col, i) => ({
-                id: `0-${i}`,
-                column: { columnDef: { cell: (info: any) => info.getValue() } },
-                getValue: vi.fn(() => {
-                  const data = { id: '1', name: 'John' };
-                  return data[col.id as keyof typeof data];
-                }),
-                getContext: vi.fn(() => ({
-                  getValue: () => {
-                    const data = { id: '1', name: 'John' };
-                    return data[col.id as keyof typeof data];
-                  },
-                })),
-                renderValue: vi.fn(() => {
-                  const data = { id: '1', name: 'John' };
-                  return data[col.id as keyof typeof data];
-                }),
-              }))
+              mockColumns.map((col, i) => createAllCellsVisibleCell(col, i))
             ),
           },
         ],

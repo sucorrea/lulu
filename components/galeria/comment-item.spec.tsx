@@ -116,7 +116,7 @@ describe('CommentItem', () => {
 
       const input = screen.getByDisplayValue(
         mockComment.comment
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'Updated comment' } });
 
       expect(input.value).toBe('Updated comment');
@@ -130,7 +130,7 @@ describe('CommentItem', () => {
 
       const input = screen.getByDisplayValue(
         mockComment.comment
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'Updated text' } });
 
       const saveButton = screen.getByRole('button', { name: 'Salvar' });

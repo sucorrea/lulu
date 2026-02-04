@@ -1,8 +1,4 @@
-import Link from 'next/link';
-
 import Lulus from '@/components/lulus/lulus';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { getParticipants } from '@/services/participants-server';
 
 const Home = async () => {

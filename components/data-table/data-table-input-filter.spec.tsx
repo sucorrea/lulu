@@ -1,8 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createColumnHelper } from '@tanstack/react-table';
-import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import DataTableInputFilter from './data-table-input-filter';
 
 // Mock data type
@@ -61,7 +59,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       expect(input.placeholder).toBe('Filtrar...');
     });
 
@@ -74,7 +74,9 @@ describe('DataTableInputFilter', () => {
         />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       expect(input.placeholder).toBe('Buscar por nome...');
     });
 
@@ -101,7 +103,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       expect(input.value).toBe('');
     });
   });
@@ -117,7 +121,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       expect(input.value).toBe('test value');
     });
 
@@ -132,7 +138,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'new value' } });
 
       expect(setFilterValueMock).toHaveBeenCalledWith('new value');
@@ -157,7 +165,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
 
       fireEvent.change(input, { target: { value: 'a' } });
       fireEvent.change(input, { target: { value: 'ab' } });
@@ -180,7 +190,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: '' } });
 
       expect(setFilterValueMock).toHaveBeenCalledWith('');
@@ -243,7 +255,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: '@#$%^&*()' } });
 
       expect(setFilterValueMock).toHaveBeenCalledWith('@#$%^&*()');
@@ -260,7 +274,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: '   spaces   ' } });
 
       expect(setFilterValueMock).toHaveBeenCalledWith('   spaces   ');
@@ -278,7 +294,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: longValue } });
 
       expect(setFilterValueMock).toHaveBeenCalledWith(longValue);
@@ -295,7 +313,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       fireEvent.change(input, { target: { value: '你好世界🎉' } });
 
       expect(setFilterValueMock).toHaveBeenCalledWith('你好世界🎉');
@@ -347,7 +367,9 @@ describe('DataTableInputFilter', () => {
         <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
       );
 
-      const input = screen.getByTestId('filter-input') as HTMLInputElement;
+      const input = screen.getByTestId(
+        'filter-input'
+      ) as unknown as HTMLInputElement;
       expect(input.value).toBe('updated value');
     });
   });

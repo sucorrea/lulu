@@ -80,7 +80,7 @@ describe('PhotoItem', () => {
 
       const image = screen.getByAltText(
         'Foto 1 da galeria'
-      ) as HTMLImageElement;
+      ) as unknown as HTMLImageElement;
       expect(image.src).toContain(photoUrl);
     });
 
@@ -235,7 +235,7 @@ describe('PhotoItem', () => {
     });
 
     it('should have proper styling with flex layout', () => {
-      const { container } = renderPhotoItem();
+      renderPhotoItem();
 
       const commentButton = screen.getByRole('button', {
         name: /comentário/i,
@@ -273,7 +273,7 @@ describe('PhotoItem', () => {
 
       const image = screen.getByAltText(
         'Foto 3 da galeria'
-      ) as HTMLImageElement;
+      ) as unknown as HTMLImageElement;
       expect(image).toHaveAttribute('loading', 'eager');
     });
 
@@ -282,7 +282,7 @@ describe('PhotoItem', () => {
 
       const image = screen.getByAltText(
         'Foto 8 da galeria'
-      ) as HTMLImageElement;
+      ) as unknown as HTMLImageElement;
       expect(image).toHaveAttribute('loading', 'lazy');
     });
 

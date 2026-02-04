@@ -123,7 +123,7 @@ describe('EditDeleteButtom', () => {
     });
 
     it('should have red colored delete icon', () => {
-      const { container } = renderEditDeleteButtom();
+      renderEditDeleteButtom();
 
       const deleteIcon = screen.getByTestId('delete-icon');
       expect(deleteIcon).toBeInTheDocument();

@@ -28,7 +28,7 @@ export function GenericDialog({
   children,
   footer,
   className = '',
-}: GenericDialogProps) {
+}: Readonly<GenericDialogProps>) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
