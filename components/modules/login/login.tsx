@@ -36,9 +36,11 @@ export default function LoginPage() {
         await createUserWithEmailAndPassword(auth, email, password);
         router.push('/');
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      const errorMessage = error.message || 'Authentication failed';
+    } catch (error) {
+      const errorMessage =
+        error && typeof error === 'object' && 'message' in error
+          ? (error as { message: string }).message
+          : 'Authentication failed';
       setError(errorMessage.replace('Firebase: ', ''));
     } finally {
       setLoading(false);
@@ -53,8 +55,11 @@ export default function LoginPage() {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       router.push('/');
-    } catch (error: any) {
-      const errorMessage = error.message || 'Google sign-in failed';
+    } catch (error) {
+      const errorMessage =
+        error && typeof error === 'object' && 'message' in error
+          ? (error as { message: string }).message
+          : 'Google sign-in failed';
       setError(errorMessage.replace('Firebase: ', ''));
     } finally {
       setLoading(false);
@@ -71,9 +76,11 @@ export default function LoginPage() {
     try {
       await sendPasswordResetEmail(auth, email);
       alert('Senha de redefinição enviada para o seu email.');
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage =
-        error.message || 'Falha ao enviar a senha de redefinição';
+        error && typeof error === 'object' && 'message' in error
+          ? (error as { message: string }).message
+          : 'Falha ao enviar a senha de redefinição';
       setError(errorMessage.replace('Firebase: ', ''));
     } finally {
       setLoading(false);

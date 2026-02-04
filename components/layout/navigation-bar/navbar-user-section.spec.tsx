@@ -204,7 +204,7 @@ describe('NavbarUserSection', () => {
       />
     );
 
-    const greeting = screen.getByText((content, element) =>
+    const greeting = screen.getByText((content) =>
       content.includes('Olá, João')
     );
     const container = greeting.closest('div[class*="flex"]');
@@ -244,9 +244,7 @@ describe('NavbarUserSection', () => {
       />
     );
 
-    const greeting = screen.getByText((content, element) =>
-      content.includes('Olá')
-    );
+    const greeting = screen.getByText((content) => content.includes('Olá'));
     expect(greeting).toBeInTheDocument();
   });
 
@@ -259,9 +257,7 @@ describe('NavbarUserSection', () => {
       />
     );
 
-    const greeting = screen.getByText((content, element) =>
-      content.includes('Olá')
-    );
+    const greeting = screen.getByText((content) => content.includes('Olá'));
     expect(greeting).toBeInTheDocument();
   });
 

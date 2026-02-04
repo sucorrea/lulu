@@ -16,9 +16,8 @@ describe('CommentContext', () => {
   const onEditComment = vi.fn();
   const onDeleteComment = vi.fn();
 
-  const createWrapper =
-    () =>
-    ({ children }: { children: React.ReactNode }) => (
+  const createWrapper = () => {
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
       <CommentProvider
         onSubmitComment={onSubmitComment}
         onEditComment={onEditComment}
@@ -27,6 +26,9 @@ describe('CommentContext', () => {
         {children}
       </CommentProvider>
     );
+    Wrapper.displayName = 'CommentProviderWrapper';
+    return Wrapper;
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();

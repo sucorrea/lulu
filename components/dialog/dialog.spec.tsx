@@ -6,11 +6,9 @@ vi.mock('@/components/ui/dialog', () => ({
   Dialog: ({
     children,
     open,
-    onOpenChange,
   }: {
     children: React.ReactNode;
     open: boolean;
-    onOpenChange: (open: boolean) => void;
   }) => (
     <div data-testid="dialog-wrapper" data-open={open}>
       {children}

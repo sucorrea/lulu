@@ -6,8 +6,9 @@
     "dev": "next dev --port 3001 --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test": "vitest run"
+    "lint": "eslint .",
+    "test": "vitest run --coverage=false",
+    "test:coverage": "vitest run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

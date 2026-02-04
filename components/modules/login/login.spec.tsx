@@ -20,12 +20,14 @@ import LoginPage from './login';
 vi.mock('next/navigation');
 vi.mock('firebase/auth');
 vi.mock('@/components/ui/button', () => ({
-  Button: ({ children, ...props }: any) => (
+  Button: ({ children, ...props }: { children: React.ReactNode }) => (
     <button {...props}>{children}</button>
   ),
 }));
 vi.mock('@/components/ui/input', () => ({
-  Input: (props: any) => <input {...props} />,
+  Input: (props: React.InputHTMLAttributes<HTMLInputElement>) => (
+    <input {...props} />
+  ),
 }));
 vi.mock('lucide-react', () => ({
   Mail: () => <div data-testid="mail-icon" />,
@@ -170,7 +172,7 @@ describe('LoginPage', () => {
     it('should update form button text based on mode', async () => {
       render(<LoginPage />);
 
-      let submitButtons = screen.getAllByRole('button', { name: 'Entrar' });
+      const submitButtons = screen.getAllByRole('button', { name: 'Entrar' });
       expect(submitButtons.length).toBeGreaterThan(0);
 
       const toggleButtons = screen.getAllByRole('button', {

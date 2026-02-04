@@ -8,6 +8,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    isolate: true,
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: false,
+      },
+    },
     reporters: [
       ['verbose'],
       ['vitest-sonar-reporter', { outputFile: 'coverage/test-report.xml' }],

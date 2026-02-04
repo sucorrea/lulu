@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -77,7 +78,9 @@ describe('TableBody', () => {
 
   it('should render tbody element', () => {
     const mockTable = createMockTable([]);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     expect(screen.getByTestId('table-body-ui')).toBeInTheDocument();
   });
 
@@ -86,20 +89,26 @@ describe('TableBody', () => {
       { id: '1', name: 'John' },
       { id: '2', name: 'Jane' },
     ]);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     const rows = screen.getAllByTestId('table-row');
     expect(rows).toHaveLength(2);
   });
 
   it('should render "No results" when table is empty', () => {
     const mockTable = createMockTable([]);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     expect(screen.getByText('No results.')).toBeInTheDocument();
   });
 
   it('should render cells with correct data', () => {
     const mockTable = createMockTable([{ id: '1', name: 'John' }]);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     const cells = screen.getAllByTestId('table-cell');
     expect(cells.length).toBeGreaterThanOrEqual(2);
   });
@@ -137,14 +146,18 @@ describe('TableBody', () => {
       })),
     };
 
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     const row = screen.getByTestId('table-row');
     expect(row).toHaveAttribute('data-state', 'selected');
   });
 
   it('should call getRowModel from table', () => {
     const mockTable = createMockTable([{ id: '1', name: 'John' }]);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     expect(mockTable.getRowModel).toHaveBeenCalled();
   });
 
@@ -154,14 +167,18 @@ describe('TableBody', () => {
       name: `Name ${i}`,
     }));
     const mockTable = createMockTable(manyRows);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     const rows = screen.getAllByTestId('table-row');
     expect(rows).toHaveLength(50);
   });
 
   it('should have semantic tbody element', () => {
     const mockTable = createMockTable([{ id: '1', name: 'John' }]);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     const tbody = screen.getByTestId('table-body-ui');
     expect(tbody.tagName).toBe('TBODY');
   });
@@ -197,14 +214,18 @@ describe('TableBody', () => {
       })),
     };
 
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     const cells = screen.getAllByTestId('table-cell');
     expect(cells.length).toBeGreaterThanOrEqual(2);
   });
 
   it('should display "No results" in centered cell', () => {
     const mockTable = createMockTable([]);
-    render(<TableBody table={mockTable as any} columns={mockColumns as any} />);
+    render(
+      <TableBody table={mockTable as never} columns={mockColumns as never} />
+    );
     const emptyCell = screen.getByText('No results.');
     expect(emptyCell.closest('td')).toHaveClass('text-center');
   });

@@ -26,14 +26,12 @@ vi.mock('@/services/queries/fetchParticipants', () => ({
 vi.mock('@/components/dialog/dialog', () => ({
   GenericDialog: ({
     open,
-    onOpenChange,
     title,
     description,
     children,
     footer,
   }: {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
     title: string;
     description: string;
     children: React.ReactNode;

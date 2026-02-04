@@ -16,18 +16,8 @@ const CommentSection = memo(function CommentSection({
   comments,
   userId,
 }: CommentSectionProps) {
-  const {
-    commentInput,
-    editingCommentId,
-    editInput,
-    onCommentInputChange,
-    onEditInputChange,
-    onSubmitComment,
-    onEditComment,
-    onDeleteComment,
-    onSaveEdit,
-    onCancelEdit,
-  } = useCommentContext();
+  const { commentInput, onCommentInputChange, onSubmitComment } =
+    useCommentContext();
 
   const commentInputId = useId();
   const isLoggedIn = userId !== null;

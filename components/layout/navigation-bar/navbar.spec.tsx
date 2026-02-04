@@ -18,7 +18,6 @@ vi.mock('./navbar-user-section', () => ({
     isLoading,
     isLoginPage,
     userFirstName,
-    onLogout,
   }: {
     isAuthenticated: boolean;
     isLoading: boolean;

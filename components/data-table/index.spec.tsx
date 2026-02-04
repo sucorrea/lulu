@@ -11,7 +11,13 @@ vi.mock('@/components/ui/table', () => ({
 }));
 
 vi.mock('./data-table-input-filter', () => ({
-  default: ({ columnId, placeholder }: any) => (
+  default: ({
+    columnId,
+    placeholder,
+  }: {
+    columnId: string;
+    placeholder?: string;
+  }) => (
     <input
       data-testid="filter-input"
       placeholder={placeholder}
@@ -31,7 +37,7 @@ vi.mock('./table-body', () => ({
 }));
 
 vi.mock('./table-header', () => ({
-  default: ({ className }: any) => (
+  default: ({ className }: { className?: string }) => (
     <thead data-testid="table-header" className={className}>
       <tr>
         <th>Header</th>

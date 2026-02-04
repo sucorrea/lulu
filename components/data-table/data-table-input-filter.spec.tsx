@@ -32,11 +32,13 @@ vi.mock('@/components/ui/input', () => ({
 }));
 
 describe('DataTableInputFilter', () => {
-  let mockTable: any;
+  let mockTable: {
+    getColumn: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
     mockTable = {
-      getColumn: vi.fn((columnId: string) => ({
+      getColumn: vi.fn(() => ({
         getFilterValue: vi.fn().mockReturnValue(''),
         setFilterValue: vi.fn(),
       })),
@@ -46,7 +48,10 @@ describe('DataTableInputFilter', () => {
   describe('Rendering', () => {
     it('should render input element', () => {
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       expect(screen.getByTestId('filter-input')).toBeInTheDocument();
@@ -54,7 +59,10 @@ describe('DataTableInputFilter', () => {
 
     it('should use default placeholder when not provided', () => {
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -66,7 +74,7 @@ describe('DataTableInputFilter', () => {
     it('should use custom placeholder when provided', () => {
       render(
         <DataTableInputFilter<TestData>
-          table={mockTable}
+          table={mockTable as never}
           columnId="name"
           placeholder="Buscar por nome..."
         />
@@ -81,7 +89,7 @@ describe('DataTableInputFilter', () => {
     it('should apply custom className', () => {
       render(
         <DataTableInputFilter<TestData>
-          table={mockTable}
+          table={mockTable as never}
           columnId="name"
           className="custom-class"
         />
@@ -98,7 +106,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -116,7 +127,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -133,7 +147,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -146,7 +163,10 @@ describe('DataTableInputFilter', () => {
 
     it('should call getColumn with correct columnId', () => {
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="email" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="email"
+        />
       );
 
       expect(mockTable.getColumn).toHaveBeenCalledWith('email');
@@ -160,7 +180,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -185,7 +208,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -206,7 +232,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="id" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="id"
+        />
       );
 
       expect(mockTable.getColumn).toHaveBeenCalledWith('id');
@@ -220,7 +249,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       expect(mockTable.getColumn).toHaveBeenCalledWith('name');
@@ -234,7 +266,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="email" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="email"
+        />
       );
 
       expect(mockTable.getColumn).toHaveBeenCalledWith('email');
@@ -250,7 +285,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -269,7 +307,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -289,7 +330,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -308,7 +352,10 @@ describe('DataTableInputFilter', () => {
       });
 
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(
@@ -330,7 +377,7 @@ describe('DataTableInputFilter', () => {
 
       const { container } = render(
         <DataTableInputFilter<TestData>
-          table={mockTable}
+          table={mockTable as never}
           columnId="name"
           placeholder="Custom placeholder"
           className="my-custom-class"
@@ -342,7 +389,10 @@ describe('DataTableInputFilter', () => {
 
     it('should handle minimal props', () => {
       render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="id" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="id"
+        />
       );
 
       expect(screen.getByTestId('filter-input')).toBeInTheDocument();
@@ -353,7 +403,10 @@ describe('DataTableInputFilter', () => {
     it('should update displayed value when filter value changes', () => {
       const setFilterValueMock = vi.fn();
       const { rerender } = render(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       mockTable.getColumn.mockReturnValue({
@@ -362,7 +415,10 @@ describe('DataTableInputFilter', () => {
       });
 
       rerender(
-        <DataTableInputFilter<TestData> table={mockTable} columnId="name" />
+        <DataTableInputFilter<TestData>
+          table={mockTable as never}
+          columnId="name"
+        />
       );
 
       const input = screen.getByTestId(

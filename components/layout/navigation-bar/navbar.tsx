@@ -1,7 +1,6 @@
 'use client';
 
 import { memo } from 'react';
-import Link from 'next/link';
 
 import { ThemeToggle } from './mode-toggle';
 import { NavbarBrand } from './navbar-brand';

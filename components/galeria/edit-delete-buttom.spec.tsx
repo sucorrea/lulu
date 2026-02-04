@@ -5,12 +5,8 @@ import EditDeleteButtom from './edit-delete-buttom';
 import type { GaleriaComment } from '@/services/galeriaComments';
 
 vi.mock('lucide-react', () => ({
-  Edit2: ({ size }: { size: number }) => (
-    <span data-testid="edit-icon">Edit Icon</span>
-  ),
-  Trash2Icon: ({ size }: { size: number }) => (
-    <span data-testid="delete-icon">Delete Icon</span>
-  ),
+  Edit2: () => <span data-testid="edit-icon">Edit Icon</span>,
+  Trash2Icon: () => <span data-testid="delete-icon">Delete Icon</span>,
 }));
 
 const mockComment: GaleriaComment = {

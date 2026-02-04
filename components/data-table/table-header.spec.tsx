@@ -76,27 +76,27 @@ describe('TableHeader', () => {
 
   it('should render thead element', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     expect(screen.getByTestId('table-header-ui')).toBeInTheDocument();
   });
 
   it('should render header row', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const rows = screen.getAllByTestId('table-row');
     expect(rows.length).toBeGreaterThan(0);
   });
 
   it('should render header cells', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const heads = screen.getAllByTestId('table-head');
     expect(heads.length).toBeGreaterThanOrEqual(3);
   });
 
   it('should render header text', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     expect(screen.getByText('ID')).toBeInTheDocument();
     expect(screen.getByText('Name')).toBeInTheDocument();
     expect(screen.getByText('Email')).toBeInTheDocument();
@@ -133,7 +133,7 @@ describe('TableHeader', () => {
       ]),
     };
 
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const heads = screen.getAllByTestId('table-head');
 
     expect(heads.length).toBe(2);
@@ -143,27 +143,27 @@ describe('TableHeader', () => {
   it('should render single header column', () => {
     const singleColumn = [{ id: 'id', header: 'ID' }];
     const mockTable = createMockTable(singleColumn);
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const heads = screen.getAllByTestId('table-head');
     expect(heads.length).toBe(1);
   });
 
   it('should apply className to table header', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} className="custom-class" />);
+    render(<TableHeader table={mockTable as never} className="custom-class" />);
     const header = screen.getByTestId('table-header-ui');
     expect(header).toHaveClass('custom-class');
   });
 
   it('should call getHeaderGroups from table', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     expect(mockTable.getHeaderGroups).toHaveBeenCalled();
   });
 
   it('should have semantic thead element', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const thead = screen.getByTestId('table-header-ui');
     expect(thead.tagName).toBe('THEAD');
   });
@@ -189,7 +189,7 @@ describe('TableHeader', () => {
       ]),
     };
 
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const head = screen.getByTestId('table-head');
 
     expect(head).toBeInTheDocument();
@@ -197,7 +197,7 @@ describe('TableHeader', () => {
 
   it('should render multiple header columns', () => {
     const mockTable = createMockTable(mockColumns);
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const heads = screen.getAllByTestId('table-head');
     expect(heads.length).toBe(mockColumns.length);
   });
@@ -208,14 +208,14 @@ describe('TableHeader', () => {
       { id: 'name', header: '"Full Name"' },
     ];
     const mockTable = createMockTable(specialColumns);
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     expect(screen.getByText('User <ID>')).toBeInTheDocument();
     expect(screen.getByText('"Full Name"')).toBeInTheDocument();
   });
 
   it('should render th elements for headers', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const heads = screen.getAllByTestId('table-head');
     heads.forEach((head) => {
       expect(head.tagName).toBe('TH');
@@ -224,7 +224,7 @@ describe('TableHeader', () => {
 
   it('should render tr elements for header groups', () => {
     const mockTable = createMockTable();
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const rows = screen.getAllByTestId('table-row');
     rows.forEach((row) => {
       expect(row.tagName).toBe('TR');
@@ -255,7 +255,7 @@ describe('TableHeader', () => {
       ]),
     };
 
-    render(<TableHeader table={mockTable as any} />);
+    render(<TableHeader table={mockTable as never} />);
     const heads = screen.getAllByTestId('table-head');
     expect(heads.length).toBe(20);
   });
