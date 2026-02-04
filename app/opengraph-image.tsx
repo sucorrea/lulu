@@ -1,10 +1,11 @@
 import { ImageResponse } from 'next/og';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+
 export const alt = 'Luluzinha - O site das Lulus';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-import ImageNext from 'next/image';
+
 export default async function Image() {
   const year = new Date().getFullYear();
 
@@ -31,7 +32,8 @@ export default async function Image() {
           padding: 48,
         }}
       >
-        <ImageNext
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={faLuluSrc}
           alt="Luluzinha"
           width={280}

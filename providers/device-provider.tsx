@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useMemo,
 } from 'react';
 
 import { debounce } from 'lodash';
@@ -19,11 +20,11 @@ export interface DeviceState {
 const HeaderContext = createContext<DeviceState | undefined>(undefined);
 
 export const DeviceProvider = ({ children }: PropsWithChildren) => {
-  const [isMobileState, setIsMobile] = useState<boolean>(isMobile);
+  const [isMobileState, setIsMobileState] = useState<boolean>(isMobile);
 
   useEffect(() => {
     const handleResize = debounce(() => {
-      setIsMobile(window.innerWidth <= MOBILE_MAX_WIDTH);
+      setIsMobileState(window.innerWidth <= MOBILE_MAX_WIDTH);
     }, 150);
 
     window.addEventListener('resize', handleResize);
@@ -35,12 +36,15 @@ export const DeviceProvider = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
+  const contextValue = useMemo(
+    () => ({
+      isMobile: isMobileState,
+    }),
+    [isMobileState]
+  );
+
   return (
-    <HeaderContext.Provider
-      value={{
-        isMobile: isMobileState,
-      }}
-    >
+    <HeaderContext.Provider value={contextValue}>
       {children}
     </HeaderContext.Provider>
   );

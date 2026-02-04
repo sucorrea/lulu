@@ -30,35 +30,35 @@ export default function PixQRCode({ participant }: Readonly<PixQRCodeProps>) {
   }, []);
 
   return (
-      <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] ">
-        <Button variant="link" onClick={onToggle} className="no-underline">
-          {isOpen
-            ? `fechar QRCode Pix de ${participant.name}`
-            : `mostrar QRCode Pix de ${participant.name}`}
-        </Button>
-        {isOpen && payload && (
-          <div className="flex flex-col items-center justify-center gap-1">
-            <QRCodeCanvas
-              value={payload}
-              size={100}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                navigator.clipboard.writeText(payload);
-              }}
-            />
-            <Button
-              variant="ghost"
-              onClick={() => {
-                navigator.clipboard.writeText(payload);
-                if (!isMobile) {
-                  alert('QRCode copiado com sucesso!');
-                }
-              }}
-            >
-              copiar QRCode Pix
-            </Button>
-          </div>
-        )}
-      </div>
+    <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] ">
+      <Button variant="link" onClick={onToggle} className="no-underline">
+        {isOpen
+          ? `fechar QRCode Pix de ${participant.name}`
+          : `mostrar QRCode Pix de ${participant.name}`}
+      </Button>
+      {isOpen && payload && (
+        <div className="flex flex-col items-center justify-center gap-1">
+          <QRCodeCanvas
+            value={payload}
+            size={100}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              navigator.clipboard.writeText(payload);
+            }}
+          />
+          <Button
+            variant="ghost"
+            onClick={() => {
+              navigator.clipboard.writeText(payload);
+              if (!isMobile) {
+                alert('QRCode copiado com sucesso!');
+              }
+            }}
+          >
+            copiar QRCode Pix
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }
