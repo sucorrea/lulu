@@ -16,7 +16,7 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
       const parts = date.split('-');
       return Number.parseInt(parts[2], 10);
     }
-    return new Date(date).getDate() + 1;
+    return date.getUTCDate();
   };
 
   const sortedParticipants = useMemo(() => {

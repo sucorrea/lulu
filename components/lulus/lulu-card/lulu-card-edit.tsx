@@ -27,14 +27,14 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
     );
 
   return (
-    <div className="flex items-center justify-center min-h-screen overflow-y-auto">
-      <Card className="m-4 max-w-max">
-        <CardContent className="p-4">
+    <div className="flex items-center justify-center min-h-screen overflow-y-auto p-4">
+      <Card className="w-full max-w-md md:max-w-lg lg:max-w-2xl">
+        <CardContent className="p-4 md:p-6 lg:p-8">
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="flex flex-row items-center gap-3">
-                  <Avatar className="h-16 w-16 border-4 border-primary">
+              <div className="w-full">
+                <div className="flex flex-row items-center gap-3 mb-4">
+                  <Avatar className="h-16 w-16 md:h-20 md:w-20 border-4 border-primary">
                     <AvatarImage
                       src={participant?.photoURL ?? ''}
                       alt={participant?.name}
@@ -43,7 +43,7 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
                       {(participant?.name ?? '').charAt(0).toUpperCase() || '?'}
                     </AvatarFallback>
                   </Avatar>
-                  <h2 className="lulu-header text-3xl font-semibold text-primary ">
+                  <h2 className="lulu-header text-2xl md:text-3xl lg:text-4xl font-semibold text-primary">
                     {participant?.name}
                   </h2>
                 </div>

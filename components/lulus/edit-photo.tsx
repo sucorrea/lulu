@@ -49,7 +49,7 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
         Alterar foto
       </Button>
       <GenericDialog
-        className="max-w-[80%] rounded"
+        className="max-w-[50%] rounded"
         open={isOpen}
         onOpenChange={(open) => (open ? onOpen() : onClose())}
         title={participant.name}

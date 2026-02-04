@@ -22,7 +22,7 @@ export default function UpdateParticipantPhoto({
   };
 
   return (
-    <div className="space-y-2 p-6 cursor-pointer">
+    <div className="space-y-2 p-2 mt-2 cursor-pointer border-2 border-primary rounded-lg hover:border-primary/80 bg-primary/10 transition-colors">
       <label htmlFor="file-upload">
         <input
           type="file"
