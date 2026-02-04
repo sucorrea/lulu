@@ -12,7 +12,7 @@ interface PixQRCodeProps {
   participant: Person;
 }
 
-export default function PixQRCode({ participant }: PixQRCodeProps) {
+export default function PixQRCode({ participant }: Readonly<PixQRCodeProps>) {
   const [payload, setPayload] = useState('');
   const { isOpen, onToggle } = useDisclosure();
   const { isMobile } = useIsMobile();
@@ -30,7 +30,6 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
   }, []);
 
   return (
-    <>
       <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] ">
         <Button variant="link" onClick={onToggle} className="no-underline">
           {isOpen
@@ -61,6 +60,5 @@ export default function PixQRCode({ participant }: PixQRCodeProps) {
           </div>
         )}
       </div>
-    </>
   );
 }

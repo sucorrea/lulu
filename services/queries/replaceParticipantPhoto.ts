@@ -20,7 +20,7 @@ export async function replaceParticipantPhoto(
   console.log('dados snapshot', data);
   if (!data) throw new Error('Participante não encontrado');
 
-  if (data.picture && data.picture.includes('firebasestorage.googleapis.com')) {
+  if (data.picture?.includes('firebasestorage.googleapis.com')) {
     try {
       const url = new URL(data.picture);
       const pathname = decodeURIComponent(url.pathname);

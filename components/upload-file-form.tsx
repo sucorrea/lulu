@@ -11,7 +11,7 @@ type UpdateParticipantPhotoProps = {
 export default function UpdateParticipantPhoto({
   participantId,
   setFile,
-}: UpdateParticipantPhotoProps) {
+}: Readonly<UpdateParticipantPhotoProps>) {
   const { isPending, isSuccess, isError, error } =
     useUploadPhoto(participantId);
 
@@ -30,8 +30,7 @@ export default function UpdateParticipantPhoto({
           id="file-upload"
           onChange={handleFileChange}
           style={{ display: 'none' }}
-        />
-        {' '}
+        />{' '}
         Escolher foto
       </label>
       {isPending && <p>Uploading...</p>}

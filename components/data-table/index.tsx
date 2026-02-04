@@ -52,10 +52,7 @@ const DataTable = <TData,>({
           <div>
             <div className="flex items-center gap-3 p-2">
               {hasFilter && (
-                <DataTableInputFilter
-                  table={table}
-                  columnId={columnIdFilter as keyof TData & string}
-                />
+                <DataTableInputFilter table={table} columnId={columnIdFilter} />
               )}
             </div>
             <TableUi>

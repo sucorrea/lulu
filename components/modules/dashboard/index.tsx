@@ -73,8 +73,11 @@ const DashboardPage = ({ participants }: DashboardPageProps) => {
                   label={({ name, value }) => `${name} (${value})`}
                   className="text-xs"
                 >
-                  {signsStats(participants).map((_, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  {signsStats(participants).map((i, index) => (
+                    <Cell
+                      key={`${i.name}-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
