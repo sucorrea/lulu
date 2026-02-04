@@ -358,7 +358,7 @@ const GaleriaFotos = () => {
                           <Button
                             size="sm"
                             className="ml-1 px-2 py-0.5"
-                            onClick={() => void handleSaveEdit()}
+                            onClick={() => handleSaveEdit()}
                           >
                             Salvar
                           </Button>
