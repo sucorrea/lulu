@@ -2,6 +2,7 @@
 import { useCallback, useState } from 'react';
 
 import { CameraIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useDisclosure } from '@/hooks/use-disclosure';
@@ -17,7 +18,7 @@ interface LulusCardEditProps {
 
 const EditPhoto = ({ participant }: LulusCardEditProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { mutate, isPending } = useUploadPhoto(String(participant.id));
+  const { mutate, isPending, error } = useUploadPhoto(String(participant.id));
   const [file, setFile] = useState<File | null>(null);
 
   const handleUpload = useCallback(() => {
@@ -29,12 +30,16 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
       { file, participantId: String(participant.id) },
       {
         onSuccess: () => {
+          toast.success('Foto alterada com sucesso', {
+            position: 'bottom-center',
+          });
           setFile(null);
           onClose();
         },
+        onError: () => toast.error(error?.message ?? 'Erro ao alterar foto'),
       }
     );
-  }, [mutate, file, participant.id, onClose]);
+  }, [mutate, file, participant.id, onClose, error]);
 
   const handleConfirmar = useCallback(() => handleUpload(), [handleUpload]);
 

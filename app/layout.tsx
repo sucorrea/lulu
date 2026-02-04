@@ -8,6 +8,7 @@ import { Navbar } from '@/components/layout/navigation-bar/navbar';
 import { DeviceProvider } from '@/providers/device-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
 const ano = new Date().getFullYear();
@@ -63,6 +64,7 @@ export default function RootLayout({
                 <Footer />
               </main>
             </DeviceProvider>
+            <Toaster />
           </ThemeProvider>
         </ReactQueryProvider>
       </body>

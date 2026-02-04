@@ -17,7 +17,7 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
   const { data: participantData, isLoading } =
     useGetParticipantById(participantId);
 
-  const participant = participantData ?? ({} as Person);
+  const participant = participantData;
 
   if (isLoading)
     return (
@@ -33,7 +33,7 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <div className="w-full">
-                <div className="flex flex-row items-center gap-3 mb-4">
+                <div className="flex flex-row items-center gap-2 ml-4">
                   <Avatar className="h-16 w-16 md:h-20 md:w-20 border-4 border-primary">
                     <AvatarImage
                       src={participant?.photoURL ?? ''}
@@ -47,8 +47,8 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
                     {participant?.name}
                   </h2>
                 </div>
-                <EditPhoto participant={participant} />
-                <PersonForm initialData={participantData ?? ({} as Person)} />
+                <EditPhoto participant={participant as unknown as Person} />
+                <PersonForm initialData={participant as unknown as Person} />
               </div>
             </div>
           </div>
