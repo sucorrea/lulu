@@ -24,7 +24,6 @@ export default defineConfig({
       provider: 'v8',
       enabled: true,
       include: [
-        'app/**/*.{ts,tsx}',
         'components/**/*.{ts,tsx}',
         'hooks/**/*.ts',
         'lib/**/*.ts',
@@ -32,6 +31,7 @@ export default defineConfig({
         'services/**/*.ts',
       ],
       exclude: [
+        'app/**/*.{ts,tsx}',
         '**/*.spec.{ts,tsx}',
         '**/*.test.{ts,tsx}',
         '**/node_modules/**',

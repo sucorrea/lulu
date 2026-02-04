@@ -67,11 +67,10 @@ describe('CommentSection', () => {
     });
 
     it('should render comment list with role="list"', () => {
-      const { container } = renderCommentSection(mockComments, 'user-1');
+      renderCommentSection(mockComments, 'user-1');
 
-      const list = container.querySelector('[role="list"]');
+      const list = screen.getByRole('list', { name: 'Lista de comentários' });
       expect(list).toBeInTheDocument();
-      expect(list).toHaveAttribute('aria-label', 'Lista de comentários');
     });
 
     it('should display all comments', () => {
