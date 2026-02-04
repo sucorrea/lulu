@@ -4,7 +4,6 @@ import { ColumnDef, Table, flexRender } from '@tanstack/react-table';
 
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
 
-
 type DataTableBodyProps<TData> = {
   table: Table<TData>;
   columns: ColumnDef<TData>[];

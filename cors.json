@@ -1,8 +1,12 @@
 [
   {
-    "origin": ["http://localhost:3001", "http://localhost:3000", "https://lulupage.vercel.app/", "https://lulupage.vercel.app"],
+    "origin": [
+      "http://localhost:3001",
+      "http://localhost:3000",
+      "https://lulupage.vercel.app/",
+      "https://lulupage.vercel.app"
+    ],
     "method": ["GET"],
     "maxAgeSeconds": 3600
   }
-
 ]

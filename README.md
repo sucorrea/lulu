@@ -1,3 +1,6 @@
+
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=sucorrea_lulu)](https://sonarcloud.io/summary/new_code?id=sucorrea_lulu)
+
 # 🎀 Lulu
 
 > Interface amigável, divertida e acessível para gerenciamento de dados, utilizando tecnologias modernas, tema personalizado e foco em acessibilidade e usabilidade.
@@ -87,16 +90,16 @@ Tailwind foi personalizado com:
 
 ## 📚 Dependências Principais
 
-| Pacote | Descrição |
-|--------|-----------|
-| `@tanstack/react-query` | Cache e gerenciamento de requisições |
-| `@radix-ui/react-*` | Componentes acessíveis e semântico |
-| `tailwindcss` + `tailwindcss-animate` | Estilização com animações |
-| `react-hook-form` + `zod` | Validação e controle de formulários |
-| `firebase` | Autenticação / backend (opcional) |
-| `recharts` | Gráficos dinâmicos |
-| `lucide-react`, `@iconify/react` | Ícones otimizados |
-| `qrcode.react` e `qrcode-pix` | Geração de QR Code padrão e PIX |
+| Pacote                                | Descrição                            |
+| ------------------------------------- | ------------------------------------ |
+| `@tanstack/react-query`               | Cache e gerenciamento de requisições |
+| `@radix-ui/react-*`                   | Componentes acessíveis e semântico   |
+| `tailwindcss` + `tailwindcss-animate` | Estilização com animações            |
+| `react-hook-form` + `zod`             | Validação e controle de formulários  |
+| `firebase`                            | Autenticação / backend (opcional)    |
+| `recharts`                            | Gráficos dinâmicos                   |
+| `lucide-react`, `@iconify/react`      | Ícones otimizados                    |
+| `qrcode.react` e `qrcode-pix`         | Geração de QR Code padrão e PIX      |
 
 ## 📦 Requisitos
 

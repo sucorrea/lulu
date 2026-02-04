@@ -1,23 +1,36 @@
 'use client';
-import React from 'react';
-import clsx from 'clsx';
+import { memo } from 'react';
 
+import clsx from 'clsx';
 import { HeartIcon } from 'lucide-react';
 
 interface LikeUnlikeButtonProps {
-  likes: number[];
-  liked: boolean[];
+  liked: boolean;
+  likes: number;
   handleLike: (index: number) => void;
   index: number;
 }
 
-const LikeUnlikeButton = ({
-  likes,
-  liked,
-  handleLike,
-  index,
-}: LikeUnlikeButtonProps) => {
-  const isLiked = liked[index];
+interface LegacyLikeUnlikeButtonProps {
+  liked: boolean[];
+  likes: number[];
+  handleLike: (index: number) => void;
+  index: number;
+}
+
+type CombinedProps = LikeUnlikeButtonProps | LegacyLikeUnlikeButtonProps;
+
+function isLegacyProps(
+  props: CombinedProps
+): props is LegacyLikeUnlikeButtonProps {
+  return Array.isArray(props.liked);
+}
+
+const LikeUnlikeButton = memo(function LikeUnlikeButton(props: CombinedProps) {
+  const { handleLike, index } = props;
+
+  const isLiked = isLegacyProps(props) ? props.liked[index] : props.liked;
+  const likeCount = isLegacyProps(props) ? props.likes[index] : props.likes;
 
   return (
     <button
@@ -27,16 +40,20 @@ const LikeUnlikeButton = ({
         isLiked ? 'scale-110 text-primary' : 'text-muted-foreground'
       )}
       aria-label={isLiked ? 'Descurtir' : 'Curtir'}
+      aria-pressed={isLiked}
     >
       <HeartIcon
         className={clsx(
-          'h-4 w-4',
+          'h-4 w-4 transition-colors',
           isLiked ? 'text-primary fill-primary' : 'text-muted-foreground'
         )}
+        aria-hidden="true"
       />
-      <span>{likes[index]}</span>
+      <span aria-label={`${likeCount} curtida${likeCount !== 1 ? 's' : ''}`}>
+        {likeCount}
+      </span>
     </button>
   );
-};
+});
 
 export default LikeUnlikeButton;

@@ -53,7 +53,6 @@ export default function LoginPage() {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       router.push('/');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const errorMessage = error.message || 'Google sign-in failed';
       setError(errorMessage.replace('Firebase: ', ''));
@@ -72,7 +71,6 @@ export default function LoginPage() {
     try {
       await sendPasswordResetEmail(auth, email);
       alert('Senha de redefinição enviada para o seu email.');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const errorMessage =
         error.message || 'Falha ao enviar a senha de redefinição';

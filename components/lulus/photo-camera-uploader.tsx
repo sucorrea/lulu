@@ -66,9 +66,9 @@ const PhotoCameraUploader = () => {
     }
   };
 
-  return (
-    <div className="w-full max-w-md mx-auto">
-      {photo ? (
+  const renderContent = () => {
+    if (photo) {
+      return (
         <div className="relative">
           <Image
             src={photo}
@@ -86,14 +86,21 @@ const PhotoCameraUploader = () => {
             </button>
           </div>
         </div>
-      ) : showCamera ? (
+      );
+    }
+
+    if (showCamera) {
+      return (
         <div className="relative">
           <video
             ref={videoRef}
             autoPlay
             playsInline
+            muted
             className="w-full h-auto rounded-lg"
-          />
+          >
+            <track kind="captions" />
+          </video>
           <div className="absolute bottom-2 right-2 flex gap-2">
             <button
               onClick={capturePhoto}
@@ -109,35 +116,39 @@ const PhotoCameraUploader = () => {
             </button>
           </div>
         </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-            <p className="text-gray-500 mb-4">
-              Selecione uma foto ou use a câmera
-            </p>
-            <div className="flex justify-center gap-4">
-              <label className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 transition-colors">
-                Upload
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-              </label>
-              <button
-                onClick={openCamera}
-                className="bg-secondary text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-secondary/90 transition-colors"
-              >
-                <Camera size={18} />
-                Câmera
-              </button>
-            </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+          <p className="text-gray-500 mb-4">
+            Selecione uma foto ou use a câmera
+          </p>
+          <div className="flex justify-center gap-4">
+            <label className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 transition-colors">
+              <span>Upload</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+            <button
+              onClick={openCamera}
+              className="bg-secondary text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-secondary/90 transition-colors"
+            >
+              <Camera size={18} />
+              Câmera
+            </button>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    );
+  };
+
+  return <div className="w-full max-w-md mx-auto">{renderContent()}</div>;
 };
 
 export default PhotoCameraUploader;

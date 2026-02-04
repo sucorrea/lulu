@@ -1,18 +1,15 @@
 'use client';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
 import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  MessageCircle,
-  X,
-} from 'lucide-react';
-import Image from 'next/image';
+  useCallback,
+  useEffect,
+  useMemo,
+  useOptimistic,
+  useState,
+  useTransition,
+} from 'react';
+
 import { useRouter } from 'next/navigation';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUserVerification } from '@/hooks/user-verify';
 import {
@@ -28,24 +25,34 @@ import {
   unlikePhoto,
 } from '@/services/galeriaLikes';
 import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
-import LikeUnlikeButton from './like-unlike-button';
-import EditDeleteButtom from './edit-delete-buttom';
-import { downloadPhoto, onGetPhotoId } from './utils';
+
+import PhotoItem from './photo-item';
+import PhotoModal from './photo-modal';
 import UploadPhotoGallery from './upload-photo-gallery';
+import { CommentProvider } from './comment-context';
+import { onGetPhotoId } from './utils';
 
 const SKELETON_COUNT = 15;
+
+interface LikeState {
+  likes: { [photo: string]: string[] };
+}
+
+type LikeAction = {
+  type: 'toggle';
+  photo: string;
+  userId: string;
+  isCurrentlyLiked: boolean;
+};
 
 const GaleriaFotos = () => {
   const { data, isLoading } = useGetGalleryImages();
   const photos = useMemo(() => data ?? [], [data]);
   const { user } = useUserVerification();
   const router = useRouter();
+  const [, startTransition] = useTransition();
 
   const [selected, setSelected] = useState<number | null>(null);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const [commentInput, setCommentInput] = useState('');
-  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-  const [editInput, setEditInput] = useState('');
 
   const [firestoreLikes, setFirestoreLikes] = useState<{
     [photo: string]: string[];
@@ -55,22 +62,37 @@ const GaleriaFotos = () => {
     [photo: string]: GaleriaComment[];
   }>({});
 
+  const [optimisticLikes, setOptimisticLike] = useOptimistic<
+    LikeState,
+    LikeAction
+  >({ likes: firestoreLikes }, (state, action) => {
+    if (action.type === 'toggle') {
+      const currentLikes = state.likes[action.photo] ?? [];
+      const newLikes = action.isCurrentlyLiked
+        ? currentLikes.filter((uid) => uid !== action.userId)
+        : [...currentLikes, action.userId];
+      return {
+        ...state,
+        likes: { ...state.likes, [action.photo]: newLikes },
+      };
+    }
+    return state;
+  });
+
   const getPhotoId = useCallback((photo: string) => onGetPhotoId(photo), []);
 
-  // Derived state: evita estado redundante e useEffects de sincronização
-  const likes = useMemo(
-    () => photos.map((photo) => firestoreLikes[photo]?.length ?? 0),
-    [photos, firestoreLikes]
-  );
-  const liked = useMemo(
-    () =>
-      user
-        ? photos.map(
-            (photo) => firestoreLikes[photo]?.includes(user.uid) ?? false
-          )
-        : Array.from({ length: photos.length }, () => false),
-    [photos, firestoreLikes, user]
-  );
+  const likesData = useMemo(() => {
+    const effectiveLikes = optimisticLikes.likes;
+    return photos.map((photo) => ({
+      count:
+        effectiveLikes[photo]?.length ?? firestoreLikes[photo]?.length ?? 0,
+      isLiked: user
+        ? (effectiveLikes[photo]?.includes(user.uid) ??
+          firestoreLikes[photo]?.includes(user.uid) ??
+          false)
+        : false,
+    }));
+  }, [photos, optimisticLikes.likes, firestoreLikes, user]);
 
   const commentCounts = useMemo(
     () => photos.map((photo) => firestoreComments[photo]?.length ?? 0),
@@ -109,50 +131,76 @@ const GaleriaFotos = () => {
   }, [photos, getPhotoId, applyCommentsForPhoto]);
 
   const handleLike = useCallback(
-    async (idx: number) => {
+    (idx: number) => {
       if (!user) {
         router.push('/login');
         return;
       }
       const photo = photos[idx];
-      if (!photo) {
-        return;
-      }
+      if (!photo) return;
+
       const photoId = getPhotoId(photo);
-      if (liked[idx]) {
-        await unlikePhoto(photoId, user.uid);
-      } else {
-        await likePhoto(photoId, user.uid);
-      }
+      const isCurrentlyLiked = likesData[idx]?.isLiked ?? false;
+
+      startTransition(async () => {
+        setOptimisticLike({
+          type: 'toggle',
+          photo,
+          userId: user.uid,
+          isCurrentlyLiked,
+        });
+
+        try {
+          if (isCurrentlyLiked) {
+            await unlikePhoto(photoId, user.uid);
+          } else {
+            await likePhoto(photoId, user.uid);
+          }
+        } catch (error) {
+          console.error('Error toggling like:', error);
+        }
+      });
     },
-    [user, router, photos, liked, getPhotoId]
+    [user, router, photos, getPhotoId, likesData, setOptimisticLike]
   );
 
   const handleComment = useCallback(
-    async (idx: number) => {
-      if (!user || !commentInput.trim()) {
-        return;
-      }
-      const photo = photos[idx];
-      if (!photo) {
-        return;
-      }
+    async (commentText: string) => {
+      if (!user) return;
+      if (selected === null || !commentText.trim()) return;
+      const photo = photos[selected];
+      if (!photo) return;
+
       const photoId = getPhotoId(photo);
       await addCommentToPhoto(photoId, {
         userId: user.uid,
         displayName: user.displayName ?? user.email ?? 'Usuário',
-        comment: commentInput.trim(),
+        comment: commentText.trim(),
       });
-      setCommentInput('');
     },
-    [user, commentInput, photos, getPhotoId]
+    [user, selected, photos, getPhotoId]
+  );
+
+  const handleEditComment = useCallback(
+    async (commentId: string, newText: string) => {
+      if (selected === null) return;
+      const photo = photos[selected];
+      if (!photo) return;
+      const photoId = getPhotoId(photo);
+      await editCommentOnPhoto(photoId, commentId, newText.trim());
+    },
+    [selected, photos, getPhotoId]
   );
 
   const handleDeleteComment = useCallback(
-    async (photoId: string, commentId: string) => {
+    async (commentId: string) => {
+      if (selected === null) return;
+      const photo = photos[selected];
+      if (!photo) return;
+      const photoId = getPhotoId(photo);
       await deleteCommentFromPhoto(photoId, commentId);
     },
-    []
+    [selected, photos, getPhotoId]
   );
 
   const handlePrev = useCallback(() => {
@@ -165,58 +213,11 @@ const GaleriaFotos = () => {
     setSelected((prev) => (prev === null ? null : (prev + 1) % photos.length));
   }, [photos.length]);
 
-  const handleEditCommentSelected = useCallback(
-    (commentSelected: GaleriaComment) => {
-      setEditingCommentId(commentSelected.id);
-      setEditInput(commentSelected.comment);
-    },
-    []
-  );
-
-  const handleDownload = useCallback((url: string) => {
-    downloadPhoto(url);
-  }, []);
-
   const selectedPhoto = selected === null ? null : (photos[selected] ?? null);
-  const selectedPhotoId = selectedPhoto ? getPhotoId(selectedPhoto) : null;
 
-  const handleSaveEdit = useCallback(async () => {
-    if (
-      selectedPhotoId == null ||
-      editingCommentId == null ||
-      editInput.trim() === ''
-    )
-      return;
-    await editCommentOnPhoto(
-      selectedPhotoId,
-      editingCommentId,
-      editInput.trim()
-    );
-    setEditingCommentId(null);
-  }, [selectedPhotoId, editingCommentId, editInput]);
-
-  const handleDeleteCommentInModal = useCallback(
-    async (commentId: string) => {
-      if (selectedPhotoId == null) return;
-      await handleDeleteComment(selectedPhotoId, commentId);
-    },
-    [selectedPhotoId, handleDeleteComment]
-  );
-
-  useEffect(() => {
-    if (selected === null) return;
-    const onEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelected(null);
-    };
-    document.addEventListener('keydown', onEscape);
-    return () => document.removeEventListener('keydown', onEscape);
-  }, [selected]);
-
-  useEffect(() => {
-    if (selected !== null && dialogRef.current?.showModal) {
-      dialogRef.current.showModal();
-    }
-  }, [selected]);
+  const handleCloseModal = useCallback(() => {
+    setSelected(null);
+  }, []);
 
   return (
     <div className="mx-auto max-w-3xl p-4 md:p-6">
@@ -224,189 +225,65 @@ const GaleriaFotos = () => {
         <h1 className="lulu-header mb-0 text-2xl md:text-3xl">Galeria</h1>
         <UploadPhotoGallery />
       </div>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+
+      <div
+        className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6"
+        role="list"
+        aria-label="Galeria de fotos"
+      >
         {isLoading
           ? Array.from({ length: SKELETON_COUNT }, (_, idx) => (
               <div
                 key={idx}
                 className="relative group"
                 data-testid="skeleton-item"
+                role="listitem"
+                aria-label="Carregando foto"
               >
-                <button
-                  onClick={() => setSelected(idx)}
-                  className="block w-full aspect-square overflow-hidden rounded shadow"
-                  disabled
-                >
+                <div className="block w-full aspect-square overflow-hidden rounded shadow">
                   <Skeleton className="w-full aspect-square" />
-                </button>
+                </div>
               </div>
             ))
           : photos.map((photo, idx) => (
-              <div key={photo} className="relative group">
-                <button
-                  onClick={() => setSelected(idx)}
-                  className="block w-full aspect-square overflow-hidden rounded shadow"
-                >
-                  <Image
-                    src={photo}
-                    alt={photo}
-                    width={300}
-                    height={300}
-                    className="object-cover w-full h-full"
-                  />
-                </button>
-                <div className="mt-1 flex items-center justify-between">
-                  <LikeUnlikeButton
-                    handleLike={handleLike}
-                    liked={liked}
-                    likes={likes}
-                    index={idx}
-                  />
-                  <button
-                    onClick={() => setSelected(idx)}
-                    className="flex items-center justify-center gap-1 rounded-full px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    aria-label="Ver comentários da foto"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    <span>{commentCounts[idx] ?? 0}</span>
-                  </button>
-                </div>
+              <div key={photo} role="listitem">
+                <PhotoItem
+                  photo={photo}
+                  index={idx}
+                  liked={likesData[idx]?.isLiked ?? false}
+                  likes={likesData[idx]?.count ?? 0}
+                  commentCount={commentCounts[idx] ?? 0}
+                  onSelect={setSelected}
+                  onLike={handleLike}
+                />
               </div>
             ))}
       </div>
-      {selected !== null && selectedPhoto && (
-        <dialog
-          ref={dialogRef}
-          open
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center border-0 bg-black/80 px-4 [&::backdrop]:bg-black/80"
-          aria-label="Visualização da foto"
-          onClose={() => setSelected(null)}
-          data-testid="photo-dialog"
-        >
-          <button
-            className="absolute right-4 top-4 text-2xl text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-black/80"
-            onClick={() => setSelected(null)}
-            aria-label="Fechar"
-          >
-            <X />
-          </button>
-          <div className="relative flex w-full max-w-md items-center justify-center">
-            <button
-              onClick={handlePrev}
-              aria-label="Foto anterior"
-              className="absolute left-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center"
-              style={{ left: 8 }}
-            >
-              <ChevronLeft />
-            </button>
-            <div className="flex flex-1 justify-center">
-              <Image
-                src={selectedPhoto}
-                alt={selectedPhoto}
-                width={400}
-                height={400}
-                className="object-contain rounded max-h-[60vh] max-w-full"
-              />
-            </div>
-            <button
-              onClick={handleNext}
-              aria-label="Próxima foto"
-              className="absolute right-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center"
-              style={{ right: 8 }}
-            >
-              <ChevronRight />
-            </button>
-          </div>
-          <div className="mt-2 w-full max-w-md rounded-2xl border border-border bg-card p-4 shadow-lulu-md">
-            <div className="mb-2 flex justify-between gap-4">
-              <LikeUnlikeButton
-                handleLike={handleLike}
-                liked={liked}
-                likes={likes}
-                index={selected}
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleDownload(selectedPhoto)}
-                aria-label="Baixar foto"
-              >
-                commentItem.userId === user?.uid
-                <Download className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mb-2 max-h-24 overflow-y-auto">
-              {firestoreComments[selectedPhoto]?.map((commentItem, i) => {
-                const isAuthor = commentItem.userId === user?.uid;
-                const isEditing = editingCommentId === commentItem.id;
-                return (
-                  <div
-                    key={commentItem.id ?? i}
-                    className="text-sm text-gray-700 border-b py-1 flex items-center justify-between gap-2"
-                  >
-                    <div className="flex-1">
-                      <span className="font-semibold mr-1">
-                        {commentItem.displayName}:
-                      </span>
-                      {isEditing ? (
-                        <div>
-                          <Input
-                            value={editInput}
-                            onChange={(e) => setEditInput(e.target.value)}
-                            className="px-1 py-0.5 text-sm"
-                          />
-                          <Button
-                            size="sm"
-                            className="ml-1 px-2 py-0.5"
-                            onClick={() => handleSaveEdit()}
-                          >
-                            Salvar
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="ml-1 px-2 py-0.5"
-                            onClick={() => setEditingCommentId(null)}
-                          >
-                            Cancelar
-                          </Button>
-                        </div>
-                      ) : (
-                        <span>{commentItem.comment}</span>
-                      )}
-                    </div>
-                    {isAuthor && !isEditing && (
-                      <EditDeleteButtom
-                        onEdit={handleEditCommentSelected}
-                        onDelete={handleDeleteCommentInModal}
-                        comentSelected={commentItem}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                value={commentInput}
-                onChange={(e) => setCommentInput(e.target.value)}
-                className="border rounded px-2 py-1 flex-1 text-sm"
-                placeholder={
-                  user ? 'Comente algo...' : 'Faça login para comentar'
-                }
-                disabled={user == null}
-              />
-              <Button
-                onClick={() => handleComment(selected)}
-                disabled={!user || !commentInput.trim()}
-              >
-                Enviar
-              </Button>
-            </div>
-          </div>
-        </dialog>
-      )}
+
+      <CommentProvider
+        onSubmitComment={handleComment}
+        onEditComment={handleEditComment}
+        onDeleteComment={handleDeleteComment}
+      >
+        <PhotoModal
+          isOpen={selected !== null && selectedPhoto !== null}
+          selectedIndex={selected ?? 0}
+          totalPhotos={photos.length}
+          photo={selectedPhoto ?? ''}
+          liked={
+            selected !== null ? (likesData[selected]?.isLiked ?? false) : false
+          }
+          likes={selected !== null ? (likesData[selected]?.count ?? 0) : 0}
+          comments={
+            selectedPhoto ? (firestoreComments[selectedPhoto] ?? []) : []
+          }
+          userId={user?.uid ?? null}
+          onClose={handleCloseModal}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          onLike={handleLike}
+        />
+      </CommentProvider>
     </div>
   );
 };
