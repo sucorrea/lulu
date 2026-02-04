@@ -2,6 +2,7 @@
 import { useCallback, useState } from 'react';
 
 import { CameraIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useDisclosure } from '@/hooks/use-disclosure';
@@ -29,9 +30,14 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
       { file, participantId: String(participant.id) },
       {
         onSuccess: () => {
+          toast.success('Foto alterada com sucesso', {
+            position: 'bottom-center',
+          });
           setFile(null);
           onClose();
         },
+        onError: (err) =>
+          toast.error(err?.message ?? 'Erro ao alterar foto'),
       }
     );
   }, [mutate, file, participant.id, onClose]);

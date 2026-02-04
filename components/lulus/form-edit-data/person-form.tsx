@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -15,28 +16,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+
+import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
 import { Person, PixTypes } from '../types';
 import { NameKey } from '../utils';
-import { personSchema } from './validation';
-import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
 import { defaultValuesPerson } from './utils';
+import { personSchema } from './validation';
 
 export type PersonFormData = z.infer<typeof personSchema>;
 
 interface PersonFormProps {
-  initialData: Person;
+  initialData: Person | null;
 }
 
 const PersonForm = ({ initialData }: PersonFormProps) => {
   const router = useRouter();
-  const defaultValues = defaultValuesPerson(initialData);
-  const { mutate } = useUpdateParticipantData(String(initialData.id));
+  const defaultValues = defaultValuesPerson(initialData ?? null);
+  const { mutate } = useUpdateParticipantData(String(initialData?.id));
   const {
     control,
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<PersonFormData>({
     resolver: zodResolver(personSchema),
     defaultValues,
@@ -45,6 +47,9 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
   const selectedPixKeyType = watch('pix_key_type');
 
   function onSubmit(data: PersonFormData) {
+    if (!initialData) {
+      return;
+    }
     mutate(
       {
         updatedData: {
@@ -52,12 +57,22 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           date: new Date(data.date).toISOString(),
         },
       },
-      { onSuccess: () => router.push('/') }
+      {
+        onSuccess: () => {
+          toast.success('Dados atualizados com sucesso', {
+            position: 'bottom-center',
+          });
+          router.push('/');
+        },
+        onError: () => {
+          toast.error('Erro ao atualizar dados');
+        },
+      }
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 md:space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 md:space-y-4">
       <div>
         <Label htmlFor="fullName">Nome completo</Label>
         <Input
@@ -68,10 +83,8 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           className="input"
           required
           maxLength={80}
+          error={errors.fullName?.message}
         />
-        {errors.fullName && (
-          <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>
-        )}
       </div>
 
       <div>
@@ -82,12 +95,9 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           {...register('date')}
           className="input"
           required
+          error={errors.date?.message}
         />
-        {errors.date && (
-          <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
-        )}
       </div>
-
       <div>
         <Label htmlFor="email">Email</Label>
         <Input
@@ -96,12 +106,9 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           {...register('email')}
           placeholder="Email"
           className="input"
+          error={errors.email?.message}
         />
-        {errors.email && (
-          <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-        )}
       </div>
-
       <div>
         <Label htmlFor="phone">Celular</Label>
         <Input
@@ -110,12 +117,9 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           {...register('phone')}
           placeholder="Telefone"
           className="input"
+          error={errors.phone?.message}
         />
-        {errors.phone && (
-          <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
-        )}
       </div>
-
       <div>
         <Label htmlFor="instagram">Instagram</Label>
         <Input
@@ -124,13 +128,9 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           {...register('instagram')}
           placeholder="Instagram"
           className="input"
-          disabled={!!initialData.instagram}
+          disabled={!!initialData?.instagram}
+          error={errors.instagram?.message}
         />
-        {errors.instagram && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.instagram.message}
-          </p>
-        )}
       </div>
 
       <div className="border-2 rounded-sm p-3 md:p-4 space-y-3">
@@ -177,12 +177,8 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
             placeholder="Chave Pix"
             className="input"
             disabled={selectedPixKeyType === 'none'}
+            error={errors.pix_key?.message}
           />
-          {errors.pix_key && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.pix_key.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -194,7 +190,11 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
         >
           Voltar
         </Button>
-        <Button type="submit" className="btn btn-primary flex-1 md:flex-none">
+        <Button
+          type="submit"
+          className="btn btn-primary flex-1 md:flex-none"
+          disabled={!isDirty}
+        >
           Salvar
         </Button>
       </div>

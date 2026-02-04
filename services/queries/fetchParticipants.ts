@@ -16,7 +16,7 @@ export async function fetchParticipants(): Promise<Person[]> {
   return data;
 }
 
-export function useGettAllParticipants() {
+export function useGetAllParticipants() {
   return useQuery<Person[]>({
     queryKey: ['get-all-participants'],
     queryFn: fetchParticipants,
@@ -53,7 +53,6 @@ export async function fetchGalleryImages() {
 
   const galleryRef = ref(storage, 'gallery');
   const result = await listAll(galleryRef);
-  console.log('result', result);
   const urls = await Promise.all(
     result.items.map((itemRef) => getDownloadURL(itemRef))
   );

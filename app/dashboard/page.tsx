@@ -3,14 +3,14 @@
 import BounceLoader from 'react-spinners/BounceLoader';
 
 import { useUserVerification } from '@/hooks/user-verify';
-import { useGettAllParticipants } from '@/services/queries/fetchParticipants';
+import { useGetAllParticipants } from '@/services/queries/fetchParticipants';
 import DashboardPage from '@/components/modules/dashboard';
 
 const Dashboard = () => {
   const { isLoading } = useUserVerification();
 
   const { data: participants, isLoading: isLoadingParticipants } =
-    useGettAllParticipants();
+    useGetAllParticipants();
 
   if (isLoading || isLoadingParticipants)
     return (

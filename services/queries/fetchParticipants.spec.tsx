@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   fetchParticipants,
-  useGettAllParticipants,
+  useGetAllParticipants,
   fetchParticipantById,
   useGetParticipantById,
   fetchGalleryImages,
@@ -37,11 +37,11 @@ vi.mock('firebase/storage', () => ({
   listAll: (ref: unknown) => mockListAll(ref),
 }));
 
-const createWrapper = () => {
+function createWrapper(options?: { retry?: number | false }) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false,
+        retry: options?.retry ?? false,
       },
     },
   });
@@ -50,7 +50,7 @@ const createWrapper = () => {
   );
   Wrapper.displayName = 'TestWrapper';
   return Wrapper;
-};
+}
 
 describe('fetchParticipants', () => {
   beforeEach(() => {
@@ -83,8 +83,8 @@ describe('fetchParticipants', () => {
 
     it('should return empty array when no participants exist', async () => {
       mockGetDocs.mockResolvedValue({
-        forEach: (callback: (doc: { data: () => unknown }) => void) => {
-          void callback;
+        forEach: (_: (doc: { data: () => unknown }) => void) => {
+          // Empty snapshot: forEach runs but callback is never called
         },
       });
 
@@ -95,7 +95,7 @@ describe('fetchParticipants', () => {
     });
   });
 
-  describe('useGettAllParticipants', () => {
+  describe('useGetAllParticipants', () => {
     it('should return query with participants data', async () => {
       const mockData = [{ id: 1, name: 'John Doe', fullName: 'John Doe' }];
 
@@ -109,7 +109,7 @@ describe('fetchParticipants', () => {
         },
       });
 
-      const { result } = renderHook(() => useGettAllParticipants(), {
+      const { result } = renderHook(() => useGetAllParticipants(), {
         wrapper: createWrapper(),
       });
 
@@ -123,7 +123,7 @@ describe('fetchParticipants', () => {
     it('should handle loading state', () => {
       mockGetDocs.mockImplementation(() => new Promise(() => {}));
 
-      const { result } = renderHook(() => useGettAllParticipants(), {
+      const { result } = renderHook(() => useGetAllParticipants(), {
         wrapper: createWrapper(),
       });
 
@@ -135,22 +135,8 @@ describe('fetchParticipants', () => {
       const errorMessage = 'Failed to fetch';
       mockGetDocs.mockRejectedValue(new Error(errorMessage));
 
-      const queryClient = new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: 2,
-          },
-        },
-      });
-
-      const wrapper = ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      );
-
-      const { result } = renderHook(() => useGettAllParticipants(), {
-        wrapper,
+      const { result } = renderHook(() => useGetAllParticipants(), {
+        wrapper: createWrapper({ retry: 2 }),
       });
 
       await waitFor(
@@ -300,21 +286,12 @@ describe('fetchParticipants', () => {
         .mockResolvedValueOnce(mockUrls[0])
         .mockResolvedValueOnce(mockUrls[1]);
 
-      const consoleLogSpy = vi
-        .spyOn(console, 'log')
-        .mockImplementation(() => {});
-
       const result = await fetchGalleryImages();
 
       expect(result).toEqual(mockUrls);
       expect(mockRef).toHaveBeenCalledWith({}, 'gallery');
       expect(mockListAll).toHaveBeenCalledTimes(1);
       expect(mockGetDownloadURL).toHaveBeenCalledTimes(2);
-      expect(consoleLogSpy).toHaveBeenCalledWith('result', {
-        items: mockItems,
-      });
-
-      consoleLogSpy.mockRestore();
     });
 
     it('should return empty array when no images exist', async () => {
@@ -322,16 +299,10 @@ describe('fetchParticipants', () => {
         items: [],
       });
 
-      const consoleLogSpy = vi
-        .spyOn(console, 'log')
-        .mockImplementation(() => {});
-
       const result = await fetchGalleryImages();
 
       expect(result).toEqual([]);
       expect(mockListAll).toHaveBeenCalledTimes(1);
-
-      consoleLogSpy.mockRestore();
     });
   });
 
@@ -384,22 +355,8 @@ describe('fetchParticipants', () => {
       const errorMessage = 'Failed to fetch images';
       mockListAll.mockRejectedValue(new Error(errorMessage));
 
-      const queryClient = new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: 2,
-          },
-        },
-      });
-
-      const wrapper = ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      );
-
       const { result } = renderHook(() => useGetGalleryImages(), {
-        wrapper,
+        wrapper: createWrapper({ retry: 2 }),
       });
 
       await waitFor(
@@ -423,25 +380,9 @@ describe('fetchParticipants', () => {
 
       mockGetDownloadURL.mockResolvedValue(mockUrls[0]);
 
-      const consoleLogSpy = vi
-        .spyOn(console, 'log')
-        .mockImplementation(() => {});
-
-      const queryClient = new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: 2,
-          },
-        },
+      const { result } = renderHook(() => useGetGalleryImages(), {
+        wrapper: createWrapper({ retry: 2 }),
       });
-
-      const wrapper = ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      );
-
-      const { result } = renderHook(() => useGetGalleryImages(), { wrapper });
 
       await waitFor(
         () => {
@@ -452,8 +393,6 @@ describe('fetchParticipants', () => {
 
       expect(result.current.data).toEqual(mockUrls);
       expect(mockListAll).toHaveBeenCalledTimes(3);
-
-      consoleLogSpy.mockRestore();
     });
   });
 });

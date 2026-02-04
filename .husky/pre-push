@@ -1,0 +1,52 @@
+echo "🚀 Running pre-push validations..."
+echo ""
+
+# 1. Lint
+echo "🔍 Step 1/4: Running ESLint..."
+yarn lint
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ Lint failed!"
+  echo "Please fix the linting issues before pushing."
+  exit 1
+fi
+echo "✅ Lint completed!"
+echo ""
+
+# 2. TypeScript
+echo "🔎 Step 2/4: Running TypeScript type-check..."
+yarn typecheck
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ TypeScript type-check failed!"
+  echo "Please fix the type errors before pushing."
+  exit 1
+fi
+echo "✅ TypeScript type-check passed!"
+echo ""
+
+# 3. Tests
+echo "🧪 Step 3/4: Running tests..."
+yarn test
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ Tests failed!"
+  echo "Please fix the failing tests before pushing."
+  exit 1
+fi
+echo "✅ All tests passed!"
+echo ""
+
+# 4. Build
+echo "🏗️  Step 4/4: Building..."
+yarn build
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ Build failed!"
+  echo "Please fix the build errors before pushing."
+  exit 1
+fi
+echo "✅ Build passed!"
+echo ""
+echo "✅ All validations passed! Proceeding with push."
+exit 0

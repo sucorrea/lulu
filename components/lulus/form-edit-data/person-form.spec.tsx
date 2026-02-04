@@ -294,7 +294,7 @@ describe('PersonForm', () => {
     const { container } = render(<PersonForm initialData={mockPerson} />);
 
     const form = container.querySelector('form');
-    expect(form?.className).toContain('space-y-3');
+    expect(form?.className).toContain('space-y-2 md:space-y-4');
   });
 
   it('should render pix section with border', () => {
