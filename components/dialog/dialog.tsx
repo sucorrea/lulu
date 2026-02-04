@@ -36,7 +36,6 @@ export function GenericDialog({
         aria-describedby={title}
         aria-description={description}
       >
-        {/* Dialog Header */}
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

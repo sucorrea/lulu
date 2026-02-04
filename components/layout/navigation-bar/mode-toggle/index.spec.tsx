@@ -267,7 +267,6 @@ describe('ThemeToggle', () => {
     const button = screen.getByRole('button');
     fireEvent.click(button);
 
-    // Should default to dark
     expect(setTheme).toHaveBeenCalled();
   });
 

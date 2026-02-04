@@ -185,7 +185,6 @@ describe('NavbarBrand', () => {
     rerender(<NavbarBrand currentYear={2026} />);
 
     const secondRender = screen.getByText('Luluzinha 2026');
-    // Memo should prevent re-render with same props
     expect(firstNode).toBe(secondRender);
   });
 });

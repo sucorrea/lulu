@@ -229,11 +229,9 @@ describe('EditDeleteButtom', () => {
 
       const buttons = screen.getAllByRole('button');
 
-      // Edit button (first)
       fireEvent.click(buttons[0]);
       expect(mockOnEdit).toHaveBeenCalled();
 
-      // Delete button (second)
       fireEvent.click(buttons[1]);
       expect(mockOnDelete).toHaveBeenCalled();
     });

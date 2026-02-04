@@ -88,7 +88,6 @@ const PhotoModal = memo(function PhotoModal({
       onClose={onClose}
       data-testid="photo-dialog"
     >
-      {/* Live region for screen reader announcements */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         Foto {selectedIndex + 1} de {totalPhotos}
       </div>

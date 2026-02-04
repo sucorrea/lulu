@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import DataTableInputFilter from './data-table-input-filter';
 
-// Mock data type
 interface TestData {
   id: string;
   name: string;
@@ -36,7 +35,6 @@ describe('DataTableInputFilter', () => {
   let mockTable: any;
 
   beforeEach(() => {
-    // Create a mock table instance
     mockTable = {
       getColumn: vi.fn((columnId: string) => ({
         getFilterValue: vi.fn().mockReturnValue(''),

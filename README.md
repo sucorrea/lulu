@@ -1,4 +1,3 @@
-
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=sucorrea_lulu)](https://sonarcloud.io/summary/new_code?id=sucorrea_lulu)
 
 # 🎀 Lulu

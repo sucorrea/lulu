@@ -14,15 +14,15 @@ export const downloadPhoto = async (url: string) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
+    const blobUrl = globalThis.URL.createObjectURL(blob);
 
     const a = document.createElement('a');
     a.href = blobUrl;
     a.download = url.split('/').pop() ?? 'photo.jpg';
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(blobUrl);
+    a.remove();
+    globalThis.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error('Erro ao baixar a foto:', error);
     window.open(url, '_blank');

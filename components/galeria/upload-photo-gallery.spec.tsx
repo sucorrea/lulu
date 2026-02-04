@@ -52,7 +52,6 @@ vi.mock('lucide-react', () => ({
   Upload: () => <span data-testid="upload-icon">Upload Icon</span>,
 }));
 
-// Mock the dynamic imports for firebase
 vi.mock('firebase/storage', () => ({
   ref: vi.fn(),
   uploadBytes: vi.fn().mockResolvedValue({}),
@@ -191,20 +190,14 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should not render upload section when user is not logged in', () => {
-      // Re-mock with no user
       vi.doMock('@/hooks/user-verify', () => ({
         useUserVerification: () => ({
           user: null,
         }),
       }));
 
-      // This would require reimporting, but in the test we can't easily do that
-      // So we test the current implementation behavior
       render(<UploadPhotoGallery />);
 
-      // Component renders regardless, check that it's present
-
-      // Button might render, verify component loads
       expect(screen.getByTestId('generic-dialog')).toBeInTheDocument();
     });
   });
@@ -221,7 +214,7 @@ describe('UploadPhotoGallery', () => {
       render(<UploadPhotoGallery />);
 
       const dialog = screen.getByTestId('generic-dialog');
-      // Dialog should be rendered - it's a mocked component so we just verify it exists
+
       expect(dialog).toBeInTheDocument();
     });
   });
@@ -237,7 +230,6 @@ describe('UploadPhotoGallery', () => {
     it('should have fragment wrapping both button and dialog', () => {
       render(<UploadPhotoGallery />);
 
-      // Check both components exist in the same render
       expect(
         screen.getByRole('button', { name: /Enviar foto/i })
       ).toBeInTheDocument();

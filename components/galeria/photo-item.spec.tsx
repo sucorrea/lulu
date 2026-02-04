@@ -290,7 +290,6 @@ describe('PhotoItem', () => {
       renderPhotoItem(2);
 
       const image = screen.getByAltText('Foto 3 da galeria');
-      // Priority is a Next.js Image prop that affects rendering
       expect(image).toBeInTheDocument();
     });
   });

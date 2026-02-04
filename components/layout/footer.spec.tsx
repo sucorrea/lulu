@@ -237,7 +237,6 @@ describe('Footer', () => {
     const dashboardLink = screen.getByTestId('link-/dashboard');
     const homeLink = screen.getByTestId('link-/');
 
-    // Only exact match should be primary
     expect(homeLink).toHaveClass('text-muted-foreground');
     expect(dashboardLink).toHaveClass('text-muted-foreground');
   });

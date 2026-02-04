@@ -1,17 +1,17 @@
-import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
+import { randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
 
-const KEY = Buffer.from(process.env.NEXT_PUBLIC_ENCRYPTION_KEY!, 'hex'); // 32 bytes = 256 bits
+const KEY = Buffer.from(process.env.NEXT_PUBLIC_ENCRYPTION_KEY!, 'hex');
 
 function toUrlSafe(buf: Buffer) {
   return buf
     .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+    .replaceAll('+', '-')
+    .replaceAll('/', '_')
+    .replaceAll('=', '');
 }
 
 function fromUrlSafe(s: string) {
-  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  s = s.replaceAll('-', '+').replaceAll('_', '/');
   while (s.length % 4) s += '=';
   return Buffer.from(s, 'base64');
 }
@@ -26,9 +26,9 @@ export function encryptId(id: string) {
 
 export function decryptId(token: string) {
   const data = fromUrlSafe(token);
-  const iv = data.slice(0, 12);
-  const tag = data.slice(12, 28);
-  const encrypted = data.slice(28);
+  const iv = data.subarray(0, 12);
+  const tag = data.subarray(12, 28);
+  const encrypted = data.subarray(28);
   const decipher = createDecipheriv('aes-256-gcm', KEY, iv);
   decipher.setAuthTag(tag);
   const out = Buffer.concat([decipher.update(encrypted), decipher.final()]);

@@ -170,8 +170,6 @@ describe('GenericDialog', () => {
     const onOpenChange = vi.fn();
     render(<GenericDialog {...defaultProps} onOpenChange={onOpenChange} />);
 
-    // In a real scenario, this would be triggered by the Dialog component
-    // For this test, we verify the callback is passed correctly
     expect(typeof onOpenChange).toBe('function');
   });
 
@@ -246,7 +244,6 @@ describe('GenericDialog', () => {
   it('should handle empty description string', () => {
     render(<GenericDialog {...defaultProps} description="" />);
 
-    // Empty description should not render the description element
     const desc = screen.queryByTestId('dialog-description');
     expect(desc).not.toBeInTheDocument();
   });

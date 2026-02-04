@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { onGetPhotoId, downloadPhoto } from './utils';
 
 describe('utils', () => {
@@ -69,7 +69,6 @@ describe('utils', () => {
 
       const result = onGetPhotoId(pathString);
 
-      // Path-like strings are not valid URLs, so they're returned as-is
       expect(result).toBe('/path/to/photo.jpg');
     });
 
@@ -117,18 +116,15 @@ describe('utils', () => {
     beforeEach(() => {
       vi.clearAllMocks();
 
-      // Mock fetch
       fetchMock = vi.fn();
       globalThis.fetch = fetchMock;
 
-      // Mock URL.createObjectURL
       createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url');
       globalThis.URL.createObjectURL = createObjectURLMock;
-      // Mock URL.revokeObjectURL
+
       revokeObjectURLMock = vi.fn();
       globalThis.URL.revokeObjectURL = revokeObjectURLMock;
 
-      // Mock document.createElement
       createElementMock = vi.fn((tag) => {
         const element = document.createElement(tag);
         if (tag === 'a') {
@@ -138,10 +134,8 @@ describe('utils', () => {
       });
       vi.spyOn(document, 'createElement').mockImplementation(createElementMock);
 
-      // Mock console.error
       consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      // Mock window.open
       vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     });
 
@@ -160,7 +154,6 @@ describe('utils', () => {
       await downloadPhoto(url);
 
       expect(fetchMock).toHaveBeenCalledWith(url);
-      // The function should complete without errors
     });
 
     it('should create anchor element with correct href and download attribute', async () => {
@@ -252,7 +245,6 @@ describe('utils', () => {
       const url = 'https://example.com/photo.jpg';
       await downloadPhoto(url);
 
-      // Function completes successfully
       expect(fetchMock).toHaveBeenCalled();
     });
 
@@ -267,7 +259,6 @@ describe('utils', () => {
       const url = 'https://example.com/photo.jpg';
       await downloadPhoto(url);
 
-      // Function completes successfully without errors
       expect(fetchMock).toHaveBeenCalled();
     });
 
@@ -281,7 +272,6 @@ describe('utils', () => {
       const url = 'https://example.com/photo.jpg';
       await downloadPhoto(url);
 
-      // Function completes successfully
       expect(fetchMock).toHaveBeenCalled();
     });
 
@@ -349,8 +339,3 @@ describe('utils', () => {
     });
   });
 });
-
-// Add this helper at the end since we use afterEach
-function afterEach(fn: () => void) {
-  // This is handled by vitest
-}

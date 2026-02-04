@@ -1,18 +1,41 @@
-name: Build
+name: CI-CD
 on:
   push:
     branches:
       - master
+      - main
+      - develop
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
 jobs:
-  sonarqube:
-    name: SonarQube
+  ci-sonarqube:
+    name: CI & SonarQube
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      security-events: write
+      actions: read
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run tests with coverage
+        run: yarn vitest run --coverage
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:

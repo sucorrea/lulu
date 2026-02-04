@@ -135,7 +135,7 @@ describe('TableHeader', () => {
 
     render(<TableHeader table={mockTable as any} />);
     const heads = screen.getAllByTestId('table-head');
-    // Placeholder still renders TableHead, just without content
+
     expect(heads.length).toBe(2);
     expect(screen.getByText('ID')).toBeInTheDocument();
   });
@@ -191,7 +191,7 @@ describe('TableHeader', () => {
 
     render(<TableHeader table={mockTable as any} />);
     const head = screen.getByTestId('table-head');
-    // Component renders the header with colSpan in mock data
+
     expect(head).toBeInTheDocument();
   });
 

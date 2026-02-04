@@ -1,7 +1,6 @@
 import { months } from './constants';
 import { Person, PixTypes } from './types';
 
-/** Photo URL with cache-busting so updated Firebase images load immediately */
 export function getParticipantPhotoUrl(person: Person): string {
   const base = person.photoURL ?? person.picture ?? '';
   if (!base) return '';
@@ -30,45 +29,79 @@ type SignoValues = {
   icon: string;
 };
 
+const ZODIAC_SIGNS: SignoValues[] = [
+  { value: 'aries', label: 'Áries', icon: 'noto-v1:aries' },
+  { value: 'touro', label: 'Touro', icon: 'noto-v1:taurus' },
+  { value: 'gemeos', label: 'Gêmeos', icon: 'noto-v1:gemini' },
+  { value: 'cancer', label: 'Câncer', icon: 'noto-v1:cancer' },
+  { value: 'leao', label: 'Leão', icon: 'noto-v1:leo' },
+  { value: 'virgem', label: 'Virgem', icon: 'noto-v1:virgo' },
+  { value: 'libra', label: 'Libra', icon: 'noto-v1:libra' },
+  { value: 'escorpiao', label: 'Escorpião', icon: 'noto-v1:scorpio' },
+  { value: 'sagitario', label: 'Sagitário', icon: 'noto-v1:sagittarius' },
+  { value: 'capricornio', label: 'Capricórnio', icon: 'noto-v1:capricorn' },
+  { value: 'aquario', label: 'Aquário', icon: 'noto-v1:aquarius' },
+  { value: 'peixes', label: 'Peixes', icon: 'noto-v1:pisces' },
+];
+
+const ZODIAC_DATES: Array<{
+  sign: number;
+  startDay: number;
+  startMonth: number;
+  endDay: number;
+  endMonth: number;
+}> = [
+  { sign: 0, startDay: 21, startMonth: 3, endDay: 20, endMonth: 4 }, // Áries
+  { sign: 1, startDay: 21, startMonth: 4, endDay: 20, endMonth: 5 }, // Touro
+  { sign: 2, startDay: 21, startMonth: 5, endDay: 20, endMonth: 6 }, // Gêmeos
+  { sign: 3, startDay: 21, startMonth: 6, endDay: 22, endMonth: 7 }, // Câncer
+  { sign: 4, startDay: 23, startMonth: 7, endDay: 22, endMonth: 8 }, // Leão
+  { sign: 5, startDay: 23, startMonth: 8, endDay: 22, endMonth: 9 }, // Virgem
+  { sign: 6, startDay: 23, startMonth: 9, endDay: 22, endMonth: 10 }, // Libra
+  { sign: 7, startDay: 23, startMonth: 10, endDay: 21, endMonth: 11 }, // Escorpião
+  { sign: 8, startDay: 22, startMonth: 11, endDay: 21, endMonth: 12 }, // Sagitário
+  { sign: 9, startDay: 22, startMonth: 12, endDay: 20, endMonth: 1 }, // Capricórnio
+  { sign: 10, startDay: 21, startMonth: 1, endDay: 18, endMonth: 2 }, // Aquário
+  { sign: 11, startDay: 19, startMonth: 2, endDay: 20, endMonth: 3 }, // Peixes
+];
+
+function isDateInRange(
+  day: number,
+  month: number,
+  startDay: number,
+  startMonth: number,
+  endDay: number,
+  endMonth: number
+): boolean {
+  if (startMonth === endMonth) {
+    return month === startMonth && day >= startDay && day <= endDay;
+  }
+  return (
+    (month === startMonth && day >= startDay) ||
+    (month === endMonth && day <= endDay)
+  );
+}
+
 export function getSigno(dataNascimento: Date): SignoValues {
   const dia = dataNascimento.getDate();
   const mes = dataNascimento.getMonth() + 1;
 
-  if ((dia >= 21 && mes === 3) || (dia <= 20 && mes === 4)) {
-    return { value: 'aries', label: 'Áries', icon: 'noto-v1:aries' };
-  } else if ((dia >= 21 && mes === 4) || (dia <= 20 && mes === 5)) {
-    return { value: 'touro', label: 'Touro', icon: 'noto-v1:taurus' };
-  } else if ((dia >= 21 && mes === 5) || (dia <= 20 && mes === 6)) {
-    return { value: 'gemeos', label: 'Gêmeos', icon: 'noto-v1:gemini' };
-  } else if ((dia >= 21 && mes === 6) || (dia <= 22 && mes === 7)) {
-    return { value: 'cancer', label: 'Câncer', icon: 'noto-v1:cancer' };
-  } else if ((dia >= 23 && mes === 7) || (dia <= 22 && mes === 8)) {
-    return { value: 'leao', label: 'Leão', icon: 'noto-v1:leo' };
-  } else if ((dia >= 23 && mes === 8) || (dia <= 22 && mes === 9)) {
-    return { value: 'virgem', label: 'Virgem', icon: 'noto-v1:virgo' };
-  } else if ((dia >= 23 && mes === 9) || (dia <= 22 && mes === 10)) {
-    return { value: 'libra', label: 'Libra', icon: 'noto-v1:libra' };
-  } else if ((dia >= 23 && mes === 10) || (dia <= 21 && mes === 11)) {
-    return { value: 'escorpiao', label: 'Escorpião', icon: 'noto-v1:scorpio' };
-  } else if ((dia >= 22 && mes === 11) || (dia <= 21 && mes === 12)) {
-    return {
-      value: 'sagitario',
-      label: 'Sagitário',
-      icon: 'noto-v1:sagittarius',
-    };
-  } else if ((dia >= 22 && mes === 12) || (dia <= 20 && mes === 1)) {
-    return {
-      value: 'capricornio',
-      label: 'Capricórnio',
-      icon: 'noto-v1:capricorn',
-    };
-  } else if ((dia >= 21 && mes === 1) || (dia <= 18 && mes === 2)) {
-    return { value: 'aquario', label: 'Aquário', icon: 'noto-v1:aquarius' };
-  } else if ((dia >= 19 && mes === 2) || (dia <= 20 && mes === 3)) {
-    return { value: 'peixes', label: 'Peixes', icon: 'noto-v1:pisces' };
-  } else {
+  const zodiacEntry = ZODIAC_DATES.find((zodiac) =>
+    isDateInRange(
+      dia,
+      mes,
+      zodiac.startDay,
+      zodiac.startMonth,
+      zodiac.endDay,
+      zodiac.endMonth
+    )
+  );
+
+  if (!zodiacEntry) {
     throw new Error('Data de nascimento inválida');
   }
+
+  return ZODIAC_SIGNS[zodiacEntry.sign];
 }
 
 export const meses = [
@@ -117,9 +150,9 @@ export const filteredAndSortedParticipants = (
           return a.name.localeCompare(b.name);
         case 'date':
           return (
-            parseInt(a.month) * 100 +
+            Number.parseInt(a.month) * 100 +
             new Date(a.date).getDate() -
-            (parseInt(b.month) * 100 + new Date(b.date).getDate())
+            (Number.parseInt(b.month) * 100 + new Date(b.date).getDate())
           );
         case 'gives_to':
           return a.gives_to.localeCompare(b.gives_to);

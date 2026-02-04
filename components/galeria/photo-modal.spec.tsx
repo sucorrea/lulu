@@ -114,7 +114,6 @@ describe('PhotoModal', () => {
     it('should render null when not open', () => {
       const { container } = renderPhotoModal(false);
 
-      // Container should only have the root div
       expect(container.querySelectorAll('dialog')).toHaveLength(0);
     });
   });
