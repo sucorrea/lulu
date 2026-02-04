@@ -83,7 +83,7 @@ const GaleriaFotos = () => {
 
   const likesData = useMemo(() => {
     const effectiveLikes = optimisticLikes.likes;
-    return photos.map((photo) => ({
+    return photos.map((photo: string) => ({
       count:
         effectiveLikes[photo]?.length ?? firestoreLikes[photo]?.length ?? 0,
       isLiked: user
@@ -95,7 +95,7 @@ const GaleriaFotos = () => {
   }, [photos, optimisticLikes.likes, firestoreLikes, user]);
 
   const commentCounts = useMemo(
-    () => photos.map((photo) => firestoreComments[photo]?.length ?? 0),
+    () => photos.map((photo: string) => firestoreComments[photo]?.length ?? 0),
     [photos, firestoreComments]
   );
 
@@ -117,7 +117,7 @@ const GaleriaFotos = () => {
         applyLikesForPhoto(photo, users)
       )
     );
-    return () => unsubscribes.forEach((u) => u());
+    return () => unsubscribes.forEach((u: () => void) => u());
   }, [photos, getPhotoId, applyLikesForPhoto]);
 
   useEffect(() => {
@@ -127,7 +127,7 @@ const GaleriaFotos = () => {
         applyCommentsForPhoto(photo, commentsList)
       )
     );
-    return () => unsubscribes.forEach((u) => u());
+    return () => unsubscribes.forEach((u: () => void) => u());
   }, [photos, getPhotoId, applyCommentsForPhoto]);
 
   const handleLike = useCallback(
@@ -226,27 +226,25 @@ const GaleriaFotos = () => {
         <UploadPhotoGallery />
       </div>
 
-      <div
-        className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6"
-        role="list"
+      <ul
+        className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6 list-none p-0 m-0"
         aria-label="Galeria de fotos"
       >
         {isLoading
           ? Array.from({ length: SKELETON_COUNT }, (_, idx) => (
-              <div
+              <li
                 key={idx}
                 className="relative group"
                 data-testid="skeleton-item"
-                role="listitem"
                 aria-label="Carregando foto"
               >
                 <div className="block w-full aspect-square overflow-hidden rounded shadow">
                   <Skeleton className="w-full aspect-square" />
                 </div>
-              </div>
+              </li>
             ))
-          : photos.map((photo, idx) => (
-              <div key={photo} role="listitem">
+          : photos.map((photo: string, idx: number) => (
+              <li key={photo}>
                 <PhotoItem
                   photo={photo}
                   index={idx}
@@ -256,10 +254,9 @@ const GaleriaFotos = () => {
                   onSelect={setSelected}
                   onLike={handleLike}
                 />
-              </div>
+              </li>
             ))}
-      </div>
-
+      </ul>
       <CommentProvider
         onSubmitComment={handleComment}
         onEditComment={handleEditComment}
@@ -271,9 +268,9 @@ const GaleriaFotos = () => {
           totalPhotos={photos.length}
           photo={selectedPhoto ?? ''}
           liked={
-            selected !== null ? (likesData[selected]?.isLiked ?? false) : false
+            selected === null ? false : (likesData[selected]?.isLiked ?? false)
           }
-          likes={selected !== null ? (likesData[selected]?.count ?? 0) : 0}
+          likes={selected === null ? 0 : (likesData[selected]?.count ?? 0)}
           comments={
             selectedPhoto ? (firestoreComments[selectedPhoto] ?? []) : []
           }

@@ -31,28 +31,25 @@ const CommentSection = memo(function CommentSection({
 
   return (
     <section aria-label="Comentários">
-      <div
-        className="mb-2 max-h-24 overflow-y-auto"
-        role="list"
-        aria-label="Lista de comentários"
-      >
-        {comments.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-2">
-            Nenhum comentário ainda. Seja o primeiro a comentar!
-          </p>
-        ) : (
-          comments.map((commentItem) => {
+      {comments.length === 0 ? (
+        <p className="text-sm text-muted-foreground py-2 mb-2">
+          Nenhum comentário ainda. Seja o primeiro a comentar!
+        </p>
+      ) : (
+        <ul
+          className="mb-2 max-h-24 overflow-y-auto list-none p-0 m-0"
+          aria-label="Lista de comentários"
+        >
+          {comments.map((commentItem) => {
             const isAuthor = commentItem.userId === userId;
             return (
-              <CommentItem
-                key={commentItem.id}
-                comment={commentItem}
-                isAuthor={isAuthor}
-              />
+              <li key={commentItem.id}>
+                <CommentItem comment={commentItem} isAuthor={isAuthor} />
+              </li>
             );
-          })
-        )}
-      </div>
+          })}
+        </ul>
+      )}
       <div className="flex gap-2">
         <label htmlFor={commentInputId} className="sr-only">
           {isLoggedIn ? 'Escreva um comentário' : 'Faça login para comentar'}

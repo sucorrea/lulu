@@ -49,7 +49,7 @@ const LikeUnlikeButton = memo(function LikeUnlikeButton(props: CombinedProps) {
         )}
         aria-hidden="true"
       />
-      <span aria-label={`${likeCount} curtida${likeCount !== 1 ? 's' : ''}`}>
+      <span aria-label={`${likeCount} curtida${likeCount === 1 ? '' : 's'}`}>
         {likeCount}
       </span>
     </button>

@@ -53,7 +53,7 @@ const PhotoItem = memo(function PhotoItem({
         <button
           onClick={() => onSelect(index)}
           className="flex items-center justify-center gap-1 rounded-full px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          aria-label={`Ver ${commentCount} comentário${commentCount !== 1 ? 's' : ''} da foto`}
+          aria-label={`Ver ${commentCount} comentário${commentCount === 1 ? '' : 's'} da foto`}
         >
           <MessageCircle className="h-4 w-4" aria-hidden="true" />
           <span>{commentCount}</span>
