@@ -96,16 +96,17 @@ vi.mock('@/components/ui/select', () => ({
     value: string;
     onValueChange: (value: string) => void;
   }) => (
-    <div
+    <button
+      type="button"
       data-testid="select"
       data-value={value}
       onClick={() => onValueChange('test')}
     >
       {children}
-    </div>
+    </button>
   ),
   SelectTrigger: ({ children }: { children: React.ReactNode }) => (
-    <button data-testid="select-trigger">{children}</button>
+    <span data-testid="select-trigger">{children}</span>
   ),
   SelectValue: ({ placeholder }: { placeholder: string }) => (
     <span>{placeholder}</span>
@@ -150,41 +151,49 @@ describe('PersonForm', () => {
     render(<PersonForm initialData={mockPerson} />);
 
     expect(screen.getByText('Nome completo')).toBeDefined();
-    expect(screen.getByText('Data')).toBeDefined();
+    expect(screen.getByText('Data de nascimento')).toBeDefined();
     expect(screen.getByLabelText('Email')).toBeDefined();
     expect(screen.getByLabelText('Celular')).toBeDefined();
 
     const input = screen.getByPlaceholderText(
       'Nome completo'
-    ) as HTMLInputElement;
+    ) as unknown as HTMLInputElement;
     expect(input.value).toBe('John Doe');
   });
 
   it('should render date input with value', () => {
     render(<PersonForm initialData={mockPerson} />);
 
-    const input = screen.getByLabelText('Data') as HTMLInputElement;
+    const input = screen.getByLabelText(
+      'Data de nascimento'
+    ) as unknown as HTMLInputElement;
     expect(input.value).toBe('1990-01-01');
   });
 
   it('should render email input with value', () => {
     render(<PersonForm initialData={mockPerson} />);
 
-    const input = screen.getByPlaceholderText('Email') as HTMLInputElement;
+    const input = screen.getByPlaceholderText(
+      'Email'
+    ) as unknown as HTMLInputElement;
     expect(input.value).toBe('john@example.com');
   });
 
   it('should render phone input with value', () => {
     render(<PersonForm initialData={mockPerson} />);
 
-    const input = screen.getByPlaceholderText('Telefone') as HTMLInputElement;
+    const input = screen.getByPlaceholderText(
+      'Telefone'
+    ) as unknown as HTMLInputElement;
     expect(input.value).toBe('123456789');
   });
 
   it('should render instagram input disabled when initialData has instagram', () => {
     render(<PersonForm initialData={mockPerson} />);
 
-    const input = screen.getByPlaceholderText('Instagram') as HTMLInputElement;
+    const input = screen.getByPlaceholderText(
+      'Instagram'
+    ) as unknown as HTMLInputElement;
     expect(input.disabled).toBe(true);
   });
 
@@ -192,14 +201,18 @@ describe('PersonForm', () => {
     const personWithoutInstagram = { ...mockPerson, instagram: undefined };
     render(<PersonForm initialData={personWithoutInstagram} />);
 
-    const input = screen.getByPlaceholderText('Instagram') as HTMLInputElement;
+    const input = screen.getByPlaceholderText(
+      'Instagram'
+    ) as unknown as HTMLInputElement;
     expect(input.disabled).toBe(false);
   });
 
   it('should render pix key input', () => {
     render(<PersonForm initialData={mockPerson} />);
 
-    const input = screen.getByPlaceholderText('Chave Pix') as HTMLInputElement;
+    const input = screen.getByPlaceholderText(
+      'Chave Pix'
+    ) as unknown as HTMLInputElement;
     expect(input).toBeDefined();
   });
 
@@ -239,7 +252,7 @@ describe('PersonForm', () => {
 
     const input = screen.getByPlaceholderText(
       'Nome completo'
-    ) as HTMLInputElement;
+    ) as unknown as HTMLInputElement;
     expect(input.required).toBe(true);
   });
 
@@ -248,14 +261,16 @@ describe('PersonForm', () => {
 
     const input = screen.getByPlaceholderText(
       'Nome completo'
-    ) as HTMLInputElement;
+    ) as unknown as HTMLInputElement;
     expect(input.maxLength).toBe(80);
   });
 
   it('should have required attribute on date input', () => {
     render(<PersonForm initialData={mockPerson} />);
 
-    const input = screen.getByLabelText('Data') as HTMLInputElement;
+    const input = screen.getByLabelText(
+      'Data de nascimento'
+    ) as unknown as HTMLInputElement;
     expect(input.required).toBe(true);
   });
 
@@ -275,11 +290,11 @@ describe('PersonForm', () => {
     expect(screen.getByTestId('select-item-none')).toBeDefined();
   });
 
-  it('should render form with space-y-2 class', () => {
+  it('should render form with space-y-3 class', () => {
     const { container } = render(<PersonForm initialData={mockPerson} />);
 
     const form = container.querySelector('form');
-    expect(form?.className).toContain('space-y-2');
+    expect(form?.className).toContain('space-y-3');
   });
 
   it('should render pix section with border', () => {

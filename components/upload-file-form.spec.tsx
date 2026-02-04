@@ -158,7 +158,7 @@ describe('UpdateParticipantPhoto', () => {
     );
 
     const mainDiv = container.firstChild as HTMLElement;
-    expect(mainDiv).toHaveClass('space-y-2', 'p-6', 'cursor-pointer');
+    expect(mainDiv).toHaveClass('space-y-2', 'p-2', 'cursor-pointer');
   });
 
   it('should call useUploadPhoto with participantId', () => {
