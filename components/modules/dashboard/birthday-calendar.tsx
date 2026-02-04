@@ -13,8 +13,8 @@ type BirthdayCalendarProps = {
 const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
   const sortedParticipants = useMemo(() => {
     return [...participants].sort((a, b) => {
-      const monthA = parseInt(a.month);
-      const monthB = parseInt(b.month);
+      const monthA = Number.parseInt(a.month);
+      const monthB = Number.parseInt(b.month);
 
       if (monthA !== monthB) {
         return monthA - monthB;
@@ -47,10 +47,10 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
     ];
 
     return Object.keys(participantsByMonth)
-      .sort((a, b) => parseInt(a) - parseInt(b))
+      .sort((a, b) => Number.parseInt(a) - Number.parseInt(b))
       .map((monthNum) => ({
         number: monthNum,
-        name: monthNames[parseInt(monthNum) - 1],
+        name: monthNames[Number.parseInt(monthNum) - 1],
         participants: participantsByMonth[monthNum],
       }));
   }, [participantsByMonth]);

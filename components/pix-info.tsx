@@ -24,18 +24,18 @@ const PixInfo = ({ participant }: PixInfoProps) => {
         />
         {NameKey[participant.pix_key_type ?? 'none']}
       </div>
-      <span
-        className="text-xs"
+      <button
+        type="button"
+        className="text-xs bg-transparent border-0 p-0 cursor-pointer hover:underline"
         onClick={() => {
           navigator.clipboard.writeText(participant.pix_key ?? '');
           if (!isMobile) {
             alert('QRCode copiado com sucesso!');
           }
         }}
-        style={{ cursor: 'pointer' }}
       >
         {`: ${participant.pix_key}`}
-      </span>
+      </button>
     </div>
   );
 };

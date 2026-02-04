@@ -31,6 +31,7 @@ export default function UpdateParticipantPhoto({
           onChange={handleFileChange}
           style={{ display: 'none' }}
         />
+        {' '}
         Escolher foto
       </label>
       {isPending && <p>Uploading...</p>}
