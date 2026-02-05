@@ -9,7 +9,12 @@ import { CakeIcon, Edit2Icon } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { Tooltip } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { encryptId } from '@/lib/crypto';
 import { cn } from '@/lib/utils';
 
@@ -74,15 +79,21 @@ const LulusCardHome = ({
     <Card className={cn('lulu-card mx-auto w-full max-w-md p-2', styleCard)}>
       <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto p-4">
         {user && showDetails && (
-          <Tooltip>
-            <Link
-              href={`participants/${token}`}
-              title="Editar"
-              className="flex text-xs gap-1 items-end justify-end"
-            >
-              <Edit2Icon size="0.75rem" className="text-primary" />
-            </Link>
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={`participants/${token}`}
+                  className="flex text-xs gap-1 items-end justify-end"
+                >
+                  <Edit2Icon size="0.75rem" className="text-primary" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Editar</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
         {isNextBirthday && (
           <NextBirthdayBanner daysForBirthday={daysForBirthday} />

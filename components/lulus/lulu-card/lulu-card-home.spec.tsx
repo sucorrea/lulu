@@ -73,6 +73,21 @@ vi.mock('@/components/ui/card', () => ({
   )),
 }));
 
+vi.mock('@/components/ui/tooltip', () => ({
+  TooltipProvider: vi.fn(({ children }) => (
+    <div data-testid="tooltip-provider">{children}</div>
+  )),
+  Tooltip: vi.fn(({ children }) => <div data-testid="tooltip">{children}</div>),
+  TooltipTrigger: vi.fn(({ children, asChild }) => (
+    <div data-testid="tooltip-trigger" data-as-child={asChild}>
+      {children}
+    </div>
+  )),
+  TooltipContent: vi.fn(({ children }) => (
+    <div data-testid="tooltip-content">{children}</div>
+  )),
+}));
+
 vi.mock('../../pix-info', () => ({
   default: vi.fn(({ participant }) => (
     <div data-testid="pix-info" data-pix-key={participant.pix_key}>
@@ -447,6 +462,85 @@ describe('LulusCardHome', () => {
 
       const link = screen.getByTestId('next-link');
       expect(link).toHaveAttribute('href', 'participants/encrypted-1');
+    });
+
+    it('should render tooltip components when user is true and showDetails is true', () => {
+      render(
+        <LulusCardHome
+          participant={mockParticipant}
+          isNextBirthday={false}
+          user={true}
+          participants={mockParticipants}
+          showDetails={true}
+        />
+      );
+
+      expect(screen.getByTestId('tooltip-provider')).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip')).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip-trigger')).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip-content')).toBeInTheDocument();
+    });
+
+    it('should render tooltip content with "Editar" text', () => {
+      render(
+        <LulusCardHome
+          participant={mockParticipant}
+          isNextBirthday={false}
+          user={true}
+          participants={mockParticipants}
+          showDetails={true}
+        />
+      );
+
+      const tooltipContent = screen.getByTestId('tooltip-content');
+      expect(tooltipContent).toHaveTextContent('Editar');
+    });
+
+    it('should set asChild prop to true on TooltipTrigger', () => {
+      render(
+        <LulusCardHome
+          participant={mockParticipant}
+          isNextBirthday={false}
+          user={true}
+          participants={mockParticipants}
+          showDetails={true}
+        />
+      );
+
+      const tooltipTrigger = screen.getByTestId('tooltip-trigger');
+      expect(tooltipTrigger).toHaveAttribute('data-as-child', 'true');
+    });
+
+    it('should not render tooltip components when user is false', () => {
+      render(
+        <LulusCardHome
+          participant={mockParticipant}
+          isNextBirthday={false}
+          user={false}
+          participants={mockParticipants}
+          showDetails={true}
+        />
+      );
+
+      expect(screen.queryByTestId('tooltip')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('tooltip-trigger')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('tooltip-content')).not.toBeInTheDocument();
+    });
+
+    it('should not render tooltip components when showDetails is false', () => {
+      render(
+        <LulusCardHome
+          participant={mockParticipant}
+          isNextBirthday={false}
+          user={true}
+          participants={mockParticipants}
+          showDetails={false}
+        />
+      );
+
+      expect(screen.queryByTestId('tooltip')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('tooltip-trigger')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('tooltip-content')).not.toBeInTheDocument();
     });
   });
 
