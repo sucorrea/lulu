@@ -4,7 +4,13 @@ import { config } from 'dotenv';
 import { resolve } from 'path';
 import { vi } from 'vitest';
 
-config({ path: resolve(__dirname, '.env.test') });
+const result = config({ path: resolve(__dirname, '.env.test') });
+
+if (result.parsed) {
+  Object.entries(result.parsed).forEach(([key, value]) => {
+    process.env[key] = value;
+  });
+}
 
 vi.mock('@/services/firebase', () => ({
   auth: {},
