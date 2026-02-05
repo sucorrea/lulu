@@ -25,6 +25,7 @@ import {
   unlikePhoto,
 } from '@/services/galeriaLikes';
 import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
+import ErrorState from '@/components/error-state';
 
 import PhotoItem from './photo-item';
 import PhotoModal from './photo-modal';
@@ -46,7 +47,7 @@ type LikeAction = {
 };
 
 const GaleriaFotos = () => {
-  const { data, isLoading } = useGetGalleryImages();
+  const { data, isLoading, isError, refetch } = useGetGalleryImages();
   const photos = useMemo(() => data ?? [], [data]);
   const { user } = useUserVerification();
   const router = useRouter();
@@ -218,6 +219,22 @@ const GaleriaFotos = () => {
   const handleCloseModal = useCallback(() => {
     setSelected(null);
   }, []);
+
+  if (isError) {
+    return (
+      <div className="mx-auto max-w-3xl p-4 md:p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="lulu-header mb-0 text-2xl md:text-3xl">Galeria</h1>
+          <UploadPhotoGallery />
+        </div>
+        <ErrorState
+          title="Erro ao carregar galeria"
+          message="Não foi possível carregar as fotos da galeria. Verifique sua conexão e tente novamente."
+          onRetry={() => refetch()}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl p-4 md:p-6">

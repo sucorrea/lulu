@@ -31,6 +31,7 @@ export default defineConfig({
         'services/**/*.ts',
       ],
       exclude: [
+        'components/lulus/mockdata/**',
         'app/**/*.{ts,tsx}',
         '**/*.spec.{ts,tsx}',
         '**/*.test.{ts,tsx}',

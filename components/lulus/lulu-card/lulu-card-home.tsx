@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { CakeIcon, Edit2Icon, GiftIcon } from 'lucide-react';
 
-import Tooltip from '@/components/tooltip';
+import Tooltip from '@/components/ui/tooltip/index';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import PixInfo from '../../pix-info';
