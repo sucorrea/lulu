@@ -18,14 +18,15 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
 
   const participant = participantData;
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <BounceLoader color="#F43F5E" />
       </div>
     );
+  }
 
-  if (!participant)
+  if (!participant) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <p className="text-muted-foreground text-center">
@@ -33,6 +34,7 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
         </p>
       </div>
     );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen overflow-y-auto p-4">

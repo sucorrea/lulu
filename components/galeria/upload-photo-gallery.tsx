@@ -17,7 +17,9 @@ const UploadPhotoGallery = () => {
   const handlePhotoUploadGallery = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      if (!file || !user) return;
+      if (!file || !user) {
+        return;
+      }
       (async () => {
         try {
           const photoId = `${user.uid}_${Date.now()}`;

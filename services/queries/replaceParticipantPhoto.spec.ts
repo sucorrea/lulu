@@ -65,8 +65,12 @@ describe('replaceParticipantPhoto', () => {
     mockDoc.mockReturnValue(mockDocRef);
     mockGetDoc.mockResolvedValue(mockSnapshot);
     mockRef.mockImplementation((storage, path) => {
-      if (path === 'old/image.jpg') return mockOldImageRef;
-      if (path === 'images/new-image.jpg') return mockNewImageRef;
+      if (path === 'old/image.jpg') {
+        return mockOldImageRef;
+      }
+      if (path === 'images/new-image.jpg') {
+        return mockNewImageRef;
+      }
       return null;
     });
     mockDeleteObject.mockResolvedValue(undefined);
@@ -199,8 +203,12 @@ describe('replaceParticipantPhoto', () => {
     mockDoc.mockReturnValue(mockDocRef);
     mockGetDoc.mockResolvedValue(mockSnapshot);
     mockRef.mockImplementation((storage, path) => {
-      if (path === 'old/image.jpg') return mockOldImageRef;
-      if (path === 'images/new-image.jpg') return mockNewImageRef;
+      if (path === 'old/image.jpg') {
+        return mockOldImageRef;
+      }
+      if (path === 'images/new-image.jpg') {
+        return mockNewImageRef;
+      }
       return null;
     });
     mockDeleteObject.mockRejectedValue(deleteError);
@@ -244,9 +252,13 @@ describe('replaceParticipantPhoto', () => {
 
     mockDoc.mockReturnValue(mockDocRef);
     mockGetDoc.mockResolvedValue(mockSnapshot);
-    mockRef.mockImplementation((storage, path) => {
-      if (path === 'path/to/image.jpg') return mockOldImageRef;
-      if (path === 'images/new-image.jpg') return mockNewImageRef;
+    mockRef.mockImplementation((_storage, path) => {
+      if (path === 'path/to/image.jpg') {
+        return mockOldImageRef;
+      }
+      if (path === 'images/new-image.jpg') {
+        return mockNewImageRef;
+      }
       return null;
     });
     mockDeleteObject.mockResolvedValue(undefined);

@@ -46,7 +46,9 @@ const PhotoModal = memo(function PhotoModal({
   }, [photo]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -76,7 +78,9 @@ const PhotoModal = memo(function PhotoModal({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <dialog

@@ -12,7 +12,9 @@ function toUrlSafe(buf: Buffer) {
 
 function fromUrlSafe(s: string) {
   s = s.replaceAll('-', '+').replaceAll('_', '/');
-  while (s.length % 4) s += '=';
+  while (s.length % 4) {
+    s += '=';
+  }
   return Buffer.from(s, 'base64');
 }
 

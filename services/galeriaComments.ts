@@ -44,7 +44,9 @@ export async function deleteCommentFromPhoto(
 ) {
   const ref = doc(db, 'galeria-comments', photoId);
   const snap = await getDoc(ref);
-  if (!snap.exists()) return;
+  if (!snap.exists()) {
+    return;
+  }
   const comments = snap.data().comments || [];
   const updated = comments.filter((c: GaleriaComment) => c.id !== commentId);
   await updateDoc(ref, { comments: updated });
@@ -57,7 +59,9 @@ export async function editCommentOnPhoto(
 ) {
   const ref = doc(db, 'galeria-comments', photoId);
   const snap = await getDoc(ref);
-  if (!snap.exists()) return;
+  if (!snap.exists()) {
+    return;
+  }
   const comments = snap.data().comments || [];
   const updated = comments.map((c: GaleriaComment) =>
     c.id === commentId ? { ...c, comment: newText } : c

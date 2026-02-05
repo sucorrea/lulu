@@ -18,7 +18,9 @@ export async function replaceParticipantPhoto(
   const data = snapshot.data();
 
   console.log('dados snapshot', data);
-  if (!data) throw new Error('Participante não encontrado');
+  if (!data) {
+    throw new Error('Participante não encontrado');
+  }
 
   if (data.picture?.includes('firebasestorage.googleapis.com')) {
     try {
