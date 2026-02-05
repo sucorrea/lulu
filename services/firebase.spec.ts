@@ -1,6 +1,25 @@
 import { describe, it, expect, vi } from 'vitest';
 
-vi.unmock('@/services/firebase');
+vi.mock('firebase/app', () => {
+  const mockApp = {};
+  return {
+    getApp: vi.fn(() => mockApp),
+    getApps: vi.fn(() => []),
+    initializeApp: vi.fn(() => mockApp),
+  };
+});
+
+vi.mock('firebase/auth', () => ({
+  getAuth: vi.fn(() => ({})),
+}));
+
+vi.mock('firebase/firestore', () => ({
+  getFirestore: vi.fn(() => ({})),
+}));
+
+vi.mock('firebase/storage', () => ({
+  getStorage: vi.fn(() => ({})),
+}));
 
 import app, { auth, db, storage } from './firebase';
 
