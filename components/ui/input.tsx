@@ -7,10 +7,15 @@ export interface InputProps extends React.ComponentProps<'input'> {
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, error, ...props }, ref) => {
+    const generatedId = React.useId();
+    const id = props.id ?? generatedId;
+    const errorId = error ? `${id}-error` : undefined;
+
     return (
       <>
         <input
           type={type}
+          id={id}
           className={cn(
             'flex h-9 w-full rounded-lg border border-border bg-background px-3 py-1 text-base shadow-sm transition-colors',
             'file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',
@@ -21,15 +26,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
           ref={ref}
           aria-invalid={!!error}
-          aria-describedby={error ? `${props.id}-error` : undefined}
+          aria-describedby={errorId}
           {...props}
         />
         {error && (
-          <p
-            id={props.id ? `${props.id}-error` : undefined}
-            className="text-red-500 text-sm mt-1"
-            role="alert"
-          >
+          <p id={errorId} className="text-red-500 text-sm mt-1" role="alert">
             {error}
           </p>
         )}

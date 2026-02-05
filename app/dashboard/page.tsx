@@ -5,12 +5,17 @@ import BounceLoader from 'react-spinners/BounceLoader';
 import { useUserVerification } from '@/hooks/user-verify';
 import { useGetAllParticipants } from '@/services/queries/fetchParticipants';
 import DashboardPage from '@/components/modules/dashboard';
+import ErrorState from '@/components/error-state';
 
 const Dashboard = () => {
   const { isLoading } = useUserVerification();
 
-  const { data: participants, isLoading: isLoadingParticipants } =
-    useGetAllParticipants();
+  const {
+    data: participants,
+    isLoading: isLoadingParticipants,
+    isError,
+    refetch,
+  } = useGetAllParticipants();
 
   if (isLoading || isLoadingParticipants)
     return (
@@ -18,6 +23,16 @@ const Dashboard = () => {
         <BounceLoader color="#FF0000" />
       </div>
     );
+
+  if (isError) {
+    return (
+      <ErrorState
+        title="Erro ao carregar dashboard"
+        message="Não foi possível carregar os dados dos participantes. Verifique sua conexão e tente novamente."
+        onRetry={() => refetch()}
+      />
+    );
+  }
 
   return <DashboardPage participants={participants ?? []} />;
 };
