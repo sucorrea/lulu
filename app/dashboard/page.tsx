@@ -1,11 +1,20 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import BounceLoader from 'react-spinners/BounceLoader';
 
 import { useUserVerification } from '@/hooks/user-verify';
 import { useGetAllParticipants } from '@/services/queries/fetchParticipants';
-import DashboardPage from '@/components/modules/dashboard';
 import ErrorState from '@/components/error-state';
+
+const DashboardPage = dynamic(() => import('@/components/modules/dashboard'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col items-center justify-center min-h-[200px]">
+      <BounceLoader color="#FF0000" />
+    </div>
+  ),
+});
 
 const Dashboard = () => {
   const { isLoading } = useUserVerification();

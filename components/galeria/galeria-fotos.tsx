@@ -1,6 +1,7 @@
 'use client';
 import {
   useCallback,
+  useEffect,
   useMemo,
   useOptimistic,
   useRef,
@@ -52,6 +53,11 @@ const GaleriaFotos = () => {
   const [, startTransition] = useTransition();
 
   const [selected, setSelected] = useState<number | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const getPhotoId = useCallback((photo: string) => onGetPhotoId(photo), []);
 
@@ -200,6 +206,8 @@ const GaleriaFotos = () => {
     setSelected(null);
   }, []);
 
+  const showSkeleton = !isClient || isLoading;
+
   const parentRef = useRef<HTMLUListElement | null>(null);
 
   const rowVirtualizer = useVirtualizer({
@@ -208,6 +216,14 @@ const GaleriaFotos = () => {
     estimateSize: () => ESTIMATED_ROW_HEIGHT,
     overscan: 10,
   });
+
+  const virtualItems = rowVirtualizer.getVirtualItems();
+  const totalSize = rowVirtualizer.getTotalSize();
+  const firstVirtualItem = virtualItems.at(0);
+  const lastVirtualItem = virtualItems.at(-1);
+  const paddingTop = firstVirtualItem?.start ?? 0;
+  const paddingBottom =
+    lastVirtualItem == null ? 0 : totalSize - (lastVirtualItem.end ?? 0);
 
   if (isError) {
     return (
@@ -232,7 +248,7 @@ const GaleriaFotos = () => {
         <UploadPhotoGallery />
       </div>
 
-      {isLoading && (
+      {showSkeleton && (
         <ul
           className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6 list-none p-0 m-0"
           aria-label="Galeria de fotos"
@@ -252,19 +268,20 @@ const GaleriaFotos = () => {
         </ul>
       )}
 
-      {!isLoading && photos.length > VIRTUALIZATION_THRESHOLD && (
+      {!showSkeleton && photos.length > VIRTUALIZATION_THRESHOLD && (
         <ul
           ref={parentRef}
           className="list-none p-0 m-0 h-[70vh] overflow-auto"
           aria-label="Galeria de fotos"
         >
           <li
-            className="relative list-none"
+            className="list-none"
             style={{
-              height: rowVirtualizer.getTotalSize(),
+              paddingTop,
+              paddingBottom,
             }}
           >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            {virtualItems.map((virtualRow) => {
               const idx = virtualRow.index;
               const photo = photos[idx];
 
@@ -275,13 +292,8 @@ const GaleriaFotos = () => {
               return (
                 <div
                   key={photo}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
+                  ref={rowVirtualizer.measureElement}
+                  data-index={virtualRow.index}
                 >
                   <PhotoItem
                     photo={photo}
@@ -299,7 +311,7 @@ const GaleriaFotos = () => {
         </ul>
       )}
 
-      {!isLoading && photos.length <= VIRTUALIZATION_THRESHOLD && (
+      {!showSkeleton && photos.length <= VIRTUALIZATION_THRESHOLD && (
         <ul
           className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6 list-none p-0 m-0"
           aria-label="Galeria de fotos"
