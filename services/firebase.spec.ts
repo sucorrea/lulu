@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+vi.unmock('@/services/firebase');
+
 import app, { auth, db, storage } from './firebase';
 
 describe('firebase', () => {

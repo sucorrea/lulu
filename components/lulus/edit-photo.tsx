@@ -36,8 +36,7 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
           setFile(null);
           onClose();
         },
-        onError: (err) =>
-          toast.error(err?.message ?? 'Erro ao alterar foto'),
+        onError: (err) => toast.error(err?.message ?? 'Erro ao alterar foto'),
       }
     );
   }, [mutate, file, participant.id, onClose]);
