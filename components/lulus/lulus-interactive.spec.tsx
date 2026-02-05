@@ -30,6 +30,6 @@ describe('LulusInteractive', () => {
 
   it('should show total participants badge', () => {
     render(<LulusInteractive initialParticipants={[]} />);
-    expect(screen.getByText(/Participantes na vaquinha/)).toBeInTheDocument();
+    expect(screen.getByText(/0 Participantes/)).toBeInTheDocument();
   });
 });

@@ -12,8 +12,8 @@ export const NavbarBrand = memo(function NavbarBrand({
   currentYear,
 }: NavbarBrandProps) {
   return (
-    <div className="mr-1 flex items-center">
-      <Link href="/" className="flex items-center gap-2">
+    <div className="mr-0.5 flex items-center">
+      <Link href="/" className="flex items-center gap-1">
         <Image
           src="/luluzinha_no_background.png"
           alt="luluzinha"
@@ -22,7 +22,7 @@ export const NavbarBrand = memo(function NavbarBrand({
           className="h-auto w-auto"
           priority
         />
-        <span className="lulu-header text-2xl font-bold">{`Luluzinha ${currentYear}`}</span>
+        <span className="lulu-header sm:text-xs md:text-2xl font-bold text-nowrap">{`Luluzinha ${currentYear}`}</span>
       </Link>
     </div>
   );

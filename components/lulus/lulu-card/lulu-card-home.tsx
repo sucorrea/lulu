@@ -5,11 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { Icon } from '@iconify/react';
-import { CakeIcon, Edit2Icon, GiftIcon } from 'lucide-react';
+import { CakeIcon, Edit2Icon } from 'lucide-react';
 
-import Tooltip from '@/components/ui/tooltip/index';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Tooltip } from '@/components/ui/tooltip';
+import { encryptId } from '@/lib/crypto';
+import { cn } from '@/lib/utils';
+
 import PixInfo from '../../pix-info';
 import PixQRCode from '../../qrcode-pix';
 import WhatsappInfo from '../../whatsapp-info';
@@ -23,13 +26,12 @@ import {
   getParticipantPhotoUrl,
   getSigno,
 } from '../utils';
+import NextBirthdayBanner from './next-birthday-banner';
 import ResponsableGift from './responsable-gift';
-import Animation from '@/components/animation';
-import { encryptId } from '@/lib/crypto';
 
 interface LulusCardHomeProps {
   participant: Person;
-  isNextBirthday: boolean;
+  isNextBirthday?: boolean;
   user: boolean;
   participants: Person[];
   showDetails?: boolean;
@@ -37,7 +39,7 @@ interface LulusCardHomeProps {
 
 const LulusCardHome = ({
   participant,
-  isNextBirthday,
+  isNextBirthday = false,
   user,
   participants,
   showDetails = true,
@@ -69,10 +71,10 @@ const LulusCardHome = ({
   const token = encryptId(String(participant.id));
 
   return (
-    <Card className={`lulu-card mx-auto w-full max-w-md ${styleCard}`}>
+    <Card className={cn('lulu-card mx-auto w-full max-w-md p-2', styleCard)}>
       <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto p-4">
         {user && showDetails && (
-          <Tooltip content="Editar">
+          <Tooltip>
             <Link
               href={`participants/${token}`}
               title="Editar"
@@ -83,40 +85,35 @@ const LulusCardHome = ({
           </Tooltip>
         )}
         {isNextBirthday && (
-          <div>
-            <div className="flex xs:flex-col sm:flex-row items-center justify-center pb-2">
-              <GiftIcon size="1.5rem" className="text-primary" />
-              <h3 className="font-semibold xs:text-sm sm:text-xl text-primary">
-                Próxima aniversariante
-              </h3>
-              <Animation className="w-10 h-10 animate-bounce" />
-            </div>
-            <p className="text-sm text-center text-primary">
-              {daysForBirthday === 1
-                ? `Falta ${daysForBirthday} dia para o aniversário!`
-                : `Faltam ${daysForBirthday} dias para o aniversário!`}
-            </p>
-          </div>
+          <NextBirthdayBanner daysForBirthday={daysForBirthday} />
         )}
-        <div className="flex flex-row gap-4 items-center ">
+        <div className="flex flex-row gap-4 items-start">
           <Avatar
-            className="h-16 w-16 border-2 border-primary shrink-0"
+            className="h-20 w-20 border-4 border-primary/20 ring-2 ring-primary shrink-0"
             key={getParticipantPhotoUrl(participant)}
           >
             <AvatarImage
               src={getParticipantPhotoUrl(participant)}
               alt={participant.name}
             />
-            <AvatarFallback className="bg-primary text-primary-foreground">
+            <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
               {(participant.name ?? '').charAt(0).toUpperCase() || '?'}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col min-w-0 w-full">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
-              <h2 className="font-semibold text-xl text-primary break-words max-w-full">
+          <div className="flex flex-col min-w-0 flex-1">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h2 className="font-bold text-xl text-primary break-words">
                 {participant.name}
               </h2>
-              <div className="flex items-center gap-1">
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <div className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2 py-1 text-xs">
+                <CakeIcon size="0.875rem" className="text-primary shrink-0" />
+                <span className="font-medium">
+                  {formatDate(new Date(participant.date))}
+                </span>
+              </div>
+              <div className="inline-flex items-center gap-1">
                 <LinkIconWithText
                   showDescription
                   link={`${LINK_HOROSCOPO_DIARIO}${getSigno(new Date(participant.date)).value}/`}
@@ -126,34 +123,27 @@ const LulusCardHome = ({
                   }
                 />
               </div>
-            </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full">
-              <div className="flex items-center text-sm gap-1">
-                <CakeIcon size="1rem" className="text-primary" />
-                <span className="truncate">
-                  {formatDate(new Date(participant.date))}
-                </span>
-              </div>
               {participant.instagram && (
-                <div className="flex items-center text-sm gap-1">
+                <div className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2 py-1 text-xs">
+                  <Image
+                    src="instagram.svg"
+                    alt="Instagram"
+                    width={14}
+                    height={14}
+                    className="shrink-0"
+                  />
                   <LinkIconWithText
                     showDescription
                     link={`${LINK_INSTAGRAM}${participant.instagram}`}
                     text={`@${participant.instagram}`}
-                    icon={
-                      <Image
-                        src="instagram.svg"
-                        alt="Instagram"
-                        width={20}
-                        height={20}
-                      />
-                    }
+                    icon={null}
                   />
                 </div>
               )}
             </div>
           </div>
         </div>
+        {showDetails && <div className="h-px bg-border" />}
         {showDetails && (
           <div className="flex flex-col gap-2 w-full">
             <MoreInforAccordion>

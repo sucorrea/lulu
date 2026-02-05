@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import BounceLoader from 'react-spinners/BounceLoader';
 import { Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useUserVerification } from '@/hooks/user-verify';
 import { useQuery } from '@tanstack/react-query';
@@ -58,22 +58,44 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <BounceLoader color="#F43F5E" />
+      <div className="min-h-screen p-4 sm:p-6 md:p-8">
+        <div className="mb-6">
+          <div className="h-9 w-48 rounded-lg bg-muted animate-pulse" />
+          <div className="h-4 w-64 mt-2 rounded bg-muted animate-pulse" />
+        </div>
+
+        <div className="space-y-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="lulu-card mx-auto max-w-md">
+              <CardContent className="p-4">
+                <div className="flex gap-4 items-start">
+                  <div className="h-20 w-20 rounded-full bg-muted animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-3 min-w-0">
+                    <div className="h-6 w-32 rounded bg-muted animate-pulse" />
+                    <div className="flex gap-2">
+                      <div className="h-6 w-24 rounded-full bg-muted animate-pulse" />
+                      <div className="h-6 w-20 rounded-full bg-muted animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
-      <div className="flex justify-end">
+      <div className="flex md:justify-end xs:justify-center mb-2">
         <Badge
           variant="secondary"
-          className="mb-4 max-w-full bg-primary px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm"
+          className="w-fit bg-primary px-3 py-2 text-sm shadow-lulu-sm"
         >
-          <Users className="mr-1.5 h-3.5 w-3.5 shrink-0 sm:mr-2 sm:h-4 sm:w-4" />
-          <span className="truncate">
-            {totalParticipants} Participantes na vaquinha
+          <Users className="mr-2 h-4 w-4 shrink-0" />
+          <span className="font-semibold">
+            {totalParticipants} Participantes
           </span>
         </Badge>
       </div>
@@ -89,7 +111,6 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           />
         </div>
       )}
-
       <div>
         <Filter
           filterMonth={filterMonth}
@@ -105,7 +126,6 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
             <LulusCardHome
               key={participant.id}
               participant={participant}
-              isNextBirthday={nextBirthday?.id === participant.id}
               user={!!user}
               participants={participantsList}
             />
@@ -113,13 +133,33 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
         </div>
 
         {filteredParticipants.length === 0 && (
-          <Card className="cursor-pointer transform bg-card/90 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex flex-col items-center justify-center gap-2">
-                <h2 className="font-sans text-2xl font-semibold text-primary animate-fade-in">
-                  Nenhuma participante encontrada
-                </h2>
+          <Card className="border-dashed border-2">
+            <CardContent className="p-12 text-center">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+                <Users className="h-10 w-10 text-muted-foreground" />
               </div>
+              <h3 className="mb-2 text-xl font-semibold text-foreground">
+                Nenhuma participante encontrada
+              </h3>
+              <p className="mb-6 text-sm text-muted-foreground">
+                {searchTerm
+                  ? `Não encontramos resultados para "${searchTerm}"`
+                  : filterMonth !== 'all'
+                    ? 'Nenhuma participante encontrada neste mês'
+                    : 'Tente ajustar os filtros de busca'}
+              </p>
+              {(searchTerm || filterMonth !== 'all') && (
+                <Button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setFilterMonth('all');
+                  }}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  Limpar filtros
+                </Button>
+              )}
             </CardContent>
           </Card>
         )}

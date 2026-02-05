@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import LulusCardHome from './lulu-card-home';
 import type { Person } from '../types';
 
@@ -39,14 +40,6 @@ vi.mock('lucide-react', () => ({
   )),
   GiftIcon: vi.fn(({ size, className }) => (
     <div data-testid="gift-icon" data-size={size} className={className} />
-  )),
-}));
-
-vi.mock('@/components/ui/tooltip/index', () => ({
-  default: vi.fn(({ children, content }) => (
-    <div data-testid="tooltip" data-content={content}>
-      {children}
-    </div>
   )),
 }));
 
@@ -280,7 +273,7 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByText('Próxima aniversariante')).toBeInTheDocument();
+      expect(screen.getByText('Próxima Aniversariante')).toBeInTheDocument();
       expect(screen.getByTestId('gift-icon')).toBeInTheDocument();
       expect(screen.getByTestId('animation')).toBeInTheDocument();
     });
@@ -319,7 +312,7 @@ describe('LulusCardHome', () => {
         />
       );
 
-      const texts = screen.queryAllByText(/para o aniversário/);
+      const texts = screen.queryAllByText(/até o grande dia!/);
       expect(texts.length).toBeGreaterThan(0);
     });
 
@@ -341,9 +334,8 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(
-        screen.getByText(/Faltam \d+ dias para o aniversário!/)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/\d+ dias?/)).toBeInTheDocument();
+      expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
   });
 
@@ -396,16 +388,17 @@ describe('LulusCardHome', () => {
   describe('User Edit Link', () => {
     it('should render edit link when user is true and showDetails is true', () => {
       render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={true}
-          participants={mockParticipants}
-          showDetails={true}
-        />
+        <TooltipProvider>
+          <LulusCardHome
+            participant={mockParticipant}
+            isNextBirthday={false}
+            user={true}
+            participants={mockParticipants}
+            showDetails={true}
+          />
+        </TooltipProvider>
       );
 
-      expect(screen.getByTestId('tooltip')).toBeInTheDocument();
       expect(screen.getByTestId('next-link')).toBeInTheDocument();
       expect(screen.getByTestId('edit-icon')).toBeInTheDocument();
     });
@@ -421,32 +414,35 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.queryByTestId('tooltip')).not.toBeInTheDocument();
       expect(screen.queryByTestId('edit-icon')).not.toBeInTheDocument();
     });
 
     it('should not render edit link when showDetails is false', () => {
       render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={true}
-          participants={mockParticipants}
-          showDetails={false}
-        />
+        <TooltipProvider>
+          <LulusCardHome
+            participant={mockParticipant}
+            isNextBirthday={false}
+            user={true}
+            participants={mockParticipants}
+            showDetails={false}
+          />
+        </TooltipProvider>
       );
 
-      expect(screen.queryByTestId('tooltip')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('edit-icon')).not.toBeInTheDocument();
     });
 
     it('should generate correct edit link with encrypted ID', () => {
       render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={true}
-          participants={mockParticipants}
-        />
+        <TooltipProvider>
+          <LulusCardHome
+            participant={mockParticipant}
+            isNextBirthday={false}
+            user={true}
+            participants={mockParticipants}
+          />
+        </TooltipProvider>
       );
 
       const link = screen.getByTestId('next-link');
@@ -708,9 +704,8 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(
-        screen.getByText(/Faltam \d+ dias para o aniversário!/)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/\d+ dias?/)).toBeInTheDocument();
+      expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
 
     it('should calculate days correctly when birthday has passed this year', () => {
@@ -731,9 +726,8 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(
-        screen.getByText(/Faltam \d+ dias para o aniversário!/)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/\d+ dias?/)).toBeInTheDocument();
+      expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
   });
 
@@ -857,10 +851,10 @@ describe('LulusCardHome', () => {
       );
 
       const avatar = screen.getByTestId('avatar');
-      expect(avatar).toHaveClass('h-16');
-      expect(avatar).toHaveClass('w-16');
-      expect(avatar).toHaveClass('border-2');
-      expect(avatar).toHaveClass('border-primary');
+      expect(avatar).toHaveClass('h-20');
+      expect(avatar).toHaveClass('w-20');
+      expect(avatar).toHaveClass('border-4');
+      expect(avatar).toHaveClass('border-primary/20');
     });
 
     it('should have correct card classes', () => {
@@ -883,16 +877,18 @@ describe('LulusCardHome', () => {
   describe('Combined Props Scenarios', () => {
     it('should render correctly with isNextBirthday and user both true', () => {
       render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={true}
-          user={true}
-          participants={mockParticipants}
-          showDetails={true}
-        />
+        <TooltipProvider>
+          <LulusCardHome
+            participant={mockParticipant}
+            isNextBirthday={true}
+            user={true}
+            participants={mockParticipants}
+            showDetails={true}
+          />
+        </TooltipProvider>
       );
 
-      expect(screen.getByText('Próxima aniversariante')).toBeInTheDocument();
+      expect(screen.getByText('Próxima Aniversariante')).toBeInTheDocument();
       expect(screen.getByTestId('edit-icon')).toBeInTheDocument();
       expect(screen.getByTestId('more-info-accordion')).toBeInTheDocument();
     });
