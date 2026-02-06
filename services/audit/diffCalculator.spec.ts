@@ -1,0 +1,351 @@
+import { describe, it, expect } from 'vitest';
+import { calculateDiff, hasChanges, describeChanges } from './diffCalculator';
+import type { Person } from '@/components/lulus/types';
+
+describe('diffCalculator', () => {
+  describe('calculateDiff', () => {
+    const basePerson: Partial<Person> = {
+      id: 1,
+      name: 'João Silva',
+      email: 'joao@example.com',
+      phone: '11999887766',
+      instagram: 'joaosilva',
+      pix_key: '12345678900',
+      pix_key_type: 'cpf',
+      city: 'São Paulo',
+    };
+
+    it('should detect simple field changes', () => {
+      const newData: Partial<Person> = {
+        ...basePerson,
+        email: 'joao.novo@example.com',
+      };
+
+      const changes = calculateDiff(basePerson, newData);
+
+      expect(changes).toHaveLength(1);
+      expect(changes[0]).toEqual({
+        field: 'email',
+        oldValue: 'joao@example.com',
+        newValue: 'joao.novo@example.com',
+        fieldType: 'string',
+      });
+    });
+
+    it('should detect multiple field changes', () => {
+      const newData: Partial<Person> = {
+        ...basePerson,
+        email: 'joao.novo@example.com',
+        phone: '21988776655',
+        pix_key: '98765432100',
+      };
+
+      const changes = calculateDiff(basePerson, newData);
+
+      expect(changes).toHaveLength(3);
+      expect(changes.some((c) => c.field === 'email')).toBe(true);
+      expect(changes.some((c) => c.field === 'phone')).toBe(true);
+      expect(changes.some((c) => c.field === 'pix_key')).toBe(true);
+    });
+
+    it('should detect null value changes', () => {
+      const newData: Partial<Person> = {
+        ...basePerson,
+        instagram: null!,
+      };
+
+      const changes = calculateDiff(basePerson, newData);
+
+      const instagramChange = changes.find((c) => c.field === 'instagram');
+      expect(instagramChange).toEqual({
+        field: 'instagram',
+        oldValue: 'joaosilva',
+        newValue: null,
+        fieldType: 'string',
+      });
+    });
+
+    it('should treat undefined as null', () => {
+      const newData: Partial<Person> = {
+        ...basePerson,
+        instagram: undefined,
+      };
+
+      const changes = calculateDiff(basePerson, newData);
+
+      const instagramChange = changes.find((c) => c.field === 'instagram');
+      expect(instagramChange?.newValue).toBeNull();
+    });
+
+    it('should treat empty string as null', () => {
+      const newData: Partial<Person> = {
+        ...basePerson,
+        instagram: '',
+      };
+
+      const changes = calculateDiff(basePerson, newData);
+
+      const instagramChange = changes.find((c) => c.field === 'instagram');
+      expect(instagramChange?.newValue).toBeNull();
+    });
+
+    it('should ignore excluded fields (id, month, gives_to, photoUpdatedAt)', () => {
+      const newData: Partial<Person> = {
+        ...basePerson,
+        id: 999,
+        month: 'Janeiro',
+        email: 'novo@example.com',
+      };
+
+      const changes = calculateDiff(basePerson, newData);
+
+      expect(changes.some((c) => c.field === 'id')).toBe(false);
+      expect(changes.some((c) => c.field === 'month')).toBe(false);
+      expect(changes.some((c) => c.field === 'email')).toBe(true);
+    });
+
+    it('should detect removed fields (in old but not in new)', () => {
+      const oldData: Partial<Person> = {
+        name: 'João Silva',
+        email: 'joao@example.com',
+        instagram: 'joaosilva',
+        phone: '11999887766',
+      };
+
+      const newData: Partial<Person> = {
+        name: 'João Silva',
+        email: 'joao@example.com',
+      };
+
+      const changes = calculateDiff(oldData, newData);
+
+      const instagramChange = changes.find((c) => c.field === 'instagram');
+      expect(instagramChange).toEqual({
+        field: 'instagram',
+        oldValue: 'joaosilva',
+        newValue: null,
+        fieldType: 'string',
+      });
+
+      const phoneChange = changes.find((c) => c.field === 'phone');
+      expect(phoneChange).toEqual({
+        field: 'phone',
+        oldValue: '11999887766',
+        newValue: null,
+        fieldType: 'string',
+      });
+    });
+
+    it('should handle null oldData gracefully', () => {
+      const newData: Partial<Person> = {
+        name: 'Maria Silva',
+        email: 'maria@example.com',
+      };
+
+      const changes = calculateDiff(null, newData);
+
+      expect(changes.length).toBeGreaterThan(0);
+      expect(changes.some((c) => c.field === 'name')).toBe(true);
+      expect(changes.some((c) => c.field === 'email')).toBe(true);
+    });
+
+    it('should handle undefined oldData gracefully', () => {
+      const newData: Partial<Person> = {
+        name: 'Maria Silva',
+      };
+
+      const changes = calculateDiff(undefined, newData);
+
+      expect(changes.some((c) => c.field === 'name')).toBe(true);
+    });
+
+    it('should not detect changes when data is identical', () => {
+      const newData: Partial<Person> = { ...basePerson };
+
+      const changes = calculateDiff(basePerson, newData);
+
+      expect(changes).toHaveLength(0);
+    });
+
+    it('should handle date field changes', () => {
+      const oldData: Partial<Person> = {
+        ...basePerson,
+        date: '1990-01-15T00:00:00.000Z',
+      };
+      const newData: Partial<Person> = {
+        ...basePerson,
+        date: '1990-02-20T00:00:00.000Z',
+      };
+
+      const changes = calculateDiff(oldData, newData);
+
+      const dateChange = changes.find((c) => c.field === 'date');
+      expect(dateChange).toBeDefined();
+      expect(dateChange?.fieldType).toBe('date');
+      expect(dateChange?.oldValue).not.toBe(dateChange?.newValue);
+    });
+
+    it('should handle number field changes (gives_to_id)', () => {
+      const oldData: Partial<Person> = {
+        ...basePerson,
+        gives_to_id: 1,
+      };
+      const newData: Partial<Person> = {
+        ...basePerson,
+        gives_to_id: 2,
+      };
+
+      const changes = calculateDiff(oldData, newData);
+
+      const giftChange = changes.find((c) => c.field === 'gives_to_id');
+      expect(giftChange).toEqual({
+        field: 'gives_to_id',
+        oldValue: 1,
+        newValue: 2,
+        fieldType: 'number',
+      });
+    });
+
+    it('should not report changes for fields removed from new that were already null', () => {
+      const oldData: Partial<Person> = {
+        name: 'João',
+        instagram: undefined,
+      };
+      const newData: Partial<Person> = {
+        name: 'João',
+      };
+
+      const changes = calculateDiff(oldData, newData);
+
+      expect(changes.some((c) => c.field === 'instagram')).toBe(false);
+    });
+
+    it('should only track fields defined in TRACKED_FIELDS', () => {
+      const oldData: Partial<Person> = {
+        name: 'João Silva',
+        email: 'joao@example.com',
+        phone: '11999887766',
+        instagram: 'joaosilva',
+        pix_key: '12345678900',
+        pix_key_type: 'cpf',
+        city: 'São Paulo',
+        gives_to_id: 1,
+        fullName: 'João Silva Santos',
+      };
+
+      const newData: Partial<Person> = {
+        name: 'João Silva Jr',
+        email: 'joao.jr@example.com',
+        phone: '11999887766',
+        instagram: 'joaosilva',
+        pix_key: '12345678900',
+        pix_key_type: 'cpf',
+        city: 'Rio de Janeiro',
+        gives_to_id: 2,
+        fullName: 'João Silva Santos Jr',
+      };
+
+      const changes = calculateDiff(oldData, newData);
+
+      expect(changes).toHaveLength(5);
+      expect(changes.some((c) => c.field === 'name')).toBe(true);
+      expect(changes.some((c) => c.field === 'email')).toBe(true);
+      expect(changes.some((c) => c.field === 'city')).toBe(true);
+      expect(changes.some((c) => c.field === 'gives_to_id')).toBe(true);
+      expect(changes.some((c) => c.field === 'fullName')).toBe(true);
+      expect(changes.some((c) => c.field === 'phone')).toBe(false);
+      expect(changes.some((c) => c.field === 'instagram')).toBe(false);
+      expect(changes.some((c) => c.field === 'pix_key')).toBe(false);
+      expect(changes.some((c) => c.field === 'pix_key_type')).toBe(false);
+    });
+
+    it('should normalize Date objects and ISO strings consistently', () => {
+      const oldData: Partial<Person> = {
+        name: 'João',
+        date: new Date('1990-01-15T00:00:00.000Z'),
+      };
+      const newData: Partial<Person> = {
+        name: 'João',
+        date: '1990-01-15T00:00:00.000Z',
+      };
+
+      const changes = calculateDiff(oldData, newData);
+
+      expect(changes.some((c) => c.field === 'date')).toBe(false);
+    });
+
+    it('should only record actual changes', () => {
+      const oldData: Partial<Person> = {
+        name: 'João',
+        email: 'joao@example.com',
+        phone: '11999887766',
+        instagram: 'joao_ig',
+        city: 'São Paulo',
+      };
+
+      const newData: Partial<Person> = {
+        name: 'João',
+        email: 'joao@example.com',
+        phone: '11999887766',
+        instagram: 'joao_ig',
+        city: 'São Paulo',
+      };
+
+      const changes = calculateDiff(oldData, newData);
+
+      expect(changes).toHaveLength(0);
+    });
+  });
+
+  describe('hasChanges', () => {
+    it('should return true when there are changes', () => {
+      const changes = [
+        {
+          field: 'email',
+          oldValue: 'old@example.com',
+          newValue: 'new@example.com',
+          fieldType: 'string' as const,
+        },
+      ];
+
+      expect(hasChanges(changes)).toBe(true);
+    });
+
+    it('should return false when no changes', () => {
+      expect(hasChanges([])).toBe(false);
+    });
+  });
+
+  describe('describeChanges', () => {
+    it('should describe changes in readable format', () => {
+      const changes = [
+        {
+          field: 'email',
+          oldValue: 'old@example.com',
+          newValue: 'new@example.com',
+          fieldType: 'string' as const,
+        },
+        {
+          field: 'phone',
+          oldValue: null,
+          newValue: '11999887766',
+          fieldType: 'string' as const,
+        },
+      ];
+
+      const description = describeChanges(changes);
+
+      expect(description).toContain('email');
+      expect(description).toContain('old@example.com');
+      expect(description).toContain('new@example.com');
+      expect(description).toContain('phone');
+      expect(description).toContain('(vazio)');
+    });
+
+    it('should describe no changes', () => {
+      const description = describeChanges([]);
+
+      expect(description).toBe('Nenhuma mudança detectada');
+    });
+  });
+});

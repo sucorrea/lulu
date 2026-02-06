@@ -5,8 +5,7 @@ import { join } from 'node:path';
 export const alt = 'Luluzinha - O site das Lulus';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-
-export default async function Image() {
+export const Image = async () => {
   const year = new Date().getFullYear();
 
   const imageBuffer = readFileSync(
@@ -86,4 +85,6 @@ export default async function Image() {
     ),
     { ...size }
   );
-}
+};
+
+export default Image;

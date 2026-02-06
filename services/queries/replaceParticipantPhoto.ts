@@ -7,17 +7,16 @@ import {
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../firebase';
 
-export async function replaceParticipantPhoto(
+export const replaceParticipantPhoto = async (
   participantId: string,
   file: File
-) {
+) => {
   const participantRef = doc(db, 'participants', participantId);
 
   const snapshot = await getDoc(participantRef);
 
   const data = snapshot.data();
 
-  console.log('dados snapshot', data);
   if (!data) {
     throw new Error('Participante não encontrado');
   }
@@ -50,4 +49,4 @@ export async function replaceParticipantPhoto(
   });
 
   return newDownloadURL;
-}
+};

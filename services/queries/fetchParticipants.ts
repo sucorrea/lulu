@@ -5,7 +5,7 @@ import { Person } from '@/components/lulus/types';
 import { db, storage } from '../firebase';
 import { getDownloadURL, ref } from 'firebase/storage';
 
-export async function fetchParticipants(): Promise<Person[]> {
+export const fetchParticipants = async (): Promise<Person[]> => {
   const querySnapshot = await getDocs(collection(db, 'participants'));
   const data: Person[] = [];
 
@@ -14,17 +14,19 @@ export async function fetchParticipants(): Promise<Person[]> {
   });
 
   return data;
-}
+};
 
-export function useGetAllParticipants() {
+export const useGetAllParticipants = () => {
   return useQuery<Person[]>({
     queryKey: ['get-all-participants'],
     queryFn: fetchParticipants,
     retry: 2,
   });
-}
+};
 
-export async function fetchParticipantById(id: string): Promise<Person | null> {
+export const fetchParticipantById = async (
+  id: string
+): Promise<Person | null> => {
   try {
     const docRef = doc(db, 'participants', id);
     const docSnap = await getDoc(docRef);
@@ -39,16 +41,16 @@ export async function fetchParticipantById(id: string): Promise<Person | null> {
     console.error('Error fetching participant:', error);
     return null;
   }
-}
+};
 
-export function useGetParticipantById(id: string) {
+export const useGetParticipantById = (id: string) => {
   return useQuery<Person | null>({
     queryKey: ['get-participant-by-id', id],
     queryFn: () => fetchParticipantById(id),
   });
-}
+};
 
-export async function fetchGalleryImages() {
+export const fetchGalleryImages = async () => {
   const listAll = (await import('firebase/storage')).listAll;
 
   const galleryRef = ref(storage, 'gallery');
@@ -58,12 +60,12 @@ export async function fetchGalleryImages() {
   );
 
   return urls;
-}
+};
 
-export function useGetGalleryImages() {
+export const useGetGalleryImages = () => {
   return useQuery<string[]>({
     queryKey: ['get-gallery-images'],
     queryFn: fetchGalleryImages,
     retry: 2,
   });
-}
+};

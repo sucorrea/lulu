@@ -20,7 +20,7 @@ type GenericDialogProps = {
   className?: string;
 };
 
-export function GenericDialog({
+export const GenericDialog = ({
   open,
   onOpenChange,
   title,
@@ -28,7 +28,7 @@ export function GenericDialog({
   children,
   footer,
   className = '',
-}: Readonly<GenericDialogProps>) {
+}: Readonly<GenericDialogProps>) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -47,4 +47,4 @@ export function GenericDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
