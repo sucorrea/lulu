@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   doc,
@@ -7,13 +8,10 @@ import {
   arrayUnion,
   arrayRemove,
   onSnapshot,
+  DocumentSnapshot,
+  DocumentData,
 } from 'firebase/firestore';
 import { likePhoto, unlikePhoto, listenPhotoLikes } from './galeriaLikes';
-
-type FirestoreSnap = {
-  exists: () => boolean;
-  data: () => { users?: string[] };
-};
 
 const firestoreMocks = vi.hoisted(() => ({
   doc: vi.fn(),
@@ -48,7 +46,7 @@ describe('galeriaLikes', () => {
     mockGetDoc.mockResolvedValue({
       exists: () => true,
       data: () => ({ users: ['old'] }),
-    } as FirestoreSnap);
+    } as unknown as DocumentSnapshot<unknown, DocumentData>);
 
     await likePhoto('photo-1', 'user-1');
 
@@ -68,7 +66,7 @@ describe('galeriaLikes', () => {
     mockGetDoc.mockResolvedValue({
       exists: () => false,
       data: () => ({ users: [] }),
-    } as FirestoreSnap);
+    } as unknown as DocumentSnapshot<unknown, DocumentData>);
 
     await likePhoto('photo-2', 'user-2');
 
@@ -97,11 +95,11 @@ describe('galeriaLikes', () => {
     const unsubscribe = vi.fn();
 
     mockDoc.mockReturnValue(ref as never);
-    mockOnSnapshot.mockImplementation((_, onNext) => {
+    mockOnSnapshot.mockImplementation((_ref: any, onNext: any) => {
       onNext({
         exists: () => true,
         data: () => ({ users: ['a', 'b'] }),
-      } as FirestoreSnap);
+      } as unknown as DocumentSnapshot<unknown, DocumentData>);
       return unsubscribe;
     });
 
@@ -119,11 +117,11 @@ describe('galeriaLikes', () => {
     const unsubscribe = vi.fn();
 
     mockDoc.mockReturnValue(ref as never);
-    mockOnSnapshot.mockImplementation((_, onNext) => {
+    mockOnSnapshot.mockImplementation((ref: any, onNext: any) => {
       onNext({
         exists: () => false,
         data: () => ({ users: ['ignored'] }),
-      } as FirestoreSnap);
+      } as unknown as DocumentSnapshot<unknown, DocumentData>);
       return unsubscribe;
     });
 
