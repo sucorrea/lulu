@@ -85,29 +85,39 @@ export const AuditPage = () => {
         isLoadingParticipants={!isMounted || isLoadingParticipants}
       />
 
-      {isIndexBuilding ? (
-        <ErrorState
-          title="Índice do banco de dados em construção"
-          message="O índice necessário para consultas de auditoria está sendo criado no Firebase. Isso pode levar alguns minutos. Por favor, aguarde e tente novamente em breve."
-          onRetry={() => refetch()}
-        />
-      ) : error ? (
-        <ErrorState
-          title="Erro ao carregar logs de auditoria"
-          message={
+      {(() => {
+        if (isIndexBuilding) {
+          return (
+            <ErrorState
+              title="Índice do banco de dados em construção"
+              message="O índice necessário para consultas de auditoria está sendo criado no Firebase. Isso pode levar alguns minutos. Por favor, aguarde e tente novamente em breve."
+              onRetry={() => refetch()}
+            />
+          );
+        }
+
+        if (error) {
+          const errorMessage =
             error.message ||
-            'Não foi possível carregar os logs. Por favor, tente novamente.'
-          }
-          onRetry={() => refetch()}
-        />
-      ) : (
-        <AuditLogList
-          logs={filteredLogs}
-          isLoading={isLoadingParticipants || isLoadingAudit}
-          showParticipantName={filters.participantId === ALL_PARTICIPANTS_VALUE}
-          getParticipantName={getParticipantName}
-        />
-      )}
+            'Não foi possível carregar os logs. Por favor, tente novamente.';
+          return (
+            <ErrorState
+              title="Erro ao carregar logs de auditoria"
+              message={errorMessage}
+              onRetry={() => refetch()}
+            />
+          );
+        }
+
+        return (
+          <AuditLogList
+            logs={filteredLogs}
+            isLoading={isLoadingParticipants || isLoadingAudit}
+            showParticipantName={filters.participantId === ALL_PARTICIPANTS_VALUE}
+            getParticipantName={getParticipantName}
+          />
+        );
+      })()}
     </div>
   );
 };

@@ -21,6 +21,9 @@ export const formatValue = (value: unknown, fieldType: string): string => {
     return JSON.stringify(value);
   }
 
+  if (typeof value === 'object') {
+    return '[object Object]';
+  }
   return String(value);
 };
 

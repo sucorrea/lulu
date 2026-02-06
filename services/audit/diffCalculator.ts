@@ -110,16 +110,24 @@ export const hasChanges = (changes: AuditFieldChange[]): boolean => {
   return changes.length > 0;
 };
 
+const valueToString = (value: unknown): string => {
+  if (value === null || value === undefined) {
+    return '(vazio)';
+  }
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+  return String(value);
+};
+
 export const describeChanges = (changes: AuditFieldChange[]): string => {
   if (changes.length === 0) {
     return 'Nenhuma mudança detectada';
   }
 
   const descriptions = changes.map((change) => {
-    const oldStr =
-      change.oldValue === null ? '(vazio)' : String(change.oldValue);
-    const newStr =
-      change.newValue === null ? '(vazio)' : String(change.newValue);
+    const oldStr = valueToString(change.oldValue);
+    const newStr = valueToString(change.newValue);
     return `${change.field}: ${oldStr} → ${newStr}`;
   });
 

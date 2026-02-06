@@ -20,6 +20,7 @@ export interface UseAuditDataReturn {
   auditLogs: AuditLog[];
   isLoading: boolean;
   error: Error | null;
+
   isIndexBuilding: boolean;
-  refetch: () => void;
+  refetch: () => Promise<void>;
 }

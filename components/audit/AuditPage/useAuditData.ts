@@ -48,8 +48,10 @@ export const useAuditData = (
   return {
     auditLogs,
     isLoading,
-    error: error as Error | null,
+    error: error ?? null,
     isIndexBuilding,
-    refetch,
+    refetch: async () => {
+      await refetch();
+    },
   };
 };

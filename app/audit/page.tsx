@@ -19,8 +19,8 @@ const AuditPageSkeleton = () => {
 
       <div className="mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-10 bg-muted rounded animate-pulse" />
+          {Array.from({ length: 3 }, (_, i) => `filter-${i}`).map((id) => (
+            <div key={id} className="h-10 bg-muted rounded animate-pulse" />
           ))}
         </div>
       </div>

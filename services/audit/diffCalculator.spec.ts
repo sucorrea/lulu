@@ -347,5 +347,73 @@ describe('diffCalculator', () => {
 
       expect(description).toBe('Nenhuma mudança detectada');
     });
+
+    it('should handle object values without [object Object]', () => {
+      const changes = [
+        {
+          field: 'metadata',
+          oldValue: { key: 'oldValue', count: 1 },
+          newValue: { key: 'newValue', count: 2 },
+          fieldType: 'object' as const,
+        },
+      ];
+
+      const description = describeChanges(changes);
+
+      expect(description).not.toContain('[object Object]');
+      expect(description).toContain('metadata');
+      expect(description).toContain('oldValue');
+      expect(description).toContain('newValue');
+    });
+
+    it('should handle array values correctly', () => {
+      const changes = [
+        {
+          field: 'tags',
+          oldValue: ['tag1', 'tag2'],
+          newValue: ['tag3', 'tag4'],
+          fieldType: 'array' as const,
+        },
+      ];
+
+      const description = describeChanges(changes);
+
+      expect(description).not.toContain('[object Object]');
+      expect(description).toContain('tags');
+      expect(description).toContain('tag1');
+      expect(description).toContain('tag3');
+    });
+
+    it('should handle mixed types in changes', () => {
+      const changes = [
+        {
+          field: 'name',
+          oldValue: 'João',
+          newValue: 'João Silva',
+          fieldType: 'string' as const,
+        },
+        {
+          field: 'age',
+          oldValue: 25,
+          newValue: 26,
+          fieldType: 'number' as const,
+        },
+        {
+          field: 'settings',
+          oldValue: { theme: 'dark' },
+          newValue: { theme: 'light' },
+          fieldType: 'object' as const,
+        },
+      ];
+
+      const description = describeChanges(changes);
+
+      expect(description).toContain('name: João → João Silva');
+      expect(description).toContain('age: 25 → 26');
+      expect(description).toContain('settings');
+      expect(description).toContain('dark');
+      expect(description).toContain('light');
+      expect(description).not.toContain('[object Object]');
+    });
   });
 });

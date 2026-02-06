@@ -7,6 +7,9 @@ import {
   orderBy,
   limit,
   getDocs,
+  CollectionReference,
+  QuerySnapshot,
+  DocumentData,
 } from 'firebase/firestore';
 import { db } from '@/services/firebase';
 import { AuditLog, AuditFieldChange } from './types';
@@ -18,9 +21,9 @@ const generateAuditLogId = (): string => {
   if (typeof globalThis.crypto?.getRandomValues === 'function') {
     globalThis.crypto.getRandomValues(buffer);
   } else {
-    for (let i = 0; i < buffer.length; i++) {
-      buffer[i] = Math.floor(Math.random() * 256);
-    }
+    throw new TypeError(
+      'crypto.getRandomValues não está disponível. Ambiente não suportado para geração segura de IDs de auditoria.'
+    );
   }
 
   const random = Array.from(buffer)
@@ -29,6 +32,54 @@ const generateAuditLogId = (): string => {
     .substring(0, 9);
 
   return `${timestamp}_${random}`;
+};
+
+/**
+ * Obtém a referência da coleção de auditoria para um participante
+ */
+const getAuditCollectionRef = (
+  participantId: number
+): CollectionReference<DocumentData> => {
+  return collection(db, 'participants', String(participantId), 'audit');
+};
+
+/**
+ * Converte QuerySnapshot em array de AuditLog
+ */
+const snapshotToAuditLogs = (
+  querySnapshot: QuerySnapshot<DocumentData>
+): AuditLog[] => {
+  const logs: AuditLog[] = [];
+  querySnapshot.forEach((docSnapshot) => {
+    logs.push({
+      id: docSnapshot.id,
+      ...docSnapshot.data(),
+    } as AuditLog);
+  });
+  return logs;
+};
+
+/**
+ * Converte QuerySnapshot com extração de participantId do path
+ * Usado para queries com collectionGroup
+ */
+const snapshotToAuditLogsWithParticipantId = (
+  querySnapshot: QuerySnapshot<DocumentData>
+): AuditLog[] => {
+  const logs: AuditLog[] = [];
+  querySnapshot.forEach((docSnapshot) => {
+    const data = docSnapshot.data();
+    // Extrai o participantId do path: participants/{id}/audit/{logId}
+    const pathSegments = docSnapshot.ref.path.split('/');
+    const participantIdFromPath = Number(pathSegments[1]);
+
+    logs.push({
+      id: docSnapshot.id,
+      ...data,
+      participantId: data.participantId ?? participantIdFromPath,
+    } as AuditLog);
+  });
+  return logs;
 };
 
 export const createAuditLog = async (
@@ -62,13 +113,7 @@ export const createAuditLog = async (
       },
     };
 
-    const auditCollectionRef = collection(
-      db,
-      'participants',
-      String(participantId),
-      'audit'
-    );
-
+    const auditCollectionRef = getAuditCollectionRef(participantId);
     await addDoc(auditCollectionRef, auditLog);
 
     return auditLog;
@@ -86,12 +131,7 @@ export const getAuditLogs = async (
   limitCount: number = 10
 ): Promise<AuditLog[]> => {
   try {
-    const auditCollectionRef = collection(
-      db,
-      'participants',
-      String(participantId),
-      'audit'
-    );
+    const auditCollectionRef = getAuditCollectionRef(participantId);
 
     const q = query(
       auditCollectionRef,
@@ -100,16 +140,7 @@ export const getAuditLogs = async (
     );
 
     const querySnapshot = await getDocs(q);
-    const logs: AuditLog[] = [];
-
-    querySnapshot.forEach((docSnapshot) => {
-      logs.push({
-        id: docSnapshot.id,
-        ...docSnapshot.data(),
-      } as AuditLog);
-    });
-
-    return logs;
+    return snapshotToAuditLogs(querySnapshot);
   } catch (error) {
     console.error(
       `Erro ao buscar audit logs para participante ${participantId}:`,
@@ -125,12 +156,7 @@ export const getAuditLogsByUser = async (
   limitCount: number = 10
 ): Promise<AuditLog[]> => {
   try {
-    const auditCollectionRef = collection(
-      db,
-      'participants',
-      String(participantId),
-      'audit'
-    );
+    const auditCollectionRef = getAuditCollectionRef(participantId);
 
     const q = query(
       auditCollectionRef,
@@ -140,16 +166,7 @@ export const getAuditLogsByUser = async (
     );
 
     const querySnapshot = await getDocs(q);
-    const logs: AuditLog[] = [];
-
-    querySnapshot.forEach((docSnapshot) => {
-      logs.push({
-        id: docSnapshot.id,
-        ...docSnapshot.data(),
-      } as AuditLog);
-    });
-
-    return logs;
+    return snapshotToAuditLogs(querySnapshot);
   } catch (error) {
     console.error(
       `Erro ao buscar audit logs por usuário ${userId} para participante ${participantId}:`,
@@ -180,12 +197,7 @@ export const getAuditLogsByChangedField = async (
   limitCount: number = 10
 ): Promise<AuditLog[]> => {
   try {
-    const auditCollectionRef = collection(
-      db,
-      'participants',
-      String(participantId),
-      'audit'
-    );
+    const auditCollectionRef = getAuditCollectionRef(participantId);
 
     const q = query(
       auditCollectionRef,
@@ -194,20 +206,14 @@ export const getAuditLogsByChangedField = async (
     );
 
     const querySnapshot = await getDocs(q);
-    const logs: AuditLog[] = [];
+    const allLogs = snapshotToAuditLogs(querySnapshot);
 
-    querySnapshot.forEach((docSnapshot) => {
-      const log = {
-        id: docSnapshot.id,
-        ...docSnapshot.data(),
-      } as AuditLog;
+    // Filtrar logs que contêm mudanças no campo especificado
+    const filteredLogs = allLogs.filter((log) =>
+      log.changes.some((change) => change.field === fieldName)
+    );
 
-      if (log.changes.some((change) => change.field === fieldName)) {
-        logs.push(log);
-      }
-    });
-
-    return logs.slice(0, limitCount);
+    return filteredLogs.slice(0, limitCount);
   } catch (error) {
     console.error(
       `Erro ao buscar audit logs por campo ${fieldName} para participante ${participantId}:`,
@@ -221,13 +227,7 @@ export const countAuditLogs = async (
   participantId: number
 ): Promise<number> => {
   try {
-    const auditCollectionRef = collection(
-      db,
-      'participants',
-      String(participantId),
-      'audit'
-    );
-
+    const auditCollectionRef = getAuditCollectionRef(participantId);
     const snapshot = await getDocs(auditCollectionRef);
     return snapshot.size;
   } catch (error) {
@@ -252,21 +252,7 @@ export const getAllAuditLogs = async (
     );
 
     const querySnapshot = await getDocs(q);
-    const logs: AuditLog[] = [];
-
-    querySnapshot.forEach((docSnapshot) => {
-      const data = docSnapshot.data();
-      const pathSegments = docSnapshot.ref.path.split('/');
-      const participantIdFromPath = Number(pathSegments[1]);
-
-      logs.push({
-        id: docSnapshot.id,
-        ...data,
-        participantId: data.participantId ?? participantIdFromPath,
-      } as AuditLog);
-    });
-
-    return logs;
+    return snapshotToAuditLogsWithParticipantId(querySnapshot);
   } catch (error) {
     console.error('Erro ao buscar todos os audit logs:', error);
     throw error;
@@ -288,21 +274,7 @@ export const getAllAuditLogsByUser = async (
     );
 
     const querySnapshot = await getDocs(q);
-    const logs: AuditLog[] = [];
-
-    querySnapshot.forEach((docSnapshot) => {
-      const data = docSnapshot.data();
-      const pathSegments = docSnapshot.ref.path.split('/');
-      const participantIdFromPath = Number(pathSegments[1]);
-
-      logs.push({
-        id: docSnapshot.id,
-        ...data,
-        participantId: data.participantId ?? participantIdFromPath,
-      } as AuditLog);
-    });
-
-    return logs;
+    return snapshotToAuditLogsWithParticipantId(querySnapshot);
   } catch (error) {
     console.error(`Erro ao buscar audit logs por usuário ${userId}:`, error);
     throw error;

@@ -93,6 +93,45 @@ describe('auditService', () => {
       expect(result1.id).not.toBe(result2.id);
     });
 
+    it('should throw TypeError if crypto.getRandomValues is not available', async () => {
+      // Salvar referência original
+      const originalCrypto = globalThis.crypto;
+
+      // Remover crypto temporariamente
+      Object.defineProperty(globalThis, 'crypto', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      try {
+        await expect(
+          createAuditLog(1, {
+            userId: 'user123',
+            userName: 'João',
+            changes: [],
+          })
+        ).rejects.toThrow(TypeError);
+
+        await expect(
+          createAuditLog(1, {
+            userId: 'user123',
+            userName: 'João',
+            changes: [],
+          })
+        ).rejects.toThrow(
+          'crypto.getRandomValues não está disponível. Ambiente não suportado para geração segura de IDs de auditoria.'
+        );
+      } finally {
+        // Restaurar crypto
+        Object.defineProperty(globalThis, 'crypto', {
+          value: originalCrypto,
+          writable: true,
+          configurable: true,
+        });
+      }
+    });
+
     it('should include metadata in audit log', async () => {
       const { addDoc } = await import('firebase/firestore');
       const mockDocRef = { id: 'doc123' } as unknown as DocumentReference<

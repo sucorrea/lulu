@@ -3,11 +3,8 @@
 export const AuditLogSkeleton = () => {
   return (
     <div className="space-y-4">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <div
-          key={index}
-          className="bg-card rounded-lg border p-6 animate-pulse"
-        >
+      {Array.from({ length: 5 }, (_, i) => `skeleton-${i}`).map((id) => (
+        <div key={id} className="bg-card rounded-lg border p-6 animate-pulse">
           <div className="flex justify-between items-start mb-4">
             <div className="space-y-2 flex-1">
               <div className="h-4 bg-muted rounded w-1/3" />
