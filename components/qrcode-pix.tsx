@@ -12,7 +12,7 @@ interface PixQRCodeProps {
   participant: Person;
 }
 
-export default function PixQRCode({ participant }: Readonly<PixQRCodeProps>) {
+const PixQRCode = ({ participant }: Readonly<PixQRCodeProps>) => {
   const [payload, setPayload] = useState('');
   const { isOpen, onToggle } = useDisclosure();
   const { isMobile } = useIsMobile();
@@ -61,4 +61,6 @@ export default function PixQRCode({ participant }: Readonly<PixQRCodeProps>) {
       )}
     </div>
   );
-}
+};
+
+export default PixQRCode;

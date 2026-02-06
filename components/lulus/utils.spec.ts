@@ -8,13 +8,13 @@ import {
   getNextBirthday,
   birthdayStats,
   signsStats,
-  cn,
   formatDates,
   getInitials,
   NameKey,
   meses,
 } from './utils';
 import { Person } from './types';
+import { cn } from '@/lib/utils';
 
 const mockPerson: Person = {
   id: 1,

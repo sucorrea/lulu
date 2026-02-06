@@ -18,10 +18,10 @@ export type GaleriaComment = {
   editedAt?: string;
 };
 
-export async function addCommentToPhoto(
+export const addCommentToPhoto = async (
   photoId: string,
   comment: Omit<GaleriaComment, 'id'>
-) {
+) => {
   const ref = doc(db, 'galeria-comments', photoId);
   const snap = await getDoc(ref);
   const commentWithId = {
@@ -36,12 +36,12 @@ export async function addCommentToPhoto(
   } else {
     await setDoc(ref, { comments: [commentWithId] });
   }
-}
+};
 
-export async function deleteCommentFromPhoto(
+export const deleteCommentFromPhoto = async (
   photoId: string,
   commentId: string
-) {
+) => {
   const ref = doc(db, 'galeria-comments', photoId);
   const snap = await getDoc(ref);
   if (!snap.exists()) {
@@ -50,13 +50,13 @@ export async function deleteCommentFromPhoto(
   const comments = snap.data().comments || [];
   const updated = comments.filter((c: GaleriaComment) => c.id !== commentId);
   await updateDoc(ref, { comments: updated });
-}
+};
 
-export async function editCommentOnPhoto(
+export const editCommentOnPhoto = async (
   photoId: string,
   commentId: string,
   newText: string
-) {
+) => {
   const ref = doc(db, 'galeria-comments', photoId);
   const snap = await getDoc(ref);
   if (!snap.exists()) {
@@ -67,14 +67,14 @@ export async function editCommentOnPhoto(
     c.id === commentId ? { ...c, comment: newText } : c
   );
   await updateDoc(ref, { comments: updated });
-}
+};
 
-export function listenPhotoComments(
+export const listenPhotoComments = (
   photoId: string,
   callback: (comments: GaleriaComment[]) => void
-) {
+) => {
   const ref = doc(db, 'galeria-comments', photoId);
   return onSnapshot(ref, (snap) => {
     callback(snap.exists() ? snap.data().comments || [] : []);
   });
-}
+};

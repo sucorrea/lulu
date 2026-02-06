@@ -20,11 +20,11 @@ interface LegacyLikeUnlikeButtonProps {
 
 type CombinedProps = LikeUnlikeButtonProps | LegacyLikeUnlikeButtonProps;
 
-function isLegacyProps(
+const isLegacyProps = (
   props: CombinedProps
-): props is LegacyLikeUnlikeButtonProps {
+): props is LegacyLikeUnlikeButtonProps => {
   return Array.isArray(props.liked);
-}
+};
 
 const LikeUnlikeButton = memo(function LikeUnlikeButton(props: CombinedProps) {
   const { handleLike, index } = props;

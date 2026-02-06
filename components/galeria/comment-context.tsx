@@ -31,12 +31,12 @@ interface CommentProviderProps {
   onDeleteComment: (commentId: string) => void;
 }
 
-export function CommentProvider({
+export const CommentProvider = ({
   children,
   onSubmitComment: handleSubmitComment,
   onEditComment: handleEditComment,
   onDeleteComment: handleDeleteComment,
-}: Readonly<CommentProviderProps>) {
+}: Readonly<CommentProviderProps>) => {
   const [commentInput, setCommentInput] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editInput, setEditInput] = useState('');
@@ -111,12 +111,12 @@ export function CommentProvider({
   return (
     <CommentContext.Provider value={value}>{children}</CommentContext.Provider>
   );
-}
+};
 
-export function useCommentContext() {
+export const useCommentContext = () => {
   const context = useContext(CommentContext);
   if (!context) {
     throw new Error('useCommentContext must be used within CommentProvider');
   }
   return context;
-}
+};

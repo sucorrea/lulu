@@ -4,9 +4,9 @@ import {
   ThemeProviderProps,
 } from 'next-themes';
 
-export function ThemeProvider({
+export const ThemeProvider = ({
   children,
   ...props
-}: Readonly<ThemeProviderProps>) {
+}: Readonly<ThemeProviderProps>) => {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
-}
+};

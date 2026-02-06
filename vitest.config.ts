@@ -40,6 +40,7 @@ export default defineConfig({
         '**/coverage/**',
         '**/.next/**',
         '**/vitest.setup.ts',
+        'components/audit/index.ts',
       ],
       reporter: ['text-summary', 'lcov', 'html'],
       reportOnFailure: true,

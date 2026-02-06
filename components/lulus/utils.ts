@@ -1,7 +1,7 @@
 import { months } from './constants';
 import { Person, PixTypes } from './types';
 
-export function getParticipantPhotoUrl(person: Person): string {
+export const getParticipantPhotoUrl = (person: Person): string => {
   const base = person.photoURL ?? person.picture ?? '';
   if (!base) {
     return '';
@@ -10,7 +10,7 @@ export function getParticipantPhotoUrl(person: Person): string {
   return person.photoUpdatedAt
     ? `${base}${sep}v=${person.photoUpdatedAt}`
     : base;
-}
+};
 export type Signos =
   | 'aries'
   | 'touro'
@@ -53,28 +53,28 @@ const ZODIAC_DATES: Array<{
   endDay: number;
   endMonth: number;
 }> = [
-  { sign: 0, startDay: 21, startMonth: 3, endDay: 20, endMonth: 4 }, // Áries
-  { sign: 1, startDay: 21, startMonth: 4, endDay: 20, endMonth: 5 }, // Touro
-  { sign: 2, startDay: 21, startMonth: 5, endDay: 20, endMonth: 6 }, // Gêmeos
-  { sign: 3, startDay: 21, startMonth: 6, endDay: 22, endMonth: 7 }, // Câncer
-  { sign: 4, startDay: 23, startMonth: 7, endDay: 22, endMonth: 8 }, // Leão
-  { sign: 5, startDay: 23, startMonth: 8, endDay: 22, endMonth: 9 }, // Virgem
-  { sign: 6, startDay: 23, startMonth: 9, endDay: 22, endMonth: 10 }, // Libra
-  { sign: 7, startDay: 23, startMonth: 10, endDay: 21, endMonth: 11 }, // Escorpião
-  { sign: 8, startDay: 22, startMonth: 11, endDay: 21, endMonth: 12 }, // Sagitário
-  { sign: 9, startDay: 22, startMonth: 12, endDay: 20, endMonth: 1 }, // Capricórnio
-  { sign: 10, startDay: 21, startMonth: 1, endDay: 18, endMonth: 2 }, // Aquário
-  { sign: 11, startDay: 19, startMonth: 2, endDay: 20, endMonth: 3 }, // Peixes
+  { sign: 0, startDay: 21, startMonth: 3, endDay: 20, endMonth: 4 },
+  { sign: 1, startDay: 21, startMonth: 4, endDay: 20, endMonth: 5 },
+  { sign: 2, startDay: 21, startMonth: 5, endDay: 20, endMonth: 6 },
+  { sign: 3, startDay: 21, startMonth: 6, endDay: 22, endMonth: 7 },
+  { sign: 4, startDay: 23, startMonth: 7, endDay: 22, endMonth: 8 },
+  { sign: 5, startDay: 23, startMonth: 8, endDay: 22, endMonth: 9 },
+  { sign: 6, startDay: 23, startMonth: 9, endDay: 22, endMonth: 10 },
+  { sign: 7, startDay: 23, startMonth: 10, endDay: 21, endMonth: 11 },
+  { sign: 8, startDay: 22, startMonth: 11, endDay: 21, endMonth: 12 },
+  { sign: 9, startDay: 22, startMonth: 12, endDay: 20, endMonth: 1 },
+  { sign: 10, startDay: 21, startMonth: 1, endDay: 18, endMonth: 2 },
+  { sign: 11, startDay: 19, startMonth: 2, endDay: 20, endMonth: 3 },
 ];
 
-function isDateInRange(
+const isDateInRange = (
   day: number,
   month: number,
   startDay: number,
   startMonth: number,
   endDay: number,
   endMonth: number
-): boolean {
+): boolean => {
   if (startMonth === endMonth) {
     return month === startMonth && day >= startDay && day <= endDay;
   }
@@ -82,9 +82,9 @@ function isDateInRange(
     (month === startMonth && day >= startDay) ||
     (month === endMonth && day <= endDay)
   );
-}
+};
 
-export function getSigno(dataNascimento: Date): SignoValues {
+export const getSigno = (dataNascimento: Date): SignoValues => {
   const dia = dataNascimento.getDate();
   const mes = dataNascimento.getMonth() + 1;
 
@@ -104,7 +104,7 @@ export function getSigno(dataNascimento: Date): SignoValues {
   }
 
   return ZODIAC_SIGNS[zodiacEntry.sign];
-}
+};
 
 export const meses = [
   { value: '01', label: 'Janeiro' },
@@ -171,7 +171,7 @@ export const formatDate = (date: Date): string =>
     month: '2-digit',
   });
 
-export function getNextBirthday(participants: Person[]): Person | null {
+export const getNextBirthday = (participants: Person[]): Person | null => {
   const today = new Date();
   const currentYear = today.getFullYear();
 
@@ -197,7 +197,7 @@ export function getNextBirthday(participants: Person[]): Person | null {
     .sort((a, b) => a.timeUntil - b.timeUntil);
 
   return upcomingBirthdays.length > 0 ? upcomingBirthdays[0].person : null;
-}
+};
 
 export const birthdayStats = (participants: Person[]) =>
   months.map((month, index) => ({
@@ -206,7 +206,7 @@ export const birthdayStats = (participants: Person[]) =>
       .length,
   }));
 
-function getSign(day: number, month: number): string {
+const getSign = (day: number, month: number): string => {
   const signs = [
     { name: 'Capricórnio', start: [12, 22], end: [1, 19] },
     { name: 'Aquário', start: [1, 20], end: [2, 18] },
@@ -235,7 +235,7 @@ function getSign(day: number, month: number): string {
   }
 
   return 'Desconhecido';
-}
+};
 
 export const signsStats = (participants: Person[]) => {
   const signsMap: Record<string, number> = {};
@@ -252,25 +252,18 @@ export const signsStats = (participants: Person[]) => {
   }));
 };
 
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-export function formatDates(date: Date): string {
+export const formatDates = (date: Date): string => {
   return new Intl.DateTimeFormat('en-US', {
     day: 'numeric',
     month: 'long',
   }).format(date);
-}
+};
 
-export function getInitials(name: string): string {
+export const getInitials = (name: string): string => {
   return name
     .split(' ')
     .map((part) => part[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
-}
+};

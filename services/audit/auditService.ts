@@ -1,0 +1,282 @@
+import {
+  collection,
+  collectionGroup,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
+  CollectionReference,
+  QuerySnapshot,
+  DocumentData,
+} from 'firebase/firestore';
+import { db } from '@/services/firebase';
+import { AuditLog, AuditFieldChange } from './types';
+
+const generateAuditLogId = (): string => {
+  const timestamp = Date.now();
+  const buffer = new Uint8Array(6);
+
+  if (typeof globalThis.crypto?.getRandomValues === 'function') {
+    globalThis.crypto.getRandomValues(buffer);
+  } else {
+    throw new TypeError(
+      'crypto.getRandomValues não está disponível. Ambiente não suportado para geração segura de IDs de auditoria.'
+    );
+  }
+
+  const random = Array.from(buffer)
+    .map((byte) => byte.toString(36))
+    .join('')
+    .substring(0, 9);
+
+  return `${timestamp}_${random}`;
+};
+
+/**
+ * Obtém a referência da coleção de auditoria para um participante
+ */
+const getAuditCollectionRef = (
+  participantId: number
+): CollectionReference<DocumentData> => {
+  return collection(db, 'participants', String(participantId), 'audit');
+};
+
+/**
+ * Converte QuerySnapshot em array de AuditLog
+ */
+const snapshotToAuditLogs = (
+  querySnapshot: QuerySnapshot<DocumentData>
+): AuditLog[] => {
+  const logs: AuditLog[] = [];
+  querySnapshot.forEach((docSnapshot) => {
+    logs.push({
+      id: docSnapshot.id,
+      ...docSnapshot.data(),
+    } as AuditLog);
+  });
+  return logs;
+};
+
+/**
+ * Converte QuerySnapshot com extração de participantId do path
+ * Usado para queries com collectionGroup
+ */
+const snapshotToAuditLogsWithParticipantId = (
+  querySnapshot: QuerySnapshot<DocumentData>
+): AuditLog[] => {
+  const logs: AuditLog[] = [];
+  querySnapshot.forEach((docSnapshot) => {
+    const data = docSnapshot.data();
+    // Extrai o participantId do path: participants/{id}/audit/{logId}
+    const pathSegments = docSnapshot.ref.path.split('/');
+    const participantIdFromPath = Number(pathSegments[1]);
+
+    logs.push({
+      id: docSnapshot.id,
+      ...data,
+      participantId: data.participantId ?? participantIdFromPath,
+    } as AuditLog);
+  });
+  return logs;
+};
+
+export const createAuditLog = async (
+  participantId: number,
+  data: {
+    userId: string;
+    userName: string;
+    userEmail?: string;
+    changes: AuditFieldChange[];
+    source?: string;
+    ipAddress?: string;
+    userAgent?: string;
+  }
+): Promise<AuditLog> => {
+  try {
+    const auditLogId = generateAuditLogId();
+    const timestamp = new Date().toISOString();
+
+    const auditLog: AuditLog = {
+      id: auditLogId,
+      participantId,
+      timestamp,
+      userId: data.userId,
+      userName: data.userName,
+      userEmail: data.userEmail,
+      changes: data.changes,
+      metadata: {
+        source: data.source || 'web-form',
+        ...(data.ipAddress && { ipAddress: data.ipAddress }),
+        ...(data.userAgent && { userAgent: data.userAgent }),
+      },
+    };
+
+    const auditCollectionRef = getAuditCollectionRef(participantId);
+    await addDoc(auditCollectionRef, auditLog);
+
+    return auditLog;
+  } catch (error) {
+    console.error(
+      `Erro ao criar audit log para participante ${participantId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const getAuditLogs = async (
+  participantId: number,
+  limitCount: number = 10
+): Promise<AuditLog[]> => {
+  try {
+    const auditCollectionRef = getAuditCollectionRef(participantId);
+
+    const q = query(
+      auditCollectionRef,
+      orderBy('timestamp', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return snapshotToAuditLogs(querySnapshot);
+  } catch (error) {
+    console.error(
+      `Erro ao buscar audit logs para participante ${participantId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const getAuditLogsByUser = async (
+  participantId: number,
+  userId: string,
+  limitCount: number = 10
+): Promise<AuditLog[]> => {
+  try {
+    const auditCollectionRef = getAuditCollectionRef(participantId);
+
+    const q = query(
+      auditCollectionRef,
+      where('userId', '==', userId),
+      orderBy('timestamp', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return snapshotToAuditLogs(querySnapshot);
+  } catch (error) {
+    console.error(
+      `Erro ao buscar audit logs por usuário ${userId} para participante ${participantId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const getLatestAudit = async (
+  participantId: number
+): Promise<AuditLog | null> => {
+  try {
+    const logs = await getAuditLogs(participantId, 1);
+    return logs.length > 0 ? logs[0] : null;
+  } catch (error) {
+    console.error(
+      `Erro ao buscar último audit log para participante ${participantId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const getAuditLogsByChangedField = async (
+  participantId: number,
+  fieldName: string,
+  limitCount: number = 10
+): Promise<AuditLog[]> => {
+  try {
+    const auditCollectionRef = getAuditCollectionRef(participantId);
+
+    const q = query(
+      auditCollectionRef,
+      orderBy('timestamp', 'desc'),
+      limit(limitCount * 2)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const allLogs = snapshotToAuditLogs(querySnapshot);
+
+    // Filtrar logs que contêm mudanças no campo especificado
+    const filteredLogs = allLogs.filter((log) =>
+      log.changes.some((change) => change.field === fieldName)
+    );
+
+    return filteredLogs.slice(0, limitCount);
+  } catch (error) {
+    console.error(
+      `Erro ao buscar audit logs por campo ${fieldName} para participante ${participantId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const countAuditLogs = async (
+  participantId: number
+): Promise<number> => {
+  try {
+    const auditCollectionRef = getAuditCollectionRef(participantId);
+    const snapshot = await getDocs(auditCollectionRef);
+    return snapshot.size;
+  } catch (error) {
+    console.error(
+      `Erro ao contar audit logs para participante ${participantId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const getAllAuditLogs = async (
+  limitCount: number = 50
+): Promise<AuditLog[]> => {
+  try {
+    const auditGroupRef = collectionGroup(db, 'audit');
+
+    const q = query(
+      auditGroupRef,
+      orderBy('timestamp', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return snapshotToAuditLogsWithParticipantId(querySnapshot);
+  } catch (error) {
+    console.error('Erro ao buscar todos os audit logs:', error);
+    throw error;
+  }
+};
+
+export const getAllAuditLogsByUser = async (
+  userId: string,
+  limitCount: number = 50
+): Promise<AuditLog[]> => {
+  try {
+    const auditGroupRef = collectionGroup(db, 'audit');
+
+    const q = query(
+      auditGroupRef,
+      where('userId', '==', userId),
+      orderBy('timestamp', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return snapshotToAuditLogsWithParticipantId(querySnapshot);
+  } catch (error) {
+    console.error(`Erro ao buscar audit logs por usuário ${userId}:`, error);
+    throw error;
+  }
+};

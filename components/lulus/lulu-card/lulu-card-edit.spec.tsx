@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import LulusCardEdit from './lulu-card-edit';
 import type { Person } from '../types';
 
@@ -94,7 +94,9 @@ describe('LulusCardEdit', () => {
 
     render(<LulusCardEdit participantId="1" />);
 
-    expect(screen.getByTestId('bounce-loader')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('bounce-loader')).toBeInTheDocument();
+    });
   });
 
   it('should render not found message when participant is null', async () => {
@@ -106,9 +108,11 @@ describe('LulusCardEdit', () => {
 
     render(<LulusCardEdit participantId="1" />);
 
-    expect(
-      screen.getByText('Participante não encontrado.')
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText('Participante não encontrado.')
+      ).toBeInTheDocument();
+    });
   });
 
   it('should render participant card when data is available', async () => {
@@ -120,7 +124,9 @@ describe('LulusCardEdit', () => {
 
     render(<LulusCardEdit participantId="1" />);
 
-    expect(screen.getByTestId('card')).toBeInTheDocument();
-    expect(screen.getByText(mockParticipant.name)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('card')).toBeInTheDocument();
+      expect(screen.getByText(mockParticipant.name)).toBeInTheDocument();
+    });
   });
 });

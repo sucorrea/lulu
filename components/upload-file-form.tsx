@@ -8,10 +8,10 @@ type UpdateParticipantPhotoProps = {
   setFile: Dispatch<SetStateAction<File | null>>;
 };
 
-export default function UpdateParticipantPhoto({
+const UpdateParticipantPhoto = ({
   participantId,
   setFile,
-}: Readonly<UpdateParticipantPhotoProps>) {
+}: Readonly<UpdateParticipantPhotoProps>) => {
   const { isPending, isSuccess, isError, error } =
     useUploadPhoto(participantId);
 
@@ -39,4 +39,6 @@ export default function UpdateParticipantPhoto({
       {isError && <p>Error: {JSON.stringify(error.message)}</p>}
     </div>
   );
-}
+};
+
+export default UpdateParticipantPhoto;

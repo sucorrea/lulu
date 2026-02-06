@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 
 import GaleriaFotos from '@/components/galeria/galeria-fotos';
 
-const Page = () => {
+const GaleriaPage = () => {
   return (
     <Suspense
       fallback={<div className="p-4 text-center">Carregando galeria...</div>}
@@ -12,4 +12,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default GaleriaPage;

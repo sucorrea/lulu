@@ -2,7 +2,7 @@ import { useGetParticipantById } from '@/services/queries/fetchParticipants';
 import { uploadPhoto } from '@/services/queries/uploadPhoto';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export function useUploadPhoto(participantId: string) {
+export const useUploadPhoto = (participantId: string) => {
   const queryClient = useQueryClient();
   const { refetch: refetchParticipant } = useGetParticipantById(participantId);
 
@@ -14,4 +14,4 @@ export function useUploadPhoto(participantId: string) {
     },
     onError: () => refetchParticipant(),
   });
-}
+};

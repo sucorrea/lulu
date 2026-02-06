@@ -2,13 +2,13 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import app from '../firebase';
 
-export async function uploadPhoto({
+export const uploadPhoto = async ({
   file,
   participantId,
 }: {
   file: File;
   participantId: string;
-}) {
+}) => {
   const storage = getStorage(app);
   const storageRef = ref(storage, `images/${participantId}.jpg`);
   await uploadBytes(storageRef, file);
@@ -24,4 +24,4 @@ export async function uploadPhoto({
   );
 
   return downloadURL;
-}
+};
