@@ -12,7 +12,7 @@ interface PageProps {
   params: Promise<PageParams>;
 }
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
+export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
   const paramsObject = await props.params;
   const { id } = paramsObject;
 
@@ -44,9 +44,9 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     title: participant ? participant.name : 'Editar participante',
     description: 'Página para editar os dados do participante',
   };
-}
+};
 
-async function Page({ params }: Readonly<PageProps>) {
+const ParticipantsPage = async ({ params }: Readonly<PageProps>) => {
   const paramsObject = await params;
   const { id } = paramsObject;
 
@@ -75,6 +75,6 @@ async function Page({ params }: Readonly<PageProps>) {
   }
 
   return <LulusCardEdit participantId={idDecrypted} />;
-}
+};
 
-export default Page;
+export default ParticipantsPage;

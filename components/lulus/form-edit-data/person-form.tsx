@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select';
 
 import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
+import { useUserVerification } from '@/hooks/user-verify';
 import { Person, PixTypes } from '../types';
 import { NameKey } from '../utils';
 import { defaultValuesPerson } from './utils';
@@ -31,6 +32,7 @@ interface PersonFormProps {
 
 const PersonForm = ({ initialData }: PersonFormProps) => {
   const router = useRouter();
+  const { user } = useUserVerification();
   const defaultValues = defaultValuesPerson(initialData ?? null);
   const { mutate } = useUpdateParticipantData(String(initialData?.id));
   const {
@@ -46,15 +48,27 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
 
   const selectedPixKeyType = watch('pix_key_type');
 
-  function onSubmit(data: PersonFormData) {
+  const onSubmit = (data: PersonFormData) => {
     if (!initialData) {
       return;
     }
+
+    if (!user) {
+      toast.error('Usuário não autenticado');
+      return;
+    }
+
     mutate(
       {
         updatedData: {
           ...data,
           date: new Date(data.date).toISOString(),
+        },
+        userId: user.uid,
+        userName: user.displayName ?? user.email ?? 'Usuário',
+        userEmail: user.email ?? undefined,
+        auditMetadata: {
+          source: 'web-form',
         },
       },
       {
@@ -69,7 +83,7 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
         },
       }
     );
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 md:space-y-4">

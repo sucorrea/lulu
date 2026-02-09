@@ -1,11 +1,11 @@
 import { type PropsWithChildren, type HTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-function Skeleton({
+const Skeleton = ({
   className,
   children,
   ...props
-}: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
+}: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) => {
   return (
     <div
       className={twMerge(
@@ -17,6 +17,6 @@ function Skeleton({
       {children}
     </div>
   );
-}
+};
 
 export { Skeleton };

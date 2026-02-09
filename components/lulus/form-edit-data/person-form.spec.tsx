@@ -1,12 +1,27 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import PersonForm from './person-form';
-import { Person } from '../types';
+import { UseMutationResult } from '@tanstack/react-query';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Person } from '../types';
+import PersonForm from './person-form';
+import { UpdateParticipantOptions } from '@/services/queries/updateParticipant';
+import { User } from 'firebase/auth';
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(() => ({
     push: vi.fn(),
+  })),
+}));
+
+vi.mock('@/hooks/user-verify', () => ({
+  useUserVerification: vi.fn(() => ({
+    user: {
+      uid: 'test-user-id',
+      displayName: 'Test User',
+      email: 'test@example.com',
+    },
+    isLogged: true,
+    handleLogout: vi.fn(),
   })),
 }));
 
@@ -321,5 +336,79 @@ describe('PersonForm', () => {
 
     const buttonContainer = container.querySelector('.flex.justify-between');
     expect(buttonContainer).toBeDefined();
+  });
+
+  it('should pass user info to mutation when submitting form', async () => {
+    const { useUpdateParticipantData } = await import(
+      '@/services/queries/updateParticipant'
+    );
+    const mockMutate = vi.fn();
+    vi.mocked(useUpdateParticipantData).mockReturnValue({
+      mutate: mockMutate,
+      isPending: false,
+    } as unknown as UseMutationResult<
+      void,
+      Error,
+      UpdateParticipantOptions,
+      unknown
+    >);
+
+    render(<PersonForm initialData={mockPerson} />);
+
+    const submitButton = screen.getByText('Salvar');
+    fireEvent.click(submitButton);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(mockMutate).toHaveBeenCalled();
+
+    const calls = mockMutate.mock.calls;
+    if (calls.length > 0) {
+      const firstCallArgs = calls[0][0];
+
+      expect(firstCallArgs.userId).toBe('test-user-id');
+      expect(firstCallArgs.userName).toBe('Test User');
+      expect(firstCallArgs.userEmail).toBe('test@example.com');
+
+      expect(firstCallArgs.auditMetadata?.source).toBe('web-form');
+    }
+  });
+
+  it('should show error toast when user is not authenticated', async () => {
+    const { useUserVerification } = await import('@/hooks/user-verify');
+    const { useUpdateParticipantData } = await import(
+      '@/services/queries/updateParticipant'
+    );
+
+    const mockMutate = vi.fn();
+    vi.mocked(useUpdateParticipantData).mockReturnValue({
+      mutate: mockMutate,
+      isPending: false,
+    } as unknown as UseMutationResult<
+      void,
+      Error,
+      UpdateParticipantOptions,
+      unknown
+    >);
+
+    vi.mocked(useUserVerification).mockReturnValue({
+      user: null,
+      isLogged: false,
+      handleLogout: vi.fn(),
+    } as unknown as {
+      user: User | null;
+      isLogged: boolean;
+      isLoading: boolean;
+      handleLogout: () => void;
+    });
+
+    render(<PersonForm initialData={mockPerson} />);
+
+    const submitButton = screen.getByText('Salvar');
+    fireEvent.click(submitButton);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 });

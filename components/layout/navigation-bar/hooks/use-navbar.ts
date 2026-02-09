@@ -13,7 +13,7 @@ interface UseNavbarResult {
   handleLogout: () => void;
 }
 
-export function useNavbar(): UseNavbarResult {
+export const useNavbar = (): UseNavbarResult => {
   const pathname = usePathname();
   const { user, isLoading, handleLogout } = useUserVerification();
 
@@ -27,4 +27,4 @@ export function useNavbar(): UseNavbarResult {
     currentYear: new Date().getFullYear(),
     handleLogout,
   };
-}
+};

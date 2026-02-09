@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import BounceLoader from 'react-spinners/BounceLoader';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,10 +14,23 @@ interface LulusCardEditProps {
 }
 
 const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const { data: participantData, isLoading } =
     useGetParticipantById(participantId);
 
   const participant = participantData;
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <BounceLoader color="#F43F5E" />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

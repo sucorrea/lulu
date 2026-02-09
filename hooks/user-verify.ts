@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getAuth, User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/services/firebase';
 
-export function useUserVerification() {
+export const useUserVerification = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -23,4 +23,4 @@ export function useUserVerification() {
   }, []);
 
   return { user, isLogged: !!user, isLoading, handleLogout };
-}
+};
