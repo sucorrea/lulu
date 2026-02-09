@@ -79,6 +79,10 @@ export const calculateDiff = (
       continue;
     }
 
+    if (!(field in newData)) {
+      continue;
+    }
+
     const oldValue = previousData[field as keyof Person];
     const newValue = newData[field as keyof Person];
 
@@ -98,7 +102,7 @@ export const calculateDiff = (
         field,
         oldValue: normalizedOld,
         newValue: normalizedNew,
-        fieldType: getFieldType(normalizedNew || normalizedOld),
+        fieldType: getFieldType(normalizedNew ?? normalizedOld),
       });
     }
   }

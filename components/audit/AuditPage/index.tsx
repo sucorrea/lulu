@@ -113,7 +113,9 @@ export const AuditPage = () => {
           <AuditLogList
             logs={filteredLogs}
             isLoading={isLoadingParticipants || isLoadingAudit}
-            showParticipantName={filters.participantId === ALL_PARTICIPANTS_VALUE}
+            showParticipantName={
+              filters.participantId === ALL_PARTICIPANTS_VALUE
+            }
             getParticipantName={getParticipantName}
           />
         );

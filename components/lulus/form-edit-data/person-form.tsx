@@ -76,6 +76,7 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           toast.success('Dados atualizados com sucesso', {
             position: 'bottom-center',
           });
+          router.push('/');
         },
         onError: () => {
           toast.error('Erro ao atualizar dados');

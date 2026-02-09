@@ -52,10 +52,16 @@ const AuditLogItemComponent = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {log.changes.map(
-            (change, index) =>
-              formatValue(change.newValue, change.fieldType) !==
-                'Não informado' && (
+          {log.changes.map((change, index) => {
+            const oldFormatted = formatValue(change.oldValue, change.fieldType);
+            const newFormatted = formatValue(change.newValue, change.fieldType);
+            const shouldDisplay = !(
+              oldFormatted === 'Não informado' &&
+              newFormatted === 'Não informado'
+            );
+
+            return (
+              shouldDisplay && (
                 <div
                   key={`${change.field}-${index}`}
                   className="flex items-start gap-3 py-2 border-b last:border-b-0"
@@ -67,19 +73,20 @@ const AuditLogItemComponent = ({
                     </span>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1 text-sm">
                       <span className="text-muted-foreground line-through break-words">
-                        {formatValue(change.oldValue, change.fieldType)}
+                        {oldFormatted}
                       </span>
                       <span className="text-muted-foreground hidden sm:inline">
                         →
                       </span>
                       <span className="font-medium text-foreground break-words">
-                        {formatValue(change.newValue, change.fieldType)}
+                        {newFormatted}
                       </span>
                     </div>
                   </div>
                 </div>
               )
-          )}
+            );
+          })}
         </div>
         {log.metadata && (
           <div className="mt-4 pt-4 border-t">

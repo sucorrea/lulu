@@ -104,7 +104,7 @@ describe('diffCalculator', () => {
       expect(changes.some((c) => c.field === 'email')).toBe(true);
     });
 
-    it('should detect removed fields (in old but not in new)', () => {
+    it('should only track fields present in newData (ignore missing fields)', () => {
       const oldData: Partial<Person> = {
         name: 'João Silva',
         email: 'joao@example.com',
@@ -119,21 +119,15 @@ describe('diffCalculator', () => {
 
       const changes = calculateDiff(oldData, newData);
 
+      // Fields not in newData should be ignored (not treated as cleared)
       const instagramChange = changes.find((c) => c.field === 'instagram');
-      expect(instagramChange).toEqual({
-        field: 'instagram',
-        oldValue: 'joaosilva',
-        newValue: null,
-        fieldType: 'string',
-      });
+      expect(instagramChange).toBeUndefined();
 
       const phoneChange = changes.find((c) => c.field === 'phone');
-      expect(phoneChange).toEqual({
-        field: 'phone',
-        oldValue: '11999887766',
-        newValue: null,
-        fieldType: 'string',
-      });
+      expect(phoneChange).toBeUndefined();
+
+      // No changes since name and email are identical
+      expect(changes).toHaveLength(0);
     });
 
     it('should handle null oldData gracefully', () => {
@@ -206,18 +200,22 @@ describe('diffCalculator', () => {
       });
     });
 
-    it('should not report changes for fields removed from new that were already null', () => {
+    it('should explicitly detect when a field is cleared (set to null/undefined)', () => {
       const oldData: Partial<Person> = {
         name: 'João',
-        instagram: undefined,
+        instagram: 'joaosilva',
       };
       const newData: Partial<Person> = {
         name: 'João',
+        instagram: null!,
       };
 
       const changes = calculateDiff(oldData, newData);
 
-      expect(changes.some((c) => c.field === 'instagram')).toBe(false);
+      const instagramChange = changes.find((c) => c.field === 'instagram');
+      expect(instagramChange).toBeDefined();
+      expect(instagramChange?.oldValue).toBe('joaosilva');
+      expect(instagramChange?.newValue).toBeNull();
     });
 
     it('should only track fields defined in TRACKED_FIELDS', () => {
@@ -294,6 +292,50 @@ describe('diffCalculator', () => {
       const changes = calculateDiff(oldData, newData);
 
       expect(changes).toHaveLength(0);
+    });
+
+    it('should not generate false positives for partial updates (form submission scenario)', () => {
+      // Simulate full Firestore document
+      const currentData: Partial<Person> = {
+        id: 1,
+        name: 'João',
+        fullName: 'João Silva',
+        date: '1990-01-15',
+        city: 'São Paulo',
+        email: 'joao@example.com',
+        phone: '11999887766',
+        instagram: 'joaosilva',
+        pix_key: '12345678900',
+        pix_key_type: 'cpf',
+        gives_to_id: 2,
+        picture: 'https://example.com/photo.jpg',
+        photoURL: 'https://example.com/photo.jpg',
+      };
+
+      // Simulate partial form submission (only form fields)
+      const updatedData: Partial<Person> = {
+        fullName: 'João Silva Santos',
+        date: '1990-01-15',
+        email: 'joao.novo@example.com',
+        phone: '11999887766',
+        instagram: 'joaosilva',
+        pix_key: '12345678900',
+        pix_key_type: 'cpf',
+      };
+
+      const changes = calculateDiff(currentData, updatedData);
+
+      // Should only detect the actual changes (fullName and email)
+      expect(changes).toHaveLength(2);
+      expect(changes.some((c) => c.field === 'fullName')).toBe(true);
+      expect(changes.some((c) => c.field === 'email')).toBe(true);
+
+      // Should NOT report false positives for fields absent from updatedData
+      expect(changes.some((c) => c.field === 'name')).toBe(false);
+      expect(changes.some((c) => c.field === 'city')).toBe(false);
+      expect(changes.some((c) => c.field === 'gives_to_id')).toBe(false);
+      expect(changes.some((c) => c.field === 'picture')).toBe(false);
+      expect(changes.some((c) => c.field === 'photoURL')).toBe(false);
     });
   });
 

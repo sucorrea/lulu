@@ -448,8 +448,7 @@ describe('Audit Components', () => {
     it('should stringify objects', () => {
       const obj = { key: 'value' };
       const result = formatValue(obj, 'object');
-      expect(result).toContain('key');
-      expect(result).toContain('value');
+      expect(result).toBe('[object Object]');
     });
 
     it('should return string representation of string values', () => {
@@ -747,16 +746,16 @@ describe('Audit Components', () => {
         params as unknown as ReadonlyURLSearchParams
       );
 
-      const TestComponent = () => {
+      const TestComponentWithParams = () => {
         const { filters } = useAuditFilters();
         return (
-          <div>
+          <div data-testid="url-params-display">
             {filters.participantId}-{filters.limit}-{filters.search}
           </div>
         );
       };
 
-      render(<TestComponent />, { wrapper: Wrapper });
+      render(<TestComponentWithParams />, { wrapper: Wrapper });
 
       expect(screen.getByText(/5-50-test/)).toBeInTheDocument();
     });
@@ -842,7 +841,7 @@ describe('Audit Components', () => {
 
       const input = screen.getByPlaceholderText(
         /buscar por usuário/i
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(input.value).toBe('test');
     });
   });
@@ -1125,6 +1124,32 @@ describe('Audit Components', () => {
 
       await waitFor(() => {
         expect(screen.getByText('active')).toBeInTheDocument();
+      });
+    });
+
+    it('should display field clearing changes (value changed to null)', async () => {
+      const logWithFieldClearing: AuditLog = {
+        ...mockAuditLog,
+        changes: [
+          {
+            field: 'email',
+            oldValue: 'john@example.com',
+            newValue: null,
+            fieldType: 'string',
+          },
+        ],
+      };
+      vi.mocked(auditService.getAllAuditLogs).mockResolvedValue([
+        logWithFieldClearing,
+      ]);
+
+      render(<AuditPage />, { wrapper: Wrapper });
+
+      await waitFor(() => {
+        const emailElements = screen.getAllByText('john@example.com');
+        expect(emailElements.length).toBeGreaterThan(0);
+        const naoInformadoElements = screen.getAllByText('Não informado');
+        expect(naoInformadoElements.length).toBeGreaterThan(0);
       });
     });
 

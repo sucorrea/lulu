@@ -24,7 +24,15 @@ const LulusCardEdit = ({ participantId }: LulusCardEditProps) => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted || isLoading) {
+  if (!isMounted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <BounceLoader color="#F43F5E" />
+      </div>
+    );
+  }
+
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <BounceLoader color="#F43F5E" />
