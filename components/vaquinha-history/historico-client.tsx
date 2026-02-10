@@ -88,7 +88,8 @@ export const HistoricoClient = () => {
   );
 
   const sortedParticipants = useMemo(
-    () => participants?.sort((a, b) => a.name.localeCompare(b.name)) || [],
+    () =>
+      participants ? [...participants].sort((a, b) => a.name.localeCompare(b.name)) : [],
     [participants]
   );
 
