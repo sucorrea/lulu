@@ -257,6 +257,12 @@ yarn check             # Lint + Typecheck + Testes
 - Reportadores: `default`, `json-summary`, `vitest-sonar-reporter`
 - Arquivos de coverage em `coverage/` (gitignored)
 
+### Métricas com SonarCloud
+
+- Projeto integrado ao **SonarCloud/SonarQube**, com *quality gate* exibido no topo deste README.
+- Pipeline de testes gera relatórios em formato compatível (`vitest-sonar-reporter`), permitindo acompanhamento de **coverage**, **code smells**, **bugs** e **vulnerabilidades**.
+- Essa configuração mostra domínio de práticas de **qualidade contínua** e **observabilidade de código** em ambiente de CI.
+
 ## ✅ Acessibilidade e Boas Práticas
 
 ### Acessibilidade (a11y)
@@ -324,6 +330,14 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 ```
 
 ## 🚢 Deploy
+
+### CI/CD e DevOps
+
+- Pipeline de **CI/CD** configurado com **GitHub Actions**:
+  - Executa **lint**, **typecheck** e **testes** a cada push/PR.
+  - Publica relatórios para o **SonarCloud**, mantendo o quality gate atualizado.
+  - Prepara o build de produção e automatiza o fluxo de deploy.
+- Essa automação demonstra conhecimento prático em **DevOps** (integração contínua, qualidade contínua e entrega contínua).
 
 ### Build de Produção
 
