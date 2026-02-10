@@ -1,6 +1,32 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('next/link', () => ({
+  default: ({
+    href,
+    children,
+    className,
+    onClick,
+  }: {
+    href: string;
+    children: React.ReactNode;
+    className?: string;
+    onClick?: () => void;
+  }) => (
+    <a
+      href={href}
+      className={className}
+      onClick={(event) => {
+        event.preventDefault();
+        onClick?.();
+      }}
+      data-testid={`link-${href}`}
+    >
+      {children}
+    </a>
+  ),
+}));
 
 vi.mock('./mode-toggle', () => ({
   ThemeToggle: () => <div data-testid="theme-toggle" />,
@@ -23,7 +49,6 @@ vi.mock('./navbar-user-section', () => ({
     isLoading: boolean;
     isLoginPage: boolean;
     userFirstName: string | null;
-    onLogout: () => void;
   }) => (
     <div
       data-testid="navbar-user-section"
@@ -59,244 +84,22 @@ describe('Navbar', () => {
     mockUseNavbarFn.mockReturnValue(defaultNavbarData);
   });
 
-  it('should render header element', () => {
+  it('should render core components', () => {
     render(<Navbar />);
 
-    const header = screen.getByRole('banner');
-    expect(header).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+    expect(screen.getByTestId('navbar-brand')).toBeInTheDocument();
+    expect(screen.getByTestId('navbar-user-section')).toBeInTheDocument();
+    expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
   });
 
-  it('should render navbar brand component', () => {
-    render(<Navbar />);
-
-    const brand = screen.getByTestId('navbar-brand');
-    expect(brand).toBeInTheDocument();
-  });
-
-  it('should render navbar user section component', () => {
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toBeInTheDocument();
-  });
-
-  it('should render theme toggle component', () => {
-    render(<Navbar />);
-
-    const themeToggle = screen.getByTestId('theme-toggle');
-    expect(themeToggle).toBeInTheDocument();
-  });
-
-  it('should pass current year to navbar brand', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      currentYear: 2026,
-    });
-
-    render(<Navbar />);
-
-    const brand = screen.getByTestId('navbar-brand');
-    expect(brand).toHaveAttribute('data-year', '2026');
-  });
-
-  it('should pass authentication status to navbar user section', () => {
+  it('should pass hook values to child components', () => {
     mockUseNavbarFn.mockReturnValue({
       ...defaultNavbarData,
       isAuthenticated: true,
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toHaveAttribute('data-authenticated', 'true');
-  });
-
-  it('should pass loading status to navbar user section', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
       isLoadingUser: true,
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toHaveAttribute('data-loading', 'true');
-  });
-
-  it('should pass login page status to navbar user section', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
       isLoginPage: true,
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toHaveAttribute('data-login-page', 'true');
-  });
-
-  it('should pass user first name to navbar user section', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
       userFirstName: 'João',
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toHaveAttribute('data-user-name', 'João');
-  });
-
-  it('should pass logout handler to navbar user section', () => {
-    const handleLogout = vi.fn();
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      handleLogout,
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toBeInTheDocument();
-  });
-
-  it('should have header with sticky positioning', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    expect(header).toHaveClass('sticky', 'top-0');
-  });
-
-  it('should have header with z-50 layer', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    expect(header).toHaveClass('z-50');
-  });
-
-  it('should have header with full width', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    expect(header).toHaveClass('w-full');
-  });
-
-  it('should have header with border bottom styling', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    expect(header).toHaveClass('border-b', 'border-border');
-  });
-
-  it('should have header with background styling', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    expect(header).toHaveClass('bg-background/95', 'backdrop-blur');
-  });
-
-  it('should have header with md padding', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    expect(header).toHaveClass('md:px-4');
-  });
-
-  it('should have container with flex layout', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    const container = header.querySelector('.container');
-    expect(container).toHaveClass(
-      'flex',
-      'h-14',
-      'items-center',
-      'justify-between',
-      'gap-4'
-    );
-  });
-
-  it('should have nav element with flex layout', () => {
-    render(<Navbar />);
-
-    const nav = screen.getByRole('banner').querySelector('nav');
-    expect(nav).toHaveClass(
-      'flex',
-      'flex-1',
-      'items-center',
-      'justify-end',
-      'gap-4'
-    );
-  });
-
-  it('should have component section with flex layout', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    const componentDiv = header.querySelector('nav > div');
-    expect(componentDiv).toHaveClass(
-      'flex',
-      'items-center',
-      'gap-2',
-      'md:gap-4'
-    );
-  });
-
-  it('should render all components in correct order', () => {
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    const container = header.querySelector('.container');
-
-    expect(container?.childNodes[0]).toContainElement(
-      screen.getByTestId('navbar-brand')
-    );
-    expect(container?.childNodes[1]).toContainElement(
-      screen.getByTestId('navbar-user-section')
-    );
-  });
-
-  it('should handle unauthenticated state', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      isAuthenticated: false,
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toHaveAttribute('data-authenticated', 'false');
-  });
-
-  it('should handle authenticated state', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      isAuthenticated: true,
-      userFirstName: 'Alice',
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toHaveAttribute('data-authenticated', 'true');
-    expect(userSection).toHaveAttribute('data-user-name', 'Alice');
-  });
-
-  it('should handle loading state', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      isLoadingUser: true,
-    });
-
-    render(<Navbar />);
-
-    const userSection = screen.getByTestId('navbar-user-section');
-    expect(userSection).toHaveAttribute('data-loading', 'true');
-  });
-
-  it('should handle different years', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
       currentYear: 2025,
     });
 
@@ -304,49 +107,121 @@ describe('Navbar', () => {
 
     const brand = screen.getByTestId('navbar-brand');
     expect(brand).toHaveAttribute('data-year', '2025');
+
+    const userSection = screen.getByTestId('navbar-user-section');
+    expect(userSection).toHaveAttribute('data-authenticated', 'true');
+    expect(userSection).toHaveAttribute('data-loading', 'true');
+    expect(userSection).toHaveAttribute('data-login-page', 'true');
+    expect(userSection).toHaveAttribute('data-user-name', 'João');
   });
 
-  it('should be memoized for performance optimization', () => {
-    const { rerender } = render(<Navbar />);
+  it('should render header with expected layout classes', () => {
+    render(<Navbar />);
 
-    const firstHeader = screen.getByRole('banner');
+    const header = screen.getByRole('banner');
+    expect(header).toHaveClass(
+      'sticky',
+      'top-0',
+      'z-50',
+      'w-full',
+      'border-b',
+      'border-border',
+      'bg-background/95',
+      'backdrop-blur',
+      'md:px-2'
+    );
 
-    rerender(<Navbar />);
+    const container = header.querySelector('.container');
+    expect(container).toHaveClass(
+      'flex',
+      'h-14',
+      'items-center',
+      'justify-between',
+      'gap-2',
+      'px-1.5'
+    );
+  });
 
-    const secondHeader = screen.getByRole('banner');
-    expect(firstHeader).toBe(secondHeader);
+  it('should not render navigation links or menu button when unauthenticated', () => {
+    render(<Navbar />);
+
+    expect(
+      screen.queryByRole('button', { name: 'Alternar menu' })
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Participantes')).not.toBeInTheDocument();
+    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
+    expect(screen.queryByText('Auditoria')).not.toBeInTheDocument();
+  });
+
+  it('should render navigation links and menu button when authenticated', () => {
+    mockUseNavbarFn.mockReturnValue({
+      ...defaultNavbarData,
+      isAuthenticated: true,
+    });
+
+    render(<Navbar />);
+
+    const menuButton = screen.getByRole('button', { name: 'Abrir menu' });
+    expect(menuButton).toBeInTheDocument();
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+
+    expect(screen.getAllByTestId('link-/')).toHaveLength(2);
+    expect(screen.getAllByTestId('link-/dashboard')).toHaveLength(2);
+    expect(screen.getAllByTestId('link-/audit')).toHaveLength(2);
+  });
+
+  it('should toggle mobile menu visibility when menu button is clicked', () => {
+    mockUseNavbarFn.mockReturnValue({
+      ...defaultNavbarData,
+      isAuthenticated: true,
+    });
+
+    render(<Navbar />);
+
+    const header = screen.getByRole('banner');
+    const menuButton = screen.getByRole('button', { name: 'Abrir menu' });
+    const mobileMenuWrapper = header.querySelector(
+      String.raw`div.md\:hidden`
+    ) as HTMLElement;
+
+    expect(mobileMenuWrapper).toHaveClass('hidden');
+
+    fireEvent.click(menuButton);
+    expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+    expect(mobileMenuWrapper).toHaveClass('block');
+
+    fireEvent.click(menuButton);
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    expect(mobileMenuWrapper).toHaveClass('hidden');
+  });
+
+  it('should close mobile menu when a mobile link is clicked', () => {
+    mockUseNavbarFn.mockReturnValue({
+      ...defaultNavbarData,
+      isAuthenticated: true,
+    });
+
+    render(<Navbar />);
+
+    const header = screen.getByRole('banner');
+    const menuButton = screen.getByRole('button', { name: 'Abrir menu' });
+    const mobileMenuWrapper = header.querySelector(
+      String.raw`div.md\:hidden`
+    ) as HTMLElement;
+
+    fireEvent.click(menuButton);
+    expect(mobileMenuWrapper).toHaveClass('block');
+
+    const dashboardLink =
+      within(mobileMenuWrapper).getByTestId('link-/dashboard');
+    fireEvent.click(dashboardLink);
+
+    expect(mobileMenuWrapper).toHaveClass('hidden');
   });
 
   it('should use navbar hook to get data', () => {
     render(<Navbar />);
 
     expect(mockUseNavbarFn).toHaveBeenCalled();
-  });
-
-  it('should render navbar with all components when not loading', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      isLoadingUser: false,
-    });
-
-    render(<Navbar />);
-
-    expect(screen.getByTestId('navbar-brand')).toBeInTheDocument();
-    expect(screen.getByTestId('navbar-user-section')).toBeInTheDocument();
-    expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
-  });
-
-  it('should handle login page transition', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      isLoginPage: false,
-    });
-
-    render(<Navbar />);
-
-    expect(screen.getByTestId('navbar-user-section')).toHaveAttribute(
-      'data-login-page',
-      'false'
-    );
   });
 });

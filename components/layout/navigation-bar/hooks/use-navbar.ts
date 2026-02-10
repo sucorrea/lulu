@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 
 import { useUserVerification } from '@/hooks/user-verify';
@@ -17,14 +18,20 @@ export const useNavbar = (): UseNavbarResult => {
   const pathname = usePathname();
   const { user, isLoading, handleLogout } = useUserVerification();
 
-  const isLoginPage = pathname === '/login';
+  const isLoginPage = useMemo(() => pathname === '/login', [pathname]);
+  const isAuthenticated = useMemo(() => !!user, [user]);
+  const userFirstName = useMemo(
+    () => (user?.displayName ? user.displayName.split(' ')[0] : null),
+    [user?.displayName]
+  );
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   return {
-    isAuthenticated: !!user,
+    isAuthenticated,
     isLoadingUser: isLoading,
     isLoginPage,
-    userFirstName: user?.displayName ? user.displayName.split(' ')[0] : null,
-    currentYear: new Date().getFullYear(),
+    userFirstName,
+    currentYear,
     handleLogout,
   };
 };

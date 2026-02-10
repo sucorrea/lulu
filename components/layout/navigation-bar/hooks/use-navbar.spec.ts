@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { renderHook } from '@testing-library/react';
 
 vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
@@ -30,10 +31,10 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result).toBeDefined();
-    expect(Object.keys(result).length).toBeGreaterThan(0);
+    expect(result.current).toBeDefined();
+    expect(Object.keys(result.current).length).toBeGreaterThan(0);
   });
 
   it('should set isAuthenticated to true when user exists', () => {
@@ -44,9 +45,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.isAuthenticated).toBe(true);
+    expect(result.current.isAuthenticated).toBe(true);
   });
 
   it('should set isAuthenticated to false when user is null', () => {
@@ -57,9 +58,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.isAuthenticated).toBe(false);
+    expect(result.current.isAuthenticated).toBe(false);
   });
 
   it('should set isLoadingUser from useUserVerification', () => {
@@ -70,9 +71,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.isLoadingUser).toBe(true);
+    expect(result.current.isLoadingUser).toBe(true);
   });
 
   it('should set isLoadingUser to false when not loading', () => {
@@ -83,9 +84,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.isLoadingUser).toBe(false);
+    expect(result.current.isLoadingUser).toBe(false);
   });
 
   it('should set isLoginPage to true when pathname is /login', () => {
@@ -96,9 +97,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.isLoginPage).toBe(true);
+    expect(result.current.isLoginPage).toBe(true);
   });
 
   it('should set isLoginPage to false when pathname is not /login', () => {
@@ -109,9 +110,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.isLoginPage).toBe(false);
+    expect(result.current.isLoginPage).toBe(false);
   });
 
   it('should extract first name from displayName', () => {
@@ -122,9 +123,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.userFirstName).toBe('João');
+    expect(result.current.userFirstName).toBe('João');
   });
 
   it('should set userFirstName to null when user is null', () => {
@@ -135,9 +136,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.userFirstName).toBeNull();
+    expect(result.current.userFirstName).toBeNull();
   });
 
   it('should handle displayName with single word', () => {
@@ -148,9 +149,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.userFirstName).toBe('João');
+    expect(result.current.userFirstName).toBe('João');
   });
 
   it('should handle displayName with multiple words', () => {
@@ -161,9 +162,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.userFirstName).toBe('João');
+    expect(result.current.userFirstName).toBe('João');
   });
 
   it('should return current year', () => {
@@ -174,10 +175,10 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
     const currentYear = new Date().getFullYear();
 
-    expect(result.currentYear).toBe(currentYear);
+    expect(result.current.currentYear).toBe(currentYear);
   });
 
   it('should return handleLogout function', () => {
@@ -189,9 +190,9 @@ describe('useNavbar', () => {
       handleLogout,
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.handleLogout).toBe(handleLogout);
+    expect(result.current.handleLogout).toBe(handleLogout);
   });
 
   it('should handle empty displayName', () => {
@@ -202,9 +203,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.userFirstName).toBeNull();
+    expect(result.current.userFirstName).toBeNull();
   });
 
   it('should handle user without displayName', () => {
@@ -215,9 +216,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.userFirstName).toBeNull();
+    expect(result.current.userFirstName).toBeNull();
   });
 
   it('should handle different pathnames', () => {
@@ -231,8 +232,8 @@ describe('useNavbar', () => {
 
     testPaths.forEach((path) => {
       mockUsePathname.mockReturnValue(path);
-      const result = useNavbar();
-      expect(result.isLoginPage).toBe(path === '/login');
+      const { result } = renderHook(() => useNavbar());
+      expect(result.current.isLoginPage).toBe(path === '/login');
     });
   });
 
@@ -244,14 +245,14 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(typeof result.isAuthenticated).toBe('boolean');
-    expect(typeof result.isLoadingUser).toBe('boolean');
-    expect(typeof result.isLoginPage).toBe('boolean');
-    expect(typeof result.userFirstName).toBe('string');
-    expect(typeof result.currentYear).toBe('number');
-    expect(typeof result.handleLogout).toBe('function');
+    expect(typeof result.current.isAuthenticated).toBe('boolean');
+    expect(typeof result.current.isLoadingUser).toBe('boolean');
+    expect(typeof result.current.isLoginPage).toBe('boolean');
+    expect(typeof result.current.userFirstName).toBe('string');
+    expect(typeof result.current.currentYear).toBe('number');
+    expect(typeof result.current.handleLogout).toBe('function');
   });
 
   it('should update values when dependencies change', () => {
@@ -262,12 +263,12 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    let result = useNavbar();
-    expect(result.isLoginPage).toBe(false);
+    const { result, rerender } = renderHook(() => useNavbar());
+    expect(result.current.isLoginPage).toBe(false);
 
     mockUsePathname.mockReturnValue('/login');
-    result = useNavbar();
-    expect(result.isLoginPage).toBe(true);
+    rerender();
+    expect(result.current.isLoginPage).toBe(true);
   });
 
   it('should handle authentication state change', () => {
@@ -278,8 +279,8 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    let result = useNavbar();
-    expect(result.isAuthenticated).toBe(false);
+    const { result, rerender } = renderHook(() => useNavbar());
+    expect(result.current.isAuthenticated).toBe(false);
 
     mockUseUserVerification.mockReturnValue({
       user: { displayName: 'Alice' },
@@ -287,9 +288,9 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    result = useNavbar();
-    expect(result.isAuthenticated).toBe(true);
-    expect(result.userFirstName).toBe('Alice');
+    rerender();
+    expect(result.current.isAuthenticated).toBe(true);
+    expect(result.current.userFirstName).toBe('Alice');
   });
 
   it('should handle loading state change', () => {
@@ -300,8 +301,8 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    let result = useNavbar();
-    expect(result.isLoadingUser).toBe(false);
+    const { result, rerender } = renderHook(() => useNavbar());
+    expect(result.current.isLoadingUser).toBe(false);
 
     mockUseUserVerification.mockReturnValue({
       user: null,
@@ -309,8 +310,8 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    result = useNavbar();
-    expect(result.isLoadingUser).toBe(true);
+    rerender();
+    expect(result.current.isLoadingUser).toBe(true);
   });
 
   it('should correctly identify first name with special characters', () => {
@@ -321,8 +322,8 @@ describe('useNavbar', () => {
       handleLogout: vi.fn(),
     });
 
-    const result = useNavbar();
+    const { result } = renderHook(() => useNavbar());
 
-    expect(result.userFirstName).toBe('José');
+    expect(result.current.userFirstName).toBe('José');
   });
 });

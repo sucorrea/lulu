@@ -13,6 +13,58 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "vaquinha-history",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vaquinha-history",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "year",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "birthdayPersonName",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vaquinha-history",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "responsibleId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vaquinha-history",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "birthdayPersonId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [
