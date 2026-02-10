@@ -2,13 +2,13 @@
 
 # 🎀 Lulu
 
-> Interface amigável, divertida e acessível para gerenciamento de dados, utilizando tecnologias modernas, tema personalizado e foco em acessibilidade e usabilidade.
+> Aplicação web **mobile-first** para gerenciamento de dados e interação em grupo: participantes, galeria com likes/comentários em tempo real, histórico de vaquinhas, dashboard e auditoria. Desenvolvida com Next.js 15, React 19, TypeScript e Firebase, com foco em acessibilidade, performance e experiência em dispositivos móveis.
 
 ## 📦 Sobre o Projeto
 
-O **Lulu** é um projeto frontend desenvolvido com **Next.js 15** (App Router), com foco em acessibilidade, usabilidade e design visual lúdico. Ele conta com uma identidade visual única inspirada em uma estética retrô e amigável, utilizando animações, cores suaves e componentes reutilizáveis para oferecer uma experiência de usuário leve e fluida.
+O **Lulu** é uma aplicação frontend moderna construída com **Next.js 15** (App Router) e **React 19**, pensada desde o início para uso em **celulares e tablets** (abordagem **mobile-first**). Oferece uma interface acessível e responsiva para gerenciar participantes, galeria de fotos com interação social em tempo real, histórico de vaquinhas, métricas no dashboard e trilha de auditoria.
 
-O projeto integra **Firebase** para autenticação e banco de dados Firestore, com listeners em tempo real (`onSnapshot`) para atualizações ao vivo de comentários e likes na galeria de fotos.
+A stack combina **Firebase** (Authentication, Firestore, Storage) com listeners em tempo real (`onSnapshot`) para comentários e likes na galeria, além de **TanStack React Query** para estado de dados e **React Hook Form + Zod** para formulários validados.
 
 ## ✨ Stack Tecnológica
 
@@ -46,7 +46,7 @@ O projeto integra **Firebase** para autenticação e banco de dados Firestore, c
 
 ### Qualidade e Testes
 
-- **Vitest** como framework de testes (não Jest)
+- **Vitest** como framework de testes
 - **React Testing Library** para testes de componentes
 - **@vitest/coverage-v8** para cobertura de código
 - **vitest-sonar-reporter** para integração com SonarQube
@@ -61,8 +61,18 @@ O tema visual é fortemente customizado com variáveis CSS para cores, sombras e
 - **Paleta personalizada** com nomes semânticos: `primary`, `secondary`, `muted`, `destructive`, `success`, `warning`, `accent`
 - **Sombras customizadas** com identidade Lulu: `lulu-sm`, `lulu-md`, `lulu-lg`
 - **Animações exclusivas** com `@keyframes`: `lulu-bounce`, `accordion-up`, `accordion-down`
-- **Fonte padrão**: **Comic Sans MS** (trazendo leveza e personalidade)
-- **Classes utilitárias** com `@apply` para componentes visuais reutilizáveis
+- **Fontes**: **Inter** (corpo de texto) e **Playfair Display** (títulos), com fallbacks system-ui
+- **Classes utilitárias** com `@apply` para componentes visuais reutilizáveis (ex.: `.lulu-button`, `.lulu-card`, `.lulu-header`)
+
+## 📱 Abordagem Mobile First
+
+O produto foi desenhado **mobile-first**: o layout e a interação priorizam telas pequenas e depois se adaptam para desktop. Exemplos na implementação:
+
+- **Navegação**: No mobile, a navbar exibe menu hamburger e drawer com links (Participantes, Dashboard, Auditoria, Histórico); em telas maiores (`md:`), os links ficam visíveis na barra superior. Uso de `react-device-detect` e breakpoints Tailwind (`md:`, `sm:`) para comportamentos distintos.
+- **Espaçamentos**: Containers com `px-4`/`px-1.5` e `pb-20` no conteúdo para não sobrepor o footer/nav; uso consistente de `gap` e `space-y` em formulários e listas para toque confortável.
+- **Imagens e mídia**: Galeria e assets com layout responsivo (grid adaptável, `max-w`, imagens que escalam sem quebrar em telas pequenas).
+- **Formulários e toque**: Áreas de toque adequadas em botões e selects (Radix UI), labels e inputs com tamanho legível e acessível em celular.
+- **Link “Pular para conteúdo principal”**: Foco em acessibilidade e navegação por teclado/screen reader, alinhado ao uso em dispositivos móveis com leitores de tela.
 
 ## 🏗️ Arquitetura e Estrutura
 
@@ -70,14 +80,17 @@ O tema visual é fortemente customizado com variáveis CSS para cores, sombras e
 
 ```
 ├── app/                          # Next.js App Router (páginas, layouts, rotas)
+│   ├── audit/                    # Página de auditoria
 │   ├── dashboard/                # Dashboard principal
 │   ├── galeria/                  # Galeria de fotos com likes/comentários
+│   ├── historico/                # Histórico de vaquinhas
 │   ├── login/                    # Autenticação
 │   └── participants/             # Gerenciamento de participantes
 ├── components/                   # Componentes reutilizáveis
-│   ├── ui/                       # Primitivos Radix UI (Button, Input, Dialog)
+│   ├── ui/                       # Primitivos Radix UI (Button, Input, Dialog, Form)
 │   ├── galeria/                  # Componentes da galeria (comments, likes)
 │   ├── lulus/                    # Componentes de participantes
+│   ├── vaquinha-history/         # Histórico de vaquinhas (timeline, formulário)
 │   ├── data-table/               # Tabela com filtros e paginação
 │   ├── layout/                   # Header, Footer, Navigation
 │   └── modules/                  # Módulos específicos de features
@@ -85,7 +98,8 @@ O tema visual é fortemente customizado com variáveis CSS para cores, sombras e
 │   ├── firebase.ts               # Configuração Firebase (auth, db, storage)
 │   ├── galeriaComments.ts        # CRUD de comentários com listeners
 │   ├── galeriaLikes.ts           # CRUD de likes com real-time updates
-│   └── queries/                  # React Query hooks (useGetGalleryImages)
+│   ├── vaquinhaHistory.ts        # CRUD histórico de vaquinhas
+│   └── queries/                  # React Query hooks (participants, vaquinhaHistory, etc.)
 ├── hooks/                        # Custom React hooks
 │   ├── use-disclosure.ts         # Gerenciamento de modais
 │   ├── user-verify.ts            # Verificação de usuário logado
@@ -183,11 +197,12 @@ yarn check            # Executa lint + typecheck + test
 - Verificação de usuário com hook customizado (`useUserVerification`)
 - Proteção de rotas sensíveis
 
-### UI/UX Responsiva
+### UI/UX Responsiva e Mobile First
 
-- Detecção automática de dispositivo (mobile/desktop)
+- **Layout mobile-first**: navegação adaptativa (menu hamburger + drawer no mobile), espaçamentos e touch targets pensados para celular
+- Detecção automática de dispositivo (mobile/desktop) via `react-device-detect`
 - Tema claro/escuro persistente com `next-themes`
-- Componentes acessíveis (ARIA, navegação por teclado)
+- Componentes acessíveis (ARIA, navegação por teclado, link “Pular para conteúdo principal”)
 - Animações Lottie para estados de loading e feedback visual
 - Geração de QR Code PIX para pagamentos
 
@@ -197,11 +212,16 @@ yarn check            # Executa lint + typecheck + test
 - Cards informativos com métricas em tempo real
 - Layout adaptável a diferentes tamanhos de tela
 
+### Histórico de Vaquinhas e Auditoria
+
+- **Histórico**: Timeline de vaquinhas por ano, CRUD com formulário validado (Zod), filtro por ano e participantes ordenados
+- **Auditoria**: Trilha de alterações com diff de dados e integração Firestore
+
 ## 🧪 Testes
 
 ### Configuração
 
-- **Framework**: Vitest 2.0.5 (não Jest)
+- **Framework**: Vitest 2.0.5
 - **Testing Library**: React Testing Library 16
 - **Coverage**: 85%+ nas principais áreas (components, hooks, services)
 - **Mocking**: Firebase mockado em `vitest.setup.ts` para evitar chamadas reais
