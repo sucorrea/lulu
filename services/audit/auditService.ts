@@ -34,18 +34,12 @@ const generateAuditLogId = (): string => {
   return `${timestamp}_${random}`;
 };
 
-/**
- * Obtém a referência da coleção de auditoria para um participante
- */
 const getAuditCollectionRef = (
   participantId: number
 ): CollectionReference<DocumentData> => {
   return collection(db, 'participants', String(participantId), 'audit');
 };
 
-/**
- * Converte QuerySnapshot em array de AuditLog
- */
 const snapshotToAuditLogs = (
   querySnapshot: QuerySnapshot<DocumentData>
 ): AuditLog[] => {
@@ -59,17 +53,12 @@ const snapshotToAuditLogs = (
   return logs;
 };
 
-/**
- * Converte QuerySnapshot com extração de participantId do path
- * Usado para queries com collectionGroup
- */
 const snapshotToAuditLogsWithParticipantId = (
   querySnapshot: QuerySnapshot<DocumentData>
 ): AuditLog[] => {
   const logs: AuditLog[] = [];
   querySnapshot.forEach((docSnapshot) => {
     const data = docSnapshot.data();
-    // Extrai o participantId do path: participants/{id}/audit/{logId}
     const pathSegments = docSnapshot.ref.path.split('/');
     const participantIdFromPath = Number(pathSegments[1]);
 
@@ -208,7 +197,6 @@ export const getAuditLogsByChangedField = async (
     const querySnapshot = await getDocs(q);
     const allLogs = snapshotToAuditLogs(querySnapshot);
 
-    // Filtrar logs que contêm mudanças no campo especificado
     const filteredLogs = allLogs.filter((log) =>
       log.changes.some((change) => change.field === fieldName)
     );

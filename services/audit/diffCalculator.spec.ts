@@ -118,15 +118,12 @@ describe('diffCalculator', () => {
       };
 
       const changes = calculateDiff(oldData, newData);
-
-      // Fields not in newData should be ignored (not treated as cleared)
       const instagramChange = changes.find((c) => c.field === 'instagram');
       expect(instagramChange).toBeUndefined();
 
       const phoneChange = changes.find((c) => c.field === 'phone');
       expect(phoneChange).toBeUndefined();
 
-      // No changes since name and email are identical
       expect(changes).toHaveLength(0);
     });
 
@@ -295,7 +292,6 @@ describe('diffCalculator', () => {
     });
 
     it('should not generate false positives for partial updates (form submission scenario)', () => {
-      // Simulate full Firestore document
       const currentData: Partial<Person> = {
         id: 1,
         name: 'João',
@@ -312,7 +308,6 @@ describe('diffCalculator', () => {
         photoURL: 'https://example.com/photo.jpg',
       };
 
-      // Simulate partial form submission (only form fields)
       const updatedData: Partial<Person> = {
         fullName: 'João Silva Santos',
         date: '1990-01-15',
@@ -325,12 +320,10 @@ describe('diffCalculator', () => {
 
       const changes = calculateDiff(currentData, updatedData);
 
-      // Should only detect the actual changes (fullName and email)
       expect(changes).toHaveLength(2);
       expect(changes.some((c) => c.field === 'fullName')).toBe(true);
       expect(changes.some((c) => c.field === 'email')).toBe(true);
 
-      // Should NOT report false positives for fields absent from updatedData
       expect(changes.some((c) => c.field === 'name')).toBe(false);
       expect(changes.some((c) => c.field === 'city')).toBe(false);
       expect(changes.some((c) => c.field === 'gives_to_id')).toBe(false);

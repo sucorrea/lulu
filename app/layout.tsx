@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
 import type { Metadata } from 'next';
-import { Roboto, Roboto_Mono } from 'next/font/google';
 
 import Footer from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navigation-bar/navbar';
@@ -12,17 +11,6 @@ import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
 const ano = new Date().getFullYear();
-
-const robotoSans = Roboto({
-  variable: '--font-roboto-sans',
-  subsets: ['latin'],
-  weight: '400',
-});
-
-const geistMono = Roboto_Mono({
-  variable: '--font-roboto-mono',
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   title: `Luluzinha ${ano}`,
@@ -47,9 +35,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body
-        className={`${robotoSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <ReactQueryProvider>
           <ThemeProvider
             attribute="class"
@@ -58,11 +44,17 @@ const RootLayout = ({
             disableTransitionOnChange
           >
             <DeviceProvider>
-              <main className="pb-20">
-                <Navbar />
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
+              >
+                Pular para conteúdo principal
+              </a>
+              <Navbar />
+              <main id="main-content" className="pb-20">
                 {children}
-                <Footer />
               </main>
+              <Footer />
             </DeviceProvider>
             <Toaster />
           </ThemeProvider>
