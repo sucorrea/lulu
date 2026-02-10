@@ -72,6 +72,24 @@ describe('YearFilter', () => {
     expect(onYearChange).toHaveBeenCalledWith(2023);
   });
 
+  it('should call onYearChange when selecting all years', async () => {
+    const onYearChange = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <YearFilter
+        years={mockYears}
+        selectedYear={2024}
+        onYearChange={onYearChange}
+      />
+    );
+
+    const select = screen.getByRole('combobox');
+    await user.selectOptions(select, 'all');
+
+    expect(onYearChange).toHaveBeenCalledWith(null);
+  });
+
   it('should display selected year', () => {
     render(
       <YearFilter

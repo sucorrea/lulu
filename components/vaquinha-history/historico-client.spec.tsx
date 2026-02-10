@@ -195,6 +195,9 @@ describe('HistoricoClient', () => {
     { id: 1, name: 'Maria' },
     { id: 2, name: 'Joana' },
   ];
+  const sortedParticipants = [...participants].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
 
   const history: VaquinhaHistory[] = [
     {
@@ -312,7 +315,7 @@ describe('HistoricoClient', () => {
     const dialogProps = mockFormDialog.mock.calls.at(-1)?.[0];
     expect(dialogProps?.open).toBe(true);
     expect(dialogProps?.editingItem).toBeNull();
-    expect(dialogProps?.participants).toEqual(participants);
+    expect(dialogProps?.participants).toEqual(sortedParticipants);
     expect(dialogProps?.isLoading).toBe(false);
   });
 
@@ -347,6 +350,35 @@ describe('HistoricoClient', () => {
         birthdayPersonName: 'Joana',
       },
     });
+  });
+
+  it('should close dialog and clear editing item when dialog closes', async () => {
+    render(<HistoricoClient />);
+
+    await userEvent.click(screen.getByText('Editar'));
+
+    let dialogProps = mockFormDialog.mock.calls.at(-1)?.[0];
+    expect(dialogProps?.open).toBe(true);
+    expect(dialogProps?.editingItem).not.toBeNull();
+
+    await userEvent.click(screen.getByText('Fechar'));
+
+    dialogProps = mockFormDialog.mock.calls.at(-1)?.[0];
+    expect(dialogProps?.open).toBe(false);
+    expect(dialogProps?.editingItem).toBeNull();
+  });
+
+  it('should announce error when save fails', async () => {
+    addMutation.mutateAsync.mockRejectedValueOnce(new Error('fail'));
+
+    render(<HistoricoClient />);
+
+    await userEvent.click(screen.getByText('Adicionar Registro'));
+    await userEvent.click(screen.getByText('Salvar'));
+
+    expect(
+      await screen.findByText('Erro ao salvar registro. Tente novamente.')
+    ).toBeInTheDocument();
   });
 
   it('should delete item when confirm is accepted', async () => {

@@ -33,6 +33,7 @@ export const HistoricoClient = () => {
     isOpen: isDialogOpen,
     onOpen: onOpenDialog,
     onClose: onCloseDialog,
+    setOpen: setDialogOpen,
   } = useDisclosure();
   const [editingItem, setEditingItem] = useState<VaquinhaHistory | null>(null);
   const [announcement, setAnnouncement] = useState<string>('');
@@ -89,7 +90,9 @@ export const HistoricoClient = () => {
 
   const sortedParticipants = useMemo(
     () =>
-      participants ? [...participants].sort((a, b) => a.name.localeCompare(b.name)) : [],
+      participants
+        ? [...participants].sort((a, b) => a.name.localeCompare(b.name))
+        : [],
     [participants]
   );
 
@@ -113,7 +116,12 @@ export const HistoricoClient = () => {
           'Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.'
         )
       ) {
-        await deleteMutation.mutateAsync(id);
+        try {
+          await deleteMutation.mutateAsync(id);
+          setAnnouncement('Registro excluído com sucesso');
+        } catch {
+          setAnnouncement('Erro ao excluir registro. Tente novamente.');
+        }
       }
     },
     [deleteMutation]
@@ -152,6 +160,12 @@ export const HistoricoClient = () => {
       refetchFiltered();
     }
   }, [selectedYear, refetchAll, refetchFiltered]);
+
+  useEffect(() => {
+    if (!isDialogOpen) {
+      setEditingItem(null);
+    }
+  }, [isDialogOpen]);
 
   useEffect(() => {
     if (selectedYear === null) {
@@ -220,14 +234,7 @@ export const HistoricoClient = () => {
         </Suspense>
         <VaquinhaHistoryFormDialog
           open={isDialogOpen}
-          onOpenChange={(open) => {
-            if (open) {
-              onOpenDialog();
-            } else {
-              onCloseDialog();
-              setEditingItem(null);
-            }
-          }}
+          onOpenChange={setDialogOpen}
           onSubmit={handleSubmit}
           participants={sortedParticipants}
           editingItem={editingItem}

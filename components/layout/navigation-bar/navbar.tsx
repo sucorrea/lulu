@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, ComponentType } from 'react';
 import Link from 'next/link';
 import {
   FileText,
@@ -24,7 +24,7 @@ const NavLink = memo(function NavLink({
   onClick,
 }: {
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
   label: string;
   onClick?: () => void;
 }) {
