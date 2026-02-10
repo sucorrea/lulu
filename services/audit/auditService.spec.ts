@@ -94,10 +94,8 @@ describe('auditService', () => {
     });
 
     it('should throw TypeError if crypto.getRandomValues is not available', async () => {
-      // Salvar referência original
       const originalCrypto = globalThis.crypto;
 
-      // Remover crypto temporariamente
       Object.defineProperty(globalThis, 'crypto', {
         value: undefined,
         writable: true,
@@ -123,7 +121,6 @@ describe('auditService', () => {
           'crypto.getRandomValues não está disponível. Ambiente não suportado para geração segura de IDs de auditoria.'
         );
       } finally {
-        // Restaurar crypto
         Object.defineProperty(globalThis, 'crypto', {
           value: originalCrypto,
           writable: true,

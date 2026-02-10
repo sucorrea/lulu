@@ -30,9 +30,6 @@ export type VaquinhaHistoryInput = Omit<
   'id' | 'createdAt' | 'updatedAt'
 >;
 
-/**
- * Adiciona um novo registro de histórico de vaquinha
- */
 export const addVaquinhaHistory = async (
   data: VaquinhaHistoryInput
 ): Promise<string> => {
@@ -47,9 +44,6 @@ export const addVaquinhaHistory = async (
   return historyRef.id;
 };
 
-/**
- * Atualiza um registro existente de histórico
- */
 export const updateVaquinhaHistory = async (
   id: string,
   data: Partial<VaquinhaHistoryInput>
@@ -61,17 +55,11 @@ export const updateVaquinhaHistory = async (
   });
 };
 
-/**
- * Deleta um registro de histórico
- */
 export const deleteVaquinhaHistory = async (id: string): Promise<void> => {
   const ref = doc(db, 'vaquinha-history', id);
   await deleteDoc(ref);
 };
 
-/**
- * Busca um registro específico por ID
- */
 export const fetchVaquinhaHistoryById = async (
   id: string
 ): Promise<VaquinhaHistory | null> => {
@@ -91,9 +79,6 @@ export const fetchVaquinhaHistoryById = async (
   }
 };
 
-/**
- * Busca todos os registros de histórico
- */
 export const fetchAllVaquinhaHistory = async (): Promise<VaquinhaHistory[]> => {
   const querySnapshot = await getDocs(
     query(collection(db, 'vaquinha-history'), orderBy('year', 'desc'))
@@ -107,9 +92,6 @@ export const fetchAllVaquinhaHistory = async (): Promise<VaquinhaHistory[]> => {
   return data;
 };
 
-/**
- * Busca histórico filtrado por ano
- */
 export const fetchVaquinhaHistoryByYear = async (
   year: number
 ): Promise<VaquinhaHistory[]> => {
@@ -129,9 +111,6 @@ export const fetchVaquinhaHistoryByYear = async (
   return data;
 };
 
-/**
- * Busca histórico filtrado por responsável
- */
 export const fetchVaquinhaHistoryByResponsible = async (
   responsibleId: number
 ): Promise<VaquinhaHistory[]> => {
@@ -151,9 +130,6 @@ export const fetchVaquinhaHistoryByResponsible = async (
   return data;
 };
 
-/**
- * Busca histórico filtrado por aniversariante
- */
 export const fetchVaquinhaHistoryByBirthdayPerson = async (
   birthdayPersonId: number
 ): Promise<VaquinhaHistory[]> => {
@@ -173,9 +149,6 @@ export const fetchVaquinhaHistoryByBirthdayPerson = async (
   return data;
 };
 
-/**
- * Listener para mudanças em tempo real nos registros de histórico
- */
 export const listenVaquinhaHistory = (
   callback: (history: VaquinhaHistory[]) => void,
   year?: number
@@ -186,7 +159,11 @@ export const listenVaquinhaHistory = (
   );
 
   if (year) {
-    q = query(collection(db, 'vaquinha-history'), where('year', '==', year));
+    q = query(
+      collection(db, 'vaquinha-history'),
+      where('year', '==', year),
+      orderBy('birthdayPersonName', 'asc')
+    );
   }
 
   return onSnapshot(q, (snapshot) => {
@@ -198,9 +175,6 @@ export const listenVaquinhaHistory = (
   });
 };
 
-/**
- * Busca anos disponíveis no histórico
- */
 export const fetchAvailableYears = async (): Promise<number[]> => {
   const querySnapshot = await getDocs(collection(db, 'vaquinha-history'));
   const years = new Set<number>();

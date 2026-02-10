@@ -13,9 +13,6 @@ import {
   deleteVaquinhaHistory,
 } from '../vaquinhaHistory';
 
-/**
- * Hook para buscar todos os registros de histórico
- */
 export const useGetAllVaquinhaHistory = () => {
   return useQuery<VaquinhaHistory[]>({
     queryKey: ['vaquinha-history'],
@@ -24,9 +21,6 @@ export const useGetAllVaquinhaHistory = () => {
   });
 };
 
-/**
- * Hook para buscar um registro específico por ID
- */
 export const useGetVaquinhaHistoryById = (id: string) => {
   return useQuery<VaquinhaHistory | null>({
     queryKey: ['vaquinha-history', id],
@@ -35,9 +29,6 @@ export const useGetVaquinhaHistoryById = (id: string) => {
   });
 };
 
-/**
- * Hook para buscar histórico filtrado por ano
- */
 export const useGetVaquinhaHistoryByYear = (year: number | null) => {
   return useQuery<VaquinhaHistory[]>({
     queryKey: ['vaquinha-history', 'year', year],
@@ -47,9 +38,6 @@ export const useGetVaquinhaHistoryByYear = (year: number | null) => {
   });
 };
 
-/**
- * Hook para buscar histórico filtrado por responsável
- */
 export const useGetVaquinhaHistoryByResponsible = (responsibleId: number) => {
   return useQuery<VaquinhaHistory[]>({
     queryKey: ['vaquinha-history', 'responsible', responsibleId],
@@ -59,9 +47,6 @@ export const useGetVaquinhaHistoryByResponsible = (responsibleId: number) => {
   });
 };
 
-/**
- * Hook para buscar histórico filtrado por aniversariante
- */
 export const useGetVaquinhaHistoryByBirthdayPerson = (
   birthdayPersonId: number
 ) => {
@@ -73,9 +58,6 @@ export const useGetVaquinhaHistoryByBirthdayPerson = (
   });
 };
 
-/**
- * Hook para buscar anos disponíveis
- */
 export const useGetAvailableYears = () => {
   return useQuery<number[]>({
     queryKey: ['vaquinha-history', 'years'],
@@ -84,9 +66,6 @@ export const useGetAvailableYears = () => {
   });
 };
 
-/**
- * Hook para adicionar um novo registro de histórico
- */
 export const useAddVaquinhaHistory = () => {
   const queryClient = useQueryClient();
 
@@ -98,9 +77,6 @@ export const useAddVaquinhaHistory = () => {
   });
 };
 
-/**
- * Hook para atualizar um registro de histórico
- */
 export const useUpdateVaquinhaHistory = () => {
   const queryClient = useQueryClient();
 
@@ -118,9 +94,6 @@ export const useUpdateVaquinhaHistory = () => {
   });
 };
 
-/**
- * Hook para deletar um registro de histórico
- */
 export const useDeleteVaquinhaHistory = () => {
   const queryClient = useQueryClient();
 
