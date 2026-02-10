@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 interface LiveAnnounceProps {
   message: string;
@@ -13,14 +13,14 @@ export const LiveAnnounce = ({
   politeness = 'polite',
   clearDelay = 5000,
 }: LiveAnnounceProps) => {
-  const messageRef = useRef<string>(message);
+  const [displayedMessage, setDisplayedMessage] = useState(message);
 
   useEffect(() => {
-    messageRef.current = message;
+    setDisplayedMessage(message);
 
-    if (clearDelay > 0) {
+    if (clearDelay > 0 && message) {
       const timer = setTimeout(() => {
-        messageRef.current = '';
+        setDisplayedMessage('');
       }, clearDelay);
 
       return () => {
@@ -30,13 +30,13 @@ export const LiveAnnounce = ({
     return undefined;
   }, [message, clearDelay]);
 
-  if (!message) {
+  if (!displayedMessage) {
     return null;
   }
 
   return (
     <output aria-live={politeness} aria-atomic="true" className="sr-only">
-      {message}
+      {displayedMessage}
     </output>
   );
 };

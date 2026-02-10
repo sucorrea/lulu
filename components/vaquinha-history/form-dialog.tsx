@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Control, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Person } from '@/components/lulus/types';
@@ -44,6 +44,56 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+type ParticipantFieldName = 'birthdayPersonId' | 'responsibleId';
+
+const getDefaultValues = (editingItem?: VaquinhaHistory | null): FormData => ({
+  year: editingItem?.year ?? new Date().getFullYear(),
+  responsibleId: editingItem?.responsibleId ?? 0,
+  birthdayPersonId: editingItem?.birthdayPersonId ?? 0,
+});
+
+type ParticipantSelectFieldProps = {
+  control: Control<FormData>;
+  name: ParticipantFieldName;
+  label: string;
+  participants: Person[];
+};
+
+const ParticipantSelectField = ({
+  control,
+  name,
+  label,
+  participants,
+}: ParticipantSelectFieldProps) => (
+  <FormField
+    control={control}
+    name={name}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>{label}</FormLabel>
+        <Select
+          onValueChange={(value) => field.onChange(Number(value))}
+          value={field.value > 0 ? String(field.value) : ''}
+        >
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {participants.map((p) => (
+              <SelectItem key={p.id} value={String(p.id)}>
+                {p.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
+
 interface VaquinhaHistoryFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -63,40 +113,24 @@ export const VaquinhaHistoryFormDialog = ({
   editingItem,
   isLoading,
 }: VaquinhaHistoryFormDialogProps) => {
-  const submitLabel = (() => {
-    if (isLoading) {
-      return 'Salvando...';
-    }
-    if (editingItem) {
-      return 'Atualizar';
-    }
-    return 'Adicionar';
-  })();
+  const submitLabel = isLoading
+    ? 'Salvando...'
+    : editingItem
+      ? 'Atualizar'
+      : 'Adicionar';
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      year: new Date().getFullYear(),
-      responsibleId: 0,
-      birthdayPersonId: 0,
-    },
+    defaultValues: getDefaultValues(editingItem),
   });
 
   useEffect(() => {
-    if (editingItem) {
-      form.reset({
-        year: editingItem.year,
-        responsibleId: editingItem.responsibleId,
-        birthdayPersonId: editingItem.birthdayPersonId,
-      });
-    } else {
-      form.reset({
-        year: new Date().getFullYear(),
-        responsibleId: 0,
-        birthdayPersonId: 0,
-      });
+    if (!open) {
+      return;
     }
-  }, [editingItem, form]);
+
+    form.reset(getDefaultValues(editingItem));
+  }, [open, editingItem, form]);
 
   const handleSubmit = (data: FormData) => {
     const responsible = participants.find((p) => p.id === data.responsibleId);
@@ -108,27 +142,11 @@ export const VaquinhaHistoryFormDialog = ({
       return;
     }
 
-    type SubmitData = {
-      year: number;
-      responsibleId: number;
-      responsibleName: string;
-      birthdayPersonId: number;
-      birthdayPersonName: string;
-      amount?: number;
-      notes?: string;
-    };
-
-    const submitData: SubmitData = {
-      year: data.year,
-      responsibleId: data.responsibleId,
+    onSubmit({
+      ...data,
       responsibleName: responsible.name,
-      birthdayPersonId: data.birthdayPersonId,
       birthdayPersonName: birthdayPerson.name,
-    };
-
-    onSubmit(submitData);
-
-    form.reset();
+    });
   };
 
   return (
@@ -161,59 +179,17 @@ export const VaquinhaHistoryFormDialog = ({
                 </FormItem>
               )}
             />
-            <FormField
+            <ParticipantSelectField
               control={form.control}
               name="birthdayPersonId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Aniversariante</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value > 0 ? field.value.toString() : ''}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {participants.map((p) => (
-                        <SelectItem key={p.id} value={p.id.toString()}>
-                          {p.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Aniversariante"
+              participants={participants}
             />
-            <FormField
+            <ParticipantSelectField
               control={form.control}
               name="responsibleId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quem foi responsável</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value > 0 ? field.value.toString() : ''}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {participants.map((p) => (
-                        <SelectItem key={p.id} value={p.id.toString()}>
-                          {p.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Quem foi responsável"
+              participants={participants}
             />
             <DialogFooter>
               <Button

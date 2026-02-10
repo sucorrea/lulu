@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { VaquinhaHistoryTimeline } from './timeline';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 
@@ -57,6 +58,20 @@ describe('VaquinhaHistoryTimeline', () => {
     ).toBeInTheDocument();
   });
 
+  it('should hide actions when not authenticated', () => {
+    mockUseUserVerification.mockReturnValue({ user: null });
+    render(
+      <VaquinhaHistoryTimeline
+        history={mockHistory}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByText('Editar')).not.toBeInTheDocument();
+    expect(screen.queryByText('Excluir')).not.toBeInTheDocument();
+  });
+
   it('should render with edit and delete actions', () => {
     mockUseUserVerification.mockReturnValue({ user: { uid: '1' } });
     const onEdit = vi.fn();
@@ -75,5 +90,26 @@ describe('VaquinhaHistoryTimeline', () => {
 
     expect(editButtons).toHaveLength(2);
     expect(deleteButtons).toHaveLength(2);
+  });
+
+  it('should call edit and delete handlers', async () => {
+    mockUseUserVerification.mockReturnValue({ user: { uid: '1' } });
+    const onEdit = vi.fn();
+    const onDelete = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <VaquinhaHistoryTimeline
+        history={mockHistory}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    );
+
+    await user.click(screen.getAllByText('Editar')[0]);
+    await user.click(screen.getAllByText('Excluir')[0]);
+
+    expect(onEdit).toHaveBeenCalledWith(mockHistory[0]);
+    expect(onDelete).toHaveBeenCalledWith('1');
   });
 });
