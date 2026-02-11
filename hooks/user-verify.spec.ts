@@ -83,7 +83,7 @@ describe('useUserVerification', () => {
       expect(result.current.user).toEqual(mockUser);
     });
 
-    await result.current.handleLogout();
+    result.current.handleLogout();
 
     await waitFor(() => {
       expect(mockSignOut).toHaveBeenCalled();

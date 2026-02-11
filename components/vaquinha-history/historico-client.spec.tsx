@@ -256,7 +256,6 @@ describe('HistoricoClient', () => {
 
     const { container } = render(<HistoricoClient />);
 
-    // Check for skeleton loading state (Skeleton components will have animate-pulse class)
     const skeletons = container.querySelectorAll('.animate-pulse');
     expect(skeletons.length).toBeGreaterThan(0);
   });

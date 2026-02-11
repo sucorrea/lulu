@@ -152,12 +152,23 @@ vi.mock('@/components/animation', () => ({
   )),
 }));
 
-vi.mock('@/lib/crypto', () => ({
-  encryptId: vi.fn((id: string) => `encrypted-${id}`),
-}));
+const isDaysLabel = (content: string): boolean => {
+  const trimmed = content.trim();
+  const parts = trimmed.split(/\s+/u);
+
+  if (parts.length !== 2) {
+    return false;
+  }
+
+  const [numberText, label] = parts;
+  const value = Number(numberText);
+
+  return Number.isInteger(value) && value >= 0 && (label === 'dia' || label === 'dias');
+};
 
 const mockParticipant = {
   id: 1,
+  editToken: 'encrypted-1',
   name: 'John Doe',
   date: '1990-01-15',
   photoURL: 'https://example.com/photo.jpg',
@@ -349,7 +360,7 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByText(/\d+ dias?/)).toBeInTheDocument();
+      expect(screen.getByText((content) => isDaysLabel(content))).toBeInTheDocument();
       expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
   });
@@ -798,7 +809,7 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByText(/\d+ dias?/)).toBeInTheDocument();
+      expect(screen.getByText((content) => isDaysLabel(content))).toBeInTheDocument();
       expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
 
@@ -820,7 +831,7 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByText(/\d+ dias?/)).toBeInTheDocument();
+      expect(screen.getByText((content) => isDaysLabel(content))).toBeInTheDocument();
       expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
   });

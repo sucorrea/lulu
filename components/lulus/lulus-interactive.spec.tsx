@@ -205,12 +205,11 @@ describe('LulusInteractive', () => {
       );
     });
 
-    it('should refetch on mount', () => {
+    it('should use staleTime to avoid excessive token regeneration', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
       expect(mockUseQuery).toHaveBeenCalledWith(
         expect.objectContaining({
-          refetchOnMount: true,
-          staleTime: 0,
+          staleTime: 5 * 60 * 1000,
         })
       );
     });

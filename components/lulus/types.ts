@@ -1,5 +1,6 @@
 export interface Person {
   id: number;
+  editToken?: string;
   name: string;
   date: Date | string;
   month: string;

@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import Home from './page';
 
-vi.mock('@/services/participants-server', () => ({
-  getParticipants: () => Promise.resolve([]),
+vi.mock('@/app/actions/participants', () => ({
+  getParticipantsWithEditTokens: () => Promise.resolve([]),
 }));
 
 vi.mock('@/components/lulus/lulus', () => ({

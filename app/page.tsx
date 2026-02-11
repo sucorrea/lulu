@@ -1,13 +1,14 @@
 import Lulus from '@/components/lulus/lulus';
 import ErrorState from '@/components/error-state';
-import { getParticipants } from '@/services/participants-server';
+
+import { getParticipantsWithEditTokens } from '@/app/actions/participants';
 
 const Home = async () => {
   let participants;
   let error = false;
 
   try {
-    participants = await getParticipants();
+    participants = await getParticipantsWithEditTokens();
   } catch (e) {
     console.error('Erro ao buscar participantes:', e);
     error = true;

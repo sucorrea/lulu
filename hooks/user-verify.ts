@@ -16,10 +16,9 @@ export const useUserVerification = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleLogout = useCallback(() => {
-    auth.signOut().then(() => {
-      setUser(null);
-    });
+  const handleLogout = useCallback(async () => {
+    await auth.signOut();
+    setUser(null);
   }, []);
 
   return { user, isLogged: !!user, isLoading, handleLogout };
