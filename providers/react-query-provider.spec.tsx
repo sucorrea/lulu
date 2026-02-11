@@ -81,6 +81,13 @@ describe('ReactQueryProvider', () => {
         queries: {
           refetchOnWindowFocus: false,
           staleTime: Infinity,
+          gcTime: 1000 * 60 * 60 * 24 * 7,
+          retry: 2,
+          retryDelay: expect.any(Function),
+          networkMode: 'offlineFirst',
+        },
+        mutations: {
+          networkMode: 'offlineFirst',
         },
       },
     });
@@ -105,7 +112,7 @@ describe('ReactQueryProvider', () => {
     expect(screen.getByTestId('persist-provider')).toBeInTheDocument();
     expect(screen.queryByTestId('query-provider')).toBeNull();
     const call = persistMocks.persistProvider.mock.calls[0]?.[0];
-    expect(call?.persistOptions?.maxAge).toBe(1000 * 60 * 60 * 24);
+    expect(call?.persistOptions?.maxAge).toBe(1000 * 60 * 60 * 24 * 7);
     expect(call?.persistOptions?.persister).toBe(persister);
   });
 });

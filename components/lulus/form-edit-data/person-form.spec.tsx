@@ -400,7 +400,7 @@ describe('PersonForm', () => {
       isLogged: boolean;
       isLoading: boolean;
       handleLogout: () => void;
-    });
+    } as unknown as ReturnType<typeof useUserVerification>);
 
     render(<PersonForm initialData={mockPerson} />);
 
