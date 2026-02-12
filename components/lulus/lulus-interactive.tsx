@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useUserVerification } from '@/hooks/user-verify';
 import { useQuery } from '@tanstack/react-query';
-import { fetchParticipants } from '@/services/queries/fetchParticipants';
+
+import { getParticipantsWithEditTokens } from '@/app/actions/participants';
 
 import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
@@ -27,11 +28,10 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const { user, isLoading } = useUserVerification();
 
   const { data: participants = initialParticipants } = useQuery({
-    queryKey: ['get-all-participants'],
-    queryFn: fetchParticipants,
+    queryKey: ['get-all-participants-with-tokens'],
+    queryFn: getParticipantsWithEditTokens,
     initialData: initialParticipants,
-    refetchOnMount: true,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
   const participantsList = participants;
 
@@ -55,6 +55,18 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
       ),
     [participantsList, searchTerm, filterMonth, sortBy]
   );
+
+  const emptyStateMessage = useMemo(() => {
+    if (searchTerm) {
+      return `Não encontramos resultados para "${searchTerm}"`;
+    }
+
+    if (filterMonth === 'all') {
+      return 'Tente ajustar os filtros de busca';
+    }
+
+    return 'Nenhuma participante encontrada neste mês';
+  }, [searchTerm, filterMonth]);
 
   if (isLoading) {
     return (
@@ -142,11 +154,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
                 Nenhuma participante encontrada
               </h3>
               <p className="mb-6 text-sm text-muted-foreground">
-                {searchTerm
-                  ? `Não encontramos resultados para "${searchTerm}"`
-                  : filterMonth !== 'all'
-                    ? 'Nenhuma participante encontrada neste mês'
-                    : 'Tente ajustar os filtros de busca'}
+                {emptyStateMessage}
               </p>
               {(searchTerm || filterMonth !== 'all') && (
                 <Button

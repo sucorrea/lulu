@@ -1,14 +1,6 @@
 import { Suspense } from 'react';
 import { AuditPage, AuditLogSkeleton } from '@/components/audit';
 
-export const AuditPageRoute = () => {
-  return (
-    <Suspense fallback={<AuditPageSkeleton />}>
-      <AuditPage />
-    </Suspense>
-  );
-};
-
 const AuditPageSkeleton = () => {
   return (
     <div className="container mx-auto py-8 px-4">
@@ -29,4 +21,10 @@ const AuditPageSkeleton = () => {
   );
 };
 
-export default AuditPageRoute;
+export default function AuditPageRoute() {
+  return (
+    <Suspense fallback={<AuditPageSkeleton />}>
+      <AuditPage />
+    </Suspense>
+  );
+}

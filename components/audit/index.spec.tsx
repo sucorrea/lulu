@@ -650,7 +650,7 @@ describe('Audit Components', () => {
         mockRouter as unknown as AppRouterInstance
       );
 
-      vi.mocked(usePathname).mockReturnValue('/audit');
+      vi.mocked(usePathname).mockReturnValue('/auditoria');
       const mockParams = new URLSearchParams();
       vi.mocked(useSearchParams).mockReturnValue(
         mockParams as unknown as ReadonlyURLSearchParams
@@ -859,7 +859,7 @@ describe('Audit Components', () => {
         mockRouter as unknown as AppRouterInstance
       );
 
-      vi.mocked(usePathname).mockReturnValue('/audit');
+      vi.mocked(usePathname).mockReturnValue('/auditoria');
       const mockParams = new URLSearchParams();
       vi.mocked(useSearchParams).mockReturnValue(
         mockParams as unknown as ReadonlyURLSearchParams

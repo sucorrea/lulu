@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import Footer from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navigation-bar/navbar';
+import { PwaUpdateManager } from '@/components/layout/pwa-update-manager';
 import { DeviceProvider } from '@/providers/device-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
@@ -13,8 +14,20 @@ import './globals.css';
 const ano = new Date().getFullYear();
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || 'https://luluzinha.web.app'
+  ),
   title: `Luluzinha ${ano}`,
   description: 'O site das Lulus.',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Luluzinha',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: `Luluzinha ${ano}`,
     description: 'O site das Lulus.',
@@ -28,6 +41,17 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+  ],
+};
+
 const RootLayout = ({
   children,
 }: Readonly<{
@@ -35,6 +59,11 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      </head>
       <body className="antialiased">
         <ReactQueryProvider>
           <ThemeProvider
@@ -56,6 +85,7 @@ const RootLayout = ({
               </main>
               <Footer />
             </DeviceProvider>
+            <PwaUpdateManager />
             <Toaster />
           </ThemeProvider>
         </ReactQueryProvider>

@@ -55,4 +55,6 @@ components\lulus\mockdata.ts
 .sonarlint
 .github/copilot-instructions.md
 .github/instructions/*
+.github/skills/*
 docs-ai/*
+.playwright-mcp/*

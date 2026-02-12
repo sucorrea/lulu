@@ -18,6 +18,8 @@ const eslintConfig = [
       'out/**',
       'build/**',
       'dist/**',
+      'public/sw.js',
+      'public/swe-worker-*.js',
     ],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),

@@ -88,7 +88,7 @@ export const Navbar = memo(function Navbar() {
                 icon={LayoutDashboard}
                 label="Dashboard"
               />
-              <NavLink href="/audit" icon={FileText} label="Auditoria" />
+              <NavLink href="/auditoria" icon={FileText} label="Auditoria" />
               <NavLink href="/historico" icon={History} label="Histórico" />
             </div>
           )}
@@ -127,7 +127,7 @@ export const Navbar = memo(function Navbar() {
                 onClick={onCloseMobileMenu}
               />
               <NavLink
-                href="/audit"
+                href="/auditoria"
                 icon={FileText}
                 label="Auditoria"
                 onClick={onCloseMobileMenu}

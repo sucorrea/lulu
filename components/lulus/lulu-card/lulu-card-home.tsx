@@ -15,7 +15,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { encryptId } from '@/lib/crypto';
 import { cn } from '@/lib/utils';
 
 import PixInfo from '../../pix-info';
@@ -73,7 +72,7 @@ const LulusCardHome = ({
 
   const dataNextBirthday = new Date(getNextBirthday(participants)?.date || '');
   const daysForBirthday = calculateDaysUntilBirthday(dataNextBirthday);
-  const token = encryptId(String(participant.id));
+  const token = participant.editToken ?? String(participant.id);
 
   return (
     <Card className={cn('lulu-card mx-auto w-full max-w-md p-2', styleCard)}>
@@ -83,7 +82,7 @@ const LulusCardHome = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href={`participants/${token}`}
+                  href={`participantes/${token}`}
                   className="flex text-xs gap-1 items-end justify-end"
                 >
                   <Edit2Icon size="0.75rem" className="text-primary" />

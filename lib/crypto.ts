@@ -1,6 +1,7 @@
 import { randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
 
-const KEY = Buffer.from(process.env.NEXT_PUBLIC_ENCRYPTION_KEY!, 'hex');
+const getKey = () =>
+  Buffer.from(process.env.NEXT_PUBLIC_ENCRYPTION_KEY!, 'hex');
 
 const toUrlSafe = (buf: Buffer) => {
   return buf
@@ -20,7 +21,7 @@ const fromUrlSafe = (s: string) => {
 
 export const encryptId = (id: string) => {
   const iv = randomBytes(12);
-  const cipher = createCipheriv('aes-256-gcm', KEY, iv);
+  const cipher = createCipheriv('aes-256-gcm', getKey(), iv);
   const encrypted = Buffer.concat([cipher.update(id, 'utf8'), cipher.final()]);
   const tag = cipher.getAuthTag();
   return toUrlSafe(Buffer.concat([iv, tag, encrypted]));
@@ -31,7 +32,7 @@ export const decryptId = (token: string) => {
   const iv = data.subarray(0, 12);
   const tag = data.subarray(12, 28);
   const encrypted = data.subarray(28);
-  const decipher = createDecipheriv('aes-256-gcm', KEY, iv);
+  const decipher = createDecipheriv('aes-256-gcm', getKey(), iv);
   decipher.setAuthTag(tag);
   const out = Buffer.concat([decipher.update(encrypted), decipher.final()]);
   return out.toString('utf8');
