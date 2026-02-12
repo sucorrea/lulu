@@ -97,8 +97,7 @@ export const fetchVaquinhaHistoryByYear = async (
 ): Promise<VaquinhaHistory[]> => {
   const q = query(
     collection(db, 'vaquinha-history'),
-    where('year', '==', year),
-    orderBy('birthdayPersonName', 'asc')
+    where('year', '==', year)
   );
 
   const querySnapshot = await getDocs(q);
@@ -108,7 +107,9 @@ export const fetchVaquinhaHistoryByYear = async (
     data.push(doc.data() as VaquinhaHistory);
   });
 
-  return data;
+  return data.sort((a, b) =>
+    a.birthdayPersonName.localeCompare(b.birthdayPersonName)
+  );
 };
 
 export const fetchVaquinhaHistoryByResponsible = async (
@@ -161,8 +162,7 @@ export const listenVaquinhaHistory = (
   if (year) {
     q = query(
       collection(db, 'vaquinha-history'),
-      where('year', '==', year),
-      orderBy('birthdayPersonName', 'asc')
+      where('year', '==', year)
     );
   }
 
@@ -171,6 +171,11 @@ export const listenVaquinhaHistory = (
     snapshot.forEach((doc) => {
       data.push(doc.data() as VaquinhaHistory);
     });
+    if (year) {
+      data.sort((a, b) =>
+        a.birthdayPersonName.localeCompare(b.birthdayPersonName)
+      );
+    }
     callback(data);
   });
 };

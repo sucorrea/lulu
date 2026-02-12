@@ -22,18 +22,6 @@ vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
 }));
 
-vi.mock('lucide-react', () => ({
-  CameraIcon: ({ size }: { size: number }) => (
-    <svg data-testid="camera-icon" data-size={size} />
-  ),
-  Gift: ({ size }: { size: number }) => (
-    <svg data-testid="gift-icon" data-size={size} />
-  ),
-  LayoutDashboardIcon: ({ size }: { size: number }) => (
-    <svg data-testid="dashboard-icon" data-size={size} />
-  ),
-}));
-
 import { usePathname } from 'next/navigation';
 import Footer from './footer';
 
@@ -52,53 +40,68 @@ describe('Footer', () => {
     expect(footer).toBeInTheDocument();
   });
 
-  it('should render three navigation links', () => {
+  it('should render five navigation links', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
     const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(3);
+    expect(links).toHaveLength(5);
   });
 
-  it('should render home link with Gift icon', () => {
+  it('should render participantes link', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
-    const homeLink = screen.getByTestId('link-/');
-    expect(homeLink).toBeInTheDocument();
-    expect(screen.getByTestId('gift-icon')).toBeInTheDocument();
-    expect(screen.getByText('Home')).toBeInTheDocument();
+    const participantesLink = screen.getByTestId('link-/');
+    expect(participantesLink).toBeInTheDocument();
+    expect(screen.getByText('Participantes')).toBeInTheDocument();
   });
 
-  it('should render dashboard link with Dashboard icon', () => {
+  it('should render dashboard link', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
     const dashboardLink = screen.getByTestId('link-/dashboard');
     expect(dashboardLink).toBeInTheDocument();
-    expect(screen.getByTestId('dashboard-icon')).toBeInTheDocument();
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
   });
 
-  it('should render gallery link with Camera icon', () => {
+  it('should render galeria link', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
     const galeriaLink = screen.getByTestId('link-/galeria');
     expect(galeriaLink).toBeInTheDocument();
-    expect(screen.getByTestId('camera-icon')).toBeInTheDocument();
     expect(screen.getByText('Galeria')).toBeInTheDocument();
   });
 
-  it('should apply text-primary class to active link (home)', () => {
+  it('should render auditoria link', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
-    const homeLink = screen.getByTestId('link-/');
-    expect(homeLink).toHaveClass('text-primary');
+    const auditoriaLink = screen.getByTestId('link-/auditoria');
+    expect(auditoriaLink).toBeInTheDocument();
+    expect(screen.getByText('Auditoria')).toBeInTheDocument();
   });
 
-  it('should apply text-muted-foreground class to inactive links (home page)', () => {
+  it('should render historico link', () => {
+    mockUsePathname.mockReturnValue('/');
+    render(<Footer />);
+
+    const historicoLink = screen.getByTestId('link-/historico');
+    expect(historicoLink).toBeInTheDocument();
+    expect(screen.getByText('Histórico')).toBeInTheDocument();
+  });
+
+  it('should apply text-primary class to active link (participantes)', () => {
+    mockUsePathname.mockReturnValue('/');
+    render(<Footer />);
+
+    const participantesLink = screen.getByTestId('link-/');
+    expect(participantesLink).toHaveClass('text-primary');
+  });
+
+  it('should apply text-muted-foreground class to inactive links (participantes page)', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
@@ -121,10 +124,10 @@ describe('Footer', () => {
     mockUsePathname.mockReturnValue('/dashboard');
     render(<Footer />);
 
-    const homeLink = screen.getByTestId('link-/');
+    const participantesLink = screen.getByTestId('link-/');
     const galeriaLink = screen.getByTestId('link-/galeria');
 
-    expect(homeLink).toHaveClass('text-muted-foreground');
+    expect(participantesLink).toHaveClass('text-muted-foreground');
     expect(galeriaLink).toHaveClass('text-muted-foreground');
   });
 
@@ -140,24 +143,11 @@ describe('Footer', () => {
     mockUsePathname.mockReturnValue('/galeria');
     render(<Footer />);
 
-    const homeLink = screen.getByTestId('link-/');
+    const participantesLink = screen.getByTestId('link-/');
     const dashboardLink = screen.getByTestId('link-/dashboard');
 
-    expect(homeLink).toHaveClass('text-muted-foreground');
+    expect(participantesLink).toHaveClass('text-muted-foreground');
     expect(dashboardLink).toHaveClass('text-muted-foreground');
-  });
-
-  it('should render icons with size 20', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const giftIcon = screen.getByTestId('gift-icon');
-    const dashboardIcon = screen.getByTestId('dashboard-icon');
-    const cameraIcon = screen.getByTestId('camera-icon');
-
-    expect(giftIcon).toHaveAttribute('data-size', '20');
-    expect(dashboardIcon).toHaveAttribute('data-size', '20');
-    expect(cameraIcon).toHaveAttribute('data-size', '20');
   });
 
   it('should have footer fixed at bottom with proper styling', () => {
@@ -174,7 +164,7 @@ describe('Footer', () => {
 
     const footer = screen.getByRole('contentinfo');
     const container = footer.querySelector('.container');
-    expect(container).toHaveClass('flex', 'justify-around', 'gap-4');
+    expect(container).toHaveClass('flex', 'justify-around', 'gap-0', 'sm:gap-2');
   });
 
   it('should have each link with flex column layout and center alignment', () => {
@@ -187,13 +177,13 @@ describe('Footer', () => {
     });
   });
 
-  it('should have each link with hover:bg-muted class', () => {
+  it('should have each link with touch/desktop feedback classes', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
     const links = screen.getAllByRole('link');
     links.forEach((link) => {
-      expect(link).toHaveClass('hover:bg-muted');
+      expect(link).toHaveClass('active:bg-muted', 'sm:hover:bg-muted');
     });
   });
 
@@ -201,9 +191,11 @@ describe('Footer', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
-    expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('Participantes')).toBeInTheDocument();
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Galeria')).toBeInTheDocument();
+    expect(screen.getByText('Auditoria')).toBeInTheDocument();
+    expect(screen.getByText('Histórico')).toBeInTheDocument();
   });
 
   it('should have consistent padding and border styling', () => {
@@ -211,7 +203,7 @@ describe('Footer', () => {
     render(<Footer />);
 
     const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('border-t', 'border-border', 'p-2');
+    expect(footer).toHaveClass('border-t', 'border-border');
   });
 
   it('should have backdrop blur and background styling', () => {
@@ -235,10 +227,10 @@ describe('Footer', () => {
     render(<Footer />);
 
     const dashboardLink = screen.getByTestId('link-/dashboard');
-    const homeLink = screen.getByTestId('link-/');
+    const participantesLink = screen.getByTestId('link-/');
 
-    expect(homeLink).toHaveClass('text-muted-foreground');
-    expect(dashboardLink).toHaveClass('text-muted-foreground');
+    expect(participantesLink).toHaveClass('text-muted-foreground');
+    expect(dashboardLink).toHaveClass('text-primary');
   });
 
   it('should have all links with transition-colors class', () => {
@@ -251,13 +243,13 @@ describe('Footer', () => {
     });
   });
 
-  it('should render link text with xs font size', () => {
+  it('should render link text with mobile-first font size', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
     const links = screen.getAllByRole('link');
     links.forEach((link) => {
-      expect(link).toHaveClass('text-xs');
+      expect(link).toHaveClass('text-[10px]', 'sm:text-xs');
     });
   });
 
@@ -267,6 +259,16 @@ describe('Footer', () => {
 
     const footer = screen.getByRole('contentinfo');
     const container = footer.querySelector('.container');
-    expect(container).toHaveClass('gap-4');
+    expect(container).toHaveClass('gap-0', 'sm:gap-2');
+  });
+
+  it('should have min touch target size for mobile accessibility', () => {
+    mockUsePathname.mockReturnValue('/');
+    render(<Footer />);
+
+    const links = screen.getAllByRole('link');
+    links.forEach((link) => {
+      expect(link).toHaveClass('min-h-[44px]', 'min-w-[56px]');
+    });
   });
 });

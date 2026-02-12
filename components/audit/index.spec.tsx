@@ -448,7 +448,7 @@ describe('Audit Components', () => {
     it('should stringify objects', () => {
       const obj = { key: 'value' };
       const result = formatValue(obj, 'object');
-      expect(result).toBe('[object Object]');
+      expect(result).toBe(JSON.stringify(obj));
     });
 
     it('should return string representation of string values', () => {

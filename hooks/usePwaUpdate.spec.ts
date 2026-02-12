@@ -115,7 +115,6 @@ describe('usePwaUpdate', () => {
 
     renderHook(() => usePwaUpdate());
 
-    // Allow the service worker ready promise to resolve and setup to complete
     await Promise.resolve();
 
     vi.advanceTimersByTime(60 * 60 * 1000);
@@ -133,7 +132,6 @@ describe('usePwaUpdate', () => {
       configurable: true,
     });
 
-    // Mock location.reload by replacing the entire location object
     const originalLocation = globalThis.location;
     const reloadMock = vi.fn();
 
@@ -191,7 +189,6 @@ describe('usePwaUpdate', () => {
     });
     expect(reloadMock).toHaveBeenCalled();
 
-    // Restore original location
     globalThis.location = originalLocation;
   });
 });

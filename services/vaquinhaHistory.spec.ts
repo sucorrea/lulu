@@ -250,7 +250,7 @@ describe('vaquinhaHistory service', () => {
     });
 
     it('should apply year filter when provided', async () => {
-      const { onSnapshot, where, orderBy } = await import('firebase/firestore');
+      const { onSnapshot, where } = await import('firebase/firestore');
 
       vi.mocked(onSnapshot).mockImplementationOnce((...args: unknown[]) => {
         const listener = args[1] as
@@ -279,7 +279,6 @@ describe('vaquinhaHistory service', () => {
       listenVaquinhaHistory(vi.fn(), 2024);
 
       expect(where).toHaveBeenCalledWith('year', '==', 2024);
-      expect(orderBy).toHaveBeenCalledWith('birthdayPersonName', 'asc');
     });
   });
 

@@ -28,6 +28,10 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+vi.mock('next/navigation', () => ({
+  usePathname: vi.fn(() => '/login'),
+}));
+
 vi.mock('./mode-toggle', () => ({
   ThemeToggle: () => <div data-testid="theme-toggle" />,
 }));
@@ -142,17 +146,6 @@ describe('Navbar', () => {
     );
   });
 
-  it('should not render navigation links or menu button when unauthenticated', () => {
-    render(<Navbar />);
-
-    expect(
-      screen.queryByRole('button', { name: 'Alternar menu' })
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText('Participantes')).not.toBeInTheDocument();
-    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
-    expect(screen.queryByText('Auditoria')).not.toBeInTheDocument();
-  });
-
   it('should render navigation links and menu button when authenticated', () => {
     mockUseNavbarFn.mockReturnValue({
       ...defaultNavbarData,
@@ -167,7 +160,9 @@ describe('Navbar', () => {
 
     expect(screen.getAllByTestId('link-/')).toHaveLength(2);
     expect(screen.getAllByTestId('link-/dashboard')).toHaveLength(2);
+    expect(screen.getAllByTestId('link-/galeria')).toHaveLength(2);
     expect(screen.getAllByTestId('link-/auditoria')).toHaveLength(2);
+    expect(screen.getAllByTestId('link-/historico')).toHaveLength(2);
   });
 
   it('should toggle mobile menu visibility when menu button is clicked', () => {

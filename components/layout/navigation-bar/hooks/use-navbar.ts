@@ -32,6 +32,6 @@ export const useNavbar = (): UseNavbarResult => {
     isLoginPage,
     userFirstName,
     currentYear,
-    handleLogout,
+    handleLogout: () => void handleLogout(),
   };
 };
