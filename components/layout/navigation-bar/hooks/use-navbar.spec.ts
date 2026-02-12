@@ -181,7 +181,7 @@ describe('useNavbar', () => {
     expect(result.current.currentYear).toBe(currentYear);
   });
 
-  it('should return handleLogout function', () => {
+  it('should return handleLogout function that invokes logout when called', () => {
     const handleLogout = vi.fn();
     mockUsePathname.mockReturnValue('/');
     mockUseUserVerification.mockReturnValue({
@@ -192,7 +192,9 @@ describe('useNavbar', () => {
 
     const { result } = renderHook(() => useNavbar());
 
-    expect(result.current.handleLogout).toBe(handleLogout);
+    expect(typeof result.current.handleLogout).toBe('function');
+    result.current.handleLogout();
+    expect(handleLogout).toHaveBeenCalled();
   });
 
   it('should handle empty displayName', () => {
