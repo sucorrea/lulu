@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { GaleriaComment } from '@/services/galeriaComments';
 import { useCommentContext } from './comment-context';
-import EditDeleteButtom from './edit-delete-buttom';
+import EditDeleteButton from './edit-delete-button';
 
 interface CommentItemProps {
   comment: GaleriaComment;
@@ -66,7 +66,7 @@ const CommentItem = memo(function CommentItem({
         )}
       </div>
       {isAuthor && !isEditing && (
-        <EditDeleteButtom
+        <EditDeleteButton
           onEdit={onEditComment}
           onDelete={onDeleteComment}
           comentSelected={comment}

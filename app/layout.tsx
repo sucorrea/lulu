@@ -18,7 +18,8 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_BASE_URL || 'https://luluzinha.web.app'
   ),
   title: `Luluzinha ${ano}`,
-  description: 'O site das Lulus.',
+  description:
+    'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard, histórico e auditoria em tempo real.',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
@@ -30,14 +31,16 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: `Luluzinha ${ano}`,
-    description: 'O site das Lulus.',
+    description:
+      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
     type: 'website',
     locale: 'pt_BR',
   },
   twitter: {
     card: 'summary_large_image',
     title: `Luluzinha ${ano}`,
-    description: 'O site das Lulus',
+    description:
+      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
   },
 };
 

@@ -4,8 +4,8 @@ import { isCurrentRoute, NAV_ITEMS } from './nav-config';
 
 describe('nav-config', () => {
   describe('NAV_ITEMS', () => {
-    it('should have 5 navigation items', () => {
-      expect(NAV_ITEMS).toHaveLength(5);
+    it('should have 6 navigation items', () => {
+      expect(NAV_ITEMS).toHaveLength(6);
     });
 
     it('should have correct structure for each item', () => {
@@ -26,6 +26,7 @@ describe('nav-config', () => {
       expect(hrefs).toContain('/galeria');
       expect(hrefs).toContain('/auditoria');
       expect(hrefs).toContain('/historico');
+      expect(hrefs).toContain('/sobre');
     });
   });
 

@@ -5,7 +5,7 @@ import CommentItem from './comment-item';
 import { CommentProvider } from './comment-context';
 import type { GaleriaComment } from '@/services/galeriaComments';
 
-vi.mock('./edit-delete-buttom', () => ({
+vi.mock('./edit-delete-button', () => ({
   default: ({
     onEdit,
     onDelete,

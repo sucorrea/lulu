@@ -5,17 +5,17 @@ import { Edit2, Trash2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GaleriaComment } from '@/services/galeriaComments';
 
-type EditDeleteButtomProps = {
+type EditDeleteButtonProps = {
   onEdit: (comentSelected: GaleriaComment) => void;
   onDelete: (id: string) => void;
   comentSelected: GaleriaComment;
 };
 
-const EditDeleteButtom = ({
+const EditDeleteButton = ({
   onEdit,
   onDelete,
   comentSelected,
-}: EditDeleteButtomProps) => {
+}: EditDeleteButtonProps) => {
   return (
     <div className="flex gap-1">
       <Button
@@ -44,4 +44,4 @@ const EditDeleteButtom = ({
   );
 };
 
-export default EditDeleteButtom;
+export default EditDeleteButton;

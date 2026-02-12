@@ -21,7 +21,9 @@ export const formatValue = (value: unknown, fieldType: string): string => {
     return JSON.stringify(value);
   }
 
-  return String(value);
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+    ? String(value)
+    : JSON.stringify(value);
 };
 
 export const formatDateTime = (dateString: string): string => {

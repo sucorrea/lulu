@@ -40,12 +40,12 @@ describe('Footer', () => {
     expect(footer).toBeInTheDocument();
   });
 
-  it('should render five navigation links', () => {
+  it('should render six navigation links', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
     const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(5);
+    expect(links).toHaveLength(6);
   });
 
   it('should render participantes link', () => {

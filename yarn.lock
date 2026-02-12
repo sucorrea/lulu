@@ -1999,18 +1999,13 @@
   dependencies:
     tslib "^2.8.0"
 
-"@tanstack/query-async-storage-persister@^5.90.22":
+"@tanstack/query-async-storage-persister@^5.90.21":
   version "5.90.22"
-  resolved "https://registry.npmjs.org/@tanstack/query-async-storage-persister/-/query-async-storage-persister-5.90.22.tgz"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-async-storage-persister/-/query-async-storage-persister-5.90.22.tgz#24f840293fb4a6a61cf7727fb8ccc54481e11dc6"
   integrity sha512-I8Dbi79aoM2S2VqfuxTG13TkqmiDSiZ95Bi1YRXvwGVMsOnaJ99Ou1dIw53kHY3y10Vgwv3YYThw4TN/FM/N3A==
   dependencies:
     "@tanstack/query-core" "5.90.20"
     "@tanstack/query-persist-client-core" "5.91.19"
-
-"@tanstack/query-core@5.76.0":
-  version "5.76.0"
-  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.76.0.tgz"
-  integrity sha512-FN375hb8ctzfNAlex5gHI6+WDXTNpe0nbxp/d2YJtnP+IBM6OUm7zcaoCW6T63BawGOYZBbKC0iPvr41TteNVg==
 
 "@tanstack/query-core@5.90.20":
   version "5.90.20"
@@ -2024,19 +2019,19 @@
   dependencies:
     "@tanstack/query-core" "5.90.20"
 
-"@tanstack/react-query-persist-client@^5.76.1":
+"@tanstack/react-query-persist-client@^5.90.21":
   version "5.90.22"
-  resolved "https://registry.npmjs.org/@tanstack/react-query-persist-client/-/react-query-persist-client-5.90.22.tgz"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-5.90.22.tgz#1eed6e3e79f23e0bc79326d92672e4ddbb76107e"
   integrity sha512-BrD3Y/SsrSIDl+t/gpYvjvGHXd7m7oF+GIqktKE8LmTgt7bS1lYHd/CLkVxMPixTU53gHHVFfPNGmY7Hv4L/7g==
   dependencies:
     "@tanstack/query-persist-client-core" "5.91.19"
 
-"@tanstack/react-query@^5.76.1":
-  version "5.76.1"
-  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.76.1.tgz"
-  integrity sha512-YxdLZVGN4QkT5YT1HKZQWiIlcgauIXEIsMOTSjvyD5wLYK8YVvKZUPAysMqossFJJfDpJW3pFn7WNZuPOqq+fw==
+"@tanstack/react-query@^5.90.21":
+  version "5.90.21"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.90.21.tgz#e0eb40831a76510be438109435b8807ef63ab1b9"
+  integrity sha512-0Lu6y5t+tvlTJMTO7oh5NSpJfpg/5D41LlThfepTixPYkJ0sE2Jj0m0f6yYqujBwIXlId87e234+MxG3D3g7kg==
   dependencies:
-    "@tanstack/query-core" "5.76.0"
+    "@tanstack/query-core" "5.90.20"
 
 "@tanstack/react-table@^8.20.6":
   version "8.20.6"
@@ -2088,14 +2083,6 @@
     dom-accessibility-api "^0.6.3"
     lodash "^4.17.21"
     redent "^3.0.0"
-
-"@testing-library/react-hooks@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.npmjs.org/@testing-library/react-hooks/-/react-hooks-8.0.1.tgz"
-  integrity sha512-Aqhl2IVmLt8IovEVarNDFuJDVWVvhnr9/GCU6UUnrYXwgDFF9h2L2o2P9KBni1AST5sT6riAyoukFLyjQUgD/g==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-    react-error-boundary "^3.1.0"
 
 "@testing-library/react@^16.0.0":
   version "16.3.0"
@@ -5009,13 +4996,6 @@ react-dom@^19.0.0:
   dependencies:
     scheduler "^0.27.0"
 
-react-error-boundary@^3.1.0:
-  version "3.1.4"
-  resolved "https://registry.npmjs.org/react-error-boundary/-/react-error-boundary-3.1.4.tgz"
-  integrity sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-
 react-hook-form@^7.56.4:
   version "7.56.4"
   resolved "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.56.4.tgz"
@@ -6015,10 +5995,10 @@ vite@^5.0.0:
   optionalDependencies:
     fsevents "~2.3.3"
 
-vitest-sonar-reporter@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/vitest-sonar-reporter/-/vitest-sonar-reporter-3.0.0.tgz"
-  integrity sha512-QRT5m9Z/3Kt0WVDVcFHm5LC9Ba89yDP4twlX2QUAJ9PdqfJBkLAh/kXj7m6U3i0k6GxnIEiwCc295bmAYokmZg==
+vitest-sonar-reporter@^2.0.0:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/vitest-sonar-reporter/-/vitest-sonar-reporter-2.0.4.tgz#e81ae089364bea257f4da89b38599ae52535e41f"
+  integrity sha512-6mKFLXYzaHsuR+qnmuXXVhcjhostuicZ9iL3I325uf6sUKSZ2ZOpDWUBcgQwEmGs2xE05SPF6F72eoHmfOWX7A==
 
 vitest@^2.0.5:
   version "2.1.9"

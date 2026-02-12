@@ -1,5 +1,12 @@
 import type { ComponentType } from 'react';
-import { Camera, FileText, History, LayoutDashboard, Users } from 'lucide-react';
+import {
+  Camera,
+  FileText,
+  History,
+  Info,
+  LayoutDashboard,
+  Users,
+} from 'lucide-react';
 
 export interface NavItem {
   href: string;
@@ -13,6 +20,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/galeria', label: 'Galeria', icon: Camera },
   { href: '/auditoria', label: 'Auditoria', icon: FileText },
   { href: '/historico', label: 'Histórico', icon: History },
+  { href: '/sobre', label: 'Sobre', icon: Info },
 ];
 
 export function isCurrentRoute(pathname: string, href: string): boolean {
