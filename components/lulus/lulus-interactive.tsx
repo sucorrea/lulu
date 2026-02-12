@@ -28,7 +28,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const { user, isLoading } = useUserVerification();
 
   const { data: participants = initialParticipants } = useQuery({
-    queryKey: ['get-all-participants'],
+    queryKey: ['get-all-participants-with-tokens'],
     queryFn: getParticipantsWithEditTokens,
     initialData: initialParticipants,
     staleTime: 5 * 60 * 1000,

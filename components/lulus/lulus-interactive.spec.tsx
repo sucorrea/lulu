@@ -254,7 +254,7 @@ describe('LulusInteractive', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
       expect(mockUseQuery).toHaveBeenCalledWith(
         expect.objectContaining({
-          queryKey: ['get-all-participants'],
+          queryKey: ['get-all-participants-with-tokens'],
           initialData: mockParticipants,
         })
       );

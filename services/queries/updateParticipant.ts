@@ -1,5 +1,5 @@
 import { Person } from '@/components/lulus/types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useGetParticipantById } from './fetchParticipants';
@@ -58,12 +58,19 @@ export const updateParticipantData = async (
 };
 
 export const useUpdateParticipantData = (participantId: string) => {
+  const queryClient = useQueryClient();
   const { refetch: refetchParticipant } = useGetParticipantById(participantId);
 
   return useMutation({
     mutationFn: (options: UpdateParticipantOptions) =>
       updateParticipantData(participantId, options),
-    onSuccess: () => refetchParticipant(),
+    onSuccess: () => {
+      refetchParticipant();
+      queryClient.invalidateQueries({ queryKey: ['get-all-participants'] });
+      queryClient.invalidateQueries({
+        queryKey: ['get-all-participants-with-tokens'],
+      });
+    },
     onError: () => {
       console.log('Error updating participant data');
     },
