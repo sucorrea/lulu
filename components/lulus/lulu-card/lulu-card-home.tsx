@@ -82,7 +82,7 @@ const LulusCardHome = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href={`participants/${token}`}
+                  href={`participantes/${token}`}
                   className="flex text-xs gap-1 items-end justify-end"
                 >
                   <Edit2Icon size="0.75rem" className="text-primary" />

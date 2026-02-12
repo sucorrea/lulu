@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import LulusInteractive from './lulus-interactive';
 import { Person } from './types';
 
@@ -23,13 +23,37 @@ vi.mock('./filter/filter', () => ({
     searchTerm,
     filterMonth,
     sortBy,
+    setSearchTerm,
+    setFilterMonth,
   }: {
     searchTerm: string;
     filterMonth: string;
     sortBy: string;
+    setSearchTerm: (value: string) => void;
+    setFilterMonth: (value: string) => void;
   }) => (
     <div data-testid="filter-component">
       Filter Component {searchTerm} {filterMonth} {sortBy}
+      <button
+        type="button"
+        data-testid="set-search-filter"
+        onClick={() => {
+          setSearchTerm('Teste');
+          setFilterMonth('all');
+        }}
+      >
+        Apply search
+      </button>
+      <button
+        type="button"
+        data-testid="set-month-filter"
+        onClick={() => {
+          setSearchTerm('');
+          setFilterMonth('january');
+        }}
+      >
+        Apply month
+      </button>
     </div>
   ),
 }));
@@ -185,8 +209,39 @@ describe('LulusInteractive', () => {
 
     it('should show search term in empty state when searching', () => {
       render(<LulusInteractive initialParticipants={[]} />);
-      const emptyMessage = screen.getByText('Nenhuma participante encontrada');
-      expect(emptyMessage).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('set-search-filter'));
+      expect(
+        screen.getByText('Não encontramos resultados para "Teste"')
+      ).toBeInTheDocument();
+    });
+
+    it('should show month-specific empty state message when filtering by month', () => {
+      render(<LulusInteractive initialParticipants={[]} />);
+      fireEvent.click(screen.getByTestId('set-month-filter'));
+      expect(
+        screen.getByText('Nenhuma participante encontrada neste mês')
+      ).toBeInTheDocument();
+    });
+
+    it('should clear filters when clicking "Limpar filtros" button', () => {
+      render(<LulusInteractive initialParticipants={[]} />);
+
+      fireEvent.click(screen.getByTestId('set-search-filter'));
+
+      const clearButton = screen.getByRole('button', {
+        name: 'Limpar filtros',
+      });
+
+      expect(clearButton).toBeInTheDocument();
+
+      fireEvent.click(clearButton);
+
+      expect(
+        screen.getByText('Tente ajustar os filtros de busca')
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Limpar filtros' })
+      ).not.toBeInTheDocument();
     });
   });
 

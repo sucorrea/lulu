@@ -167,7 +167,7 @@ describe('Navbar', () => {
 
     expect(screen.getAllByTestId('link-/')).toHaveLength(2);
     expect(screen.getAllByTestId('link-/dashboard')).toHaveLength(2);
-    expect(screen.getAllByTestId('link-/audit')).toHaveLength(2);
+    expect(screen.getAllByTestId('link-/auditoria')).toHaveLength(2);
   });
 
   it('should toggle mobile menu visibility when menu button is clicked', () => {

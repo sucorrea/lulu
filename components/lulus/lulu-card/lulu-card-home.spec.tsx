@@ -163,7 +163,11 @@ const isDaysLabel = (content: string): boolean => {
   const [numberText, label] = parts;
   const value = Number(numberText);
 
-  return Number.isInteger(value) && value >= 0 && (label === 'dia' || label === 'dias');
+  return (
+    Number.isInteger(value) &&
+    value >= 0 &&
+    (label === 'dia' || label === 'dias')
+  );
 };
 
 const mockParticipant = {
@@ -360,7 +364,9 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByText((content) => isDaysLabel(content))).toBeInTheDocument();
+      expect(
+        screen.getByText((content) => isDaysLabel(content))
+      ).toBeInTheDocument();
       expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
   });
@@ -472,7 +478,7 @@ describe('LulusCardHome', () => {
       );
 
       const link = screen.getByTestId('next-link');
-      expect(link).toHaveAttribute('href', 'participants/encrypted-1');
+      expect(link).toHaveAttribute('href', 'participantes/encrypted-1');
     });
 
     it('should render tooltip components when user is true and showDetails is true', () => {
@@ -809,7 +815,9 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByText((content) => isDaysLabel(content))).toBeInTheDocument();
+      expect(
+        screen.getByText((content) => isDaysLabel(content))
+      ).toBeInTheDocument();
       expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
 
@@ -831,7 +839,9 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByText((content) => isDaysLabel(content))).toBeInTheDocument();
+      expect(
+        screen.getByText((content) => isDaysLabel(content))
+      ).toBeInTheDocument();
       expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
   });
