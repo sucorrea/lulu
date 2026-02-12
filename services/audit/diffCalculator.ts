@@ -121,7 +121,9 @@ const valueToString = (value: unknown): string => {
   if (typeof value === 'object') {
     return JSON.stringify(value);
   }
-  return String(value);
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+    ? String(value)
+    : JSON.stringify(value);
 };
 
 export const describeChanges = (changes: AuditFieldChange[]): string => {

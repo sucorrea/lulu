@@ -80,10 +80,11 @@ export function usePwaUpdate() {
       };
     };
 
+    const pollRegistration = (registration: ServiceWorkerRegistration) =>
+      registration.update().catch(() => {});
+
     const startUpdatePolling = (registration: ServiceWorkerRegistration) =>
-      setInterval(() => {
-        registration.update().catch(() => {});
-      }, ONE_HOUR);
+      setInterval(() => pollRegistration(registration), ONE_HOUR);
 
     const setupRegistration = (registration: ServiceWorkerRegistration) => {
       let detachStateChange: (() => void) | undefined;
