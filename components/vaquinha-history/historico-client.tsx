@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, Suspense, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, TrashIcon } from 'lucide-react';
 
 import { useUserVerification } from '@/hooks/user-verify';
 import { useGetAllParticipants } from '@/services/queries/fetchParticipants';
@@ -25,9 +25,11 @@ import {
 } from '@/components/vaquinha-history';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 import { useDisclosure } from '@/hooks/use-disclosure';
+import { toast } from 'sonner';
 
 export const HistoricoClient = () => {
-  const { isLoading: isLoadingAuth } = useUserVerification();
+  const { isLoading: isLoadingAuth, user: isAuthenticated } =
+    useUserVerification();
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const {
     isOpen: isDialogOpen,
@@ -111,18 +113,32 @@ export const HistoricoClient = () => {
 
   const handleDeleteClick = useCallback(
     async (id: string) => {
-      if (
-        confirm(
-          'Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.'
-        )
-      ) {
-        try {
-          await deleteMutation.mutateAsync(id);
-          setAnnouncement('Registro excluído com sucesso');
-        } catch {
-          setAnnouncement('Erro ao excluir registro. Tente novamente.');
-        }
-      }
+      toast.warning('Excluir registro', {
+        position: 'top-right',
+        description:
+          'Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.',
+        cancel: {
+          label: 'Cancelar',
+          onClick: () => {
+            toast.dismiss();
+          },
+        },
+        action: {
+          label: 'Excluir',
+          onClick: () => {
+            deleteMutation.mutate(id, {
+              onSuccess: () => {
+                toast.success('Registro excluído com sucesso');
+              },
+              onError: () => {
+                toast.error('Erro ao excluir registro. Tente novamente.');
+              },
+            });
+          },
+        },
+        icon: <TrashIcon className="h-4 w-4" />,
+        duration: 10000,
+      });
     },
     [deleteMutation]
   );
@@ -139,15 +155,19 @@ export const HistoricoClient = () => {
             id: editingItem.id,
             data: cleanData,
           });
-          setAnnouncement('Registro atualizado com sucesso');
+          toast.success('Registro atualizado com sucesso');
         } else {
           await addMutation.mutateAsync(cleanData);
-          setAnnouncement('Registro adicionado com sucesso');
+          toast.success('Registro adicionado com sucesso');
         }
         onCloseDialog();
         setEditingItem(null);
       } catch {
-        setAnnouncement('Erro ao salvar registro. Tente novamente.');
+        if (editingItem) {
+          toast.error('Erro ao atualizar registro. Tente novamente.');
+        } else {
+          toast.error('Erro ao adicionar registro. Tente novamente.');
+        }
       }
     },
     [editingItem, addMutation, updateMutation, onCloseDialog]
@@ -206,7 +226,9 @@ export const HistoricoClient = () => {
       <LiveAnnounce message={announcement} politeness="polite" />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Histórico de Vaquinhas</h1>
+          <h1 className="lulu-header text-2xl md:text-3xl">
+            Histórico de Vaquinhas
+          </h1>
           <p className="text-muted-foreground">
             Acompanhe quem foi responsável pelas vaquinhas ao longo dos anos
           </p>
@@ -219,10 +241,12 @@ export const HistoricoClient = () => {
               onYearChange={setSelectedYear}
             />
           )}
-          <Button onClick={handleAddClick}>
-            <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
-            Adicionar Registro
-          </Button>
+          {isAuthenticated && (
+            <Button onClick={handleAddClick}>
+              <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
+              Adicionar Registro
+            </Button>
+          )}
         </div>
 
         <Suspense fallback={<TimelineSkeleton />}>

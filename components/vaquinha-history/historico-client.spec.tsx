@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Mock, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
+import { toast } from 'sonner';
 
 import { HistoricoClient } from './historico-client';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
@@ -190,6 +191,15 @@ vi.mock('react-spinners/BounceLoader', () => ({
   default: ({ color }: { color: string }) => <div>{`loader-${color}`}</div>,
 }));
 
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    dismiss: vi.fn(),
+  },
+}));
+
 describe('HistoricoClient', () => {
   const participants = [
     { id: 1, name: 'Maria' },
@@ -227,11 +237,15 @@ describe('HistoricoClient', () => {
 
   const addMutation = { mutateAsync: vi.fn(), isPending: false };
   const updateMutation = { mutateAsync: vi.fn(), isPending: false };
-  const deleteMutation = { mutateAsync: vi.fn(), isPending: false };
+  const deleteMutation = {
+    mutate: vi.fn(),
+    mutateAsync: vi.fn(),
+    isPending: false,
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseUserVerification.mockReturnValue({ isLoading: false });
+    mockUseUserVerification.mockReturnValue({ isLoading: false, user: true });
     mockUseGetAllParticipants.mockReturnValue({
       data: participants,
       isLoading: false,
@@ -375,9 +389,11 @@ describe('HistoricoClient', () => {
     await userEvent.click(screen.getByText('Adicionar Registro'));
     await userEvent.click(screen.getByText('Salvar'));
 
-    expect(
-      await screen.findByText('Erro ao salvar registro. Tente novamente.')
-    ).toBeInTheDocument();
+    await vi.waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'Erro ao adicionar registro. Tente novamente.'
+      );
+    });
   });
 
   it('should delete item when confirm is accepted', async () => {
@@ -385,6 +401,14 @@ describe('HistoricoClient', () => {
 
     await userEvent.click(screen.getByText('Excluir'));
 
-    expect(deleteMutation.mutateAsync).toHaveBeenCalledWith('1');
+    const warningCall = (toast.warning as unknown as Mock).mock.calls[0];
+    const options = warningCall[1] as { action: { onClick: () => void } };
+
+    options.action.onClick();
+
+    expect(deleteMutation.mutate).toHaveBeenCalledWith(
+      '1',
+      expect.objectContaining({})
+    );
   });
 });
