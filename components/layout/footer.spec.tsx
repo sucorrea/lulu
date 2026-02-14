@@ -7,12 +7,20 @@ vi.mock('next/link', () => ({
     href,
     children,
     className,
+    ...rest
   }: {
     href: string;
     children: React.ReactNode;
     className?: string;
+    'aria-label'?: string;
+    title?: string;
   }) => (
-    <a href={href} className={className} data-testid={`link-${href}`}>
+    <a
+      href={href}
+      className={className}
+      data-testid={`link-${href}`}
+      {...rest}
+    >
       {children}
     </a>
   ),
@@ -54,7 +62,8 @@ describe('Footer', () => {
 
     const participantesLink = screen.getByTestId('link-/');
     expect(participantesLink).toBeInTheDocument();
-    expect(screen.getByText('Participantes')).toBeInTheDocument();
+    expect(participantesLink).toHaveAttribute('aria-label', 'Participantes');
+    expect(screen.getByText('Particip.')).toBeInTheDocument();
   });
 
   it('should render dashboard link', () => {
@@ -191,11 +200,12 @@ describe('Footer', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
-    expect(screen.getByText('Participantes')).toBeInTheDocument();
+    expect(screen.getByText('Particip.')).toBeInTheDocument();
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Galeria')).toBeInTheDocument();
     expect(screen.getByText('Auditoria')).toBeInTheDocument();
     expect(screen.getByText('Histórico')).toBeInTheDocument();
+    expect(screen.getByText('Sobre')).toBeInTheDocument();
   });
 
   it('should have consistent padding and border styling', () => {

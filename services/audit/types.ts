@@ -43,7 +43,7 @@ export type TrackedPersonFields = {
   instagram?: string;
   pix_key?: string;
   pix_key_type?: string;
-  gives_to_id?: number;
+  receives_to_id?: number;
   picture?: string;
   photoURL?: string;
 };

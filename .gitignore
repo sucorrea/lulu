@@ -27,6 +27,7 @@ coverage-report/
 # misc
 .DS_Store
 *.pem
+package-lock.json
 
 # debug
 npm-debug.log*
@@ -59,3 +60,8 @@ components\lulus\mockdata.ts
 .github/skills/*
 docs-ai/*
 .playwright-mcp/*
+.scannerwork/*
+
+# Scripts e backups
+backups/
+serviceAccountKey.json

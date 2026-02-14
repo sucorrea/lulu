@@ -82,8 +82,7 @@ describe('LulusInteractive', () => {
       fullName: 'Maria Silva Santos',
       date: '1990-03-15',
       month: 'Março',
-      gives_to: 'João',
-      gives_to_id: 2,
+      receives_to_id: 2,
       city: 'São Paulo',
       email: 'maria@example.com',
     },
@@ -93,8 +92,7 @@ describe('LulusInteractive', () => {
       fullName: 'João Santos Oliveira',
       date: '1988-07-20',
       month: 'Julho',
-      gives_to: 'Maria',
-      gives_to_id: 1,
+      receives_to_id: 1,
       city: 'Rio de Janeiro',
       phone: '11999999999',
     },
@@ -104,8 +102,7 @@ describe('LulusInteractive', () => {
       fullName: 'Ana Costa Lima',
       date: '1992-01-10',
       month: 'Janeiro',
-      gives_to: '',
-      gives_to_id: 0,
+      receives_to_id: 0,
       city: 'Brasília',
     },
   ];
@@ -162,7 +159,7 @@ describe('LulusInteractive', () => {
       expect(screen.getByText(/2 Participantes/)).toBeInTheDocument();
     });
 
-    it('should exclude participants with gives_to_id === 0 from count', () => {
+    it('should exclude participants with receives_to_id === 0 from count', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
       const badge = screen.getByText(/Participantes/);
       expect(badge.textContent).toBe('2 Participantes');
@@ -185,7 +182,7 @@ describe('LulusInteractive', () => {
         {
           ...mockParticipants[0],
           date: nextMonth.toISOString().split('T')[0],
-          gives_to_id: 1,
+          receives_to_id: 1,
         },
       ];
 

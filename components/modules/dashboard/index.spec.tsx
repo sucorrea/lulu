@@ -152,8 +152,7 @@ describe('DashboardPage', () => {
       fullName: 'Alice Johnson',
       date: '1990-01-15',
       month: '01',
-      gives_to: 'Bob',
-      gives_to_id: 2,
+      receives_to_id: 2,
       city: 'São Paulo',
     },
     {
@@ -162,8 +161,7 @@ describe('DashboardPage', () => {
       fullName: 'Bob Smith',
       date: '1992-03-20',
       month: '03',
-      gives_to: 'Alice',
-      gives_to_id: 1,
+      receives_to_id: 1,
       city: 'Rio de Janeiro',
     },
   ];

@@ -15,14 +15,14 @@ const ResponsableGift = ({
   participants,
 }: ResponsableGiftProps) => {
   const responsable = useMemo(
-    () => getGivesToPicture(participant.gives_to_id, participants),
-    [participant.gives_to_id, participants]
+    () => getGivesToPicture(participant.receives_to_id, participants),
+    [participant.receives_to_id, participants]
   );
 
   return (
     <div className="bg-muted flex items-center justify-center  border-2 p-2 rounded-lg ">
       <div className="flex  gap-3">
-        {participant.gives_to_id === 0 ? (
+        {participant.receives_to_id === 0 ? (
           <div>
             <p className="text-primary text-sm">
               Lulu não participa da vaquinha esse ano

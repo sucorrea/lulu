@@ -34,7 +34,7 @@ const mockParticipant = {
   id: 1,
   name: 'John Doe',
   date: '1990-01-15',
-  gives_to_id: 2,
+  receives_to_id: 2,
   photoURL: 'https://example.com/photo.jpg',
   email: 'john@example.com',
   phone: '1234567890',
@@ -49,7 +49,7 @@ const mockParticipants = [
     id: 2,
     name: 'Jane Smith',
     date: '1992-06-20',
-    gives_to_id: 1,
+    receives_to_id: 1,
     photoURL: 'https://example.com/photo2.jpg',
     email: null,
     phone: null,
@@ -61,7 +61,7 @@ const mockParticipants = [
     id: 3,
     name: 'Bob Johnson',
     date: '1985-03-10',
-    gives_to_id: 0,
+    receives_to_id: 0,
     photoURL: null,
     email: null,
     phone: null,
@@ -76,9 +76,9 @@ describe('ResponsableGift', () => {
     vi.clearAllMocks();
   });
 
-  describe('No Participation (gives_to_id === 0)', () => {
-    it('should render no participation message when gives_to_id is 0', () => {
-      const participantNoGift = { ...mockParticipant, gives_to_id: 0 };
+  describe('No Participation (receives_to_id === 0)', () => {
+    it('should render no participation message when receives_to_id is 0', () => {
+      const participantNoGift = { ...mockParticipant, receives_to_id: 0 };
       render(
         <ResponsableGift
           participant={participantNoGift}
@@ -91,8 +91,8 @@ describe('ResponsableGift', () => {
       ).toBeInTheDocument();
     });
 
-    it('should not render avatar when gives_to_id is 0', () => {
-      const participantNoGift = { ...mockParticipant, gives_to_id: 0 };
+    it('should not render avatar when receives_to_id is 0', () => {
+      const participantNoGift = { ...mockParticipant, receives_to_id: 0 };
       render(
         <ResponsableGift
           participant={participantNoGift}
@@ -103,8 +103,8 @@ describe('ResponsableGift', () => {
       expect(screen.queryByTestId('avatar')).not.toBeInTheDocument();
     });
 
-    it('should render skull emoji when gives_to_id is 0', () => {
-      const participantNoGift = { ...mockParticipant, gives_to_id: 0 };
+    it('should render skull emoji when receives_to_id is 0', () => {
+      const participantNoGift = { ...mockParticipant, receives_to_id: 0 };
       render(
         <ResponsableGift
           participant={participantNoGift}
@@ -116,7 +116,7 @@ describe('ResponsableGift', () => {
     });
 
     it('should apply correct text styling for no participation message', () => {
-      const participantNoGift = { ...mockParticipant, gives_to_id: 0 };
+      const participantNoGift = { ...mockParticipant, receives_to_id: 0 };
       const { container } = render(
         <ResponsableGift
           participant={participantNoGift}
@@ -130,8 +130,8 @@ describe('ResponsableGift', () => {
     });
   });
 
-  describe('Participation (gives_to_id > 0)', () => {
-    it('should render avatar when gives_to_id is greater than 0', () => {
+  describe('Participation (receives_to_id > 0)', () => {
+    it('should render avatar when receives_to_id is greater than 0', () => {
       render(
         <ResponsableGift
           participant={mockParticipant}
@@ -154,7 +154,10 @@ describe('ResponsableGift', () => {
     });
 
     it('should render avatar fallback when givesTo participant has no photo', () => {
-      const participantGivesToNoPhoto = { ...mockParticipant, gives_to_id: 3 };
+      const participantGivesToNoPhoto = {
+        ...mockParticipant,
+        receives_to_id: 3,
+      };
       render(
         <ResponsableGift
           participant={participantGivesToNoPhoto}
@@ -213,7 +216,10 @@ describe('ResponsableGift', () => {
     });
 
     it('should render fallback with first letter of name', () => {
-      const participantGivesToNoPhoto = { ...mockParticipant, gives_to_id: 3 };
+      const participantGivesToNoPhoto = {
+        ...mockParticipant,
+        receives_to_id: 3,
+      };
       render(
         <ResponsableGift
           participant={participantGivesToNoPhoto}
@@ -231,7 +237,7 @@ describe('ResponsableGift', () => {
           id: 4,
           name: '',
           date: '1990-01-01',
-          gives_to_id: 0,
+          receives_to_id: 0,
           photoURL: null,
           email: null,
           phone: null,
@@ -240,7 +246,7 @@ describe('ResponsableGift', () => {
           pix_key_type: null,
         },
       ] as unknown as Person[];
-      const participantGivesToEmpty = { ...mockParticipant, gives_to_id: 4 };
+      const participantGivesToEmpty = { ...mockParticipant, receives_to_id: 4 };
       render(
         <ResponsableGift
           participant={participantGivesToEmpty}
@@ -258,7 +264,7 @@ describe('ResponsableGift', () => {
           id: 4,
           name: null,
           date: '1990-01-01',
-          gives_to_id: 0,
+          receives_to_id: 0,
           photoURL: null,
           email: null,
           phone: null,
@@ -267,7 +273,7 @@ describe('ResponsableGift', () => {
           pix_key_type: null,
         },
       ] as unknown as Person[];
-      const participantGivesToNull = { ...mockParticipant, gives_to_id: 4 };
+      const participantGivesToNull = { ...mockParticipant, receives_to_id: 4 };
       render(
         <ResponsableGift
           participant={participantGivesToNull}
@@ -292,7 +298,10 @@ describe('ResponsableGift', () => {
     });
 
     it('should handle case when givesTo participant is not found', () => {
-      const participantWithInvalidId = { ...mockParticipant, gives_to_id: 999 };
+      const participantWithInvalidId = {
+        ...mockParticipant,
+        receives_to_id: 999,
+      };
       render(
         <ResponsableGift
           participant={participantWithInvalidId}
@@ -313,7 +322,7 @@ describe('ResponsableGift', () => {
 
       expect(screen.getByText('Jane Smith')).toBeInTheDocument();
 
-      const newParticipant = { ...mockParticipant, gives_to_id: 3 };
+      const newParticipant = { ...mockParticipant, receives_to_id: 3 };
       rerender(
         <ResponsableGift
           participant={newParticipant}
@@ -340,7 +349,7 @@ describe('ResponsableGift', () => {
           id: 2,
           name: 'Updated Name',
           date: '1992-06-20',
-          gives_to_id: 1,
+          receives_to_id: 1,
           photoURL: null,
           email: null,
           phone: null,
@@ -370,10 +379,10 @@ describe('ResponsableGift', () => {
       expect(screen.getByTestId('avatar')).toBeInTheDocument();
     });
 
-    it('should handle participant with null gives_to_id', () => {
+    it('should handle participant with null receives_to_id', () => {
       const participantNullGivesTo = {
         ...mockParticipant,
-        gives_to_id: null as unknown as number,
+        receives_to_id: null as unknown as number,
       };
       render(
         <ResponsableGift
@@ -385,10 +394,10 @@ describe('ResponsableGift', () => {
       expect(screen.getByTestId('avatar')).toBeInTheDocument();
     });
 
-    it('should handle participant with undefined gives_to_id', () => {
+    it('should handle participant with undefined receives_to_id', () => {
       const participantUndefinedGivesTo = {
         ...mockParticipant,
-        gives_to_id: undefined as unknown as number,
+        receives_to_id: undefined as unknown as number,
       };
       render(
         <ResponsableGift
@@ -400,8 +409,8 @@ describe('ResponsableGift', () => {
       expect(screen.getByTestId('avatar')).toBeInTheDocument();
     });
 
-    it('should handle negative gives_to_id', () => {
-      const participantNegativeId = { ...mockParticipant, gives_to_id: -1 };
+    it('should handle negative receives_to_id', () => {
+      const participantNegativeId = { ...mockParticipant, receives_to_id: -1 };
       render(
         <ResponsableGift
           participant={participantNegativeId}
@@ -419,7 +428,7 @@ describe('ResponsableGift', () => {
           id: 2,
           name: 'A'.repeat(100),
           date: '1992-06-20',
-          gives_to_id: 1,
+          receives_to_id: 1,
           photoURL: null,
           email: null,
           phone: null,
@@ -446,7 +455,7 @@ describe('ResponsableGift', () => {
           id: 2,
           name: "João D'Silva",
           date: '1992-06-20',
-          gives_to_id: 1,
+          receives_to_id: 1,
           photoURL: null,
           email: null,
           phone: null,

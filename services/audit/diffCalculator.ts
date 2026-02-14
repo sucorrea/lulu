@@ -1,7 +1,7 @@
 import { Person } from '@/components/lulus/types';
 import { AuditFieldChange, TrackedPersonFields } from './types';
 
-const EXCLUDED_FIELDS = new Set(['id', 'month', 'gives_to', 'photoUpdatedAt']);
+const EXCLUDED_FIELDS = new Set(['id', 'month', 'photoUpdatedAt']);
 
 const TRACKED_FIELDS: Set<keyof TrackedPersonFields> = new Set([
   'name',
@@ -13,7 +13,7 @@ const TRACKED_FIELDS: Set<keyof TrackedPersonFields> = new Set([
   'instagram',
   'pix_key',
   'pix_key_type',
-  'gives_to_id',
+  'receives_to_id',
   'picture',
   'photoURL',
 ]);
@@ -121,7 +121,9 @@ const valueToString = (value: unknown): string => {
   if (typeof value === 'object') {
     return JSON.stringify(value);
   }
-  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+  return typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
     ? String(value)
     : JSON.stringify(value);
 };

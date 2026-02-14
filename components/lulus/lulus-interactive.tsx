@@ -36,7 +36,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const participantsList = participants;
 
   const totalParticipants = useMemo(
-    () => participantsList.filter((p) => p.gives_to_id !== 0).length,
+    () => participantsList.filter((p) => p.receives_to_id !== 0).length,
     [participantsList]
   );
 

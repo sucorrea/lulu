@@ -4,8 +4,7 @@ export interface Person {
   name: string;
   date: Date | string;
   month: string;
-  gives_to: string;
-  gives_to_id: number;
+  receives_to_id: number;
   email?: string;
   phone?: string;
   picture?: string;

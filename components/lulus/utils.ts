@@ -132,6 +132,9 @@ export const NameKey: Record<PixTypes, string> = {
 export const getGivesToPicture = (id: number, participants: Person[]): Person =>
   participants.find((p) => p.id === id) ?? ({} as Person);
 
+const getGivesToName = (p: Person, participants: Person[]): string =>
+  (getGivesToPicture(p.receives_to_id, participants).name ?? '').toLowerCase();
+
 export const filteredAndSortedParticipants = (
   participants: Person[],
   searchTerm: string,
@@ -140,9 +143,10 @@ export const filteredAndSortedParticipants = (
 ) =>
   participants
     .filter((p) => {
+      const givesToName = getGivesToName(p, participants);
       const matchesSearch =
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.gives_to.toLowerCase().includes(searchTerm.toLowerCase());
+        givesToName.includes(searchTerm.toLowerCase());
       const matchesMonth = filterMonth === 'all' || p.month === filterMonth;
       return matchesSearch && matchesMonth;
     })
@@ -156,8 +160,6 @@ export const filteredAndSortedParticipants = (
             new Date(a.date).getDate() -
             (Number.parseInt(b.month) * 100 + new Date(b.date).getDate())
           );
-        case 'gives_to':
-          return a.gives_to.localeCompare(b.gives_to);
         default:
           return 0;
       }

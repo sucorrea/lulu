@@ -31,7 +31,8 @@ vi.mock('qrcode.react', () => ({
     style: React.CSSProperties;
     onClick: () => void;
   }) => (
-    <div
+    <button
+      type="button"
       data-testid="qrcode-canvas"
       data-value={value}
       data-size={size}
@@ -83,8 +84,7 @@ describe('PixQRCode', () => {
     fullName: 'Alice Johnson',
     date: '1990-01-15',
     month: '01',
-    gives_to: 'Bob',
-    gives_to_id: 2,
+    receives_to_id: 2,
     city: 'São Paulo',
     pix_key: '123.456.789-00',
     pix_key_type: 'cpf',
@@ -103,7 +103,7 @@ describe('PixQRCode', () => {
         writeText: vi.fn().mockResolvedValue(undefined),
       },
     });
-    global.alert = vi.fn();
+    globalThis.alert = vi.fn();
   });
 
   it('should render toggle button with closed state text', () => {
@@ -188,8 +188,7 @@ describe('PixQRCode - Open State', () => {
     fullName: 'Alice Johnson',
     date: '1990-01-15',
     month: '01',
-    gives_to: 'Bob',
-    gives_to_id: 2,
+    receives_to_id: 2,
     city: 'São Paulo',
     pix_key: '123.456.789-00',
     pix_key_type: 'cpf',
@@ -208,7 +207,7 @@ describe('PixQRCode - Open State', () => {
         writeText: vi.fn().mockResolvedValue(undefined),
       },
     });
-    global.alert = vi.fn();
+    globalThis.alert = vi.fn();
   });
 
   it('should render QR code when open', () => {

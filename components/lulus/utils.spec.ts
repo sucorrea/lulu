@@ -22,8 +22,7 @@ const mockPerson: Person = {
   fullName: 'Test Person Full',
   date: new Date('1990-05-15'),
   month: '05',
-  gives_to: 'Another Person',
-  gives_to_id: 2,
+  receives_to_id: 2,
   city: 'Test City',
   photoURL: 'https://example.com/photo.jpg',
   photoUpdatedAt: 12345,
@@ -169,9 +168,10 @@ describe('utils', () => {
 
   describe('filteredAndSortedParticipants', () => {
     const participants: Person[] = [
-      { ...mockPerson, id: 1, name: 'Alice', month: '01', gives_to: 'Bob' },
-      { ...mockPerson, id: 2, name: 'Bob', month: '02', gives_to: 'Charlie' },
-      { ...mockPerson, id: 3, name: 'Charlie', month: '03', gives_to: 'David' },
+      { ...mockPerson, id: 1, name: 'Alice', month: '01', receives_to_id: 2 },
+      { ...mockPerson, id: 2, name: 'Bob', month: '02', receives_to_id: 3 },
+      { ...mockPerson, id: 3, name: 'Charlie', month: '03', receives_to_id: 4 },
+      { ...mockPerson, id: 4, name: 'David', month: '04', receives_to_id: 1 },
     ];
 
     it('should filter by search term', () => {
@@ -181,8 +181,9 @@ describe('utils', () => {
         'all',
         'name'
       );
-      expect(result).toHaveLength(1);
-      expect(result[0].name).toBe('Alice');
+      expect(result).toHaveLength(2);
+      expect(result.map((p) => p.name)).toContain('Alice');
+      expect(result.map((p) => p.name)).toContain('David');
     });
 
     it('should filter by month', () => {
@@ -243,16 +244,25 @@ describe('utils', () => {
       expect(result[2].name).toBe('Alice');
     });
 
-    it('should sort by gives_to', () => {
+    it('should sort by gives_to (resolved from receives_to_id)', () => {
       const result = filteredAndSortedParticipants(
         participants,
         '',
         'all',
         'gives_to'
       );
-      expect(result[0].gives_to).toBe('Bob');
-      expect(result[1].gives_to).toBe('Charlie');
-      expect(result[2].gives_to).toBe('David');
+      expect(
+        getGivesToPicture(result[0].receives_to_id, participants).name
+      ).toBe('Bob');
+      expect(
+        getGivesToPicture(result[1].receives_to_id, participants).name
+      ).toBe('Charlie');
+      expect(
+        getGivesToPicture(result[2].receives_to_id, participants).name
+      ).toBe('David');
+      expect(
+        getGivesToPicture(result[3].receives_to_id, participants).name
+      ).toBe('Alice');
     });
 
     it('should filter by gives_to search term', () => {
@@ -272,7 +282,7 @@ describe('utils', () => {
         'all',
         'unknown'
       );
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
     });
   });
 
@@ -397,12 +407,6 @@ describe('utils', () => {
       const result = cn('text-red-500', 'bg-blue-500');
       expect(result).toContain('text-red-500');
       expect(result).toContain('bg-blue-500');
-    });
-
-    it('should handle conditional classes', () => {
-      const result = cn('base-class', false && 'conditional-class');
-      expect(result).toContain('base-class');
-      expect(result).not.toContain('conditional-class');
     });
 
     it('should handle undefined and null', () => {

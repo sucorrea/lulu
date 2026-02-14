@@ -89,7 +89,7 @@ describe('diffCalculator', () => {
       expect(instagramChange?.newValue).toBeNull();
     });
 
-    it('should ignore excluded fields (id, month, gives_to, photoUpdatedAt)', () => {
+    it('should ignore excluded fields (id, month, photoUpdatedAt)', () => {
       const newData: Partial<Person> = {
         ...basePerson,
         id: 999,
@@ -176,21 +176,21 @@ describe('diffCalculator', () => {
       expect(dateChange?.oldValue).not.toBe(dateChange?.newValue);
     });
 
-    it('should handle number field changes (gives_to_id)', () => {
+    it('should handle number field changes (receives_to_id)', () => {
       const oldData: Partial<Person> = {
         ...basePerson,
-        gives_to_id: 1,
+        receives_to_id: 1,
       };
       const newData: Partial<Person> = {
         ...basePerson,
-        gives_to_id: 2,
+        receives_to_id: 2,
       };
 
       const changes = calculateDiff(oldData, newData);
 
-      const giftChange = changes.find((c) => c.field === 'gives_to_id');
+      const giftChange = changes.find((c) => c.field === 'receives_to_id');
       expect(giftChange).toEqual({
-        field: 'gives_to_id',
+        field: 'receives_to_id',
         oldValue: 1,
         newValue: 2,
         fieldType: 'number',
@@ -224,7 +224,7 @@ describe('diffCalculator', () => {
         pix_key: '12345678900',
         pix_key_type: 'cpf',
         city: 'São Paulo',
-        gives_to_id: 1,
+        receives_to_id: 1,
         fullName: 'João Silva Santos',
       };
 
@@ -236,7 +236,7 @@ describe('diffCalculator', () => {
         pix_key: '12345678900',
         pix_key_type: 'cpf',
         city: 'Rio de Janeiro',
-        gives_to_id: 2,
+        receives_to_id: 2,
         fullName: 'João Silva Santos Jr',
       };
 
@@ -246,7 +246,7 @@ describe('diffCalculator', () => {
       expect(changes.some((c) => c.field === 'name')).toBe(true);
       expect(changes.some((c) => c.field === 'email')).toBe(true);
       expect(changes.some((c) => c.field === 'city')).toBe(true);
-      expect(changes.some((c) => c.field === 'gives_to_id')).toBe(true);
+      expect(changes.some((c) => c.field === 'receives_to_id')).toBe(true);
       expect(changes.some((c) => c.field === 'fullName')).toBe(true);
       expect(changes.some((c) => c.field === 'phone')).toBe(false);
       expect(changes.some((c) => c.field === 'instagram')).toBe(false);
@@ -303,7 +303,7 @@ describe('diffCalculator', () => {
         instagram: 'joaosilva',
         pix_key: '12345678900',
         pix_key_type: 'cpf',
-        gives_to_id: 2,
+        receives_to_id: 2,
         picture: 'https://example.com/photo.jpg',
         photoURL: 'https://example.com/photo.jpg',
       };
@@ -326,7 +326,7 @@ describe('diffCalculator', () => {
 
       expect(changes.some((c) => c.field === 'name')).toBe(false);
       expect(changes.some((c) => c.field === 'city')).toBe(false);
-      expect(changes.some((c) => c.field === 'gives_to_id')).toBe(false);
+      expect(changes.some((c) => c.field === 'receives_to_id')).toBe(false);
       expect(changes.some((c) => c.field === 'picture')).toBe(false);
       expect(changes.some((c) => c.field === 'photoURL')).toBe(false);
     });

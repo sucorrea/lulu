@@ -20,8 +20,7 @@ describe('Lulus', () => {
       fullName: 'Test Person 1 Full',
       date: new Date('1990-01-15'),
       month: '01',
-      gives_to: 'Person 2',
-      gives_to_id: 2,
+      receives_to_id: 2,
       city: 'Test City',
     },
     {
@@ -30,8 +29,7 @@ describe('Lulus', () => {
       fullName: 'Test Person 2 Full',
       date: new Date('1990-02-20'),
       month: '02',
-      gives_to: 'Person 1',
-      gives_to_id: 1,
+      receives_to_id: 1,
       city: 'Test City',
     },
   ];

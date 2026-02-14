@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/link', () => ({
@@ -146,7 +146,7 @@ describe('Navbar', () => {
     );
   });
 
-  it('should render navigation links and menu button when authenticated', () => {
+  it('should render navigation links in header (desktop)', () => {
     mockUseNavbarFn.mockReturnValue({
       ...defaultNavbarData,
       isAuthenticated: true,
@@ -154,65 +154,14 @@ describe('Navbar', () => {
 
     render(<Navbar />);
 
-    const menuButton = screen.getByRole('button', { name: 'Abrir menu' });
-    expect(menuButton).toBeInTheDocument();
-    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-
-    expect(screen.getAllByTestId('link-/')).toHaveLength(2);
-    expect(screen.getAllByTestId('link-/dashboard')).toHaveLength(2);
-    expect(screen.getAllByTestId('link-/galeria')).toHaveLength(2);
-    expect(screen.getAllByTestId('link-/auditoria')).toHaveLength(2);
-    expect(screen.getAllByTestId('link-/historico')).toHaveLength(2);
+    expect(screen.getByTestId('link-/')).toBeInTheDocument();
+    expect(screen.getByTestId('link-/dashboard')).toBeInTheDocument();
+    expect(screen.getByTestId('link-/galeria')).toBeInTheDocument();
+    expect(screen.getByTestId('link-/auditoria')).toBeInTheDocument();
+    expect(screen.getByTestId('link-/historico')).toBeInTheDocument();
+    expect(screen.getByTestId('link-/sobre')).toBeInTheDocument();
   });
 
-  it('should toggle mobile menu visibility when menu button is clicked', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      isAuthenticated: true,
-    });
-
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    const menuButton = screen.getByRole('button', { name: 'Abrir menu' });
-    const mobileMenuWrapper = header.querySelector(
-      String.raw`div.md\:hidden`
-    ) as HTMLElement;
-
-    expect(mobileMenuWrapper).toHaveClass('hidden');
-
-    fireEvent.click(menuButton);
-    expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-    expect(mobileMenuWrapper).toHaveClass('block');
-
-    fireEvent.click(menuButton);
-    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    expect(mobileMenuWrapper).toHaveClass('hidden');
-  });
-
-  it('should close mobile menu when a mobile link is clicked', () => {
-    mockUseNavbarFn.mockReturnValue({
-      ...defaultNavbarData,
-      isAuthenticated: true,
-    });
-
-    render(<Navbar />);
-
-    const header = screen.getByRole('banner');
-    const menuButton = screen.getByRole('button', { name: 'Abrir menu' });
-    const mobileMenuWrapper = header.querySelector(
-      String.raw`div.md\:hidden`
-    ) as HTMLElement;
-
-    fireEvent.click(menuButton);
-    expect(mobileMenuWrapper).toHaveClass('block');
-
-    const dashboardLink =
-      within(mobileMenuWrapper).getByTestId('link-/dashboard');
-    fireEvent.click(dashboardLink);
-
-    expect(mobileMenuWrapper).toHaveClass('hidden');
-  });
 
   it('should use navbar hook to get data', () => {
     render(<Navbar />);

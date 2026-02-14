@@ -52,8 +52,7 @@ describe('WhatsappInfo', () => {
     fullName: 'Alice Johnson',
     date: '1990-01-15',
     month: '01',
-    gives_to: 'Bob',
-    gives_to_id: 2,
+    receives_to_id: 2,
     city: 'São Paulo',
     phone: '11999999999',
   };

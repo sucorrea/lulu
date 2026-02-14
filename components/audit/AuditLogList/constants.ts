@@ -8,7 +8,7 @@ export const FIELD_LABELS: Record<string, string> = {
   instagram: 'Instagram',
   pix_key: 'Chave PIX',
   pix_key_type: 'Tipo de Chave PIX',
-  gives_to_id: 'Presenteia',
+  receives_to_id: 'Presenteia',
   picture: 'Foto',
   photoURL: 'URL da Foto',
 } as const;

@@ -34,8 +34,7 @@ describe('PixInfo', () => {
     fullName: 'Alice Johnson',
     date: '1990-01-15',
     month: '01',
-    gives_to: 'Bob',
-    gives_to_id: 2,
+    receives_to_id: 2,
     city: 'São Paulo',
     pix_key: '123.456.789-00',
     pix_key_type: 'cpf',
@@ -49,7 +48,7 @@ describe('PixInfo', () => {
         writeText: vi.fn().mockResolvedValue(undefined),
       },
     });
-    global.alert = vi.fn();
+    globalThis.alert = vi.fn();
   });
 
   it('should render pix icon', () => {
@@ -90,7 +89,9 @@ describe('PixInfo', () => {
     const button = screen.getByRole('button');
     fireEvent.click(button);
 
-    expect(global.alert).toHaveBeenCalledWith('QRCode copiado com sucesso!');
+    expect(globalThis.alert).toHaveBeenCalledWith(
+      'QRCode copiado com sucesso!'
+    );
   });
 
   it('should not show alert on mobile when copying', () => {
@@ -100,7 +101,7 @@ describe('PixInfo', () => {
     const button = screen.getByRole('button');
     fireEvent.click(button);
 
-    expect(global.alert).not.toHaveBeenCalled();
+    expect(globalThis.alert).not.toHaveBeenCalled();
   });
 
   it('should render with email pix key type', () => {
