@@ -15,12 +15,7 @@ vi.mock('next/link', () => ({
     'aria-label'?: string;
     title?: string;
   }) => (
-    <a
-      href={href}
-      className={className}
-      data-testid={`link-${href}`}
-      {...rest}
-    >
+    <a href={href} className={className} data-testid={`link-${href}`} {...rest}>
       {children}
     </a>
   ),
@@ -173,7 +168,12 @@ describe('Footer', () => {
 
     const footer = screen.getByRole('contentinfo');
     const container = footer.querySelector('.container');
-    expect(container).toHaveClass('flex', 'justify-around', 'gap-0', 'sm:gap-2');
+    expect(container).toHaveClass(
+      'flex',
+      'justify-around',
+      'gap-0',
+      'sm:gap-2'
+    );
   });
 
   it('should have each link with flex column layout and center alignment', () => {

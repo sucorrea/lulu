@@ -66,6 +66,42 @@ export const AuditPage = () => {
     return participant?.fullName || participant?.name || 'Participante';
   };
 
+  if (!isMounted) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="mb-8">
+          <h1 className="lulu-header text-2xl md:text-3xl">
+            Histórico de Auditoria
+          </h1>
+          <p className="text-muted-foreground">
+            Visualize todas as alterações realizadas nos dados dos participantes
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {Array.from({ length: 3 }, (_, i) => `filter-skeleton-${i}`).map(
+              (id) => (
+                <div key={id} className="h-10 bg-muted rounded animate-pulse" />
+              )
+            )}
+          </div>
+
+          <div className="space-y-4">
+            {Array.from({ length: 5 }, (_, i) => `log-skeleton-${i}`).map(
+              (id) => (
+                <div
+                  key={id}
+                  className="h-24 bg-muted rounded-xl border border-border animate-pulse"
+                />
+              )
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="mb-8">

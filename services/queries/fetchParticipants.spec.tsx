@@ -37,7 +37,7 @@ vi.mock('firebase/storage', () => ({
   listAll: (ref: unknown) => mockListAll(ref),
 }));
 
-function createWrapper(options?: { retry?: number | false }) {
+const createWrapper = (options?: { retry?: number | false }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -50,7 +50,7 @@ function createWrapper(options?: { retry?: number | false }) {
   );
   Wrapper.displayName = 'TestWrapper';
   return Wrapper;
-}
+};
 
 describe('fetchParticipants', () => {
   beforeEach(() => {

@@ -19,7 +19,7 @@ const showUpdateToast = (worker: ServiceWorker) => {
   });
 };
 
-export function usePwaUpdate() {
+export const usePwaUpdate = () => {
   useEffect(() => {
     const isServiceWorkerUnavailable =
       globalThis.window === undefined ||
@@ -54,7 +54,8 @@ export function usePwaUpdate() {
         return undefined;
       }
 
-      const stateChangeListener = () => handleStateChange(newWorker, isCancelled);
+      const stateChangeListener = () =>
+        handleStateChange(newWorker, isCancelled);
       newWorker.addEventListener('statechange', stateChangeListener);
 
       return () =>
@@ -120,4 +121,4 @@ export function usePwaUpdate() {
       cleanup?.();
     };
   }, []);
-}
+};

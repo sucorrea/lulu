@@ -75,47 +75,58 @@ vi.mock('./photo-item', () => ({
     </div>
   ),
 }));
-vi.mock('./photo-modal', () => ({
+vi.mock('@/components/dialog/dialog', () => ({
+  GenericDialog: ({
+    open,
+    children,
+    onOpenChange,
+  }: {
+    open: boolean;
+    children: React.ReactNode;
+    onOpenChange: (open: boolean) => void;
+  }) =>
+    open ? (
+      <div data-testid="photo-modal">
+        <button onClick={() => onOpenChange(false)} data-testid="modal-close">
+          Close
+        </button>
+        {children}
+      </div>
+    ) : null,
+}));
+
+vi.mock('./comment-section', () => ({
   default: ({
-    isOpen,
-    onClose,
-    onPrev,
-    onNext,
-    onLike,
-    selectedIndex,
-    likes,
     comments,
     userId,
   }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onPrev: () => void;
-    onNext: () => void;
-    onLike: (idx: number) => void;
-    selectedIndex: number;
-    likes: number;
     comments: unknown[];
     userId: string | null;
-  }) =>
-    isOpen ? (
-      <div data-testid="photo-modal">
-        <button onClick={onClose} data-testid="modal-close">
-          Close
-        </button>
-        <button onClick={onPrev} data-testid="modal-prev">
-          Prev
-        </button>
-        <button onClick={onNext} data-testid="modal-next">
-          Next
-        </button>
-        <button onClick={() => onLike(selectedIndex)} data-testid="modal-like">
-          Like
-        </button>
-        <div data-testid="modal-likes">{likes}</div>
-        <div data-testid="modal-comments">{comments.length}</div>
-        <div data-testid="modal-user">{userId}</div>
-      </div>
-    ) : null,
+  }) => (
+    <div>
+      <div data-testid="modal-comments">{comments?.length ?? 0}</div>
+      <div data-testid="modal-user">{userId}</div>
+    </div>
+  ),
+}));
+
+vi.mock('./like-unlike-button', () => ({
+  default: ({
+    handleLike,
+    index,
+    likes,
+  }: {
+    handleLike: (idx: number) => void;
+    index: number;
+    likes: number;
+  }) => (
+    <div>
+      <button onClick={() => handleLike(index)} data-testid="modal-like">
+        Like
+      </button>
+      <div data-testid="modal-likes">{likes}</div>
+    </div>
+  ),
 }));
 vi.mock('./upload-photo-gallery', () => ({
   default: () => <div data-testid="upload-button">Upload</div>,
@@ -353,8 +364,9 @@ describe('GaleriaFotos', () => {
       await waitFor(() => {
         expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
       });
-
-      fireEvent.click(screen.getByTestId('modal-next'));
+      // The real component renders multiple navigation buttons (prev/next). We target the "Next" button.
+      const nextButton = screen.getByRole('button', { name: /Próxima foto/i });
+      fireEvent.click(nextButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
@@ -369,8 +381,9 @@ describe('GaleriaFotos', () => {
       await waitFor(() => {
         expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
       });
-
-      fireEvent.click(screen.getByTestId('modal-prev'));
+      // The real component renders multiple navigation buttons (prev/next). We target the "Previous" button.
+      const prevButton = screen.getByRole('button', { name: /Foto anterior/i });
+      fireEvent.click(prevButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
@@ -602,7 +615,7 @@ describe('GaleriaFotos', () => {
         expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
       });
 
-      fireEvent.click(screen.getByTestId('modal-next'));
+      fireEvent.click(screen.getByRole('button', { name: /Próxima foto/i }));
 
       await waitFor(() => {
         expect(screen.getByTestId('photo-modal')).toBeInTheDocument();

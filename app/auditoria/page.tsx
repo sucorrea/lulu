@@ -21,10 +21,11 @@ const AuditPageSkeleton = () => {
   );
 };
 
-export default function AuditPageRoute() {
+const AuditPageRoute = () => {
   return (
     <Suspense fallback={<AuditPageSkeleton />}>
       <AuditPage />
     </Suspense>
   );
-}
+};
+export default AuditPageRoute;

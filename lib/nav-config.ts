@@ -19,8 +19,8 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Participantes', shortLabel: 'Particip.', icon: Users },
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/galeria', label: 'Galeria', icon: Camera },
-  { href: '/auditoria', label: 'Auditoria', icon: FileText },
   { href: '/historico', label: 'Histórico', icon: History },
+  { href: '/auditoria', label: 'Auditoria', icon: FileText },
   { href: '/sobre', label: 'Sobre', icon: Info },
 ];
 

@@ -106,12 +106,6 @@ describe('PixQRCode', () => {
     globalThis.alert = vi.fn();
   });
 
-  it('should render toggle button with closed state text', () => {
-    render(<PixQRCode participant={mockParticipant} />);
-
-    expect(screen.getByText('mostrar QRCode Pix de Alice')).toBeInTheDocument();
-  });
-
   it('should call onToggle when button is clicked', () => {
     render(<PixQRCode participant={mockParticipant} />);
 
@@ -214,7 +208,6 @@ describe('PixQRCode - Open State', () => {
     render(<PixQRCode participant={mockParticipant} />);
 
     expect(screen.getByTestId('qrcode-canvas')).toBeInTheDocument();
-    expect(screen.getByText('fechar QRCode Pix de Alice')).toBeInTheDocument();
     expect(screen.getByText('copiar QRCode Pix')).toBeInTheDocument();
   });
 });

@@ -1,48 +1,42 @@
 'use client';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 
-import { ChevronLeft, ChevronRight, Download, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
-import type { GaleriaComment } from '@/services/galeriaComments';
+import { GenericDialog } from '@/components/dialog/dialog';
 import CommentSection from './comment-section';
 import LikeUnlikeButton from './like-unlike-button';
 import { downloadPhoto } from './utils';
+import { useGallery } from './gallery-context';
 
-interface PhotoModalProps {
-  isOpen: boolean;
-  selectedIndex: number;
-  totalPhotos: number;
-  photo: string;
-  liked: boolean;
-  likes: number;
-  comments: GaleriaComment[];
-  userId: string | null;
-  onClose: () => void;
-  onPrev: () => void;
-  onNext: () => void;
-  onLike: (index: number) => void;
-}
+const PhotoModal = memo(function PhotoModal() {
+  const {
+    selectedIndex,
+    selectedPhoto,
+    photos,
+    closePhoto,
+    nextPhoto,
+    prevPhoto,
+    toggleLike,
+    getPhotoStats,
+    getComments,
+    user,
+  } = useGallery();
 
-const PhotoModal = memo(function PhotoModal({
-  isOpen,
-  selectedIndex,
-  totalPhotos,
-  photo,
-  liked,
-  likes,
-  comments,
-  userId,
-  onClose,
-  onPrev,
-  onNext,
-  onLike,
-}: PhotoModalProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const isOpen = selectedIndex !== null && selectedPhoto !== null;
+  const photo = selectedPhoto ?? '';
+  const totalPhotos = photos.length;
+  const index = selectedIndex ?? 0;
+
+  const stats = getPhotoStats(index);
+  const comments = getComments(photo);
 
   const handleDownload = useCallback(() => {
-    downloadPhoto(photo);
+    if (photo) {
+      downloadPhoto(photo);
+    }
   }, [photo]);
 
   useEffect(() => {
@@ -52,110 +46,87 @@ const PhotoModal = memo(function PhotoModal({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
-        case 'Escape':
-          onClose();
-          break;
         case 'ArrowLeft':
           e.preventDefault();
-          onPrev();
+          prevPhoto();
           break;
         case 'ArrowRight':
           e.preventDefault();
-          onNext();
+          nextPhoto();
           break;
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, onPrev, onNext]);
-
-  useEffect(() => {
-    if (isOpen && dialogRef.current && !dialogRef.current.open) {
-      if (typeof dialogRef.current.showModal === 'function') {
-        dialogRef.current.showModal();
-      }
-    }
-  }, [isOpen]);
+  }, [isOpen, prevPhoto, nextPhoto]);
 
   if (!isOpen) {
     return null;
   }
 
   return (
-    <dialog
-      ref={dialogRef}
-      open
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center border-0 bg-black/80 px-4 [&::backdrop]:bg-black/80"
-      aria-label={`Visualização da foto ${selectedIndex + 1} de ${totalPhotos}`}
-      aria-modal="true"
-      onClose={onClose}
-      data-testid="photo-dialog"
+    <GenericDialog
+      open={isOpen}
+      onOpenChange={(open) => !open && closePhoto()}
+      title="Foto"
+      description={`${index + 1} de ${totalPhotos}`}
+      className="max-w-[100vw] h-full sm:h-auto sm:max-w-4xl bg-transparent border-none shadow-none p-4 flex flex-col items-center justify-center gap-4 [&>button]:text-white [&>button]:bg-black/20 [&>button]:hover:bg-black/40 [&>button]:rounded-full [&>button]:h-10 [&>button]:w-10 [&>button]:top-4 [&>button]:right-4"
     >
-      <div aria-live="polite" aria-atomic="true" className="sr-only">
-        Foto {selectedIndex + 1} de {totalPhotos}
-      </div>
-
-      <button
-        className="absolute right-4 top-4 text-2xl text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-black/80"
-        onClick={onClose}
-        aria-label="Fechar visualização"
-      >
-        <X aria-hidden="true" />
-      </button>
-
-      <div className="relative flex w-full max-w-md items-center justify-center">
-        <button
-          onClick={onPrev}
-          aria-label={`Foto anterior (${selectedIndex === 0 ? totalPhotos : selectedIndex} de ${totalPhotos})`}
-          className="absolute left-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          style={{ left: 8 }}
-        >
-          <ChevronLeft aria-hidden="true" />
-        </button>
-
-        <div className="flex flex-1 justify-center">
-          <Image
-            src={photo}
-            alt={`Foto ${selectedIndex + 1} de ${totalPhotos} na galeria`}
-            width={400}
-            height={400}
-            priority
-            className="object-contain rounded max-h-[60vh] max-w-full"
-          />
-        </div>
-
-        <button
-          onClick={onNext}
-          aria-label={`Próxima foto (${selectedIndex === totalPhotos - 1 ? 1 : selectedIndex + 2} de ${totalPhotos})`}
-          className="absolute right-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          style={{ right: 8 }}
-        >
-          <ChevronRight aria-hidden="true" />
-        </button>
-      </div>
-
-      <div className="mt-2 w-full max-w-md rounded-2xl border border-border bg-card p-4 shadow-lulu-md">
-        <div className="mb-2 flex justify-between gap-4">
-          <LikeUnlikeButton
-            handleLike={onLike}
-            liked={liked}
-            likes={likes}
-            index={selectedIndex}
-          />
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleDownload}
-            aria-label="Baixar foto"
+      <div className="relative flex w-full flex-col items-center justify-center gap-4">
+        <div className="relative flex w-full max-w-md items-center justify-center">
+          <button
+            onClick={prevPhoto}
+            aria-label={`Foto anterior (${index === 0 ? totalPhotos : index} de ${totalPhotos})`}
+            className="absolute left-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            style={{ left: -20 }}
           >
-            <Download className="h-4 w-4" aria-hidden="true" />
-          </Button>
+            <ChevronLeft aria-hidden="true" />
+          </button>
+
+          <div className="flex flex-1 justify-center">
+            <Image
+              src={photo}
+              alt={`Foto ${index + 1} de ${totalPhotos} na galeria`}
+              width={400}
+              height={400}
+              priority
+              className="object-contain rounded max-h-[60vh] max-w-full"
+            />
+          </div>
+
+          <button
+            onClick={nextPhoto}
+            aria-label={`Próxima foto (${index === totalPhotos - 1 ? 1 : index + 2} de ${totalPhotos})`}
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            style={{ right: -20 }}
+          >
+            <ChevronRight aria-hidden="true" />
+          </button>
         </div>
 
-        <CommentSection comments={comments} userId={userId} />
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-4 shadow-lulu-md">
+          <div className="mb-2 flex justify-between gap-4">
+            <LikeUnlikeButton
+              handleLike={toggleLike}
+              liked={stats.isLiked}
+              likes={stats.likesCount}
+              index={index}
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleDownload}
+              aria-label="Baixar foto"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
+
+          <CommentSection comments={comments} userId={user?.uid ?? null} />
+        </div>
       </div>
-    </dialog>
+    </GenericDialog>
   );
 });
 

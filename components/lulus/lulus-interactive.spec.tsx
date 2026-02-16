@@ -162,7 +162,7 @@ describe('LulusInteractive', () => {
     it('should exclude participants with receives_to_id === 0 from count', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
       const badge = screen.getByText(/Participantes/);
-      expect(badge.textContent).toBe('2 Participantes');
+      expect(badge.textContent).toBe('2 Participantes da vaquinha');
     });
 
     it('should render participant cards', () => {

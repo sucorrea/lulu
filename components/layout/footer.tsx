@@ -30,10 +30,7 @@ const Footer = () => {
             aria-label={label}
             title={label}
           >
-            <Icon
-              className="size-[18px] sm:size-5"
-              aria-hidden
-            />
+            <Icon className="size-[18px] sm:size-5" aria-hidden />
             <span className="max-w-[52px] truncate text-center sm:max-w-none sm:whitespace-nowrap">
               {shortLabel ?? label}
             </span>
