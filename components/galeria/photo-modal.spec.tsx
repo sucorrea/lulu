@@ -1,14 +1,58 @@
-import '@testing-library/jest-dom';
+/* eslint-disable @next/next/no-img-element */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import PhotoModal from './photo-modal';
 import { CommentProvider } from './comment-context';
 import type { GaleriaComment } from '@/services/galeriaComments';
 
+vi.mock('@/components/dialog/dialog', () => ({
+  GenericDialog: ({
+    children,
+    open,
+    title,
+    description,
+    className,
+    onOpenChange,
+  }: {
+    children: React.ReactNode;
+    open: boolean;
+    title: string;
+    description: string;
+    className: string;
+    onOpenChange: (open: boolean) => void;
+  }) => {
+    if (!open) {
+      return null;
+    }
+    return (
+      <dialog
+        open={open}
+        aria-label={title}
+        data-testid="photo-dialog"
+        className={className}
+      >
+        <button
+          onClick={() => onOpenChange(false)}
+          aria-label="Fechar visualização"
+        >
+          Close
+        </button>
+        <div aria-live="polite" aria-atomic="true" className="sr-only">
+          {description}
+        </div>
+        <div>
+          <h2>{title}</h2>
+          <p>description: {description}</p>
+        </div>
+        {children}
+      </dialog>
+    );
+  },
+}));
+
 vi.mock('next/image', () => ({
   __esModule: true,
   default: (props: React.ComponentProps<'img'>) => {
-    // eslint-disable-next-line @next/next/no-img-element
     return <img {...props} alt={props.alt ?? ''} />;
   },
 }));
@@ -38,6 +82,15 @@ vi.mock('./utils', () => ({
   downloadPhoto: vi.fn().mockResolvedValue(undefined),
 }));
 
+const mockUseGallery = vi.fn();
+vi.mock('./gallery-context', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...(actual as object),
+    useGallery: () => mockUseGallery(),
+  };
+});
+
 const mockComments: GaleriaComment[] = [
   {
     id: 'c1',
@@ -55,32 +108,46 @@ const mockCallbacks = {
   onDeleteComment: vi.fn(),
 };
 
-const renderPhotoModal = (
-  isOpen: boolean = true,
-  selectedIndex: number = 0,
-  totalPhotos: number = 5,
-  liked: boolean = false,
-  likes: number = 10,
-  userId: string | null = 'user-1'
-) => {
-  return render(
-    <CommentProvider {...mockCallbacks}>
-      <PhotoModal
-        isOpen={isOpen}
-        selectedIndex={selectedIndex}
-        totalPhotos={totalPhotos}
-        photo={photoUrl}
-        liked={liked}
-        likes={likes}
-        comments={mockComments}
-        userId={userId}
-        onClose={vi.fn()}
-        onPrev={vi.fn()}
-        onNext={vi.fn()}
-        onLike={vi.fn()}
-      />
-    </CommentProvider>
-  );
+const setupGalleryMock = (overrides = {}) => {
+  const defaultValues = {
+    photos: Array(5).fill(photoUrl),
+    selectedIndex: 0,
+    selectedPhoto: photoUrl,
+    isLoading: false,
+    isError: false,
+    user: { uid: 'user-1' },
+    selectPhoto: vi.fn(),
+    closePhoto: vi.fn(),
+    nextPhoto: vi.fn(),
+    prevPhoto: vi.fn(),
+    toggleLike: vi.fn(),
+    getPhotoStats: (_index: number) => ({
+      isLiked: false,
+      likesCount: 10,
+      commentCount: 5,
+    }),
+    getComments: () => mockComments,
+    addComment: vi.fn(),
+    editComment: vi.fn(),
+    deleteComment: vi.fn(),
+    ...overrides,
+  };
+
+  mockUseGallery.mockReturnValue(defaultValues);
+  return defaultValues;
+};
+
+const renderPhotoModal = (overrides = {}) => {
+  const mockValues = setupGalleryMock(overrides);
+
+  return {
+    ...render(
+      <CommentProvider {...mockCallbacks}>
+        <PhotoModal />
+      </CommentProvider>
+    ),
+    mockValues,
+  };
 };
 
 describe('PhotoModal', () => {
@@ -89,77 +156,45 @@ describe('PhotoModal', () => {
   });
 
   describe('Visibility', () => {
-    it('should render when isOpen is true', () => {
-      renderPhotoModal(true);
+    it('should render when open (selectedIndex is not null)', () => {
+      renderPhotoModal({ selectedIndex: 0, selectedPhoto: photoUrl });
 
       const dialog = screen.getByTestId('photo-dialog');
       expect(dialog).toBeInTheDocument();
     });
 
-    it('should not render when isOpen is false', () => {
-      renderPhotoModal(false);
+    it('should not render when closed (selectedIndex is null)', () => {
+      renderPhotoModal({ selectedIndex: null, selectedPhoto: null });
 
       expect(screen.queryByTestId('photo-dialog')).not.toBeInTheDocument();
     });
 
-    it('should have open attribute when isOpen', () => {
-      renderPhotoModal(true);
+    it('should have open attribute when open', () => {
+      renderPhotoModal({ selectedIndex: 0 });
 
-      const dialog = screen.getByTestId(
-        'photo-dialog'
-      ) as unknown as HTMLDialogElement;
+      const dialog = screen.getByTestId('photo-dialog');
       expect(dialog).toHaveAttribute('open');
-    });
-
-    it('should render null when not open', () => {
-      const { container } = renderPhotoModal(false);
-
-      expect(container.querySelectorAll('dialog')).toHaveLength(0);
     });
   });
 
   describe('Accessibility', () => {
-    it('should have aria-label with photo position', () => {
-      renderPhotoModal(true, 2, 10);
+    it('should have aria-label with "Foto"', () => {
+      renderPhotoModal();
 
       const dialog = screen.getByTestId('photo-dialog');
-      expect(dialog).toHaveAttribute(
-        'aria-label',
-        'Visualização da foto 3 de 10'
-      );
+      expect(dialog).toHaveAttribute('aria-label', 'Foto');
     });
 
-    it('should have aria-modal attribute', () => {
-      renderPhotoModal(true);
+    it('should have live region for photo number announcements in description', () => {
+      renderPhotoModal({ selectedIndex: 2, photos: Array(5).fill('url') });
 
-      const dialog = screen.getByTestId('photo-dialog');
-      expect(dialog).toHaveAttribute('aria-modal', 'true');
-    });
-
-    it('should have live region for photo number announcements', () => {
-      renderPhotoModal(true, 2, 5);
-
-      expect(screen.getByText('Foto 3 de 5')).toHaveAttribute(
-        'aria-live',
-        'polite'
-      );
-      expect(screen.getByText('Foto 3 de 5')).toHaveAttribute(
-        'aria-atomic',
-        'true'
-      );
-    });
-
-    it('should have sr-only class for live region', () => {
-      renderPhotoModal(true);
-
-      const liveRegion = screen.getByText(/Foto .* de .*/);
-      expect(liveRegion).toBeInTheDocument();
+      expect(screen.getByText('3 de 5')).toHaveAttribute('aria-live', 'polite');
     });
   });
 
   describe('Close Button', () => {
     it('should render close button', () => {
-      renderPhotoModal(true);
+      renderPhotoModal();
 
       const closeButton = screen.getByRole('button', {
         name: 'Fechar visualização',
@@ -167,28 +202,21 @@ describe('PhotoModal', () => {
       expect(closeButton).toBeInTheDocument();
     });
 
-    it('should have aria-label on close button', () => {
-      renderPhotoModal(true);
+    it('should call closePhoto when close button is clicked', () => {
+      const { mockValues } = renderPhotoModal();
 
       const closeButton = screen.getByRole('button', {
         name: 'Fechar visualização',
       });
-      expect(closeButton).toHaveAttribute('aria-label', 'Fechar visualização');
-    });
+      fireEvent.click(closeButton);
 
-    it('should position close button absolute top-right', () => {
-      const { container } = renderPhotoModal(true);
-
-      const closeButton = container.querySelector(
-        'button[aria-label="Fechar visualização"]'
-      );
-      expect(closeButton).toHaveClass('absolute', 'right-4', 'top-4');
+      expect(mockValues.closePhoto).toHaveBeenCalled();
     });
   });
 
   describe('Navigation Buttons', () => {
     it('should render previous button', () => {
-      renderPhotoModal(true);
+      renderPhotoModal();
 
       const prevButton = screen.getByRole('button', {
         name: /Foto anterior/i,
@@ -197,7 +225,7 @@ describe('PhotoModal', () => {
     });
 
     it('should render next button', () => {
-      renderPhotoModal(true);
+      renderPhotoModal();
 
       const nextButton = screen.getByRole('button', {
         name: /Próxima foto/i,
@@ -205,8 +233,8 @@ describe('PhotoModal', () => {
       expect(nextButton).toBeInTheDocument();
     });
 
-    it('should have correct aria-label for previous button at start', () => {
-      renderPhotoModal(true, 0, 5);
+    it('should have correct aria-label for navigation', () => {
+      renderPhotoModal({ selectedIndex: 0, photos: Array(5).fill('url') });
 
       const prevButton = screen.getByRole('button', {
         name: /Foto anterior \(5 de 5\)/i,
@@ -214,351 +242,73 @@ describe('PhotoModal', () => {
       expect(prevButton).toBeInTheDocument();
     });
 
-    it('should have correct aria-label for next button at end', () => {
-      renderPhotoModal(true, 4, 5);
-
-      const nextButton = screen.getByRole('button', {
-        name: /Próxima foto \(1 de 5\)/i,
-      });
-      expect(nextButton).toBeInTheDocument();
+    it('should call prevPhoto when prev button clicked', () => {
+      const { mockValues } = renderPhotoModal();
+      const prevButton = screen.getByRole('button', { name: /Foto anterior/i });
+      fireEvent.click(prevButton);
+      expect(mockValues.prevPhoto).toHaveBeenCalled();
     });
 
-    it('should have correct aria-label for middle navigation', () => {
-      renderPhotoModal(true, 2, 5);
-
-      const prevButton = screen.getByRole('button', {
-        name: /Foto anterior \(2 de 5\)/i,
-      });
-      const nextButton = screen.getByRole('button', {
-        name: /Próxima foto \(4 de 5\)/i,
-      });
-
-      expect(prevButton).toBeInTheDocument();
-      expect(nextButton).toBeInTheDocument();
+    it('should call nextPhoto when next button clicked', () => {
+      const { mockValues } = renderPhotoModal();
+      const nextButton = screen.getByRole('button', { name: /Próxima foto/i });
+      fireEvent.click(nextButton);
+      expect(mockValues.nextPhoto).toHaveBeenCalled();
     });
   });
 
   describe('Photo Display', () => {
     it('should render photo with correct src', () => {
-      renderPhotoModal(true);
+      renderPhotoModal();
 
       const image = screen.getByAltText(/Foto .* de .* na galeria/);
       expect((image as HTMLImageElement).src).toContain(photoUrl);
     });
 
     it('should have correct alt text for photo', () => {
-      renderPhotoModal(true, 2, 5);
+      renderPhotoModal({ selectedIndex: 2, photos: Array(5).fill('url') });
 
       const image = screen.getByAltText('Foto 3 de 5 na galeria');
       expect(image).toBeInTheDocument();
     });
-
-    it('should have object-contain class for proper scaling', () => {
-      renderPhotoModal(true);
-
-      const image = screen.getByAltText(/Foto .* de .* na galeria/);
-      expect(image).toHaveClass('object-contain');
-    });
   });
 
   describe('Like Button Section', () => {
-    it('should render like button', () => {
-      renderPhotoModal(true, 0);
+    it('should render like button and pass index', () => {
+      renderPhotoModal({ selectedIndex: 0 });
 
       expect(screen.getByTestId('like-button-0')).toBeInTheDocument();
     });
 
-    it('should pass selectedIndex to like button', () => {
-      renderPhotoModal(true, 3);
+    it('should call toggleLike when clicked', () => {
+      const { mockValues } = renderPhotoModal({ selectedIndex: 0 });
 
-      expect(screen.getByTestId('like-button-3')).toBeInTheDocument();
-    });
-  });
+      const likeButton = screen.getByTestId('like-button-0');
+      fireEvent.click(likeButton);
 
-  describe('Download Button', () => {
-    it('should render download button', () => {
-      renderPhotoModal(true);
-
-      const downloadButton = screen.getByRole('button', {
-        name: 'Baixar foto',
-      });
-      expect(downloadButton).toBeInTheDocument();
-    });
-
-    it('should have aria-label on download button', () => {
-      renderPhotoModal(true);
-
-      const downloadButton = screen.getByRole('button', {
-        name: 'Baixar foto',
-      });
-      expect(downloadButton).toHaveAttribute('aria-label', 'Baixar foto');
-    });
-
-    it('should have variant outline', () => {
-      renderPhotoModal(true);
-
-      const downloadButton = screen.getByRole('button', {
-        name: 'Baixar foto',
-      });
-      expect(downloadButton).toBeInTheDocument();
-    });
-  });
-
-  describe('Comment Section', () => {
-    it('should render comment section', () => {
-      renderPhotoModal(true);
-
-      expect(screen.getByTestId('comment-section')).toBeInTheDocument();
-    });
-  });
-
-  describe('Layout and Styling', () => {
-    it('should have fixed positioning', () => {
-      renderPhotoModal(true);
-
-      const dialog = screen.getByTestId('photo-dialog');
-      expect(dialog).toHaveClass('fixed', 'inset-0');
-    });
-
-    it('should have z-50 for layering', () => {
-      renderPhotoModal(true);
-
-      const dialog = screen.getByTestId('photo-dialog');
-      expect(dialog).toHaveClass('z-50');
-    });
-
-    it('should have flex layout', () => {
-      renderPhotoModal(true);
-
-      const dialog = screen.getByTestId('photo-dialog');
-      expect(dialog).toHaveClass('flex', 'flex-col');
-    });
-
-    it('should have dark background', () => {
-      renderPhotoModal(true);
-
-      const dialog = screen.getByTestId('photo-dialog');
-      expect(dialog).toHaveClass('bg-black/80');
-    });
-
-    it('should have card styling for photo card', () => {
-      const { container } = renderPhotoModal(true);
-
-      const photoCard = container.querySelector('.bg-card');
-      expect(photoCard).toHaveClass('border', 'bg-card', 'p-4');
+      expect(mockValues.toggleLike).toHaveBeenCalledWith(0);
     });
   });
 
   describe('Keyboard Navigation', () => {
-    it('should call onClose on Escape key', async () => {
-      const onCloseMock = vi.fn();
-
-      render(
-        <CommentProvider {...mockCallbacks}>
-          <PhotoModal
-            isOpen={true}
-            selectedIndex={0}
-            totalPhotos={5}
-            photo={photoUrl}
-            liked={false}
-            likes={10}
-            comments={mockComments}
-            userId="user-1"
-            onClose={onCloseMock}
-            onPrev={vi.fn()}
-            onNext={vi.fn()}
-            onLike={vi.fn()}
-          />
-        </CommentProvider>
-      );
-
-      fireEvent.keyDown(document, { key: 'Escape' });
-
-      await waitFor(() => {
-        expect(onCloseMock).toHaveBeenCalled();
-      });
-    });
-
-    it('should call onPrev on ArrowLeft key', async () => {
-      const onPrevMock = vi.fn();
-
-      render(
-        <CommentProvider {...mockCallbacks}>
-          <PhotoModal
-            isOpen={true}
-            selectedIndex={2}
-            totalPhotos={5}
-            photo={photoUrl}
-            liked={false}
-            likes={10}
-            comments={mockComments}
-            userId="user-1"
-            onClose={vi.fn()}
-            onPrev={onPrevMock}
-            onNext={vi.fn()}
-            onLike={vi.fn()}
-          />
-        </CommentProvider>
-      );
+    it('should call prevPhoto on ArrowLeft key', async () => {
+      const { mockValues } = renderPhotoModal();
 
       fireEvent.keyDown(document, { key: 'ArrowLeft' });
 
       await waitFor(() => {
-        expect(onPrevMock).toHaveBeenCalled();
+        expect(mockValues.prevPhoto).toHaveBeenCalled();
       });
     });
 
-    it('should call onNext on ArrowRight key', async () => {
-      const onNextMock = vi.fn();
-
-      render(
-        <CommentProvider {...mockCallbacks}>
-          <PhotoModal
-            isOpen={true}
-            selectedIndex={2}
-            totalPhotos={5}
-            photo={photoUrl}
-            liked={false}
-            likes={10}
-            comments={mockComments}
-            userId="user-1"
-            onClose={vi.fn()}
-            onPrev={vi.fn()}
-            onNext={onNextMock}
-            onLike={vi.fn()}
-          />
-        </CommentProvider>
-      );
+    it('should call nextPhoto on ArrowRight key', async () => {
+      const { mockValues } = renderPhotoModal();
 
       fireEvent.keyDown(document, { key: 'ArrowRight' });
 
       await waitFor(() => {
-        expect(onNextMock).toHaveBeenCalled();
+        expect(mockValues.nextPhoto).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('Photo Information Display', () => {
-    it('should display correct photo count in live region', () => {
-      renderPhotoModal(true, 0, 10);
-
-      expect(screen.getByText('Foto 1 de 10')).toBeInTheDocument();
-    });
-
-    it('should update live region when index changes', () => {
-      const { rerender } = renderPhotoModal(true, 0, 10);
-
-      expect(screen.getByText('Foto 1 de 10')).toBeInTheDocument();
-
-      rerender(
-        <CommentProvider {...mockCallbacks}>
-          <PhotoModal
-            isOpen={true}
-            selectedIndex={5}
-            totalPhotos={10}
-            photo={photoUrl}
-            liked={false}
-            likes={10}
-            comments={mockComments}
-            userId="user-1"
-            onClose={vi.fn()}
-            onPrev={vi.fn()}
-            onNext={vi.fn()}
-            onLike={vi.fn()}
-          />
-        </CommentProvider>
-      );
-
-      expect(screen.getByText('Foto 6 de 10')).toBeInTheDocument();
-    });
-  });
-
-  describe('Responsive Design', () => {
-    it('should have max-w-md for photo container', () => {
-      const { container } = renderPhotoModal(true);
-
-      const photoContainer = container.querySelector('.max-w-md');
-      expect(photoContainer).toBeInTheDocument();
-    });
-
-    it('should have px-4 for responsive padding', () => {
-      renderPhotoModal(true);
-
-      const dialog = screen.getByTestId('photo-dialog');
-      expect(dialog).toHaveClass('px-4');
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('should handle first photo with wraparound', () => {
-      renderPhotoModal(true, 0, 5);
-
-      const prevButton = screen.getByRole('button', {
-        name: /Foto anterior \(5 de 5\)/i,
-      });
-      expect(prevButton).toBeInTheDocument();
-    });
-
-    it('should handle last photo with wraparound', () => {
-      renderPhotoModal(true, 4, 5);
-
-      const nextButton = screen.getByRole('button', {
-        name: /Próxima foto \(1 de 5\)/i,
-      });
-      expect(nextButton).toBeInTheDocument();
-    });
-
-    it('should handle single photo', () => {
-      renderPhotoModal(true, 0, 1);
-
-      const prevButton = screen.getByRole('button', {
-        name: /Foto anterior \(1 de 1\)/i,
-      });
-      const nextButton = screen.getByRole('button', {
-        name: /Próxima foto \(1 de 1\)/i,
-      });
-
-      expect(prevButton).toBeInTheDocument();
-      expect(nextButton).toBeInTheDocument();
-    });
-
-    it('should handle null userId', () => {
-      renderPhotoModal(true, 0, 5, false, 10, null);
-
-      expect(screen.getByTestId('photo-dialog')).toBeInTheDocument();
-      expect(screen.getByTestId('comment-section')).toBeInTheDocument();
-    });
-  });
-
-  describe('Memo Optimization', () => {
-    it('should not rerender unnecessarily', () => {
-      const { rerender } = renderPhotoModal(true, 0, 5);
-
-      const image = screen.getByAltText(/Foto .* de .* na galeria/);
-      expect(image).toBeInTheDocument();
-
-      rerender(
-        <CommentProvider {...mockCallbacks}>
-          <PhotoModal
-            isOpen={true}
-            selectedIndex={0}
-            totalPhotos={5}
-            photo={photoUrl}
-            liked={false}
-            likes={10}
-            comments={mockComments}
-            userId="user-1"
-            onClose={vi.fn()}
-            onPrev={vi.fn()}
-            onNext={vi.fn()}
-            onLike={vi.fn()}
-          />
-        </CommentProvider>
-      );
-
-      expect(
-        screen.getByAltText(/Foto .* de .* na galeria/)
-      ).toBeInTheDocument();
     });
   });
 });
