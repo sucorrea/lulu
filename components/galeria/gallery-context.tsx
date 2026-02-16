@@ -46,19 +46,15 @@ interface GalleryContextType {
   isLoading: boolean;
   isError: boolean;
   user: ReturnType<typeof useUserVerification>['user'];
-
   selectedIndex: number | null;
   selectedPhoto: string | null;
-
   getPhotoStats: (index: number) => PhotoStats;
   getComments: (photo: string) => GaleriaComment[];
-
   selectPhoto: (index: number) => void;
   closePhoto: () => void;
   nextPhoto: () => void;
   prevPhoto: () => void;
   toggleLike: (index: number) => void;
-
   addComment: (text: string) => Promise<void>;
   editComment: (commentId: string, text: string) => Promise<void>;
   deleteComment: (commentId: string) => Promise<void>;
@@ -99,7 +95,8 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
     return state;
   });
 
-  const selectedPhoto = selectedIndex !== null ? photos[selectedIndex] : null;
+  const selectedPhoto =
+    selectedIndex === null ? null : (photos[selectedIndex] ?? null);
 
   const selectPhoto = useCallback((index: number) => {
     setSelectedIndex(index);
