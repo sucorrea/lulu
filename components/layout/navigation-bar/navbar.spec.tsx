@@ -162,7 +162,6 @@ describe('Navbar', () => {
     expect(screen.getByTestId('link-/sobre')).toBeInTheDocument();
   });
 
-
   it('should use navbar hook to get data', () => {
     render(<Navbar />);
 

@@ -2,7 +2,7 @@
 
 import { usePwaUpdate } from '@/hooks/usePwaUpdate';
 
-export function PwaUpdateManager() {
+export const PwaUpdateManager = () => {
   usePwaUpdate();
   return null;
-}
+};

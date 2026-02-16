@@ -88,7 +88,7 @@ describe('PhotoCameraUploader', () => {
       return newFileReader as FileReader;
     });
 
-    alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    alertSpy = vi.spyOn(globalThis, 'alert').mockImplementation(() => {});
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -223,7 +223,9 @@ describe('PhotoCameraUploader', () => {
       fireEvent.change(fileInput, { target: { files: [file] } });
 
       await waitFor(() => {
-        const img = screen.getByAltText('Foto do usuário') as HTMLImageElement;
+        const img = screen.getByAltText(
+          'Foto do usuário'
+        ) as unknown as HTMLImageElement;
         expect(img).toHaveAttribute('width', '500');
         expect(img).toHaveAttribute('height', '500');
         expect(img).toHaveClass('w-full', 'h-auto', 'rounded-lg');

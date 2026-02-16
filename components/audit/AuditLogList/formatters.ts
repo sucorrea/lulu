@@ -21,7 +21,9 @@ export const formatValue = (value: unknown, fieldType: string): string => {
     return JSON.stringify(value);
   }
 
-  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+  return typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
     ? String(value)
     : JSON.stringify(value);
 };

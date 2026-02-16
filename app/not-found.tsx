@@ -26,7 +26,10 @@ const NotFound = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row  justify-center">
-          <Button asChild className="font-baloo flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition">
+          <Button
+            asChild
+            className="font-baloo flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition"
+          >
             <Link href="/">Voltar a Home</Link>
           </Button>
         </div>

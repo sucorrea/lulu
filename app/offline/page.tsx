@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function OfflinePage() {
+const OfflinePage = () => {
   return (
     <section className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4">
       <h1 className="text-2xl font-semibold text-foreground">
@@ -18,4 +18,5 @@ export default function OfflinePage() {
       </Link>
     </section>
   );
-}
+};
+export default OfflinePage;

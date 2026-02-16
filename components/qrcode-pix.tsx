@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { QrCodePix } from 'qrcode-pix';
 import { QRCodeCanvas } from 'qrcode.react';
@@ -7,15 +7,42 @@ import { Person } from './lulus/types';
 import { Button } from './ui/button';
 import { useIsMobile } from '@/providers/device-provider';
 import { useDisclosure } from '@/hooks/use-disclosure';
+import { GenericBottomSheet } from './dialog/bottom-sheet';
+import { GenericDialog } from './dialog/dialog';
+import { toast } from 'sonner';
 
 interface PixQRCodeProps {
   participant: Person;
 }
 
+const qrContent = (payload: string) => (
+  <div className="flex flex-col items-center justify-center gap-1">
+    <QRCodeCanvas value={payload} size={100} />
+    <Button
+      variant="ghost"
+      onClick={() => {
+        navigator.clipboard.writeText(payload);
+        toast.success('QRCode Pix copiado com sucesso!');
+      }}
+    >
+      copiar QRCode Pix
+    </Button>
+  </div>
+);
+
 const PixQRCode = ({ participant }: Readonly<PixQRCodeProps>) => {
   const [payload, setPayload] = useState('');
   const { isOpen, onToggle } = useDisclosure();
   const { isMobile } = useIsMobile();
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (open !== isOpen) {
+        onToggle();
+      }
+    },
+    [isOpen, onToggle]
+  );
 
   useEffect(() => {
     const qrCodePix = QrCodePix({
@@ -32,32 +59,25 @@ const PixQRCode = ({ participant }: Readonly<PixQRCodeProps>) => {
   return (
     <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] ">
       <Button variant="link" onClick={onToggle} className="no-underline">
-        {isOpen
-          ? `fechar QRCode Pix de ${participant.name}`
-          : `mostrar QRCode Pix de ${participant.name}`}
+        {`Ver QRCode Pix de ${participant.name}`}
       </Button>
-      {isOpen && payload && (
-        <div className="flex flex-col items-center justify-center gap-1">
-          <QRCodeCanvas
-            value={payload}
-            size={100}
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              navigator.clipboard.writeText(payload);
-            }}
-          />
-          <Button
-            variant="ghost"
-            onClick={() => {
-              navigator.clipboard.writeText(payload);
-              if (!isMobile) {
-                alert('QRCode copiado com sucesso!');
-              }
-            }}
-          >
-            copiar QRCode Pix
-          </Button>
-        </div>
+      {isMobile ? (
+        <GenericBottomSheet
+          open={isOpen && !!payload}
+          onOpenChange={handleOpenChange}
+          title={`QRCode Pix de ${participant.name}`}
+        >
+          {qrContent(payload)}
+        </GenericBottomSheet>
+      ) : (
+        <GenericDialog
+          className="w-[calc(100%-2rem)] max-w-[min(400px,95vw)] sm:max-w-[50%] rounded"
+          open={isOpen && !!payload}
+          onOpenChange={handleOpenChange}
+          title={`QRCode Pix de ${participant.name}`}
+        >
+          {qrContent(payload)}
+        </GenericDialog>
       )}
     </div>
   );

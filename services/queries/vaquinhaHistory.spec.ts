@@ -189,8 +189,10 @@ describe('vaquinhaHistory query hooks', () => {
     useUpdateVaquinhaHistory();
 
     const options = mockUseMutation.mock.calls.at(-1)?.[0] as {
-      mutationFn: (data: { id: string; data: Partial<VaquinhaHistoryInput> }) =>
-        Promise<void>;
+      mutationFn: (data: {
+        id: string;
+        data: Partial<VaquinhaHistoryInput>;
+      }) => Promise<void>;
       onSuccess: () => void;
     };
 

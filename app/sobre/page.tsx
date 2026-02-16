@@ -22,7 +22,13 @@ const STACK_ITEMS = [
   {
     icon: Zap,
     title: 'Frontend Moderno',
-    items: ['Next.js 16 (App Router)', 'React 19', 'TypeScript', 'Tailwind CSS', 'Radix UI'],
+    items: [
+      'Next.js 16 (App Router)',
+      'React 19',
+      'TypeScript',
+      'Tailwind CSS',
+      'Radix UI',
+    ],
   },
   {
     icon: Database,
@@ -32,7 +38,12 @@ const STACK_ITEMS = [
   {
     icon: Smartphone,
     title: 'PWA & Performance',
-    items: ['Service Worker (Serwist)', 'Offline-First', 'Instalável', 'Cache inteligente'],
+    items: [
+      'Service Worker (Serwist)',
+      'Offline-First',
+      'Instalável',
+      'Cache inteligente',
+    ],
   },
   {
     icon: LayoutDashboard,
@@ -42,12 +53,22 @@ const STACK_ITEMS = [
   {
     icon: Shield,
     title: 'Qualidade',
-    items: ['85%+ Cobertura de testes', 'Vitest + RTL', 'SonarCloud', 'ESLint + Prettier'],
+    items: [
+      '85%+ Cobertura de testes',
+      'Vitest + RTL',
+      'SonarCloud',
+      'ESLint + Prettier',
+    ],
   },
   {
     icon: Camera,
     title: 'Features',
-    items: ['Galeria com likes', 'Dashboard analítico', 'Sistema de auditoria', 'Histórico de vaquinhas'],
+    items: [
+      'Galeria com likes',
+      'Dashboard analítico',
+      'Sistema de auditoria',
+      'Histórico de vaquinhas',
+    ],
   },
 ];
 
@@ -71,9 +92,9 @@ const SobrePage = () => {
           </h2>
           <p className="text-muted-foreground mb-4">
             Uma aplicação colaborativa onde o grupo gerencia participantes,
-            sorteia quem presenteia quem, compartilha fotos na galeria, acompanha
-            o histórico de vaquinhas e mantém um registro completo de alterações
-            por meio do sistema de auditoria.
+            sorteia quem presenteia quem, compartilha fotos na galeria,
+            acompanha o histórico de vaquinhas e mantém um registro completo de
+            alterações por meio do sistema de auditoria.
           </p>
           <p className="text-muted-foreground">
             O app é instalável em celulares e computadores, funciona offline e

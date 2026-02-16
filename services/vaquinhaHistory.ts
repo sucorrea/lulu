@@ -160,10 +160,7 @@ export const listenVaquinhaHistory = (
   );
 
   if (year) {
-    q = query(
-      collection(db, 'vaquinha-history'),
-      where('year', '==', year)
-    );
+    q = query(collection(db, 'vaquinha-history'), where('year', '==', year));
   }
 
   return onSnapshot(q, (snapshot) => {

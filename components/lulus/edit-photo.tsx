@@ -17,7 +17,7 @@ interface LulusCardEditProps {
 }
 
 const EditPhoto = ({ participant }: LulusCardEditProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
   const { mutate, isPending } = useUploadPhoto(String(participant.id));
   const [file, setFile] = useState<File | null>(null);
 
@@ -54,9 +54,10 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
         Alterar foto
       </Button>
       <GenericDialog
-        className="max-w-[50%] rounded"
+        className="w-[calc(100%-2rem)] max-w-[min(400px,95vw)] sm:max-w-[50%] rounded"
         open={isOpen}
-        onOpenChange={(open) => (open ? onOpen() : onClose())}
+        onOpenChange={onToggle}
+        description="Alterar foto do participante"
         title={participant.name}
         footer={
           <div className="flex justify-between gap-2">
@@ -85,7 +86,6 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
               {(participant?.name ?? '').charAt(0).toUpperCase() || '?'}
             </AvatarFallback>
           </Avatar>
-
           <UpdateParticipantPhoto
             participantId={String(participant.id)}
             setFile={setFile}
