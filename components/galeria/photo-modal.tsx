@@ -1,7 +1,7 @@
 'use client';
 import { memo, useCallback, useEffect } from 'react';
 
-import { ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import CommentSection from './comment-section';
 import LikeUnlikeButton from './like-unlike-button';
 import { downloadPhoto } from './utils';
 import { useGallery } from './gallery-context';
+import PhotoCarousel from './photo-carousel';
 
 const PhotoModal = memo(function PhotoModal() {
   const {
@@ -71,40 +72,8 @@ const PhotoModal = memo(function PhotoModal() {
       onOpenChange={(open) => !open && closePhoto()}
       title="Foto"
       description={`${index + 1} de ${totalPhotos}`}
-      className="max-w-[100vw] h-full sm:h-auto sm:max-w-4xl bg-transparent border-none shadow-none p-4 flex flex-col items-center justify-center gap-4 [&>button]:text-white [&>button]:bg-black/20 [&>button]:hover:bg-black/40 [&>button]:rounded-full [&>button]:h-10 [&>button]:w-10 [&>button]:top-4 [&>button]:right-4"
-    >
-      <div className="relative flex w-full flex-col items-center justify-center gap-4">
-        <div className="relative flex w-full max-w-md items-center justify-center">
-          <button
-            onClick={prevPhoto}
-            aria-label={`Foto anterior (${index === 0 ? totalPhotos : index} de ${totalPhotos})`}
-            className="absolute left-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            style={{ left: -20 }}
-          >
-            <ChevronLeft aria-hidden="true" />
-          </button>
-
-          <div className="flex flex-1 justify-center">
-            <Image
-              src={photo}
-              alt={`Foto ${index + 1} de ${totalPhotos} na galeria`}
-              width={400}
-              height={400}
-              priority
-              className="object-contain rounded max-h-[60vh] max-w-full"
-            />
-          </div>
-
-          <button
-            onClick={nextPhoto}
-            aria-label={`Próxima foto (${index === totalPhotos - 1 ? 1 : index + 2} de ${totalPhotos})`}
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-white text-3xl px-2 z-10 bg-black/30 rounded-full h-10 w-10 flex items-center justify-center hover:bg-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            style={{ right: -20 }}
-          >
-            <ChevronRight aria-hidden="true" />
-          </button>
-        </div>
-
+      className="rounded"
+      footer={
         <div className="w-full max-w-md rounded-2xl border border-border bg-card p-4 shadow-lulu-md">
           <div className="mb-2 flex justify-between gap-4">
             <LikeUnlikeButton
@@ -125,7 +94,23 @@ const PhotoModal = memo(function PhotoModal() {
 
           <CommentSection comments={comments} userId={user?.uid ?? null} />
         </div>
-      </div>
+      }
+    >
+      <PhotoCarousel
+        selectedIndex={selectedIndex}
+        photos={photos}
+        nextPhoto={nextPhoto}
+        prevPhoto={prevPhoto}
+      >
+        <Image
+          src={photo}
+          alt={`Foto ${index + 1} de ${totalPhotos} na galeria`}
+          width={400}
+          height={400}
+          priority
+          className="object-contain rounded max-h-[60vh] max-w-full"
+        />
+      </PhotoCarousel>
     </GenericDialog>
   );
 });

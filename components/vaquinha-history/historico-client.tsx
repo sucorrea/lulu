@@ -1,50 +1,52 @@
 'use client';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useState, useMemo, useCallback, Suspense, useEffect } from 'react';
 import { Plus, TrashIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
+import ErrorState from '@/components/error-state';
+import { Button } from '@/components/ui/button';
+import { LiveAnnounce } from '@/components/ui/live-announce';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  TimelineSkeleton,
+  VaquinhaHistoryFormDialog,
+  VaquinhaHistoryTimeline,
+  YearFilter,
+} from '@/components/vaquinha-history';
+import { useDisclosure } from '@/hooks/use-disclosure';
 import { useUserVerification } from '@/hooks/user-verify';
 import { useGetAllParticipants } from '@/services/queries/fetchParticipants';
 import {
-  useGetAllVaquinhaHistory,
-  useGetVaquinhaHistoryByYear,
-  useGetAvailableYears,
   useAddVaquinhaHistory,
-  useUpdateVaquinhaHistory,
   useDeleteVaquinhaHistory,
+  useGetAllVaquinhaHistory,
+  useGetAvailableYears,
+  useGetVaquinhaHistoryByYear,
+  useUpdateVaquinhaHistory,
 } from '@/services/queries/vaquinhaHistory';
-import ErrorState from '@/components/error-state';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { LiveAnnounce } from '@/components/ui/live-announce';
-import {
-  VaquinhaHistoryTimeline,
-  TimelineSkeleton,
-  YearFilter,
-  VaquinhaHistoryFormDialog,
-} from '@/components/vaquinha-history';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
-import { useDisclosure } from '@/hooks/use-disclosure';
-import { toast } from 'sonner';
 
 export const HistoricoClient = () => {
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [announcement, setAnnouncement] = useState<string>('');
+  const [editingItem, setEditingItem] = useState<VaquinhaHistory | null>(null);
+
   const { isLoading: isLoadingAuth, user: isAuthenticated } =
     useUserVerification();
-  const [selectedYear, setSelectedYear] = useState<number | null>(null);
-  const {
-    isOpen: isDialogOpen,
-    onOpen: onOpenDialog,
-    onClose: onCloseDialog,
-    setOpen: setDialogOpen,
-  } = useDisclosure();
-  const [editingItem, setEditingItem] = useState<VaquinhaHistory | null>(null);
-  const [announcement, setAnnouncement] = useState<string>('');
 
   const { data: participants, isLoading: isLoadingParticipants } =
     useGetAllParticipants();
 
   const { data: availableYears, isLoading: isLoadingYears } =
     useGetAvailableYears();
+
+  const {
+    isOpen: isDialogOpen,
+    onOpen: onOpenDialog,
+    onClose: onCloseDialog,
+    setOpen: setDialogOpen,
+  } = useDisclosure();
 
   const {
     data: allHistory,

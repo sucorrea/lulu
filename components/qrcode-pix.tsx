@@ -66,6 +66,7 @@ const PixQRCode = ({ participant }: Readonly<PixQRCodeProps>) => {
           open={isOpen && !!payload}
           onOpenChange={handleOpenChange}
           title={`QRCode Pix de ${participant.name}`}
+          description="Copie o QRCode Pix"
         >
           {qrContent(payload)}
         </GenericBottomSheet>
