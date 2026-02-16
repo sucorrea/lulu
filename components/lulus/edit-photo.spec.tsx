@@ -14,6 +14,7 @@ vi.mock('@/hooks/use-disclosure', () => ({
     isOpen: false,
     onOpen: mockOnOpen,
     onClose: mockOnClose,
+    onToggle: mockOnOpen,
   }),
 }));
 
@@ -217,7 +218,12 @@ describe('EditPhoto', () => {
       render(<EditPhoto participant={mockParticipant} />);
 
       const dialog = screen.getByTestId('generic-dialog');
-      expect(dialog).toHaveClass('max-w-[50%]', 'rounded');
+      expect(dialog).toHaveClass(
+        'w-[calc(100%-2rem)]',
+        'max-w-[min(400px,95vw)]',
+        'sm:max-w-[50%]',
+        'rounded'
+      );
     });
 
     it('should have dialog closed by default', () => {
