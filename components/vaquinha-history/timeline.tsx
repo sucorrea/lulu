@@ -57,7 +57,10 @@ const TimelineItem = memo(function TimelineItem({
             <div className="flex items-center justify-end gap-2">
               {onEdit && (
                 <button
-                  onClick={() => onEdit(item)}
+                  onClick={(e) => {
+                    (e.currentTarget as HTMLElement)?.blur();
+                    onEdit(item);
+                  }}
                   className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1 transition-colors"
                   aria-label={`Editar registro de ${item.birthdayPersonName}`}
                 >

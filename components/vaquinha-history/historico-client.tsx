@@ -244,7 +244,12 @@ export const HistoricoClient = () => {
             />
           )}
           {isAuthenticated && (
-            <Button onClick={handleAddClick}>
+            <Button
+              onClick={(e) => {
+                (e.currentTarget as HTMLElement)?.blur();
+                handleAddClick();
+              }}
+            >
               <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
               Adicionar Registro
             </Button>
