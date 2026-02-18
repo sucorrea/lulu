@@ -129,6 +129,8 @@ describe('LulusInteractive', () => {
     const byBirthday: Record<number, object> = { 1: {}, 2: {}, 3: {} };
     mockUseGetCurrentYearAssignments.mockReturnValue({
       data: { byResponsible, byBirthday },
+      isLoading: false,
+      isError: false,
     });
   });
 
@@ -171,6 +173,34 @@ describe('LulusInteractive', () => {
     it('should show total participants badge with correct count', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
       expect(screen.getByText(/3 Participantes/)).toBeInTheDocument();
+    });
+
+    it('should show dash instead of zero when assignments are loading', () => {
+      mockUseGetCurrentYearAssignments.mockReturnValue({
+        data: undefined,
+        isLoading: true,
+        isError: false,
+      });
+
+      render(<LulusInteractive initialParticipants={mockParticipants} />);
+
+      expect(
+        screen.getByText(/— Participantes da vaquinha/)
+      ).toBeInTheDocument();
+    });
+
+    it('should show dash instead of zero when assignments query fails', () => {
+      mockUseGetCurrentYearAssignments.mockReturnValue({
+        data: undefined,
+        isLoading: false,
+        isError: true,
+      });
+
+      render(<LulusInteractive initialParticipants={mockParticipants} />);
+
+      expect(
+        screen.getByText(/— Participantes da vaquinha/)
+      ).toBeInTheDocument();
     });
 
     it('should render participant cards', () => {

@@ -28,7 +28,11 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const [filterMonth, setFilterMonth] = useState('all');
 
   const { user, isLoading } = useUserVerification();
-  const { data: assignments } = useGetCurrentYearAssignments();
+  const {
+    data: assignments,
+    isLoading: assignmentsLoading,
+    isError: assignmentsError,
+  } = useGetCurrentYearAssignments();
 
   const { data: participants = initialParticipants } = useQuery({
     queryKey: ['get-all-participants-with-tokens'],
@@ -38,10 +42,12 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   });
   const participantsList = participants;
 
-  const totalParticipants = useMemo(
-    () => Object.keys(assignments?.byBirthday ?? {}).length,
-    [assignments]
-  );
+  const totalParticipants = useMemo(() => {
+    if (assignmentsLoading || assignmentsError) {
+      return null;
+    }
+    return Object.keys(assignments?.byBirthday ?? {}).length;
+  }, [assignments, assignmentsLoading, assignmentsError]);
 
   const nextBirthday = useMemo(
     () => getNextBirthday(participantsList),
@@ -80,7 +86,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
       <BadgeLulu
-        text={`${totalParticipants} Participantes da vaquinha`}
+        text={`${totalParticipants ?? '—'} Participantes da vaquinha`}
         icon={<GiftIcon className="mr-2 h-4 w-4 shrink-0" />}
       />
       {nextBirthday && (

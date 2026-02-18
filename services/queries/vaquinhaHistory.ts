@@ -141,7 +141,16 @@ export const useGetAssignmentForParticipant = (participantId: number) => {
   return data?.byResponsible[participantId] ?? null;
 };
 
-export const useGetOrganizerForParticipant = (participantId: number) => {
-  const { data } = useGetCurrentYearAssignments();
-  return data?.byBirthday[participantId] ?? null;
+export type OrganizerAssignmentResult = {
+  assignment: VaquinhaHistory | null;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+export const useGetOrganizerForParticipant = (
+  participantId: number
+): OrganizerAssignmentResult => {
+  const { data, isLoading, isError } = useGetCurrentYearAssignments();
+  const assignment = data?.byBirthday[participantId] ?? null;
+  return { assignment, isLoading, isError };
 };

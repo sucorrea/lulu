@@ -33,6 +33,12 @@ vi.mock('../utils', () => ({
   }),
 }));
 
+vi.mock('@/components/ui/skeleton', () => ({
+  Skeleton: vi.fn(({ className }) => (
+    <div data-testid="skeleton" className={className} />
+  )),
+}));
+
 const mockParticipant = {
   id: 1,
   name: 'John Doe',
@@ -76,9 +82,35 @@ describe('ResponsableGift', () => {
     vi.clearAllMocks();
   });
 
+  describe('Loading state', () => {
+    it('should render skeleton when isLoading is true', () => {
+      mockUseGetOrganizerForParticipant.mockReturnValue({
+        assignment: null,
+        isLoading: true,
+        isError: false,
+      });
+
+      render(
+        <ResponsableGift
+          participant={mockParticipant}
+          participants={mockParticipants}
+        />
+      );
+
+      expect(screen.getAllByTestId('skeleton').length).toBeGreaterThan(0);
+      expect(
+        screen.queryByText(/não participa da vaquinha esse ano/)
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('No Participation (no assignment)', () => {
     it('should render no participation message when assignment is null', () => {
-      mockUseGetOrganizerForParticipant.mockReturnValue(null);
+      mockUseGetOrganizerForParticipant.mockReturnValue({
+        assignment: null,
+        isLoading: false,
+        isError: false,
+      });
 
       render(
         <ResponsableGift
@@ -93,7 +125,11 @@ describe('ResponsableGift', () => {
     });
 
     it('should not render avatar when assignment is null', () => {
-      mockUseGetOrganizerForParticipant.mockReturnValue(null);
+      mockUseGetOrganizerForParticipant.mockReturnValue({
+        assignment: null,
+        isLoading: false,
+        isError: false,
+      });
 
       render(
         <ResponsableGift
@@ -106,7 +142,11 @@ describe('ResponsableGift', () => {
     });
 
     it('should apply correct text styling for no participation message', () => {
-      mockUseGetOrganizerForParticipant.mockReturnValue(null);
+      mockUseGetOrganizerForParticipant.mockReturnValue({
+        assignment: null,
+        isLoading: false,
+        isError: false,
+      });
 
       const { container } = render(
         <ResponsableGift
@@ -124,13 +164,17 @@ describe('ResponsableGift', () => {
   describe('Participation (has assignment)', () => {
     it('should render avatar when assignment exists', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -143,15 +187,19 @@ describe('ResponsableGift', () => {
       expect(screen.getByTestId('avatar')).toBeInTheDocument();
     });
 
-    it('should render avatar image when birthday person has photo', () => {
+    it('should render avatar image when organizer has photo', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -164,15 +212,19 @@ describe('ResponsableGift', () => {
       expect(screen.getByTestId('avatar-image')).toBeInTheDocument();
     });
 
-    it('should render avatar fallback when birthday person has no photo', () => {
+    it('should render avatar fallback when organizer has no photo', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 3,
-        responsibleName: 'Bob Johnson',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 3,
+          responsibleName: 'Bob Johnson',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -185,15 +237,19 @@ describe('ResponsableGift', () => {
       expect(screen.getByTestId('avatar-fallback')).toBeInTheDocument();
     });
 
-    it('should render birthday person name', () => {
+    it('should render organizer name', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -208,13 +264,17 @@ describe('ResponsableGift', () => {
 
     it('should render responsible message text', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -230,13 +290,17 @@ describe('ResponsableGift', () => {
 
     it('should apply correct avatar classes', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -253,13 +317,17 @@ describe('ResponsableGift', () => {
 
     it('should render fallback with first letter of name', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 3,
-        responsibleName: 'Bob Johnson',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 3,
+          responsibleName: 'Bob Johnson',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -272,15 +340,19 @@ describe('ResponsableGift', () => {
       expect(screen.getByTestId('avatar-fallback')).toHaveTextContent('B');
     });
 
-    it('should render no participation when birthday person not found', () => {
+    it('should render no participation when organizer not found in participants', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 999,
-        responsibleName: 'Unknown Person',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 999,
+          responsibleName: 'Unknown Person',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -299,13 +371,17 @@ describe('ResponsableGift', () => {
   describe('useMemo Behavior', () => {
     it('should calculate responsable correctly from participants array', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -320,13 +396,17 @@ describe('ResponsableGift', () => {
 
     it('should recalculate when participants array changes', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       const { rerender } = render(
@@ -367,13 +447,17 @@ describe('ResponsableGift', () => {
   describe('Edge Cases', () => {
     it('should render no participation when participants array is empty', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -385,15 +469,19 @@ describe('ResponsableGift', () => {
       ).toBeInTheDocument();
     });
 
-    it('should handle birthday person with very long name', () => {
+    it('should handle organizer with very long name', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       const longNameParticipants = [
@@ -421,15 +509,19 @@ describe('ResponsableGift', () => {
       expect(screen.getByText(/A{100}/)).toBeInTheDocument();
     });
 
-    it('should handle birthday person with special characters in name', () => {
+    it('should handle organizer with special characters in name', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: "João D'Silva",
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: "João D'Silva",
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       const specialCharParticipants = [
@@ -463,13 +555,17 @@ describe('ResponsableGift', () => {
   describe('Layout Structure', () => {
     it('should render with correct container class', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       const { container } = render(
@@ -485,13 +581,17 @@ describe('ResponsableGift', () => {
 
     it('should render avatar and name in flex container', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       const { container } = render(
@@ -507,13 +607,17 @@ describe('ResponsableGift', () => {
 
     it('should have correct gap between avatar and text', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       const { container } = render(
@@ -531,13 +635,17 @@ describe('ResponsableGift', () => {
   describe('Accessibility', () => {
     it('should render avatar with semantic structure', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
@@ -553,13 +661,17 @@ describe('ResponsableGift', () => {
 
     it('should have descriptive text for screen readers', () => {
       mockUseGetOrganizerForParticipant.mockReturnValue({
-        id: 'assignment-1',
-        year: 2026,
-        responsibleId: 2,
-        responsibleName: 'Jane Smith',
-        birthdayPersonId: 1,
-        birthdayPersonName: 'John Doe',
-        createdAt: '2026-01-01T00:00:00.000Z',
+        assignment: {
+          id: 'assignment-1',
+          year: 2026,
+          responsibleId: 2,
+          responsibleName: 'Jane Smith',
+          birthdayPersonId: 1,
+          birthdayPersonName: 'John Doe',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        isLoading: false,
+        isError: false,
       });
 
       render(
