@@ -58,7 +58,14 @@ const PixQRCode = ({ participant }: Readonly<PixQRCodeProps>) => {
 
   return (
     <div className="flex flex-col items-end justify-end gap-1 min-h-[15px] ">
-      <Button variant="link" onClick={onToggle} className="no-underline">
+      <Button
+        variant="link"
+        onClick={(e) => {
+          (e.currentTarget as HTMLButtonElement).blur();
+          onToggle();
+        }}
+        className="no-underline"
+      >
         {`Ver QRCode Pix de ${participant.name}`}
       </Button>
       {isMobile ? (
@@ -66,6 +73,7 @@ const PixQRCode = ({ participant }: Readonly<PixQRCodeProps>) => {
           open={isOpen && !!payload}
           onOpenChange={handleOpenChange}
           title={`QRCode Pix de ${participant.name}`}
+          description="Copie o QRCode Pix"
         >
           {qrContent(payload)}
         </GenericBottomSheet>
@@ -75,6 +83,7 @@ const PixQRCode = ({ participant }: Readonly<PixQRCodeProps>) => {
           open={isOpen && !!payload}
           onOpenChange={handleOpenChange}
           title={`QRCode Pix de ${participant.name}`}
+          description="Copie o QRCode Pix"
         >
           {qrContent(payload)}
         </GenericDialog>

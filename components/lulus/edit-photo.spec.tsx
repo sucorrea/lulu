@@ -146,7 +146,6 @@ describe('EditPhoto', () => {
     fullName: 'Test User Full',
     date: '1990-01-01',
     month: '01',
-    receives_to_id: 2,
     city: 'Test City',
     photoURL: 'https://example.com/photo.jpg',
   };

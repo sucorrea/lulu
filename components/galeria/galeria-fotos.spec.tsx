@@ -80,10 +80,12 @@ vi.mock('@/components/dialog/dialog', () => ({
     open,
     children,
     onOpenChange,
+    footer,
   }: {
     open: boolean;
     children: React.ReactNode;
     onOpenChange: (open: boolean) => void;
+    footer?: React.ReactNode;
   }) =>
     open ? (
       <div data-testid="photo-modal">
@@ -91,6 +93,7 @@ vi.mock('@/components/dialog/dialog', () => ({
           Close
         </button>
         {children}
+        {footer}
       </div>
     ) : null,
 }));
@@ -160,7 +163,7 @@ describe('GaleriaFotos', () => {
     });
 
     vi.mocked(onGetPhotoId).mockImplementation((url: string) => {
-      const match = url.match(/id=([^&]*)/);
+      const match = new RegExp(/id=([^&]*)/).exec(url);
       return match ? match[1] : url;
     });
 

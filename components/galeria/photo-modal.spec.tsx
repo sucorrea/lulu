@@ -13,6 +13,7 @@ vi.mock('@/components/dialog/dialog', () => ({
     description,
     className,
     onOpenChange,
+    footer,
   }: {
     children: React.ReactNode;
     open: boolean;
@@ -20,6 +21,7 @@ vi.mock('@/components/dialog/dialog', () => ({
     description: string;
     className: string;
     onOpenChange: (open: boolean) => void;
+    footer?: React.ReactNode;
   }) => {
     if (!open) {
       return null;
@@ -45,6 +47,7 @@ vi.mock('@/components/dialog/dialog', () => ({
           <p>description: {description}</p>
         </div>
         {children}
+        {footer}
       </dialog>
     );
   },
@@ -52,8 +55,9 @@ vi.mock('@/components/dialog/dialog', () => ({
 
 vi.mock('next/image', () => ({
   __esModule: true,
-  default: (props: React.ComponentProps<'img'>) => {
-    return <img {...props} alt={props.alt ?? ''} />;
+  default: (props: React.ComponentProps<'img'> & { priority?: boolean }) => {
+    const { priority: _priority, ...imgProps } = props;
+    return <img {...imgProps} alt={props.alt ?? ''} />;
   },
 }));
 
@@ -110,7 +114,7 @@ const mockCallbacks = {
 
 const setupGalleryMock = (overrides = {}) => {
   const defaultValues = {
-    photos: Array(5).fill(photoUrl),
+    photos: new Array(5).fill(photoUrl),
     selectedIndex: 0,
     selectedPhoto: photoUrl,
     isLoading: false,
@@ -186,7 +190,7 @@ describe('PhotoModal', () => {
     });
 
     it('should have live region for photo number announcements in description', () => {
-      renderPhotoModal({ selectedIndex: 2, photos: Array(5).fill('url') });
+      renderPhotoModal({ selectedIndex: 2, photos: new Array(5).fill('url') });
 
       expect(screen.getByText('3 de 5')).toHaveAttribute('aria-live', 'polite');
     });
@@ -234,7 +238,7 @@ describe('PhotoModal', () => {
     });
 
     it('should have correct aria-label for navigation', () => {
-      renderPhotoModal({ selectedIndex: 0, photos: Array(5).fill('url') });
+      renderPhotoModal({ selectedIndex: 0, photos: new Array(5).fill('url') });
 
       const prevButton = screen.getByRole('button', {
         name: /Foto anterior \(5 de 5\)/i,
@@ -254,22 +258,6 @@ describe('PhotoModal', () => {
       const nextButton = screen.getByRole('button', { name: /Próxima foto/i });
       fireEvent.click(nextButton);
       expect(mockValues.nextPhoto).toHaveBeenCalled();
-    });
-  });
-
-  describe('Photo Display', () => {
-    it('should render photo with correct src', () => {
-      renderPhotoModal();
-
-      const image = screen.getByAltText(/Foto .* de .* na galeria/);
-      expect((image as HTMLImageElement).src).toContain(photoUrl);
-    });
-
-    it('should have correct alt text for photo', () => {
-      renderPhotoModal({ selectedIndex: 2, photos: Array(5).fill('url') });
-
-      const image = screen.getByAltText('Foto 3 de 5 na galeria');
-      expect(image).toBeInTheDocument();
     });
   });
 

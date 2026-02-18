@@ -4,7 +4,6 @@ export interface Person {
   name: string;
   date: Date | string;
   month: string;
-  receives_to_id: number;
   email?: string;
   phone?: string;
   picture?: string;

@@ -1,8 +1,10 @@
 'use client';
-import { memo } from 'react';
 
-import clsx from 'clsx';
+import { memo, useCallback } from 'react';
+
 import { HeartIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 interface LikeUnlikeButtonProps {
   liked: boolean;
@@ -22,36 +24,47 @@ type CombinedProps = LikeUnlikeButtonProps | LegacyLikeUnlikeButtonProps;
 
 const isLegacyProps = (
   props: CombinedProps
-): props is LegacyLikeUnlikeButtonProps => {
-  return Array.isArray(props.liked);
-};
+): props is LegacyLikeUnlikeButtonProps => Array.isArray(props.liked);
+
+const getLikeCountLabel = (count: number) =>
+  `${count} curtida${count === 1 ? '' : 's'}`;
 
 const LikeUnlikeButton = memo(function LikeUnlikeButton(props: CombinedProps) {
   const { handleLike, index } = props;
 
   const isLiked = isLegacyProps(props) ? props.liked[index] : props.liked;
-  const likeCount = isLegacyProps(props) ? props.likes[index] : props.likes;
+  const likeCount = Math.max(
+    0,
+    isLegacyProps(props) ? props.likes[index] : props.likes
+  );
+
+  const ariaLabel = isLiked
+    ? `Descurtir (${getLikeCountLabel(likeCount)})`
+    : `Curtir (${getLikeCountLabel(likeCount)})`;
+
+  const handleClick = useCallback(() => {
+    handleLike(index);
+  }, [handleLike, index]);
 
   return (
     <button
-      onClick={() => handleLike(index)}
-      className={clsx(
-        'flex items-center justify-center gap-1 rounded-full px-2 py-1 text-sm transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+      type="button"
+      onClick={handleClick}
+      className={cn(
+        'flex items-center justify-center gap-1 rounded-full px-2 py-1 text-sm transition-[color,transform] duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95',
         isLiked ? 'scale-110 text-primary' : 'text-muted-foreground'
       )}
-      aria-label={isLiked ? 'Descurtir' : 'Curtir'}
+      aria-label={ariaLabel}
       aria-pressed={isLiked}
     >
       <HeartIcon
-        className={clsx(
-          'h-4 w-4 transition-colors',
+        className={cn(
+          'h-4 w-4 shrink-0 transition-colors',
           isLiked ? 'text-primary fill-primary' : 'text-muted-foreground'
         )}
-        aria-hidden="true"
+        aria-hidden
       />
-      <span aria-label={`${likeCount} curtida${likeCount === 1 ? '' : 's'}`}>
-        {likeCount}
-      </span>
+      <span>{likeCount}</span>
     </button>
   );
 });

@@ -3,7 +3,7 @@ import {
   getParticipantPhotoUrl,
   getSigno,
   getGivesToPicture,
-  filteredAndSortedParticipants,
+  filteredAndSortedParticipantsV2,
   formatDate,
   getNextBirthday,
   birthdayStats,
@@ -22,7 +22,6 @@ const mockPerson: Person = {
   fullName: 'Test Person Full',
   date: new Date('1990-05-15'),
   month: '05',
-  receives_to_id: 2,
   city: 'Test City',
   photoURL: 'https://example.com/photo.jpg',
   photoUpdatedAt: 12345,
@@ -166,28 +165,27 @@ describe('utils', () => {
     });
   });
 
-  describe('filteredAndSortedParticipants', () => {
+  describe('filteredAndSortedParticipantsV2', () => {
     const participants: Person[] = [
-      { ...mockPerson, id: 1, name: 'Alice', month: '01', receives_to_id: 2 },
-      { ...mockPerson, id: 2, name: 'Bob', month: '02', receives_to_id: 3 },
-      { ...mockPerson, id: 3, name: 'Charlie', month: '03', receives_to_id: 4 },
-      { ...mockPerson, id: 4, name: 'David', month: '04', receives_to_id: 1 },
+      { ...mockPerson, id: 1, name: 'Alice', month: '01' },
+      { ...mockPerson, id: 2, name: 'Bob', month: '02' },
+      { ...mockPerson, id: 3, name: 'Charlie', month: '03' },
+      { ...mockPerson, id: 4, name: 'David', month: '04' },
     ];
 
     it('should filter by search term', () => {
-      const result = filteredAndSortedParticipants(
+      const result = filteredAndSortedParticipantsV2(
         participants,
         'alice',
         'all',
         'name'
       );
-      expect(result).toHaveLength(2);
+      expect(result).toHaveLength(1);
       expect(result.map((p) => p.name)).toContain('Alice');
-      expect(result.map((p) => p.name)).toContain('David');
     });
 
     it('should filter by month', () => {
-      const result = filteredAndSortedParticipants(
+      const result = filteredAndSortedParticipantsV2(
         participants,
         '',
         '01',
@@ -198,7 +196,7 @@ describe('utils', () => {
     });
 
     it('should sort by name', () => {
-      const result = filteredAndSortedParticipants(
+      const result = filteredAndSortedParticipantsV2(
         participants,
         '',
         'all',
@@ -233,7 +231,7 @@ describe('utils', () => {
           date: new Date('2000-02-20'),
         },
       ];
-      const result = filteredAndSortedParticipants(
+      const result = filteredAndSortedParticipantsV2(
         participantsWithDates,
         '',
         'all',
@@ -244,39 +242,18 @@ describe('utils', () => {
       expect(result[2].name).toBe('Alice');
     });
 
-    it('should sort by gives_to (resolved from receives_to_id)', () => {
-      const result = filteredAndSortedParticipants(
-        participants,
-        '',
-        'all',
-        'gives_to'
-      );
-      expect(
-        getGivesToPicture(result[0].receives_to_id, participants).name
-      ).toBe('Bob');
-      expect(
-        getGivesToPicture(result[1].receives_to_id, participants).name
-      ).toBe('Charlie');
-      expect(
-        getGivesToPicture(result[2].receives_to_id, participants).name
-      ).toBe('David');
-      expect(
-        getGivesToPicture(result[3].receives_to_id, participants).name
-      ).toBe('Alice');
-    });
-
     it('should filter by gives_to search term', () => {
-      const result = filteredAndSortedParticipants(
+      const result = filteredAndSortedParticipantsV2(
         participants,
         'bob',
         'all',
         'name'
       );
-      expect(result).toHaveLength(2);
+      expect(result).toHaveLength(1);
     });
 
     it('should handle default sort', () => {
-      const result = filteredAndSortedParticipants(
+      const result = filteredAndSortedParticipantsV2(
         participants,
         '',
         'all',

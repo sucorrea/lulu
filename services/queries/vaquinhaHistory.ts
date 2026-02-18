@@ -104,3 +104,53 @@ export const useDeleteVaquinhaHistory = () => {
     },
   });
 };
+
+export type CurrentYearAssignments = {
+  byResponsible: Record<number, VaquinhaHistory>;
+  byBirthday: Record<number, VaquinhaHistory>;
+};
+
+const buildAssignmentsFromHistory = (
+  history: VaquinhaHistory[]
+): CurrentYearAssignments => {
+  const byResponsible: Record<number, VaquinhaHistory> = {};
+  const byBirthday: Record<number, VaquinhaHistory> = {};
+  history.forEach((record) => {
+    byResponsible[record.responsibleId] = record;
+    byBirthday[record.birthdayPersonId] = record;
+  });
+  return { byResponsible, byBirthday };
+};
+
+export const useGetCurrentYearAssignments = () => {
+  const currentYear = new Date().getFullYear();
+
+  return useQuery({
+    queryKey: ['vaquinha-history', 'current-year', currentYear],
+    queryFn: async () => {
+      const history = await fetchVaquinhaHistoryByYear(currentYear);
+      return buildAssignmentsFromHistory(history);
+    },
+    retry: 2,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useGetAssignmentForParticipant = (participantId: number) => {
+  const { data } = useGetCurrentYearAssignments();
+  return data?.byResponsible[participantId] ?? null;
+};
+
+export type OrganizerAssignmentResult = {
+  assignment: VaquinhaHistory | null;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+export const useGetOrganizerForParticipant = (
+  participantId: number
+): OrganizerAssignmentResult => {
+  const { data, isLoading, isError } = useGetCurrentYearAssignments();
+  const assignment = data?.byBirthday[participantId] ?? null;
+  return { assignment, isLoading, isError };
+};

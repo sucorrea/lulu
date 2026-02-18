@@ -9,7 +9,6 @@ describe('form-edit-data utils', () => {
     fullName: 'Test Person Full Name',
     date: new Date('1990-05-15'),
     month: '05',
-    receives_to_id: 2,
     city: 'Test City',
     email: 'test@example.com',
     phone: '1234567890',

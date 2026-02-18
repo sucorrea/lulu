@@ -93,7 +93,7 @@ describe('LinkIconWithText', () => {
     );
 
     const div = screen.getByTestId('mock-icon').parentElement;
-    expect(div).toHaveClass('flex', 'items-center', 'flex-colgap-2');
+    expect(div).toHaveClass('flex', 'items-center', 'gap-1');
   });
 
   it('should render with different icons', () => {

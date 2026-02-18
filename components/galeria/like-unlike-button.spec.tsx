@@ -70,7 +70,10 @@ describe('LikeUnlikeButton', () => {
         index={0}
       />
     );
-    expect(getByRole('button')).toHaveAttribute('aria-label', 'Descurtir');
+    expect(getByRole('button')).toHaveAttribute(
+      'aria-label',
+      'Descurtir (3 curtidas)'
+    );
   });
 
   it('has correct aria-label when not liked', () => {
@@ -82,7 +85,10 @@ describe('LikeUnlikeButton', () => {
         index={1}
       />
     );
-    expect(getByRole('button')).toHaveAttribute('aria-label', 'Curtir');
+    expect(getByRole('button')).toHaveAttribute(
+      'aria-label',
+      'Curtir (5 curtidas)'
+    );
   });
 
   it('applies scale-110 class when liked', () => {
@@ -107,5 +113,33 @@ describe('LikeUnlikeButton', () => {
       />
     );
     expect(getByRole('button').className).not.toContain('scale-110');
+  });
+
+  it('supports non-legacy (scalar) props', () => {
+    const { getByRole } = render(
+      <LikeUnlikeButton
+        liked={true}
+        likes={1}
+        handleLike={handleLike}
+        index={0}
+      />
+    );
+    expect(getByRole('button')).toHaveAttribute(
+      'aria-label',
+      'Descurtir (1 curtida)'
+    );
+    expect(getByRole('button')).toHaveTextContent('1');
+  });
+
+  it('clamps negative like count to zero', () => {
+    const { getByRole } = render(
+      <LikeUnlikeButton
+        liked={false}
+        likes={-1}
+        handleLike={handleLike}
+        index={0}
+      />
+    );
+    expect(getByRole('button')).toHaveTextContent('0');
   });
 });

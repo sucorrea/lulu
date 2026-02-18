@@ -9,11 +9,12 @@ import { useUserVerification } from '@/hooks/user-verify';
 import { useQuery } from '@tanstack/react-query';
 
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
+import { useGetCurrentYearAssignments } from '@/services/queries/vaquinhaHistory';
 
 import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
-import { filteredAndSortedParticipants, getNextBirthday } from './utils';
+import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
 import SkeletonLulusInteractive from './skeleton-lulus-interactive';
 import BadgeLulu from './badge-lulu';
 
@@ -27,6 +28,11 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const [filterMonth, setFilterMonth] = useState('all');
 
   const { user, isLoading } = useUserVerification();
+  const {
+    data: assignments,
+    isLoading: assignmentsLoading,
+    isError: assignmentsError,
+  } = useGetCurrentYearAssignments();
 
   const { data: participants = initialParticipants } = useQuery({
     queryKey: ['get-all-participants-with-tokens'],
@@ -36,10 +42,12 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   });
   const participantsList = participants;
 
-  const totalParticipants = useMemo(
-    () => participantsList.filter((p) => p.receives_to_id !== 0).length,
-    [participantsList]
-  );
+  const totalParticipants = useMemo(() => {
+    if (assignmentsLoading || assignmentsError) {
+      return null;
+    }
+    return Object.keys(assignments?.byBirthday ?? {}).length;
+  }, [assignments, assignmentsLoading, assignmentsError]);
 
   const nextBirthday = useMemo(
     () => getNextBirthday(participantsList),
@@ -48,13 +56,14 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
 
   const filteredParticipants = useMemo(
     () =>
-      filteredAndSortedParticipants(
+      filteredAndSortedParticipantsV2(
         participantsList,
         searchTerm,
         filterMonth,
-        sortBy
+        sortBy,
+        assignments?.byResponsible
       ),
-    [participantsList, searchTerm, filterMonth, sortBy]
+    [participantsList, searchTerm, filterMonth, sortBy, assignments]
   );
 
   const emptyStateMessage = useMemo(() => {
@@ -77,7 +86,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
       <BadgeLulu
-        text={`${totalParticipants} Participantes da vaquinha`}
+        text={`${totalParticipants ?? '—'} Participantes da vaquinha`}
         icon={<GiftIcon className="mr-2 h-4 w-4 shrink-0" />}
       />
       {nextBirthday && (

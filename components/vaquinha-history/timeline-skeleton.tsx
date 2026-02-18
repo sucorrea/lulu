@@ -14,13 +14,16 @@ export const TimelineSkeleton = () => {
 
           <div className="space-y-4 ml-8 border-l-2 border-muted pl-8">
             {[1, 2, 3].map((itemIndex) => (
-              <Card key={itemIndex} className="relative">
+              <Card
+                key={itemIndex}
+                className="relative min-w-0 overflow-hidden"
+              >
                 <div className="absolute -left-[2.6rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-muted border-4 border-background" />
                 <CardContent className="pt-4">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex-1 space-y-3">
-                      <Skeleton className="h-5 w-48" />
-                      <Skeleton className="h-4 w-72" />
+                  <div className="flex min-w-0 flex-col gap-3">
+                    <div className="min-w-0 flex-1 space-y-3">
+                      <Skeleton className="h-5 w-full max-w-48" />
+                      <Skeleton className="h-4 w-full max-w-72" />
                     </div>
                   </div>
                 </CardContent>

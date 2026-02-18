@@ -72,7 +72,7 @@ export const useUpdateParticipantData = (participantId: string) => {
       });
     },
     onError: () => {
-      console.log('Error updating participant data');
+      console.warn('Error updating participant data');
     },
   });
 };

@@ -84,9 +84,15 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   >({ likes: firestoreLikes }, (state, action) => {
     if (action.type === 'toggle') {
       const currentLikes = state.likes[action.photo] ?? [];
-      const newLikes = action.isCurrentlyLiked
-        ? currentLikes.filter((uid) => uid !== action.userId)
-        : [...currentLikes, action.userId];
+      const alreadyLiked = currentLikes.includes(action.userId);
+      let newLikes: string[];
+      if (action.isCurrentlyLiked) {
+        newLikes = currentLikes.filter((uid) => uid !== action.userId);
+      } else if (alreadyLiked) {
+        newLikes = currentLikes;
+      } else {
+        newLikes = [...currentLikes, action.userId];
+      }
       return {
         ...state,
         likes: { ...state.likes, [action.photo]: newLikes },

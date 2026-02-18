@@ -58,7 +58,6 @@ describe('BirthdayCalendar', () => {
       fullName: 'Alice Johnson',
       date: '1990-01-15',
       month: '01',
-      receives_to_id: 2,
       city: 'São Paulo',
     },
     {
@@ -67,7 +66,6 @@ describe('BirthdayCalendar', () => {
       fullName: 'Bob Smith',
       date: '1992-01-20',
       month: '01',
-      receives_to_id: 1,
       city: 'Rio de Janeiro',
     },
     {
@@ -76,7 +74,6 @@ describe('BirthdayCalendar', () => {
       fullName: 'Carol White',
       date: '1991-03-10',
       month: '03',
-      receives_to_id: 4,
       city: 'Belo Horizonte',
     },
   ];
@@ -129,8 +126,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'December Person',
         date: '1990-12-15',
         month: '12',
-
-        receives_to_id: 2,
         city: 'City',
       },
       {
@@ -139,8 +134,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'January Person',
         date: '1990-01-10',
         month: '01',
-
-        receives_to_id: 1,
         city: 'City',
       },
     ];
@@ -162,8 +155,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'Late January',
         date: '1990-01-25',
         month: '01',
-
-        receives_to_id: 2,
         city: 'City',
       },
       {
@@ -172,8 +163,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'Early January',
         date: '1990-01-05',
         month: '01',
-
-        receives_to_id: 1,
         city: 'City',
       },
     ];
@@ -245,8 +234,6 @@ describe('BirthdayCalendar', () => {
         fullName: `Person ${i + 1}`,
         date: new Date(1990, i, 15).toISOString(),
         month: String(i + 1).padStart(2, '0'),
-
-        receives_to_id: 0,
         city: 'City',
       })
     );
@@ -313,8 +300,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'Alice',
         date: '1990-01-15',
         month: '01',
-
-        receives_to_id: 2,
         city: 'City',
       },
       {
@@ -323,8 +308,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'Bob',
         date: '1990-01-20',
         month: '01',
-
-        receives_to_id: 1,
         city: 'City',
       },
     ];
@@ -361,8 +344,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'Test',
         date: '1990-01-14',
         month: '01',
-
-        receives_to_id: 2,
         city: 'City',
       },
     ];
@@ -380,8 +361,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'Alice',
         date: new Date('1990-01-15'),
         month: '01',
-
-        receives_to_id: 2,
         city: 'City',
       },
     ];
@@ -465,8 +444,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'October Person',
         date: '1990-10-15',
         month: '10',
-
-        receives_to_id: 0,
         city: 'City',
       },
       {
@@ -475,8 +452,6 @@ describe('BirthdayCalendar', () => {
         fullName: 'February Person',
         date: '1990-02-10',
         month: '02',
-
-        receives_to_id: 0,
         city: 'City',
       },
     ];

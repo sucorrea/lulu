@@ -24,7 +24,7 @@ export const GenericDialog = ({
   open,
   onOpenChange,
   title,
-  description,
+  description = '',
   children,
   footer,
   className = '',
@@ -40,9 +40,7 @@ export const GenericDialog = ({
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-
         <div className="py-2">{children}</div>
-
         {footer && <DialogFooter className="gap-2">{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>

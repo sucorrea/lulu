@@ -13,7 +13,6 @@ const TRACKED_FIELDS: Set<keyof TrackedPersonFields> = new Set([
   'instagram',
   'pix_key',
   'pix_key_type',
-  'receives_to_id',
   'picture',
   'photoURL',
 ]);

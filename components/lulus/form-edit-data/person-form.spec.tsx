@@ -148,7 +148,6 @@ describe('PersonForm', () => {
     fullName: 'John Doe',
     date: '1990-01-01',
     month: '01',
-    receives_to_id: 2,
     email: 'john@example.com',
     phone: '123456789',
     instagram: 'johndoe',

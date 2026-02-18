@@ -1,7 +1,6 @@
 'use client';
 import { useCallback } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { Icon } from '@iconify/react';
@@ -32,6 +31,9 @@ import {
 } from '../utils';
 import NextBirthdayBanner from './next-birthday-banner';
 import ResponsableGift from './responsable-gift';
+
+const styleIcon =
+  'inline-flex items-center gap-1 rounded-full bg-secondary/10 text-xs';
 
 interface LulusCardHomeProps {
   participant: Person;
@@ -117,7 +119,7 @@ const LulusCardHome = ({
               </h2>
             </div>
             <div className="flex flex-wrap gap-2">
-              <div className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2 py-1 text-xs">
+              <div className={styleIcon}>
                 <CakeIcon size="0.875rem" className="text-primary shrink-0" />
                 <span className="font-medium">
                   {formatDate(new Date(participant.date))}
@@ -129,24 +131,27 @@ const LulusCardHome = ({
                   link={`${LINK_HOROSCOPO_DIARIO}${getSigno(new Date(participant.date)).value}/`}
                   text={getSigno(new Date(participant.date)).label ?? ''}
                   icon={
-                    <Icon icon={getSigno(new Date(participant.date)).icon} />
+                    <Icon
+                      icon={getSigno(new Date(participant.date)).icon}
+                      className="text-primary [&_path]:fill-current"
+                    />
                   }
                 />
               </div>
               {participant.instagram && (
-                <div className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2 py-1 text-xs">
-                  <Image
-                    src="instagram.svg"
-                    alt="Instagram"
-                    width={14}
-                    height={14}
-                    className="shrink-0"
-                  />
+                <div className={styleIcon}>
                   <LinkIconWithText
                     showDescription
                     link={`${LINK_INSTAGRAM}${participant.instagram}`}
                     text={`@${participant.instagram}`}
-                    icon={null}
+                    icon={
+                      <Icon
+                        icon="mdi:instagram"
+                        className="text-primary shrink-0"
+                        width="0.875rem"
+                        height="0.875rem"
+                      />
+                    }
                   />
                 </div>
               )}

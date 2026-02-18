@@ -176,27 +176,6 @@ describe('diffCalculator', () => {
       expect(dateChange?.oldValue).not.toBe(dateChange?.newValue);
     });
 
-    it('should handle number field changes (receives_to_id)', () => {
-      const oldData: Partial<Person> = {
-        ...basePerson,
-        receives_to_id: 1,
-      };
-      const newData: Partial<Person> = {
-        ...basePerson,
-        receives_to_id: 2,
-      };
-
-      const changes = calculateDiff(oldData, newData);
-
-      const giftChange = changes.find((c) => c.field === 'receives_to_id');
-      expect(giftChange).toEqual({
-        field: 'receives_to_id',
-        oldValue: 1,
-        newValue: 2,
-        fieldType: 'number',
-      });
-    });
-
     it('should explicitly detect when a field is cleared (set to null/undefined)', () => {
       const oldData: Partial<Person> = {
         name: 'João',
@@ -224,7 +203,6 @@ describe('diffCalculator', () => {
         pix_key: '12345678900',
         pix_key_type: 'cpf',
         city: 'São Paulo',
-        receives_to_id: 1,
         fullName: 'João Silva Santos',
       };
 
@@ -236,22 +214,21 @@ describe('diffCalculator', () => {
         pix_key: '12345678900',
         pix_key_type: 'cpf',
         city: 'Rio de Janeiro',
-        receives_to_id: 2,
         fullName: 'João Silva Santos Jr',
       };
 
       const changes = calculateDiff(oldData, newData);
 
-      expect(changes).toHaveLength(5);
+      expect(changes).toHaveLength(4);
       expect(changes.some((c) => c.field === 'name')).toBe(true);
       expect(changes.some((c) => c.field === 'email')).toBe(true);
       expect(changes.some((c) => c.field === 'city')).toBe(true);
-      expect(changes.some((c) => c.field === 'receives_to_id')).toBe(true);
       expect(changes.some((c) => c.field === 'fullName')).toBe(true);
       expect(changes.some((c) => c.field === 'phone')).toBe(false);
       expect(changes.some((c) => c.field === 'instagram')).toBe(false);
       expect(changes.some((c) => c.field === 'pix_key')).toBe(false);
       expect(changes.some((c) => c.field === 'pix_key_type')).toBe(false);
+      expect(changes.some((c) => c.field === 'receives_to_id')).toBe(false);
     });
 
     it('should normalize Date objects and ISO strings consistently', () => {
@@ -303,7 +280,6 @@ describe('diffCalculator', () => {
         instagram: 'joaosilva',
         pix_key: '12345678900',
         pix_key_type: 'cpf',
-        receives_to_id: 2,
         picture: 'https://example.com/photo.jpg',
         photoURL: 'https://example.com/photo.jpg',
       };
@@ -326,7 +302,6 @@ describe('diffCalculator', () => {
 
       expect(changes.some((c) => c.field === 'name')).toBe(false);
       expect(changes.some((c) => c.field === 'city')).toBe(false);
-      expect(changes.some((c) => c.field === 'receives_to_id')).toBe(false);
       expect(changes.some((c) => c.field === 'picture')).toBe(false);
       expect(changes.some((c) => c.field === 'photoURL')).toBe(false);
     });
