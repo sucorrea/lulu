@@ -132,18 +132,48 @@ export const NameKey: Record<PixTypes, string> = {
 export const getGivesToPicture = (id: number, participants: Person[]): Person =>
   participants.find((p) => p.id === id) ?? ({} as Person);
 
-const getGivesToName = (p: Person, participants: Person[]): string =>
-  (getGivesToPicture(p.receives_to_id, participants).name ?? '').toLowerCase();
+type AssignmentRecord = Record<
+  number,
+  { birthdayPersonId: number; birthdayPersonName: string }
+>;
 
-export const filteredAndSortedParticipants = (
+const getAssignment = (
+  map: AssignmentRecord | undefined,
+  participantId: number
+) => map?.[participantId];
+
+const getGivesToNameFromMap = (
+  participantId: number,
+  participants: Person[],
+  assignmentsMap?: AssignmentRecord
+): string => {
+  if (!assignmentsMap) {
+    return '';
+  }
+  const assignment = getAssignment(assignmentsMap, participantId);
+  if (!assignment) {
+    return '';
+  }
+  const birthdayPerson = participants.find(
+    (p) => p.id === assignment.birthdayPersonId
+  );
+  return (birthdayPerson?.name ?? '').toLowerCase();
+};
+
+export const filteredAndSortedParticipantsV2 = (
   participants: Person[],
   searchTerm: string,
   filterMonth: string,
-  sortBy: string
+  sortBy: string,
+  assignmentsMap?: AssignmentRecord
 ) =>
   participants
     .filter((p) => {
-      const givesToName = getGivesToName(p, participants);
+      const givesToName = getGivesToNameFromMap(
+        p.id,
+        participants,
+        assignmentsMap
+      );
       const matchesSearch =
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         givesToName.includes(searchTerm.toLowerCase());

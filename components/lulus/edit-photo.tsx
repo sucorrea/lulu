@@ -46,7 +46,10 @@ const EditPhoto = ({ participant }: LulusCardEditProps) => {
   return (
     <>
       <Button
-        onClick={onOpen}
+        onClick={(e) => {
+          (e.currentTarget as HTMLButtonElement).blur();
+          onOpen();
+        }}
         variant="link"
         className="flex items-center gap-1 text-primary hover:no-underline"
       >

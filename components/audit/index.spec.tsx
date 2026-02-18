@@ -96,7 +96,6 @@ const mockParticipant: Person = {
   fullName: 'John Doe',
   date: '2000-01-01',
   month: 'January',
-  receives_to_id: 2,
   email: 'john@example.com',
   phone: '11999999999',
   city: 'São Paulo',
@@ -110,7 +109,6 @@ const mockParticipants: Person[] = [
     fullName: 'Jane Smith',
     date: '1995-06-15',
     month: 'June',
-    receives_to_id: 1,
     city: 'Rio de Janeiro',
   },
 ];

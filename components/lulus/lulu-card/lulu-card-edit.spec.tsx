@@ -70,7 +70,6 @@ const mockParticipant: Person = {
   date: '1990-01-15',
   month: '1',
   photoURL: 'https://example.com/photo.jpg',
-  receives_to_id: 2,
   email: 'john@example.com',
   phone: '1234567890',
   instagram: 'johndoe',

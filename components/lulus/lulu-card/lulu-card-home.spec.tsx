@@ -176,7 +176,6 @@ const mockParticipant = {
   name: 'John Doe',
   date: '1990-01-15',
   photoURL: 'https://example.com/photo.jpg',
-  receives_to_id: 2,
   email: 'john@example.com',
   phone: '1234567890',
   instagram: 'johndoe',
@@ -190,7 +189,6 @@ const mockParticipants: Person[] = [
     id: 2,
     name: 'Jane Smith',
     date: '1992-06-20',
-    receives_to_id: 1,
     photoURL: null,
     email: null,
     phone: null,
@@ -585,7 +583,12 @@ describe('LulusCardHome', () => {
         />
       );
 
-      expect(screen.getByTestId('iconify-icon')).toBeInTheDocument();
+      const icons = screen.getAllByTestId('iconify-icon');
+      const zodiacIcon = icons.find(
+        (el) => el.dataset?.icon === 'noto-v1:capricorn'
+      );
+      expect(zodiacIcon).toBeDefined();
+      expect(zodiacIcon).toBeInTheDocument();
     });
 
     it('should render instagram link when instagram is provided', () => {
@@ -875,7 +878,6 @@ describe('LulusCardHome', () => {
         id: 1,
         name: 'Min User',
         date: '1990-01-01',
-        receives_to_id: 0,
         photoURL: null,
         email: null,
         phone: null,
@@ -914,7 +916,6 @@ describe('LulusCardHome', () => {
         id: 1,
         name: 'Test User',
         date: '1990-01-01',
-        receives_to_id: 0,
         photoURL: undefined,
         email: undefined,
         phone: undefined,

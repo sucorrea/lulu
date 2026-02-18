@@ -9,11 +9,12 @@ import { useUserVerification } from '@/hooks/user-verify';
 import { useQuery } from '@tanstack/react-query';
 
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
+import { useGetCurrentYearAssignments } from '@/services/queries/vaquinhaHistory';
 
 import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
-import { filteredAndSortedParticipants, getNextBirthday } from './utils';
+import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
 import SkeletonLulusInteractive from './skeleton-lulus-interactive';
 import BadgeLulu from './badge-lulu';
 
@@ -27,6 +28,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const [filterMonth, setFilterMonth] = useState('all');
 
   const { user, isLoading } = useUserVerification();
+  const { data: assignments } = useGetCurrentYearAssignments();
 
   const { data: participants = initialParticipants } = useQuery({
     queryKey: ['get-all-participants-with-tokens'],
@@ -37,8 +39,8 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const participantsList = participants;
 
   const totalParticipants = useMemo(
-    () => participantsList.filter((p) => p.receives_to_id !== 0).length,
-    [participantsList]
+    () => Object.keys(assignments?.byBirthday ?? {}).length,
+    [assignments]
   );
 
   const nextBirthday = useMemo(
@@ -48,13 +50,14 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
 
   const filteredParticipants = useMemo(
     () =>
-      filteredAndSortedParticipants(
+      filteredAndSortedParticipantsV2(
         participantsList,
         searchTerm,
         filterMonth,
-        sortBy
+        sortBy,
+        assignments?.byResponsible
       ),
-    [participantsList, searchTerm, filterMonth, sortBy]
+    [participantsList, searchTerm, filterMonth, sortBy, assignments]
   );
 
   const emptyStateMessage = useMemo(() => {

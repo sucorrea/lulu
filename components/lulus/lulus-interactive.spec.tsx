@@ -5,6 +5,7 @@ import { Person } from './types';
 
 const mockUseUserVerification = vi.fn();
 const mockUseQuery = vi.fn();
+const mockUseGetCurrentYearAssignments = vi.fn();
 
 vi.mock('@/hooks/user-verify', () => ({
   useUserVerification: () => mockUseUserVerification(),
@@ -12,6 +13,10 @@ vi.mock('@/hooks/user-verify', () => ({
 
 vi.mock('@tanstack/react-query', () => ({
   useQuery: (config: unknown) => mockUseQuery(config),
+}));
+
+vi.mock('@/services/queries/vaquinhaHistory', () => ({
+  useGetCurrentYearAssignments: () => mockUseGetCurrentYearAssignments(),
 }));
 
 vi.mock('react-spinners/BounceLoader', () => ({
@@ -82,7 +87,6 @@ describe('LulusInteractive', () => {
       fullName: 'Maria Silva Santos',
       date: '1990-03-15',
       month: 'Março',
-      receives_to_id: 2,
       city: 'São Paulo',
       email: 'maria@example.com',
     },
@@ -92,7 +96,6 @@ describe('LulusInteractive', () => {
       fullName: 'João Santos Oliveira',
       date: '1988-07-20',
       month: 'Julho',
-      receives_to_id: 1,
       city: 'Rio de Janeiro',
       phone: '11999999999',
     },
@@ -102,7 +105,6 @@ describe('LulusInteractive', () => {
       fullName: 'Ana Costa Lima',
       date: '1992-01-10',
       month: 'Janeiro',
-      receives_to_id: 0,
       city: 'Brasília',
     },
   ];
@@ -116,6 +118,18 @@ describe('LulusInteractive', () => {
     mockUseQuery.mockImplementation((config) => ({
       data: config.initialData || [],
     }));
+    const byResponsible: Record<
+      number,
+      { birthdayPersonId: number; birthdayPersonName: string }
+    > = {
+      1: { birthdayPersonId: 2, birthdayPersonName: 'João Santos' },
+      2: { birthdayPersonId: 3, birthdayPersonName: 'Ana Costa' },
+      3: { birthdayPersonId: 1, birthdayPersonName: 'Maria Silva' },
+    };
+    const byBirthday: Record<number, object> = { 1: {}, 2: {}, 3: {} };
+    mockUseGetCurrentYearAssignments.mockReturnValue({
+      data: { byResponsible, byBirthday },
+    });
   });
 
   describe('Loading State', () => {
@@ -156,13 +170,7 @@ describe('LulusInteractive', () => {
 
     it('should show total participants badge with correct count', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
-      expect(screen.getByText(/2 Participantes/)).toBeInTheDocument();
-    });
-
-    it('should exclude participants with receives_to_id === 0 from count', () => {
-      render(<LulusInteractive initialParticipants={mockParticipants} />);
-      const badge = screen.getByText(/Participantes/);
-      expect(badge.textContent).toBe('2 Participantes da vaquinha');
+      expect(screen.getByText(/3 Participantes/)).toBeInTheDocument();
     });
 
     it('should render participant cards', () => {
@@ -182,7 +190,6 @@ describe('LulusInteractive', () => {
         {
           ...mockParticipants[0],
           date: nextMonth.toISOString().split('T')[0],
-          receives_to_id: 1,
         },
       ];
 

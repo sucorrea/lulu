@@ -34,7 +34,6 @@ describe('PixInfo', () => {
     fullName: 'Alice Johnson',
     date: '1990-01-15',
     month: '01',
-    receives_to_id: 2,
     city: 'São Paulo',
     pix_key: '123.456.789-00',
     pix_key_type: 'cpf',
