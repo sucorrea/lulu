@@ -7,6 +7,7 @@ import { Person } from '@/components/lulus/types';
 import { AuditLogList } from '@/components/audit/AuditLogList';
 import { FIELD_LABELS } from '@/components/audit/AuditLogList/constants';
 import ErrorState from '@/components/error-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { AuditFilters } from './AuditFilters';
 import { useAuditFilters } from './useAuditFilters';
 import { useAuditData } from './useAuditData';
@@ -82,7 +83,7 @@ export const AuditPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {Array.from({ length: 3 }, (_, i) => `filter-skeleton-${i}`).map(
               (id) => (
-                <div key={id} className="h-10 bg-muted rounded animate-pulse" />
+                <Skeleton key={id} className="h-10" />
               )
             )}
           </div>
@@ -90,10 +91,7 @@ export const AuditPage = () => {
           <div className="space-y-4">
             {Array.from({ length: 5 }, (_, i) => `log-skeleton-${i}`).map(
               (id) => (
-                <div
-                  key={id}
-                  className="h-24 bg-muted rounded-xl border border-border animate-pulse"
-                />
+                <Skeleton key={id} className="h-24 rounded-xl" />
               )
             )}
           </div>

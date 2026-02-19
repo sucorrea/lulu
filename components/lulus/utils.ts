@@ -105,6 +105,20 @@ export const getSigno = (dataNascimento: Date): SignoValues => {
 
   return ZODIAC_SIGNS[zodiacEntry.sign];
 };
+export const monthDashboard = [
+  'Jan',
+  'Fev',
+  'Mar',
+  'Abr',
+  'Mai',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Set',
+  'Out',
+  'Nov',
+  'Dez',
+];
 
 export const meses = [
   { value: '01', label: 'Janeiro' },

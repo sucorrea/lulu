@@ -11,6 +11,7 @@ import {
   addVaquinhaHistory,
   updateVaquinhaHistory,
   deleteVaquinhaHistory,
+  batchAddVaquinhaHistory,
 } from '../vaquinhaHistory';
 
 export const useGetAllVaquinhaHistory = () => {
@@ -153,4 +154,16 @@ export const useGetOrganizerForParticipant = (
   const { data, isLoading, isError } = useGetCurrentYearAssignments();
   const assignment = data?.byBirthday[participantId] ?? null;
   return { assignment, isLoading, isError };
+};
+
+export const useBatchAddVaquinhaHistory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (items: VaquinhaHistoryInput[]) =>
+      batchAddVaquinhaHistory(items),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+    },
+  });
 };

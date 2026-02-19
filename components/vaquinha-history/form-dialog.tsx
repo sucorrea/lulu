@@ -37,7 +37,7 @@ const formSchema = z.object({
   year: z.coerce
     .number()
     .min(2000, 'Ano deve ser maior que 2000')
-    .max(2100, 'Ano deve ser menor que 2100'),
+    .max(2026, 'Ano deve ser menor que 2026'),
   responsibleId: z.coerce.number().min(1, 'Selecione quem foi responsável'),
   birthdayPersonId: z.coerce.number().min(1, 'Selecione o aniversariante'),
 });
@@ -98,7 +98,11 @@ interface VaquinhaHistoryFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (
-    data: FormData & { responsibleName: string; birthdayPersonName: string }
+    data: FormData & {
+      responsibleName: string;
+      birthdayPersonName: string;
+      birthdayDate: string;
+    }
   ) => void;
   participants: Person[];
   editingItem?: VaquinhaHistory | null;
@@ -148,6 +152,7 @@ export const VaquinhaHistoryFormDialog = ({
       ...data,
       responsibleName: responsible.name,
       birthdayPersonName: birthdayPerson.name,
+      birthdayDate: String(birthdayPerson.date),
     });
   };
 
@@ -175,7 +180,12 @@ export const VaquinhaHistoryFormDialog = ({
                 <FormItem>
                   <FormLabel>Ano</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="2024" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="2026"
+                      {...field}
+                      max={2026}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -201,7 +211,7 @@ export const VaquinhaHistoryFormDialog = ({
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="capitalize">
                 {submitLabel}
               </Button>
             </DialogFooter>

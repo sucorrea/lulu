@@ -13,6 +13,12 @@ vi.mock('@/hooks/use-disclosure', () => ({
   })),
 }));
 
+vi.mock('@/providers/device-provider', () => ({
+  useIsMobile: vi.fn(() => ({
+    isMobile: false,
+  })),
+}));
+
 vi.mock('./filter-component', () => ({
   default: ({
     searchTerm,
@@ -223,7 +229,7 @@ describe('Filter', () => {
     it('should have destructive variant on badge', () => {
       render(<Filter {...defaultProps} searchTerm="test" />);
       const badge = screen.getByTestId('badge');
-      expect(badge.getAttribute('data-variant')).toBe('destructive');
+      expect(badge.dataset.variant).toBe('destructive');
     });
   });
 
@@ -266,13 +272,13 @@ describe('Filter', () => {
     it('should have ghost variant on clear button', () => {
       render(<Filter {...defaultProps} searchTerm="test" />);
       const clearButton = screen.getByTestId('clear-button');
-      expect(clearButton.getAttribute('data-variant')).toBe('ghost');
+      expect(clearButton.dataset.variant).toBe('ghost');
     });
 
     it('should have sm size on clear button', () => {
       render(<Filter {...defaultProps} searchTerm="test" />);
       const clearButton = screen.getByTestId('clear-button');
-      expect(clearButton.getAttribute('data-size')).toBe('sm');
+      expect(clearButton.dataset.size).toBe('sm');
     });
   });
 

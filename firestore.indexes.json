@@ -33,6 +33,20 @@
           "order": "ASCENDING"
         },
         {
+          "fieldPath": "birthdayDate",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vaquinha-history",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "year",
+          "order": "ASCENDING"
+        },
+        {
           "fieldPath": "birthdayPersonName",
           "order": "ASCENDING"
         }

@@ -12,6 +12,7 @@ import {
   orderBy,
   onSnapshot,
   Query,
+  writeBatch,
 } from 'firebase/firestore';
 
 export type VaquinhaHistory = {
@@ -21,6 +22,7 @@ export type VaquinhaHistory = {
   responsibleName: string;
   birthdayPersonId: number;
   birthdayPersonName: string;
+  birthdayDate?: string;
   createdAt: string;
   updatedAt?: string;
 };
@@ -107,9 +109,12 @@ export const fetchVaquinhaHistoryByYear = async (
     data.push(doc.data() as VaquinhaHistory);
   });
 
-  return data.sort((a, b) =>
-    a.birthdayPersonName.localeCompare(b.birthdayPersonName)
-  );
+  return data.sort((a, b) => {
+    if (a.birthdayDate && b.birthdayDate) {
+      return a.birthdayDate.localeCompare(b.birthdayDate);
+    }
+    return a.birthdayPersonName.localeCompare(b.birthdayPersonName);
+  });
 };
 
 export const fetchVaquinhaHistoryByResponsible = async (
@@ -169,9 +174,12 @@ export const listenVaquinhaHistory = (
       data.push(doc.data() as VaquinhaHistory);
     });
     if (year) {
-      data.sort((a, b) =>
-        a.birthdayPersonName.localeCompare(b.birthdayPersonName)
-      );
+      data.sort((a, b) => {
+        if (a.birthdayDate && b.birthdayDate) {
+          return a.birthdayDate.localeCompare(b.birthdayDate);
+        }
+        return a.birthdayPersonName.localeCompare(b.birthdayPersonName);
+      });
     }
     callback(data);
   });
@@ -187,4 +195,25 @@ export const fetchAvailableYears = async (): Promise<number[]> => {
   });
 
   return Array.from(years).sort((a, b) => b - a);
+};
+
+export const batchAddVaquinhaHistory = async (
+  items: VaquinhaHistoryInput[]
+): Promise<string[]> => {
+  const batch = writeBatch(db);
+  const ids: string[] = [];
+
+  for (const item of items) {
+    const historyRef = doc(collection(db, 'vaquinha-history'));
+    const historyData: VaquinhaHistory = {
+      ...item,
+      id: historyRef.id,
+      createdAt: new Date().toISOString(),
+    };
+    batch.set(historyRef, historyData);
+    ids.push(historyRef.id);
+  }
+
+  await batch.commit();
+  return ids;
 };
