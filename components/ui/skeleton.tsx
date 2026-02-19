@@ -9,7 +9,7 @@ const Skeleton = ({
   return (
     <div
       className={twMerge(
-        'animate-pulse rounded-md bg-gray-400 [&>*]:!opacity-0 text-transparent',
+        'animate-pulse rounded-md bg-muted [&>*]:!opacity-0 text-transparent',
         className
       )}
       {...props}

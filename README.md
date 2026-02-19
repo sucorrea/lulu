@@ -122,6 +122,16 @@ Continuous Deployment
 - Filtros dinâmicos
 - Persistência no Firestore
 
+### **Sorteio da Vaquinha**
+
+- Seleção das participantes confirmadas para o ano
+- Algoritmo de sorteio automático (derangement) — ninguém pega a si mesma
+- Restrição de evitar repetir a mesma pessoa do ano anterior
+- Fallback automático com aviso quando as restrições geram conflito
+- Preview ordenado por data de aniversário antes de confirmar
+- Salvamento atômico via `writeBatch` (tudo ou nada)
+- Acessível via botão na tela de participantes (apenas para admin)
+
 ### **Sistema de Auditoria**
 
 - Trilha completa de alterações

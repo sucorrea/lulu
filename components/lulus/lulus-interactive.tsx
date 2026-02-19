@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { GiftIcon, Users } from 'lucide-react';
+import { Dices, GiftIcon, Users } from 'lucide-react';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -89,6 +90,16 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
         text={`${totalParticipants ?? '—'} Participantes da vaquinha`}
         icon={<GiftIcon className="mr-2 h-4 w-4 shrink-0" />}
       />
+      {!!user && (
+        <div className="mb-4 flex justify-end">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/sorteio">
+              <Dices className="h-4 w-4 mr-2" />
+              Sorteio
+            </Link>
+          </Button>
+        </div>
+      )}
       {nextBirthday && (
         <div className="mb-8">
           <LulusCardHome

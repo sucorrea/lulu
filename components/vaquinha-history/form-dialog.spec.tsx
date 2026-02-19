@@ -64,8 +64,8 @@ vi.mock('@/components/ui/select', () => ({
 
 describe('VaquinhaHistoryFormDialog', () => {
   const participants = [
-    { id: 1, name: 'Maria' },
-    { id: 2, name: 'Joana' },
+    { id: 1, name: 'Maria', date: '1990-01-10' },
+    { id: 2, name: 'Joana', date: '1992-02-20' },
   ] as Person[];
 
   const editingItem: VaquinhaHistory = {
@@ -153,6 +153,7 @@ describe('VaquinhaHistoryFormDialog', () => {
       responsibleName: 'Maria',
       birthdayPersonId: 2,
       birthdayPersonName: 'Joana',
+      birthdayDate: '1992-02-20',
     });
   });
 

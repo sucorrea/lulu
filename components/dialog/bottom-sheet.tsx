@@ -26,7 +26,7 @@ export const GenericBottomSheet = ({
   className = '',
 }: Readonly<GenericBottomSheetProps>) => {
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root open={open} onOpenChange={onOpenChange} autoFocus>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/80" />
         <Drawer.Content
