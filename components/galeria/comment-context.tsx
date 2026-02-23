@@ -41,13 +41,15 @@ export const CommentProvider = ({
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editInput, setEditInput] = useState('');
 
-  const onCommentInputChange = useCallback((value: string) => {
-    setCommentInput(value);
-  }, []);
+  const onCommentInputChange = useCallback(
+    (value: string) => setCommentInput(value),
+    []
+  );
 
-  const onEditInputChange = useCallback((value: string) => {
-    setEditInput(value);
-  }, []);
+  const onEditInputChange = useCallback(
+    (value: string) => setEditInput(value),
+    []
+  );
 
   const onEditComment = useCallback((comment: GaleriaComment) => {
     setEditingCommentId(comment.id);
@@ -55,9 +57,7 @@ export const CommentProvider = ({
   }, []);
 
   const onDeleteComment = useCallback(
-    (commentId: string) => {
-      handleDeleteComment(commentId);
-    },
+    (commentId: string) => handleDeleteComment(commentId),
     [handleDeleteComment]
   );
 

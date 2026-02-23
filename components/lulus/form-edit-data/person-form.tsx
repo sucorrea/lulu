@@ -8,14 +8,7 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { SelectWithOptions } from '@/components/ui/select-with-options';
 
 import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
 import { useUserVerification } from '@/hooks/user-verify';
@@ -155,26 +148,18 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
             control={control}
             name="pix_key_type"
             render={({ field }) => (
-              <Select
+              <SelectWithOptions
                 value={field.value}
                 onValueChange={field.onChange}
-                defaultValue="none"
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecione um tipo de chave Pix" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {(
-                      ['cpf', 'email', 'phone', 'random', 'none'] as PixTypes[]
-                    ).map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {NameKey[type ?? 'none']}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                options={(
+                  ['cpf', 'email', 'phone', 'random', 'none'] as PixTypes[]
+                ).map((type) => ({
+                  value: type,
+                  label: NameKey[type ?? 'none'],
+                }))}
+                placeholder="Selecione um tipo de chave Pix"
+                triggerClassName="w-full"
+              />
             )}
           />
           {errors.pix_key_type && (

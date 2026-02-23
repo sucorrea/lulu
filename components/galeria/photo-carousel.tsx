@@ -1,10 +1,10 @@
 'use client';
-import { memo } from 'react';
+import { ReactNode, memo } from 'react';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PhotoCarouselProps {
-  children: React.ReactNode;
+  children: ReactNode;
   selectedIndex: number | null;
   photos: string[];
   nextPhoto: () => void;

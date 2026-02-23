@@ -1,14 +1,8 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Search, SortAsc, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { SelectWithOptions } from '@/components/ui/select-with-options';
+
 interface FilterBarProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
@@ -19,7 +13,12 @@ interface FilterBarProps {
   months: { value: string; label: string }[];
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({
+const SORT_OPTIONS = [
+  { value: 'date', label: 'Ordenar por data' },
+  { value: 'name', label: 'Ordenar por nome' },
+] as const;
+
+const FilterBar: FC<FilterBarProps> = ({
   searchTerm,
   setSearchTerm,
   sortBy,
@@ -28,6 +27,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   setFilterMonth,
   months,
 }) => {
+  const monthOptions = [{ value: 'all', label: 'Todos os meses' }, ...months];
+
   return (
     <div className="mb-8 rounded-2xl border border-border bg-card/90 p-4 shadow-lulu-sm backdrop-blur">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -43,43 +44,23 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <SortAsc className="h-4 w-4 text-muted-foreground" />
-          <Select
+          <SelectWithOptions
             value={sortBy}
-            onValueChange={(value) => setSortBy(value)}
-            defaultValue="date"
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecione uma opção" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="date">Ordenar por data</SelectItem>
-                <SelectItem value="name">Ordenar por nome</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+            onValueChange={setSortBy}
+            options={SORT_OPTIONS}
+            placeholder="Selecione uma opção"
+            triggerClassName="w-full"
+          />
         </div>
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
-          <Select
+          <SelectWithOptions
             value={filterMonth}
-            onValueChange={(value) => setFilterMonth(value)}
-            defaultValue="all"
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecione uma opção" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="all">Todos os meses</SelectItem>
-                {months.map((month) => (
-                  <SelectItem key={month.value} value={month.value}>
-                    {month.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+            onValueChange={setFilterMonth}
+            options={monthOptions}
+            placeholder="Selecione uma opção"
+            triggerClassName="w-full"
+          />
         </div>
       </div>
     </div>

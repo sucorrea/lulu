@@ -24,3 +24,5 @@ export const AuditLogSkeleton = () => {
     </div>
   );
 };
+
+export default AuditLogSkeleton;

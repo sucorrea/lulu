@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import {
   Accordion,
   AccordionContent,
@@ -7,7 +9,7 @@ import {
 
 type MoreInfoAccordionProps = {
   text?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const MoreInfoAccordion = ({ text, children }: MoreInfoAccordionProps) => (

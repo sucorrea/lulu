@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
-import { Calendar, Gift, User, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Gift, Edit, Trash2, ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useUserVerification } from '@/hooks/user-verify';
 import { cn } from '@/lib/utils';
@@ -39,20 +39,16 @@ const TimelineItem = memo(function TimelineItem({
         aria-hidden="true"
       />
       <CardContent className="pt-4">
+        <div className="flex flex-1 items-center gap-2 flex-wrap">
+          <span className="font-medium">
+            {item.birthdayPersonName.split(' ')[0]}
+          </span>
+          <ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="font-medium">
+            {item.responsibleName.split(' ')[0]}
+          </span>
+        </div>
         <div className="flex flex-col gap-3">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <p className="text-base font-semibold">
-                {item.birthdayPersonName}
-              </p>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <User className="h-4 w-4" aria-hidden="true" />
-                <span className="font-medium text-sm">
-                  {`${item.responsibleName} foi responsável pela vaquinha`}
-                </span>
-              </div>
-            </div>
-          </div>
           {isAuthenticated && (onEdit || onDelete) && (
             <div className="flex items-center justify-end gap-2">
               {onEdit && (

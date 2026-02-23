@@ -7,6 +7,7 @@ export const onGetPhotoId = (photo: string) => {
     return photo;
   }
 };
+
 export const downloadPhoto = async (url: string) => {
   try {
     const response = await fetch(url);

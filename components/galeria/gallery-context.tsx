@@ -108,21 +108,23 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
     setSelectedIndex(index);
   }, []);
 
-  const closePhoto = useCallback(() => {
-    setSelectedIndex(null);
-  }, []);
+  const closePhoto = useCallback(() => setSelectedIndex(null), []);
 
-  const nextPhoto = useCallback(() => {
-    setSelectedIndex((prev) =>
-      prev === null ? null : (prev + 1) % photos.length
-    );
-  }, [photos.length]);
+  const nextPhoto = useCallback(
+    () =>
+      setSelectedIndex((prev) =>
+        prev === null ? null : (prev + 1) % photos.length
+      ),
+    [photos.length]
+  );
 
-  const prevPhoto = useCallback(() => {
-    setSelectedIndex((prev) =>
-      prev === null ? null : (prev - 1 + photos.length) % photos.length
-    );
-  }, [photos.length]);
+  const prevPhoto = useCallback(
+    () =>
+      setSelectedIndex((prev) =>
+        prev === null ? null : (prev - 1 + photos.length) % photos.length
+      ),
+    [photos.length]
+  );
 
   const getPhotoStats = useCallback(
     (index: number): PhotoStats => {
@@ -143,9 +145,7 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const getComments = useCallback(
-    (photo: string) => {
-      return firestoreComments[photo] ?? [];
-    },
+    (photo: string) => firestoreComments[photo] ?? [],
     [firestoreComments]
   );
 

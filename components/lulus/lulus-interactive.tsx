@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Dices, GiftIcon, Users } from 'lucide-react';
 import Link from 'next/link';
 
@@ -79,6 +79,11 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     return 'Nenhuma participante encontrada neste mês';
   }, [searchTerm, filterMonth]);
 
+  const clearFilters = useCallback(() => {
+    setSearchTerm('');
+    setFilterMonth('all');
+  }, []);
+
   if (isLoading) {
     return <SkeletonLulusInteractive />;
   }
@@ -144,10 +149,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
               </p>
               {(searchTerm || filterMonth !== 'all') && (
                 <Button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setFilterMonth('all');
-                  }}
+                  onClick={clearFilters}
                   variant="outline"
                   className="gap-2"
                 >

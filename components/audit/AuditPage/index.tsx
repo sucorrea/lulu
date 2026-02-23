@@ -110,7 +110,6 @@ export const AuditPage = () => {
           Visualize todas as alterações realizadas nos dados dos participantes
         </p>
       </div>
-
       <AuditFilters
         selectedParticipant={filters.participantId}
         limitCount={filters.limit}
@@ -159,3 +158,5 @@ export const AuditPage = () => {
     </div>
   );
 };
+
+export default AuditPage;

@@ -52,3 +52,5 @@ export const AuditLogList = ({
     </div>
   );
 };
+
+export default AuditLogList;
