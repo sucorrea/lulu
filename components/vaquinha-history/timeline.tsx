@@ -40,13 +40,9 @@ const TimelineItem = memo(function TimelineItem({
       />
       <CardContent className="pt-4">
         <div className="flex flex-1 items-center gap-2 flex-wrap">
-          <span className="font-medium">
-            {item.birthdayPersonName.split(' ')[0]}
-          </span>
+          <span className="font-medium">{item.birthdayPersonName}</span>
           <ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="font-medium">
-            {item.responsibleName.split(' ')[0]}
-          </span>
+          <span className="font-medium">{item.responsibleName}</span>
         </div>
         <div className="flex flex-col gap-3">
           {isAuthenticated && (onEdit || onDelete) && (
@@ -175,3 +171,5 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
     </div>
   );
 });
+
+export default VaquinhaHistoryTimeline;

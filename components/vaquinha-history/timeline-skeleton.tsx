@@ -35,3 +35,5 @@ export const TimelineSkeleton = () => {
     </div>
   );
 };
+
+export default TimelineSkeleton;

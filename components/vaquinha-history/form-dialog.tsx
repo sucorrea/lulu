@@ -208,3 +208,5 @@ export const VaquinhaHistoryFormDialog = ({
     </Dialog>
   );
 };
+
+export default VaquinhaHistoryFormDialog;

@@ -34,3 +34,5 @@ export const YearFilter = ({
     </div>
   );
 };
+
+export default YearFilter;
