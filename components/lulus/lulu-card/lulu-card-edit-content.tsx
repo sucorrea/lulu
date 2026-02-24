@@ -18,7 +18,7 @@ const LulusCardEditContent = ({ participantId }: LulusCardEditContentProps) => {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <BounceLoader color="#F43F5E" />
+        <BounceLoader color="var(--primary)" />
       </div>
     );
   }

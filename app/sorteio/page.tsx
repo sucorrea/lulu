@@ -1,6 +1,8 @@
+import type { Metadata } from 'next';
+
 import { SorteioClient } from '@/components/sorteio/sorteio-client';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Sorteio da Vaquinha | Lulu',
   description:
     'Realize o sorteio da vaquinha de aniversário entre as participantes',

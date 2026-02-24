@@ -7,7 +7,7 @@ const LulusCardEditDynamic = dynamic(() => import('./lulu-card-edit-content'), {
   ssr: false,
   loading: () => (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <BounceLoader color="#F43F5E" />
+      <BounceLoader color="var(--primary)" />
     </div>
   ),
 });

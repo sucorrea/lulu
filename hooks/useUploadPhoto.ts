@@ -11,9 +11,6 @@ export const useUploadPhoto = (participantId: string) => {
     onSuccess: () => {
       refetchParticipant();
       queryClient.invalidateQueries({ queryKey: ['get-all-participants'] });
-      queryClient.invalidateQueries({
-        queryKey: ['get-all-participants-with-tokens'],
-      });
     },
     onError: () => refetchParticipant(),
   });

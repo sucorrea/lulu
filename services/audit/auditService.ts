@@ -14,6 +14,12 @@ import {
 import { db } from '@/services/firebase';
 import { AuditLog, AuditFieldChange } from './types';
 
+const logError = (...args: unknown[]) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(...args);
+  }
+};
+
 const generateAuditLogId = (): string => {
   const timestamp = Date.now();
   const buffer = new Uint8Array(6);
@@ -107,7 +113,7 @@ export const createAuditLog = async (
 
     return auditLog;
   } catch (error) {
-    console.error(
+    logError(
       `Erro ao criar audit log para participante ${participantId}:`,
       error
     );
@@ -131,7 +137,7 @@ export const getAuditLogs = async (
     const querySnapshot = await getDocs(q);
     return snapshotToAuditLogs(querySnapshot);
   } catch (error) {
-    console.error(
+    logError(
       `Erro ao buscar audit logs para participante ${participantId}:`,
       error
     );
@@ -157,7 +163,7 @@ export const getAuditLogsByUser = async (
     const querySnapshot = await getDocs(q);
     return snapshotToAuditLogs(querySnapshot);
   } catch (error) {
-    console.error(
+    logError(
       `Erro ao buscar audit logs por usuário ${userId} para participante ${participantId}:`,
       error
     );
@@ -172,7 +178,7 @@ export const getLatestAudit = async (
     const logs = await getAuditLogs(participantId, 1);
     return logs.length > 0 ? logs[0] : null;
   } catch (error) {
-    console.error(
+    logError(
       `Erro ao buscar último audit log para participante ${participantId}:`,
       error
     );
@@ -203,7 +209,7 @@ export const getAuditLogsByChangedField = async (
 
     return filteredLogs.slice(0, limitCount);
   } catch (error) {
-    console.error(
+    logError(
       `Erro ao buscar audit logs por campo ${fieldName} para participante ${participantId}:`,
       error
     );
@@ -219,7 +225,7 @@ export const countAuditLogs = async (
     const snapshot = await getDocs(auditCollectionRef);
     return snapshot.size;
   } catch (error) {
-    console.error(
+    logError(
       `Erro ao contar audit logs para participante ${participantId}:`,
       error
     );
@@ -242,7 +248,7 @@ export const getAllAuditLogs = async (
     const querySnapshot = await getDocs(q);
     return snapshotToAuditLogsWithParticipantId(querySnapshot);
   } catch (error) {
-    console.error('Erro ao buscar todos os audit logs:', error);
+    logError('Erro ao buscar todos os audit logs:', error);
     throw error;
   }
 };
@@ -264,7 +270,7 @@ export const getAllAuditLogsByUser = async (
     const querySnapshot = await getDocs(q);
     return snapshotToAuditLogsWithParticipantId(querySnapshot);
   } catch (error) {
-    console.error(`Erro ao buscar audit logs por usuário ${userId}:`, error);
+    logError(`Erro ao buscar audit logs por usuário ${userId}:`, error);
     throw error;
   }
 };

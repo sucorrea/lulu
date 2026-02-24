@@ -15,13 +15,12 @@ describe('Header', () => {
 
   it('should render description when provided', () => {
     render(
-      <Header
-        title="Galeria"
-        description="Galeria de fotos da vaquinha."
-      />
+      <Header title="Galeria" description="Galeria de fotos da vaquinha." />
     );
 
-    expect(screen.getByText('Galeria de fotos da vaquinha.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Galeria de fotos da vaquinha.')
+    ).toBeInTheDocument();
   });
 
   it('should render empty description when not provided', () => {

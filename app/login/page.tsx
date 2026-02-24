@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
-import React from 'react';
 
 import Login from '@/components/modules/login/login';
+
+export const revalidate = false;
 
 export const metadata: Metadata = {
   title: 'Login | Luluzinha',

@@ -5,7 +5,6 @@ import type { Config } from 'tailwindcss';
 const config: Config = {
   darkMode: ['class'],
   content: [
-    './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
@@ -67,9 +66,6 @@ const config: Config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-      },
-      fontFamily: {
-        comic: ['Comic Sans MS', 'Comic Sans'],
       },
       boxShadow: {
         'lulu-sm': '2px 2px 0px rgba(0, 0, 0, 0.15)',

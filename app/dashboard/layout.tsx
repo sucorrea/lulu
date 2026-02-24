@@ -8,6 +8,6 @@ export const metadata: Metadata = {
 
 const DashboardLayout = ({
   children,
-}: Readonly<{ children: React.ReactNode }>) => children;
+}: Readonly<{ children: React.ReactNode }>) => <>{children}</>;
 
 export default DashboardLayout;

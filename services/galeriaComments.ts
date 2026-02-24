@@ -6,6 +6,7 @@ import {
   updateDoc,
   arrayUnion,
   onSnapshot,
+  runTransaction,
 } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -43,13 +44,15 @@ export const deleteCommentFromPhoto = async (
   commentId: string
 ) => {
   const ref = doc(db, 'galeria-comments', photoId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) {
-    return;
-  }
-  const comments = snap.data().comments || [];
-  const updated = comments.filter((c: GaleriaComment) => c.id !== commentId);
-  await updateDoc(ref, { comments: updated });
+  await runTransaction(db, async (transaction) => {
+    const snap = await transaction.get(ref);
+    if (!snap.exists()) {
+      return;
+    }
+    const comments: GaleriaComment[] = snap.data().comments || [];
+    const updated = comments.filter((c) => c.id !== commentId);
+    transaction.update(ref, { comments: updated });
+  });
 };
 
 export const editCommentOnPhoto = async (
@@ -58,15 +61,19 @@ export const editCommentOnPhoto = async (
   newText: string
 ) => {
   const ref = doc(db, 'galeria-comments', photoId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) {
-    return;
-  }
-  const comments = snap.data().comments || [];
-  const updated = comments.map((c: GaleriaComment) =>
-    c.id === commentId ? { ...c, comment: newText } : c
-  );
-  await updateDoc(ref, { comments: updated });
+  await runTransaction(db, async (transaction) => {
+    const snap = await transaction.get(ref);
+    if (!snap.exists()) {
+      return;
+    }
+    const comments: GaleriaComment[] = snap.data().comments || [];
+    const updated = comments.map((c) =>
+      c.id === commentId
+        ? { ...c, comment: newText, editedAt: new Date().toISOString() }
+        : c
+    );
+    transaction.update(ref, { comments: updated });
+  });
 };
 
 export const listenPhotoComments = (

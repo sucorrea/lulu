@@ -12,9 +12,9 @@ const SkeletonLulusInteractive = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-2 overflow-hidden md:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
+        {['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5', 'sk-6'].map((key) => (
           <Card
-            key={i}
+            key={key}
             className="lulu-card mx-auto w-full max-w-md overflow-hidden p-2"
           >
             <CardContent className="flex h-full flex-col gap-2 overflow-hidden p-4">

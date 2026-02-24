@@ -16,12 +16,12 @@ describe('Loading', () => {
     expect(mainDiv).toBeInTheDocument();
   });
 
-  it('should render BounceLoader with red color', () => {
+  it('should render BounceLoader with theme primary color', () => {
     render(<Loading />);
 
     const loader = screen.getByTestId('bounce-loader');
     expect(loader).toBeInTheDocument();
-    expect(loader).toHaveAttribute('data-color', '#FF0000');
+    expect(loader).toHaveAttribute('data-color', 'var(--primary)');
   });
 
   it('should apply flex layout classes', () => {

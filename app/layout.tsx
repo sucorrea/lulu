@@ -1,10 +1,15 @@
-import { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
+import { Inter } from 'next/font/google';
+import { ReactNode } from 'react';
 
 import type { Metadata, Viewport } from 'next';
 
 import { Navbar } from '@/components/layout/navigation-bar/navbar';
+import { Toaster } from '@/components/ui/sonner';
 import { DeviceProvider } from '@/providers/device-provider';
+import { ReactQueryProvider } from '@/providers/react-query-provider';
+import { ThemeProvider } from '@/providers/theme-provider';
+import './globals.css';
 
 const Footer = dynamic(() => import('@/components/layout/footer'));
 
@@ -13,18 +18,17 @@ const PwaUpdateManager = dynamic(() =>
     default: m.PwaUpdateManager,
   }))
 );
-import { ReactQueryProvider } from '@/providers/react-query-provider';
-import { ThemeProvider } from '@/providers/theme-provider';
-import { Toaster } from '@/components/ui/sonner';
-import './globals.css';
 
-const ano = new Date().getFullYear();
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || 'https://luluzinha.web.app'
   ),
-  title: `Luluzinha ${ano}`,
+  title: `Luluzinha ${new Date().getFullYear()}`,
   description:
     'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard, histórico e auditoria em tempo real.',
   manifest: '/manifest.webmanifest',
@@ -37,7 +41,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: `Luluzinha ${ano}`,
+    title: `Luluzinha ${new Date().getFullYear()}`,
     description:
       'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
     type: 'website',
@@ -45,7 +49,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `Luluzinha ${ano}`,
+    title: `Luluzinha ${new Date().getFullYear()}`,
     description:
       'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
   },
@@ -68,11 +72,9 @@ const RootLayout = ({
   children: ReactNode;
 }>) => {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className="antialiased">
         <ReactQueryProvider>

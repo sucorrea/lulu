@@ -36,13 +36,12 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const { user } = useUserVerification();
   const { data: assignments } = useGetCurrentYearAssignments();
 
-  const { data: participants = initialParticipants } = useQuery({
+  const { data: participantsList = initialParticipants } = useQuery({
     queryKey: ['get-all-participants-with-tokens'],
     queryFn: getParticipantsWithEditTokens,
     initialData: initialParticipants,
     staleTime: 5 * 60 * 1000,
   });
-  const participantsList = participants;
 
   const nextBirthday = useMemo(
     () => getNextBirthday(participantsList),

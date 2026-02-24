@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 import LulusCardEdit from '@/components/lulus/lulu-card/lulu-card-edit';
 import { decryptId } from '@/lib/crypto';
@@ -51,11 +52,7 @@ const ParticipantsPage = async ({ params }: Readonly<PageProps>) => {
   const { id } = paramsObject;
 
   if (!id) {
-    return (
-      <main className="flex w-full justify-center pt-10 text-sm text-destructive">
-        Erro: ID do participante não encontrado
-      </main>
-    );
+    notFound();
   }
 
   let idDecrypted: string | null = null;
@@ -67,14 +64,10 @@ const ParticipantsPage = async ({ params }: Readonly<PageProps>) => {
   }
 
   if (!idDecrypted) {
-    return (
-      <main className="flex w-full justify-center pt-10 text-sm text-destructive">
-        Erro: ID do participante inválido
-      </main>
-    );
+    notFound();
   }
 
-  return <LulusCardEdit participantId={idDecrypted} />;
+  return <LulusCardEdit participantId={idDecrypted!} />;
 };
 
 export default ParticipantsPage;

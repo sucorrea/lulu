@@ -67,9 +67,6 @@ export const useUpdateParticipantData = (participantId: string) => {
     onSuccess: () => {
       refetchParticipant();
       queryClient.invalidateQueries({ queryKey: ['get-all-participants'] });
-      queryClient.invalidateQueries({
-        queryKey: ['get-all-participants-with-tokens'],
-      });
     },
     onError: () => {
       console.warn('Error updating participant data');

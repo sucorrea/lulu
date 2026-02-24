@@ -1,16 +1,49 @@
 import { useQuery } from '@tanstack/react-query';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { z } from 'zod';
 
 import { Person } from '@/components/lulus/types';
 import { db, storage } from '../firebase';
 import { getDownloadURL, ref } from 'firebase/storage';
+
+const PixTypesSchema = z.enum(['cpf', 'email', 'phone', 'random', 'none']);
+
+export const PersonSchema = z.object({
+  id: z.number(),
+  editToken: z.string().optional(),
+  name: z.string(),
+  date: z.union([z.date(), z.string()]),
+  month: z.string(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  picture: z.string().optional(),
+  instagram: z.string().optional(),
+  pix_key: z.string().optional(),
+  pix_key_type: PixTypesSchema.optional(),
+  fullName: z.string().default(''),
+  city: z.string().default(''),
+  photoURL: z.string().optional(),
+  photoUpdatedAt: z.number().optional(),
+});
+
+const parseParticipant = (raw: unknown): Person => {
+  const result = PersonSchema.safeParse(raw);
+  if (!result.success) {
+    console.warn(
+      'Invalid participant data from Firestore:',
+      result.error.flatten()
+    );
+    return raw as Person;
+  }
+  return result.data;
+};
 
 export const fetchParticipants = async (): Promise<Person[]> => {
   const querySnapshot = await getDocs(collection(db, 'participants'));
   const data: Person[] = [];
 
   querySnapshot.forEach((doc) => {
-    data.push(doc.data() as Person);
+    data.push(parseParticipant(doc.data()));
   });
 
   return data;
@@ -32,7 +65,7 @@ export const fetchParticipantById = async (
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return docSnap.data() as Person;
+      return parseParticipant(docSnap.data());
     } else {
       console.warn(`No participant found with id: ${id}`);
       return null;

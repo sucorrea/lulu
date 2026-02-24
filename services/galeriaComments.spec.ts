@@ -14,14 +14,37 @@ vi.mock('./firebase', () => ({
   db: {},
 }));
 
-vi.mock('firebase/firestore', () => ({
-  doc: vi.fn(),
-  getDoc: vi.fn(),
-  setDoc: vi.fn(),
-  updateDoc: vi.fn(),
-  arrayUnion: vi.fn((val) => val),
-  onSnapshot: vi.fn(),
-}));
+vi.mock('firebase/firestore', () => {
+  const doc = vi.fn();
+  const getDoc = vi.fn();
+  const setDoc = vi.fn();
+  const updateDoc = vi.fn();
+  const arrayUnion = vi.fn((val) => val);
+  const onSnapshot = vi.fn();
+  const runTransaction = vi.fn(
+    async (
+      _db: unknown,
+      callback: (transaction: {
+        get: typeof getDoc;
+        update: typeof updateDoc;
+      }) => Promise<void> | void
+    ) =>
+      callback({
+        get: getDoc,
+        update: updateDoc,
+      })
+  );
+
+  return {
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    arrayUnion,
+    onSnapshot,
+    runTransaction,
+  };
+});
 
 vi.mock('uuid', () => ({
   v4: vi.fn(),
@@ -278,6 +301,7 @@ describe('galeriaComments', () => {
             displayName: mockDisplayName,
             comment: mockNewText,
             createdAt: '2024-01-01T00:00:00.000Z',
+            editedAt: expect.any(String),
           },
           {
             id: 'comment-2',
@@ -355,7 +379,7 @@ describe('galeriaComments', () => {
             displayName: mockDisplayName,
             comment: mockNewText,
             createdAt: '2024-01-01T00:00:00.000Z',
-            editedAt: '2024-01-02T00:00:00.000Z',
+            editedAt: expect.any(String),
           },
         ],
       });

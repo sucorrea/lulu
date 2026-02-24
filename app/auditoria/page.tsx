@@ -29,13 +29,7 @@ const AuditPageSkeleton = () => (
   </PageLayout>
 );
 
-const AuditPageRoute = async ({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) => {
-  await searchParams;
-
+const AuditPageRoute = async () => {
   return (
     <Suspense fallback={<AuditPageSkeleton />}>
       <AuditPage />

@@ -75,7 +75,11 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-playfair), serif;
+    font-family:
+      var(--font-inter),
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 
   .lulu-button {
@@ -92,7 +96,11 @@
 
   .lulu-header {
     @apply font-bold text-primary tracking-tight;
-    font-family: var(--font-playfair), serif;
+    font-family:
+      var(--font-inter),
+      system-ui,
+      -apple-system,
+      sans-serif;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.06);
   }
 }

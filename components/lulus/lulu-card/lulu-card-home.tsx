@@ -78,7 +78,7 @@ const LulusCardHome = ({
         {isNextBirthday && (
           <NextBirthdayBanner daysForBirthday={daysForBirthday} />
         )}
-        <div className="flex flex-row gap-4 items-start">
+        <div className="flex flex-row gap-4 items-start pt-2">
           <Avatar
             className="h-20 w-20 border-4 border-primary/20 ring-2 ring-primary shrink-0"
             key={getParticipantPhotoUrl(participant)}
