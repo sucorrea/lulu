@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import {
   Accordion,
   AccordionContent,
@@ -7,10 +9,13 @@ import {
 
 type MoreInfoAccordionProps = {
   text?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-const MoreInfoAccordion = ({ text, children }: MoreInfoAccordionProps) => (
+const MoreInfoAccordion = ({
+  text = 'Ver mais informações',
+  children,
+}: MoreInfoAccordionProps) => (
   <Accordion type="single" collapsible className="w-full p-0 m-0">
     <AccordionItem value="item-1">
       <AccordionTrigger>{text}</AccordionTrigger>

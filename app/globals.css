@@ -5,14 +5,14 @@
 :root {
   --background: #fdfbf7;
   --foreground: #111111;
-  --primary: #e4312b;
+  --primary: #c62828;
   --primary-foreground: #ffffff;
   --secondary: #2d7dd2;
   --secondary-foreground: #ffffff;
   --accent: #f7c948;
   --accent-foreground: #111111;
   --muted: #f3ece0;
-  --muted-foreground: #6b6256;
+  --muted-foreground: #4d4a45;
   --destructive: #c62828;
   --destructive-foreground: #ffffff;
   --success: #4bbf73;
@@ -25,7 +25,7 @@
   --popover-foreground: #111111;
   --border: #d6cec0;
   --input: #d6cec0;
-  --ring: #e4312b;
+  --ring: #c62828;
   --radius: 0.9rem;
 }
 

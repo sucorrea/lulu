@@ -3,21 +3,27 @@ import { render, screen } from '@testing-library/react';
 import { DeviceProvider, useIsMobile } from './device-provider';
 import { act } from 'react';
 
-vi.mock('react-device-detect', () => ({
-  isMobile: false,
-}));
-
-vi.mock('lodash', () => ({
-  debounce: (fn: () => void) => fn,
-}));
+let matches = false;
+let changeListener: (() => void) | null = null;
 
 describe('DeviceProvider', () => {
   beforeEach(() => {
-    Object.defineProperty(window, 'innerWidth', {
-      writable: true,
-      configurable: true,
-      value: 1200,
-    });
+    matches = false;
+    changeListener = null;
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation(() => ({
+        get matches() {
+          return matches;
+        },
+        addEventListener: (_: string, listener: () => void) => {
+          changeListener = listener;
+        },
+        removeEventListener: vi.fn(() => {
+          changeListener = null;
+        }),
+      }))
+    );
   });
 
   it('should render children', () => {
@@ -44,7 +50,7 @@ describe('DeviceProvider', () => {
     expect(screen.getByText('Desktop')).toBeInTheDocument();
   });
 
-  it('should update on window resize', () => {
+  it('should update when media query matches', () => {
     function TestComponent() {
       const { isMobile } = useIsMobile();
       return <div>{isMobile ? 'Mobile' : 'Desktop'}</div>;
@@ -57,12 +63,8 @@ describe('DeviceProvider', () => {
     );
 
     act(() => {
-      Object.defineProperty(window, 'innerWidth', {
-        writable: true,
-        configurable: true,
-        value: 800,
-      });
-      window.dispatchEvent(new Event('resize'));
+      matches = true;
+      changeListener?.();
     });
 
     expect(screen.getByText('Mobile')).toBeInTheDocument();

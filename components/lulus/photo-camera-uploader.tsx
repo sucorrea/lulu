@@ -1,10 +1,11 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, ChangeEvent } from 'react';
 import { Camera } from 'lucide-react';
 import Image from 'next/image';
+import { useDisclosure } from '@/hooks/use-disclosure';
 
 const PhotoCameraUploader = () => {
   const [photo, setPhoto] = useState<string | null>(null);
-  const [showCamera, setShowCamera] = useState(false);
+  const { isOpen: showCamera, onOpen, onClose } = useDisclosure();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -19,7 +20,7 @@ const PhotoCameraUploader = () => {
       });
 
       if (videoRef.current) {
-        setShowCamera(true);
+        onOpen();
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
       }
@@ -52,10 +53,10 @@ const PhotoCameraUploader = () => {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
-    setShowCamera(false);
+    onClose();
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();

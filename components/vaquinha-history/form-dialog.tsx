@@ -24,13 +24,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { SelectWithOptions } from '@/components/ui/select-with-options';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 
 const formSchema = z.object({
@@ -71,23 +65,16 @@ const ParticipantSelectField = ({
     render={({ field }) => (
       <FormItem>
         <FormLabel>{label}</FormLabel>
-        <Select
+        <SelectWithOptions
+          value={field.value > 0 ? field.value : ''}
           onValueChange={(value) => field.onChange(Number(value))}
-          value={field.value > 0 ? String(field.value) : ''}
-        >
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione..." />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            {participants.map((p) => (
-              <SelectItem key={p.id} value={String(p.id)}>
-                {p.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          options={participants.map((p) => ({
+            value: p.id,
+            label: p.name,
+          }))}
+          placeholder="Selecione..."
+          triggerWrapper={FormControl}
+        />
         <FormMessage />
       </FormItem>
     )}
@@ -221,3 +208,5 @@ export const VaquinhaHistoryFormDialog = ({
     </Dialog>
   );
 };
+
+export default VaquinhaHistoryFormDialog;

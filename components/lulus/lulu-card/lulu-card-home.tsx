@@ -107,6 +107,7 @@ const LulusCardHome = ({
             <AvatarImage
               src={getParticipantPhotoUrl(participant)}
               alt={participant.name}
+              {...(isNextBirthday && { fetchPriority: 'high' as const })}
             />
             <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
               {(participant.name ?? '').charAt(0).toUpperCase() || '?'}

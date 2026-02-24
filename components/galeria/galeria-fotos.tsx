@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -7,8 +8,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import ErrorState from '@/components/error-state';
 
 import PhotoItem from './photo-item';
-import PhotoModal from './photo-modal';
 import UploadPhotoGallery from './upload-photo-gallery';
+
+const PhotoModal = dynamic(() => import('./photo-modal'), { ssr: false });
 import { CommentProvider } from './comment-context';
 import { GalleryProvider, useGallery } from './gallery-context';
 

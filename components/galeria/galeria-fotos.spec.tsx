@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -24,6 +25,18 @@ type VirtualItem = {
 
 vi.mock('@tanstack/react-virtual');
 vi.mock('next/navigation');
+vi.mock('next/dynamic', () => ({
+  default: (importFn: () => Promise<{ default: React.ComponentType }>) => {
+    const LazyComponent = React.lazy(importFn);
+    return (props: unknown) => (
+      <React.Suspense fallback={null}>
+        <LazyComponent
+          {...(props as React.ComponentProps<React.ComponentType>)}
+        />
+      </React.Suspense>
+    );
+  },
+}));
 vi.mock('./use-gallery-realtime');
 vi.mock('./utils');
 vi.mock('@/services/galeriaComments');

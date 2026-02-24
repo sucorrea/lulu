@@ -1,5 +1,5 @@
 'use client';
-import { useCallback } from 'react';
+import { ChangeEvent, useCallback } from 'react';
 
 import { Upload } from 'lucide-react';
 
@@ -8,6 +8,7 @@ import { useDisclosure } from '@/hooks/use-disclosure';
 import { GenericDialog } from '../dialog/dialog';
 import { useUserVerification } from '@/hooks/user-verify';
 import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
+import { toast } from 'sonner';
 
 const UploadPhotoGallery = () => {
   const { user } = useUserVerification();
@@ -15,7 +16,7 @@ const UploadPhotoGallery = () => {
   const { refetch } = useGetGalleryImages();
 
   const handlePhotoUploadGallery = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file || !user) {
         return;
@@ -30,7 +31,9 @@ const UploadPhotoGallery = () => {
           onClose();
           refetch();
         } catch {
-          alert('Erro ao enviar foto.');
+          toast.error('Erro ao enviar foto.', {
+            position: 'bottom-center',
+          });
         }
       })();
     },

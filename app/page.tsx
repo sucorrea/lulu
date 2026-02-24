@@ -1,7 +1,21 @@
-import Lulus from '@/components/lulus/lulus';
+import dynamic from 'next/dynamic';
+import { preload } from 'react-dom';
 import ErrorState from '@/components/error-state';
 
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
+import {
+  getNextBirthday,
+  getParticipantPhotoUrl,
+} from '@/components/lulus/utils';
+
+const Lulus = dynamic(() => import('@/components/lulus/lulus'), {
+  ssr: true,
+  loading: () => (
+    <div className="flex min-h-[200px] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  ),
+});
 
 const Home = async () => {
   let participants;
@@ -27,11 +41,19 @@ const Home = async () => {
     );
   }
 
+  const nextBirthday = getNextBirthday(participants);
+  const lcpPhotoUrl = nextBirthday
+    ? getParticipantPhotoUrl(nextBirthday)
+    : null;
+  if (lcpPhotoUrl) {
+    preload(lcpPhotoUrl, { as: 'image', fetchPriority: 'high' });
+  }
+
   return (
     <section className="bg-muted/40 py-10 md:py-14">
       <div className="container space-y-6">
         <header className="space-y-2 text-center md:text-left">
-          <h2 className="lulu-header text-2xl md:text-3xl">Participantes</h2>
+          <h1 className="lulu-header text-2xl md:text-3xl">Participantes</h1>
           <p className="text-sm md:text-base text-muted-foreground">
             Veja quem faz parte dessa rede de carinho e amizade
           </p>

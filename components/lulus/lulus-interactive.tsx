@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Dices, GiftIcon, Users } from 'lucide-react';
 import Link from 'next/link';
 
@@ -16,7 +16,6 @@ import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
 import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
-import SkeletonLulusInteractive from './skeleton-lulus-interactive';
 import BadgeLulu from './badge-lulu';
 
 interface LulusInteractiveProps {
@@ -28,7 +27,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
 
-  const { user, isLoading } = useUserVerification();
+  const { user } = useUserVerification();
   const {
     data: assignments,
     isLoading: assignmentsLoading,
@@ -79,9 +78,10 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     return 'Nenhuma participante encontrada neste mês';
   }, [searchTerm, filterMonth]);
 
-  if (isLoading) {
-    return <SkeletonLulusInteractive />;
-  }
+  const clearFilters = useCallback(() => {
+    setSearchTerm('');
+    setFilterMonth('all');
+  }, []);
 
   return (
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
@@ -121,13 +121,17 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           setSortBy={setSortBy}
         />
         <div className="grid grid-cols-1 gap-2 overflow-auto md:grid-cols-2 lg:grid-cols-3">
-          {filteredParticipants.map((participant) => (
-            <LulusCardHome
+          {filteredParticipants.map((participant, index) => (
+            <div
               key={participant.id}
-              participant={participant}
-              user={!!user}
-              participants={participantsList}
-            />
+              className={index > 1 ? '[content-visibility:auto]' : undefined}
+            >
+              <LulusCardHome
+                participant={participant}
+                user={!!user}
+                participants={participantsList}
+              />
+            </div>
           ))}
         </div>
         {filteredParticipants.length === 0 && (
@@ -136,18 +140,15 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
               <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
                 <Users className="h-10 w-10 text-muted-foreground" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold text-foreground">
+              <h2 className="mb-2 text-xl font-semibold text-foreground">
                 Nenhuma participante encontrada
-              </h3>
+              </h2>
               <p className="mb-6 text-sm text-muted-foreground">
                 {emptyStateMessage}
               </p>
               {(searchTerm || filterMonth !== 'all') && (
                 <Button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setFilterMonth('all');
-                  }}
+                  onClick={clearFilters}
                   variant="outline"
                   className="gap-2"
                 >

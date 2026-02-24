@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { SelectWithOptions } from '@/components/ui/select-with-options';
 import { Calendar } from 'lucide-react';
 
 interface YearFilterProps {
@@ -20,27 +14,25 @@ export const YearFilter = ({
   selectedYear,
   onYearChange,
 }: YearFilterProps) => {
+  const options = [
+    { value: 'all', label: 'Todos os anos' },
+    ...years.map((y) => ({ value: String(y), label: String(y) })),
+  ];
+
   return (
     <div className="flex items-center gap-3">
       <Calendar className="h-5 w-5 text-muted-foreground" />
-      <Select
-        value={selectedYear?.toString() || 'all'}
+      <SelectWithOptions
+        value={selectedYear?.toString() ?? 'all'}
         onValueChange={(value) =>
           onYearChange(value === 'all' ? null : Number.parseInt(value))
         }
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Filtrar por ano" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos os anos</SelectItem>
-          {years.map((year) => (
-            <SelectItem key={year} value={year.toString()}>
-              {year}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        options={options}
+        placeholder="Filtrar por ano"
+        triggerClassName="w-[180px]"
+      />
     </div>
   );
 };
+
+export default YearFilter;

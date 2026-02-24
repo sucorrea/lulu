@@ -45,17 +45,14 @@ describe('VaquinhaHistoryTimeline', () => {
     expect(screen.getByText('2023')).toBeInTheDocument();
   });
 
-  it('should display responsible and birthday person names', () => {
+  it('should render timeline item header with birthday person and responsible names', () => {
     mockUseUserVerification.mockReturnValue({ user: null });
     render(<VaquinhaHistoryTimeline history={mockHistory} />);
+
     expect(screen.getByText('Deborah')).toBeInTheDocument();
+    expect(screen.getByText('Stella')).toBeInTheDocument();
     expect(screen.getByText('João')).toBeInTheDocument();
-    expect(
-      screen.getByText(/Stella foi responsável pela vaquinha/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Maria foi responsável pela vaquinha/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText('Maria')).toBeInTheDocument();
   });
 
   it('should hide actions when not authenticated', () => {

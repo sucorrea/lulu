@@ -1,5 +1,6 @@
 'use client';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import { Plus, TrashIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -8,12 +9,7 @@ import ErrorState from '@/components/error-state';
 import { Button } from '@/components/ui/button';
 import { LiveAnnounce } from '@/components/ui/live-announce';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  TimelineSkeleton,
-  VaquinhaHistoryFormDialog,
-  VaquinhaHistoryTimeline,
-  YearFilter,
-} from '@/components/vaquinha-history';
+
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useUserVerification } from '@/hooks/user-verify';
 import { useGetAllParticipants } from '@/services/queries/fetchParticipants';
@@ -26,9 +22,20 @@ import {
   useUpdateVaquinhaHistory,
 } from '@/services/queries/vaquinhaHistory';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
+import BirthdayPersonFilter from './birthday-person-filter';
+import TimelineSkeleton from './timeline-skeleton';
+import VaquinhaHistoryTimeline from './timeline';
+import YearFilter from './year-filter';
+
+const VaquinhaHistoryFormDialog = dynamic(() => import('./form-dialog'), {
+  ssr: false,
+});
 
 export const HistoricoClient = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedBirthdayPerson, setSelectedBirthdayPerson] = useState<
+    string | null
+  >(null);
   const [announcement, setAnnouncement] = useState<string>('');
   const [editingItem, setEditingItem] = useState<VaquinhaHistory | null>(null);
 
@@ -87,10 +94,32 @@ export const HistoricoClient = () => {
     [selectedYear, isErrorAll, isErrorFiltered]
   );
 
-  const history = useMemo(
+  const baseHistory = useMemo(
     () => (selectedYear === null ? allHistory : filteredHistory),
     [selectedYear, allHistory, filteredHistory]
   );
+
+  const availableBirthdayPersons = useMemo(() => {
+    if (!baseHistory) {
+      return [];
+    }
+    const names = new Set(
+      baseHistory.map((item) => item.birthdayPersonName).filter(Boolean)
+    );
+    return Array.from(names).sort((a, b) => a.localeCompare(b));
+  }, [baseHistory]);
+
+  const history = useMemo(() => {
+    if (!baseHistory) {
+      return [];
+    }
+    if (!selectedBirthdayPerson) {
+      return baseHistory;
+    }
+    return baseHistory.filter(
+      (item) => item.birthdayPersonName === selectedBirthdayPerson
+    );
+  }, [baseHistory, selectedBirthdayPerson]);
 
   const sortedParticipants = useMemo(
     () =>
@@ -190,12 +219,28 @@ export const HistoricoClient = () => {
   }, [isDialogOpen]);
 
   useEffect(() => {
-    if (selectedYear === null) {
-      setAnnouncement('Mostrando todos os registros');
-    } else {
-      setAnnouncement(`Filtrando histórico por ano ${selectedYear}`);
+    if (
+      selectedBirthdayPerson &&
+      !availableBirthdayPersons.includes(selectedBirthdayPerson)
+    ) {
+      setSelectedBirthdayPerson(null);
     }
-  }, [selectedYear, setAnnouncement]);
+  }, [availableBirthdayPersons, selectedBirthdayPerson]);
+
+  useEffect(() => {
+    const parts: string[] = [];
+    if (selectedYear !== null) {
+      parts.push(`ano ${selectedYear}`);
+    }
+    if (selectedBirthdayPerson) {
+      parts.push(`aniversariante ${selectedBirthdayPerson}`);
+    }
+    setAnnouncement(
+      parts.length > 0
+        ? `Filtrando histórico por ${parts.join(' e ')}`
+        : 'Mostrando todos os registros'
+    );
+  }, [selectedYear, selectedBirthdayPerson]);
 
   if (isLoading) {
     return (
@@ -236,13 +281,22 @@ export const HistoricoClient = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          {availableYears && availableYears.length > 0 && (
-            <YearFilter
-              years={availableYears}
-              selectedYear={selectedYear}
-              onYearChange={setSelectedYear}
-            />
-          )}
+          <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
+            {availableYears && availableYears.length > 0 && (
+              <YearFilter
+                years={availableYears}
+                selectedYear={selectedYear}
+                onYearChange={setSelectedYear}
+              />
+            )}
+            {availableBirthdayPersons.length > 0 && (
+              <BirthdayPersonFilter
+                persons={availableBirthdayPersons}
+                selectedPerson={selectedBirthdayPerson}
+                onPersonChange={setSelectedBirthdayPerson}
+              />
+            )}
+          </div>
           {isAuthenticated && (
             <Button
               onClick={(e) => {
@@ -275,3 +329,5 @@ export const HistoricoClient = () => {
     </>
   );
 };
+
+export default HistoricoClient;

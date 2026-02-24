@@ -1,4 +1,4 @@
-import React from 'react';
+import { CSSProperties } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 interface AnimationProps {
@@ -6,7 +6,7 @@ interface AnimationProps {
   loop?: boolean;
   autoplay?: boolean;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   width?: number | string;
   height?: number | string;
 }
@@ -19,18 +19,16 @@ const Animation = ({
   style,
   width,
   height,
-}: AnimationProps) => {
-  return (
-    <DotLottieReact
-      src={src}
-      loop={loop}
-      autoplay={autoplay}
-      className={className}
-      style={style}
-      width={width}
-      height={height}
-    />
-  );
-};
+}: AnimationProps) => (
+  <DotLottieReact
+    src={src}
+    loop={loop}
+    autoplay={autoplay}
+    className={className}
+    style={style}
+    width={width}
+    height={height}
+  />
+);
 
 export default Animation;

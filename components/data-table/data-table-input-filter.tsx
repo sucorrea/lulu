@@ -13,17 +13,15 @@ const DataTableInputFilter = <TData,>({
   columnId,
   placeholder = 'Filtrar...',
   className,
-}: DataTableInputFilterProps<TData>) => {
-  return (
-    <Input
-      placeholder={placeholder}
-      value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
-      onChange={(event) =>
-        table.getColumn(columnId)?.setFilterValue(event.target.value)
-      }
-      className={className}
-    />
-  );
-};
+}: DataTableInputFilterProps<TData>) => (
+  <Input
+    placeholder={placeholder}
+    value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
+    onChange={(event) =>
+      table.getColumn(columnId)?.setFilterValue(event.target.value)
+    }
+    className={className}
+  />
+);
 
 export default DataTableInputFilter;

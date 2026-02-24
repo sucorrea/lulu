@@ -115,3 +115,5 @@ const AuditLogItemComponent = ({
 
 export const AuditLogItem = memo(AuditLogItemComponent);
 AuditLogItem.displayName = 'AuditLogItem';
+
+export default AuditLogItem;

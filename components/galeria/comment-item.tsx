@@ -49,17 +49,19 @@ const CommentItem = memo(function CommentItem({
             <span id={`${editInputId}-hint`} className="sr-only">
               Edite o texto do comentário e clique em Salvar
             </span>
-            <Button size="sm" className="ml-1 px-2 py-0.5" onClick={onSaveEdit}>
-              Salvar
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="ml-1 px-2 py-0.5"
-              onClick={onCancelEdit}
-            >
-              Cancelar
-            </Button>
+            <div className="flex gap-1 mt-1 justify-end">
+              <Button size="sm" className="px-2 py-0.5" onClick={onSaveEdit}>
+                Salvar
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="px-2 py-0.5"
+                onClick={onCancelEdit}
+              >
+                Cancelar
+              </Button>
+            </div>
           </fieldset>
         ) : (
           <span>{comment.comment}</span>

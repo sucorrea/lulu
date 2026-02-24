@@ -8,10 +8,8 @@ import {
   useMemo,
 } from 'react';
 
-import { debounce } from 'lodash';
-import { isMobile } from 'react-device-detect';
-
 const MOBILE_MAX_WIDTH = 1199;
+const MOBILE_MEDIA_QUERY = `(max-width: ${MOBILE_MAX_WIDTH}px)`;
 
 export interface DeviceState {
   isMobile: boolean;
@@ -20,20 +18,21 @@ export interface DeviceState {
 const HeaderContext = createContext<DeviceState | undefined>(undefined);
 
 export const DeviceProvider = ({ children }: PropsWithChildren) => {
-  const [isMobileState, setIsMobileState] = useState<boolean>(isMobile);
+  const [isMobileState, setIsMobileState] = useState<boolean>(false);
 
   useEffect(() => {
-    const handleResize = debounce(() => {
-      setIsMobileState(window.innerWidth <= MOBILE_MAX_WIDTH);
-    }, 150);
+    const matchMedia = globalThis.matchMedia;
+    if (typeof matchMedia !== 'function') {
+      return;
+    }
 
-    window.addEventListener('resize', handleResize);
+    const mediaQuery = matchMedia(MOBILE_MEDIA_QUERY);
+    const updateState = () => setIsMobileState(mediaQuery.matches);
 
-    handleResize();
+    updateState();
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    mediaQuery.addEventListener('change', updateState);
+    return () => mediaQuery.removeEventListener('change', updateState);
   }, []);
 
   const contextValue = useMemo(

@@ -1,11 +1,18 @@
 import { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 
 import type { Metadata, Viewport } from 'next';
 
-import Footer from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navigation-bar/navbar';
-import { PwaUpdateManager } from '@/components/layout/pwa-update-manager';
 import { DeviceProvider } from '@/providers/device-provider';
+
+const Footer = dynamic(() => import('@/components/layout/footer'));
+
+const PwaUpdateManager = dynamic(() =>
+  import('@/components/layout/pwa-update-manager').then((m) => ({
+    default: m.PwaUpdateManager,
+  }))
+);
 import { ReactQueryProvider } from '@/providers/react-query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { Toaster } from '@/components/ui/sonner';

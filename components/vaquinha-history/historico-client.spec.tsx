@@ -7,6 +7,143 @@ import { toast } from 'sonner';
 import { HistoricoClient } from './historico-client';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 
+const {
+  mockTimeline,
+  mockYearFilter,
+  mockBirthdayPersonFilter,
+  mockFormDialog,
+  mockErrorState,
+} = vi.hoisted(() => {
+  const mockTimeline = vi.fn(
+    ({
+      history,
+      onEdit,
+      onDelete,
+    }: {
+      history: VaquinhaHistory[];
+      onEdit?: (item: VaquinhaHistory) => void;
+      onDelete?: (id: string) => void;
+    }) => (
+      <div>
+        <span>{`history-${history.length}`}</span>
+        <button type="button" onClick={() => onEdit?.(history[0])}>
+          Editar
+        </button>
+        <button type="button" onClick={() => onDelete?.(history[0]?.id || '')}>
+          Excluir
+        </button>
+      </div>
+    )
+  );
+  const mockYearFilter = vi.fn(
+    ({
+      years,
+      selectedYear,
+      onYearChange,
+    }: {
+      years: number[];
+      selectedYear: number | null;
+      onYearChange: (year: number | null) => void;
+    }) => (
+      <div>
+        <span>{`years-${years.length}`}</span>
+        <span>{selectedYear ?? 'all'}</span>
+        <button type="button" onClick={() => onYearChange(2024)}>
+          Selecionar 2024
+        </button>
+      </div>
+    )
+  );
+  const mockBirthdayPersonFilter = vi.fn(
+    ({
+      persons,
+      selectedPerson,
+      onPersonChange,
+    }: {
+      persons: string[];
+      selectedPerson: string | null;
+      onPersonChange: (person: string | null) => void;
+    }) => (
+      <div>
+        <span>{`persons-${persons.length}`}</span>
+        <span>{selectedPerson ?? 'all'}</span>
+        <button type="button" onClick={() => onPersonChange('Deborah')}>
+          Selecionar Deborah
+        </button>
+      </div>
+    )
+  );
+  const mockFormDialog = vi.fn(
+    ({
+      open,
+      onSubmit,
+      onOpenChange,
+      isLoading,
+    }: {
+      open: boolean;
+      onSubmit: (data: {
+        year: number;
+        responsibleId: number;
+        responsibleName: string;
+        birthdayPersonId: number;
+        birthdayPersonName: string;
+      }) => void;
+      onOpenChange: (open: boolean) => void;
+      participants: { id: number; name: string }[];
+      editingItem?: VaquinhaHistory | null;
+      isLoading?: boolean;
+    }) => (
+      <div>
+        <span>{open ? 'open' : 'closed'}</span>
+        <span>{isLoading ? 'loading' : 'idle'}</span>
+        <button
+          type="button"
+          onClick={() =>
+            onSubmit({
+              year: 2024,
+              responsibleId: 1,
+              responsibleName: 'Maria',
+              birthdayPersonId: 2,
+              birthdayPersonName: 'Joana',
+            })
+          }
+        >
+          Salvar
+        </button>
+        <button type="button" onClick={() => onOpenChange(false)}>
+          Fechar
+        </button>
+      </div>
+    )
+  );
+  const mockErrorState = vi.fn(
+    ({
+      title,
+      message,
+      onRetry,
+    }: {
+      title: string;
+      message: string;
+      onRetry?: () => void;
+    }) => (
+      <div>
+        <span>{title}</span>
+        <span>{message}</span>
+        <button type="button" onClick={onRetry}>
+          Tentar novamente
+        </button>
+      </div>
+    )
+  );
+  return {
+    mockTimeline,
+    mockYearFilter,
+    mockBirthdayPersonFilter,
+    mockFormDialog,
+    mockErrorState,
+  };
+});
+
 const mockUseUserVerification = vi.fn();
 const mockUseGetAllParticipants = vi.fn();
 const mockUseGetAvailableYears = vi.fn();
@@ -15,112 +152,6 @@ const mockUseGetVaquinhaHistoryByYear = vi.fn();
 const mockUseAddVaquinhaHistory = vi.fn();
 const mockUseUpdateVaquinhaHistory = vi.fn();
 const mockUseDeleteVaquinhaHistory = vi.fn();
-
-const mockErrorState = vi.fn(
-  ({
-    title,
-    message,
-    onRetry,
-  }: {
-    title: string;
-    message: string;
-    onRetry?: () => void;
-  }) => (
-    <div>
-      <span>{title}</span>
-      <span>{message}</span>
-      <button type="button" onClick={onRetry}>
-        Tentar novamente
-      </button>
-    </div>
-  )
-);
-
-const mockTimeline = vi.fn(
-  ({
-    history,
-    onEdit,
-    onDelete,
-  }: {
-    history: VaquinhaHistory[];
-    onEdit?: (item: VaquinhaHistory) => void;
-    onDelete?: (id: string) => void;
-  }) => (
-    <div>
-      <span>{`history-${history.length}`}</span>
-      <button type="button" onClick={() => onEdit?.(history[0])}>
-        Editar
-      </button>
-      <button type="button" onClick={() => onDelete?.(history[0]?.id || '')}>
-        Excluir
-      </button>
-    </div>
-  )
-);
-
-const mockYearFilter = vi.fn(
-  ({
-    years,
-    selectedYear,
-    onYearChange,
-  }: {
-    years: number[];
-    selectedYear: number | null;
-    onYearChange: (year: number | null) => void;
-  }) => (
-    <div>
-      <span>{`years-${years.length}`}</span>
-      <span>{selectedYear ?? 'all'}</span>
-      <button type="button" onClick={() => onYearChange(2024)}>
-        Selecionar 2024
-      </button>
-    </div>
-  )
-);
-
-const mockFormDialog = vi.fn(
-  ({
-    open,
-    onSubmit,
-    onOpenChange,
-    isLoading,
-  }: {
-    open: boolean;
-    onSubmit: (data: {
-      year: number;
-      responsibleId: number;
-      responsibleName: string;
-      birthdayPersonId: number;
-      birthdayPersonName: string;
-    }) => void;
-    onOpenChange: (open: boolean) => void;
-    participants: { id: number; name: string }[];
-    editingItem?: VaquinhaHistory | null;
-    isLoading?: boolean;
-  }) => (
-    <div>
-      <span>{open ? 'open' : 'closed'}</span>
-      <span>{isLoading ? 'loading' : 'idle'}</span>
-      <button
-        type="button"
-        onClick={() =>
-          onSubmit({
-            year: 2024,
-            responsibleId: 1,
-            responsibleName: 'Maria',
-            birthdayPersonId: 2,
-            birthdayPersonName: 'Joana',
-          })
-        }
-      >
-        Salvar
-      </button>
-      <button type="button" onClick={() => onOpenChange(false)}>
-        Fechar
-      </button>
-    </div>
-  )
-);
 
 vi.mock('@/hooks/user-verify', () => ({
   useUserVerification: () => mockUseUserVerification(),
@@ -159,19 +190,36 @@ vi.mock('@/components/ui/button', () => ({
   ),
 }));
 
-vi.mock('@/components/vaquinha-history', () => ({
-  VaquinhaHistoryTimeline: (props: {
+vi.mock('./birthday-person-filter', () => ({
+  default: (props: {
+    persons: string[];
+    selectedPerson: string | null;
+    onPersonChange: (person: string | null) => void;
+  }) => mockBirthdayPersonFilter(props),
+}));
+
+vi.mock('./timeline', () => ({
+  default: (props: {
     history: VaquinhaHistory[];
     onEdit?: (item: VaquinhaHistory) => void;
     onDelete?: (id: string) => void;
   }) => mockTimeline(props),
-  TimelineSkeleton: () => <div data-testid="timeline-skeleton">Loading...</div>,
-  YearFilter: (props: {
+}));
+
+vi.mock('./timeline-skeleton', () => ({
+  default: () => <div data-testid="timeline-skeleton">Loading...</div>,
+}));
+
+vi.mock('./year-filter', () => ({
+  default: (props: {
     years: number[];
     selectedYear: number | null;
     onYearChange: (year: number | null) => void;
   }) => mockYearFilter(props),
-  VaquinhaHistoryFormDialog: (props: {
+}));
+
+vi.mock('./form-dialog', () => ({
+  default: (props: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSubmit: (data: {

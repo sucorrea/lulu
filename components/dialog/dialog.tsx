@@ -31,11 +31,7 @@ export const GenericDialog = ({
 }: Readonly<GenericDialogProps>) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className={className}
-        aria-describedby={title}
-        aria-description={description}
-      >
+      <DialogContent className={className}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

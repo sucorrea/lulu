@@ -1,5 +1,5 @@
 'use client';
-import { memo, useId } from 'react';
+import { KeyboardEvent, memo, useId } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,33 +22,35 @@ const CommentSection = memo(function CommentSection({
   const commentInputId = useId();
   const isLoggedIn = userId !== null;
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && commentInput.trim()) {
       e.preventDefault();
       onSubmitComment();
     }
   };
 
+  const hasComments = comments.length > 0;
+
   return (
     <section aria-label="Comentários">
-      {comments.length === 0 ? (
+      {hasComments ? (
+        <ul
+          className="mb-2 max-h-[6.5rem] overflow-y-auto list-none p-0 m-0"
+          aria-label="Lista de comentários"
+        >
+          {comments.map((commentItem) => (
+            <li key={commentItem.id}>
+              <CommentItem
+                comment={commentItem}
+                isAuthor={commentItem.userId === userId}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
         <p className="text-sm text-muted-foreground py-2 mb-2">
           Nenhum comentário ainda. Seja o primeiro a comentar!
         </p>
-      ) : (
-        <ul
-          className="mb-2 max-h-24 overflow-y-auto list-none p-0 m-0"
-          aria-label="Lista de comentários"
-        >
-          {comments.map((commentItem) => {
-            const isAuthor = commentItem.userId === userId;
-            return (
-              <li key={commentItem.id}>
-                <CommentItem comment={commentItem} isAuthor={isAuthor} />
-              </li>
-            );
-          })}
-        </ul>
       )}
       <div className="flex gap-2">
         <label htmlFor={commentInputId} className="sr-only">

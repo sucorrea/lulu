@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 import { useIsMobile } from '@/providers/device-provider';
 import { Person } from './lulus/types';
@@ -11,6 +12,19 @@ interface PixInfoProps {
 
 const PixInfo = ({ participant }: PixInfoProps) => {
   const { isMobile } = useIsMobile();
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(participant.pix_key ?? '');
+      if (!isMobile) {
+        toast.success('Chave PIX copiada com sucesso!');
+      }
+    } catch {
+      if (!isMobile) {
+        toast.error('Não foi possível copiar a chave PIX');
+      }
+    }
+  };
 
   return (
     <div className="flex text-xs">
@@ -27,12 +41,8 @@ const PixInfo = ({ participant }: PixInfoProps) => {
       <button
         type="button"
         className="text-xs bg-transparent border-0 p-0 cursor-pointer hover:underline"
-        onClick={() => {
-          navigator.clipboard.writeText(participant.pix_key ?? '');
-          if (!isMobile) {
-            alert('QRCode copiado com sucesso!');
-          }
-        }}
+        onClick={handleCopy}
+        aria-label="Copiar chave PIX"
       >
         {`: ${participant.pix_key}`}
       </button>

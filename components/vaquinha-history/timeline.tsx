@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
-import { Calendar, Gift, User, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Gift, Edit, Trash2, ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useUserVerification } from '@/hooks/user-verify';
 import { cn } from '@/lib/utils';
@@ -39,20 +39,12 @@ const TimelineItem = memo(function TimelineItem({
         aria-hidden="true"
       />
       <CardContent className="pt-4">
+        <div className="flex flex-1 items-center gap-2 flex-wrap">
+          <span className="font-medium">{item.birthdayPersonName}</span>
+          <ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="font-medium">{item.responsibleName}</span>
+        </div>
         <div className="flex flex-col gap-3">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <p className="text-base font-semibold">
-                {item.birthdayPersonName}
-              </p>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <User className="h-4 w-4" aria-hidden="true" />
-                <span className="font-medium text-sm">
-                  {`${item.responsibleName} foi responsável pela vaquinha`}
-                </span>
-              </div>
-            </div>
-          </div>
           {isAuthenticated && (onEdit || onDelete) && (
             <div className="flex items-center justify-end gap-2">
               {onEdit && (
@@ -61,7 +53,7 @@ const TimelineItem = memo(function TimelineItem({
                     (e.currentTarget as HTMLElement)?.blur();
                     onEdit(item);
                   }}
-                  className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
                   aria-label={`Editar registro de ${item.birthdayPersonName}`}
                 >
                   <Edit className="h-3.5 w-3.5" aria-hidden="true" />
@@ -71,7 +63,7 @@ const TimelineItem = memo(function TimelineItem({
               {onDelete && (
                 <button
                   onClick={() => onDelete(item.id)}
-                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2 rounded px-2 py-1 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
                   aria-label={`Excluir registro de ${item.birthdayPersonName}`}
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -179,3 +171,5 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
     </div>
   );
 });
+
+export default VaquinhaHistoryTimeline;

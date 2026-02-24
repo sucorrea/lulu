@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { QrCodePix } from 'qrcode-pix';
 import { QRCodeCanvas } from 'qrcode.react';
+import { toast } from 'sonner';
 
-import { Person } from './lulus/types';
-import { Button } from './ui/button';
-import { useIsMobile } from '@/providers/device-provider';
 import { useDisclosure } from '@/hooks/use-disclosure';
+import { useIsMobile } from '@/providers/device-provider';
 import { GenericBottomSheet } from './dialog/bottom-sheet';
 import { GenericDialog } from './dialog/dialog';
-import { toast } from 'sonner';
+import { Person } from './lulus/types';
+import { Button } from './ui/button';
 
 interface PixQRCodeProps {
   participant: Person;

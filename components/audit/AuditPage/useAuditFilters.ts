@@ -1,6 +1,8 @@
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
-import { DEFAULT_LIMIT, ALL_PARTICIPANTS_VALUE } from './constants';
+
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
+import { ALL_PARTICIPANTS_VALUE, DEFAULT_LIMIT } from './constants';
 import { AuditFilters } from './types';
 
 export const useAuditFilters = () => {
