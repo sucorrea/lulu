@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { DeviceProvider } from '@/providers/device-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { CURRENT_YEAR } from '@/lib/constants';
 import './globals.css';
 
 const Footer = dynamic(() => import('@/components/layout/footer'));
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || 'https://luluzinha.web.app'
   ),
-  title: `Luluzinha ${new Date().getFullYear()}`,
+  title: `Luluzinha ${CURRENT_YEAR}`,
   description:
     'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard, histórico e auditoria em tempo real.',
   manifest: '/manifest.webmanifest',
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: `Luluzinha ${new Date().getFullYear()}`,
+    title: `Luluzinha ${CURRENT_YEAR}`,
     description:
       'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
     type: 'website',
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `Luluzinha ${new Date().getFullYear()}`,
+    title: `Luluzinha ${CURRENT_YEAR}`,
     description:
       'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
   },

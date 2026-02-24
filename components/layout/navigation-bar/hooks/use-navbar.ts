@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 
+import { CURRENT_YEAR } from '@/lib/constants';
 import { useUserVerification } from '@/hooks/user-verify';
 
 interface UseNavbarResult {
@@ -24,7 +25,7 @@ export const useNavbar = (): UseNavbarResult => {
     () => (user?.displayName ? user.displayName.split(' ')[0] : null),
     [user?.displayName]
   );
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const currentYear = CURRENT_YEAR;
 
   return {
     isAuthenticated,

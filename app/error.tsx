@@ -11,9 +11,7 @@ type ErrorProps = Readonly<{
 
 const ErrorFallback = ({ error, reset }: ErrorProps) => {
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Error boundary caught:', error);
-    }
+    console.error('[ErrorBoundary]', error.digest ?? error.message, error);
   }, [error]);
 
   return (

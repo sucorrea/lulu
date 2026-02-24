@@ -1,8 +1,11 @@
+import { headers } from 'next/headers';
+
 import { getParticipants } from '@/services/participants-server';
 import ErrorState from '@/components/error-state';
 import DashboardPage from '@/components/modules/dashboard';
 
 const Dashboard = async () => {
+  await headers();
   let participants;
   let error = false;
 

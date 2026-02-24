@@ -14,8 +14,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import Header from '@/components/layout/header';
 import PageLayout from '@/components/layout/page-layout';
 
-export const revalidate = false;
-
 export const metadata: Metadata = {
   title: 'Sobre | Luluzinha',
   description:

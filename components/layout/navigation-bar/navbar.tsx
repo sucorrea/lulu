@@ -29,14 +29,14 @@ const NavLink = memo(function NavLink({
 }) {
   if (isActive) {
     return (
-      <span
-        className={`${linkBaseClass} bg-muted text-foreground cursor-default`}
+      <Link
+        href={href}
         aria-current="page"
-        aria-disabled="true"
+        className={`${linkBaseClass} bg-muted text-foreground cursor-default pointer-events-none opacity-80`}
       >
         <Icon className="w-4 h-4" aria-hidden="true" />
         <span>{label}</span>
-      </span>
+      </Link>
     );
   }
 

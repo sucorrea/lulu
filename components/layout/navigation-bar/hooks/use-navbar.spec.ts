@@ -176,9 +176,8 @@ describe('useNavbar', () => {
     });
 
     const { result } = renderHook(() => useNavbar());
-    const currentYear = new Date().getFullYear();
 
-    expect(result.current.currentYear).toBe(currentYear);
+    expect(result.current.currentYear).toBe(new Date().getFullYear());
   });
 
   it('should return handleLogout function that invokes logout when called', () => {

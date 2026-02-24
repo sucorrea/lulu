@@ -41,7 +41,7 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV !== 'production',
   additionalPrecacheEntries: [{ url: '/offline', revision }],
   exclude: [/.map$/, /^manifest.*\.js$/],
-  globPublicPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff2}'],
+  globPublicPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff2,wasm}'],
 });
 
 const securityHeaders = [
@@ -61,7 +61,7 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       [
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'",
         'https://apis.google.com',
         'https://accounts.google.com',
       ].join(' '),
@@ -86,7 +86,16 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   async headers() {
-    return [{ source: '/(.*)', headers: securityHeaders }];
+    return [
+      {
+        source: '/wasm/:file*',
+        headers: [
+          { key: 'Content-Type', value: 'application/wasm' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+        ],
+      },
+      { source: '/(.*)', headers: securityHeaders },
+    ];
   },
   images: {
     remotePatterns: [
@@ -95,6 +104,7 @@ const nextConfig: NextConfig = {
         hostname: 'firebasestorage.googleapis.com',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
 };
 

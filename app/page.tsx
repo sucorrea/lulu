@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { Suspense } from 'react';
 import { preload } from 'react-dom';
 
@@ -12,6 +13,7 @@ import {
 } from '@/components/lulus/utils';
 
 const LulusDataFetcher = async () => {
+  await headers();
   const participants = await getParticipantsWithEditTokens();
   const nextBirthday = getNextBirthday(participants);
   const lcpPhotoUrl = nextBirthday

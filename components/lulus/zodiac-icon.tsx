@@ -5,7 +5,6 @@ interface ZodiacIconProps {
 
 const ZodiacIcon = ({ icon, className }: ZodiacIconProps) => (
   <span
-    role="img"
     aria-hidden="true"
     className={className}
     style={{
