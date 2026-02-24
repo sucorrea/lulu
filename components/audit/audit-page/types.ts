@@ -1,4 +1,5 @@
 import { AuditLog } from '@/services/audit';
+import { Person } from '@/components/lulus/types';
 
 export interface AuditFilters {
   participantId: string;
@@ -10,6 +11,7 @@ export interface AuditFiltersProps {
   selectedParticipant: string;
   limitCount: number;
   searchTerm: string;
+  participants: Person[];
   onParticipantChange: (value: string) => void;
   onLimitChange: (value: number) => void;
   onSearchChange: (value: string) => void;

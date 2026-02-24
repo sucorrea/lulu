@@ -1,6 +1,3 @@
-'use client';
-
-import { memo } from 'react';
 import { User, FileText, Clock } from 'lucide-react';
 import { AuditLog } from '@/services/audit';
 import { Badge } from '@/components/ui/badge';
@@ -113,7 +110,6 @@ const AuditLogItemComponent = ({
   );
 };
 
-export const AuditLogItem = memo(AuditLogItemComponent);
-AuditLogItem.displayName = 'AuditLogItem';
+export const AuditLogItem = AuditLogItemComponent;
 
 export default AuditLogItem;

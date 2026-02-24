@@ -2,13 +2,11 @@
 
 import { memo } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
 import { Calendar, Filter, Search } from 'lucide-react';
 
 import { Person } from '@/components/lulus/types';
 import { Input } from '@/components/ui/input';
 import { SelectWithOptions } from '@/components/ui/select-with-options';
-import { fetchParticipants } from '@/services/queries/fetchParticipants';
 
 import { ALL_PARTICIPANTS_VALUE, LIMIT_OPTIONS } from './constants';
 import { AuditFiltersProps } from './types';
@@ -17,16 +15,12 @@ const AuditFiltersComponent = ({
   selectedParticipant,
   limitCount,
   searchTerm,
+  participants,
   onParticipantChange,
   onLimitChange,
   onSearchChange,
   isLoadingParticipants,
 }: Readonly<AuditFiltersProps>) => {
-  const { data: participants = [] } = useQuery({
-    queryKey: ['participants'],
-    queryFn: fetchParticipants,
-  });
-
   const participantOptions = [
     { value: ALL_PARTICIPANTS_VALUE, label: 'Todos os Participantes' },
     ...participants.map((p: Person) => ({

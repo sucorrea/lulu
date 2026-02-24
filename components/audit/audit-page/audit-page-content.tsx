@@ -71,6 +71,7 @@ const AuditPageContent = () => {
         selectedParticipant={filters.participantId}
         limitCount={filters.limit}
         searchTerm={filters.search}
+        participants={participants}
         onParticipantChange={setParticipantId}
         onLimitChange={setLimit}
         onSearchChange={setSearch}
