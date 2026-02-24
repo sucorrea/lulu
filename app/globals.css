@@ -80,7 +80,7 @@
 
   .lulu-button {
     @apply inline-flex items-center justify-center rounded-full border-2 border-primary bg-primary
-      px-5 py-2 text-sm font-semibold uppercase tracking-wide text-primary-foreground
+      px-5 py-2 text-sm font-semibold tracking-wide text-primary-foreground
       shadow-lulu-md transition-all duration-150
       hover:-translate-y-0.5 hover:shadow-lulu-lg
       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;

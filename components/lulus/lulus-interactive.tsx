@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { Dices, GiftIcon, Users } from 'lucide-react';
+import { Dices, Users } from 'lucide-react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,6 +19,8 @@ import { Person } from './types';
 import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
 import BadgeLulu from './badge-lulu';
 
+const BadgeLuluParticipants = dynamic(() => import('./badge-lulu-participants'), { ssr: false });
+
 interface LulusInteractiveProps {
   initialParticipants: Person[];
 }
@@ -28,11 +31,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const [filterMonth, setFilterMonth] = useState('all');
 
   const { user } = useUserVerification();
-  const {
-    data: assignments,
-    isLoading: assignmentsLoading,
-    isError: assignmentsError,
-  } = useGetCurrentYearAssignments();
+  const { data: assignments } = useGetCurrentYearAssignments();
 
   const { data: participants = initialParticipants } = useQuery({
     queryKey: ['get-all-participants-with-tokens'],
@@ -41,13 +40,6 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     staleTime: 5 * 60 * 1000,
   });
   const participantsList = participants;
-
-  const totalParticipants = useMemo(() => {
-    if (assignmentsLoading || assignmentsError) {
-      return null;
-    }
-    return Object.keys(assignments?.byBirthday ?? {}).length;
-  }, [assignments, assignmentsLoading, assignmentsError]);
 
   const nextBirthday = useMemo(
     () => getNextBirthday(participantsList),
@@ -86,10 +78,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   return (
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
-      <BadgeLulu
-        text={`${totalParticipants ?? '—'} Participantes da vaquinha`}
-        icon={<GiftIcon className="mr-2 h-4 w-4 shrink-0" />}
-      />
+      <BadgeLuluParticipants />
       {!!user && (
         <div className="mb-4 flex justify-end">
           <Button asChild variant="outline" size="sm">

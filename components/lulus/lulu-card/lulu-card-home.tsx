@@ -29,8 +29,12 @@ import {
   getParticipantPhotoUrl,
   getSigno,
 } from '../utils';
+import dynamic from 'next/dynamic';
 import NextBirthdayBanner from './next-birthday-banner';
-import ResponsableGift from './responsable-gift';
+
+const ResponsableGift = dynamic(() => import('./responsable-gift'), {
+  ssr: false,
+});
 
 const styleIcon =
   'inline-flex items-center gap-1 rounded-full bg-secondary/10 text-xs';

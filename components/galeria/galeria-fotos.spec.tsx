@@ -27,7 +27,8 @@ vi.mock('@tanstack/react-virtual');
 vi.mock('next/navigation');
 vi.mock('next/dynamic', () => ({
   default: (importFn: () => Promise<{ default: React.ComponentType }>) => {
-    const LazyComponent = React.lazy(importFn);
+    const componentPromise = importFn();
+    const LazyComponent = React.lazy(() => componentPromise);
     return (props: unknown) => (
       <React.Suspense fallback={null}>
         <LazyComponent
