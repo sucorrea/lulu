@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import { preload } from 'react-dom';
 import ErrorState from '@/components/error-state';
 
@@ -10,14 +9,7 @@ import {
 import Header from '@/components/layout/header';
 import PageLayout from '@/components/layout/page-layout';
 
-const Lulus = dynamic(() => import('@/components/lulus/lulus-interactive'), {
-  ssr: true,
-  loading: () => (
-    <div className="flex min-h-[200px] items-center justify-center">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-    </div>
-  ),
-});
+import Lulus from '@/components/lulus/lulus-interactive';
 
 const Home = async () => {
   let participants;

@@ -49,6 +49,22 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     [participantsList]
   );
 
+  const daysForBirthday = useMemo(() => {
+    if (!nextBirthday) {
+      return 0;
+    }
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const bd = new Date(nextBirthday.date);
+    const next = new Date(currentYear, bd.getMonth(), bd.getDate());
+    if (today > next) {
+      next.setFullYear(currentYear + 1);
+    }
+    return Math.ceil(
+      Math.abs(next.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+  }, [nextBirthday]);
+
   const filteredParticipants = useMemo(
     () =>
       filteredAndSortedParticipantsV2(
@@ -97,6 +113,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           <LulusCardHome
             participant={nextBirthday}
             isNextBirthday
+            daysForBirthday={daysForBirthday}
             user={!!user}
             participants={participantsList}
             showDetails={false}

@@ -1,5 +1,4 @@
 'use client';
-import { useCallback } from 'react';
 
 import Link from 'next/link';
 
@@ -23,12 +22,7 @@ import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
 import LinkIconWithText from '../link-with-icon';
 import MoreInforAccordion from '../more-info';
 import { Person } from '../types';
-import {
-  formatDate,
-  getNextBirthday,
-  getParticipantPhotoUrl,
-  getSigno,
-} from '../utils';
+import { formatDate, getParticipantPhotoUrl, getSigno } from '../utils';
 import dynamic from 'next/dynamic';
 import NextBirthdayBanner from './next-birthday-banner';
 
@@ -42,6 +36,7 @@ const styleIcon =
 interface LulusCardHomeProps {
   participant: Person;
   isNextBirthday?: boolean;
+  daysForBirthday?: number;
   user: boolean;
   participants: Person[];
   showDetails?: boolean;
@@ -50,6 +45,7 @@ interface LulusCardHomeProps {
 const LulusCardHome = ({
   participant,
   isNextBirthday = false,
+  daysForBirthday = 0,
   user,
   participants,
   showDetails = true,
@@ -57,27 +53,6 @@ const LulusCardHome = ({
   const styleCard = isNextBirthday
     ? 'border-primary border-2 shadow-lulu-lg'
     : 'shadow-lulu-sm';
-
-  const calculateDaysUntilBirthday = useCallback((birthdayDate: Date) => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const nextBirthday = new Date(
-      currentYear,
-      birthdayDate.getMonth(),
-      birthdayDate.getDate()
-    );
-
-    if (today > nextBirthday) {
-      nextBirthday.setFullYear(currentYear + 1);
-    }
-
-    const diffTime = Math.abs(nextBirthday.getTime() - today.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  }, []);
-
-  const dataNextBirthday = new Date(getNextBirthday(participants)?.date || '');
-  const daysForBirthday = calculateDaysUntilBirthday(dataNextBirthday);
   const token = participant.editToken ?? String(participant.id);
 
   return (
