@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import dynamic from 'next/dynamic';
 
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -34,13 +34,7 @@ const GalleryContent = () => {
     deleteComment,
   } = useGallery();
 
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const showSkeleton = !isClient || isLoading;
+  const showSkeleton = isLoading;
 
   const parentRef = useRef<HTMLUListElement | null>(null);
 

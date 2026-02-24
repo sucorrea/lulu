@@ -1,6 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Plus, TrashIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -308,13 +308,12 @@ export const HistoricoClient = () => {
           )}
         </div>
 
-        <Suspense fallback={<TimelineSkeleton />}>
-          <VaquinhaHistoryTimeline
-            history={history || []}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-          />
-        </Suspense>
+        <VaquinhaHistoryTimeline
+          history={history || []}
+          isAuthenticated={!!isAuthenticated}
+          onEdit={handleEditClick}
+          onDelete={handleDeleteClick}
+        />
         <VaquinhaHistoryFormDialog
           open={isDialogOpen}
           onOpenChange={setDialogOpen}

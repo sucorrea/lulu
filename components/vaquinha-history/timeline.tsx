@@ -4,11 +4,11 @@ import { memo } from 'react';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 import { Calendar, Gift, Edit, Trash2, ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { useUserVerification } from '@/hooks/user-verify';
 import { cn } from '@/lib/utils';
 
 interface VaquinhaHistoryTimelineProps {
   history: VaquinhaHistory[];
+  isAuthenticated: boolean;
   onEdit?: (item: VaquinhaHistory) => void;
   onDelete?: (id: string) => void;
 }
@@ -80,12 +80,10 @@ const TimelineItem = memo(function TimelineItem({
 
 export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
   history,
+  isAuthenticated,
   onEdit,
   onDelete,
 }: VaquinhaHistoryTimelineProps) {
-  const { user } = useUserVerification();
-  const isAuthenticated = !!user;
-
   if (history.length === 0) {
     return (
       <div
