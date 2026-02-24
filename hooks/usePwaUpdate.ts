@@ -30,6 +30,16 @@ export const usePwaUpdate = () => {
       return;
     }
 
+    const registerSW = () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    };
+
+    if (document.readyState === 'complete') {
+      registerSW();
+    } else {
+      window.addEventListener('load', registerSW, { once: true });
+    }
+
     let cancelled = false;
     let cleanup: (() => void) | undefined;
 

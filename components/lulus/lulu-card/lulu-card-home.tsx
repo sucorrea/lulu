@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
-import { Icon } from '@iconify/react';
 import { CakeIcon, Edit2Icon } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -23,8 +23,8 @@ import LinkIconWithText from '../link-with-icon';
 import MoreInforAccordion from '../more-info';
 import { Person } from '../types';
 import { formatDate, getParticipantPhotoUrl, getSigno } from '../utils';
-import dynamic from 'next/dynamic';
 import NextBirthdayBanner from './next-birthday-banner';
+import ZodiacIcon from '../zodiac-icon';
 
 const ResponsableGift = dynamic(() => import('./responsable-gift'), {
   ssr: false,
@@ -111,9 +111,9 @@ const LulusCardHome = ({
                   link={`${LINK_HOROSCOPO_DIARIO}${getSigno(new Date(participant.date)).value}/`}
                   text={getSigno(new Date(participant.date)).label ?? ''}
                   icon={
-                    <Icon
+                    <ZodiacIcon
                       icon={getSigno(new Date(participant.date)).icon}
-                      className="text-primary [&_path]:fill-current"
+                      className="text-primary"
                     />
                   }
                 />
@@ -125,11 +125,24 @@ const LulusCardHome = ({
                     link={`${LINK_INSTAGRAM}${participant.instagram}`}
                     text={`@${participant.instagram}`}
                     icon={
-                      <Icon
-                        icon="mdi:instagram"
-                        className="text-primary shrink-0"
-                        width="0.875rem"
-                        height="0.875rem"
+                      <span
+                        aria-hidden="true"
+                        className="text-primary"
+                        style={{
+                          display: 'inline-block',
+                          width: '0.875rem',
+                          height: '0.875rem',
+                          flexShrink: 0,
+                          WebkitMaskImage: "url('/icons/instagram.svg')",
+                          WebkitMaskRepeat: 'no-repeat',
+                          WebkitMaskSize: 'contain',
+                          WebkitMaskPosition: 'center',
+                          maskImage: "url('/icons/instagram.svg')",
+                          maskRepeat: 'no-repeat',
+                          maskSize: 'contain',
+                          maskPosition: 'center',
+                          backgroundColor: 'currentColor',
+                        }}
                       />
                     }
                   />

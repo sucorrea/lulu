@@ -13,11 +13,17 @@ import { useQuery } from '@tanstack/react-query';
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
 import { useGetCurrentYearAssignments } from '@/services/queries/vaquinhaHistory';
 
-import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
 import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
 import BadgeLulu from './badge-lulu';
+
+const Filter = dynamic(() => import('./filter/filter'), {
+  ssr: false,
+  loading: () => (
+    <div className="mb-6 h-10 animate-pulse rounded-lg bg-muted" aria-hidden />
+  ),
+});
 
 const BadgeLuluParticipants = dynamic(
   () => import('./badge-lulu-participants'),
@@ -132,7 +138,11 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           {filteredParticipants.map((participant, index) => (
             <div
               key={participant.id}
-              className={index > 1 ? '[content-visibility:auto]' : undefined}
+              className={
+                index > 1
+                  ? '[content-visibility:auto] [contain-intrinsic-size:auto_320px]'
+                  : undefined
+              }
             >
               <LulusCardHome
                 participant={participant}
