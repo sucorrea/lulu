@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import LulusCardHome from './lulu-card-home';
 import type { Person } from '../types';
@@ -291,7 +291,7 @@ describe('LulusCardHome', () => {
   });
 
   describe('Next Birthday Banner', () => {
-    it('should render next birthday banner when isNextBirthday is true', () => {
+    it('should render next birthday banner when isNextBirthday is true', async () => {
       render(
         <LulusCardHome
           participant={mockParticipant}
@@ -303,7 +303,9 @@ describe('LulusCardHome', () => {
 
       expect(screen.getByText('Próxima Aniversariante')).toBeInTheDocument();
       expect(screen.getByTestId('gift-icon')).toBeInTheDocument();
-      expect(screen.getByTestId('animation')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId('animation')).toBeInTheDocument();
+      });
     });
 
     it('should not render next birthday banner when isNextBirthday is false', () => {

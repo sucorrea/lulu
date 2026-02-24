@@ -1,5 +1,6 @@
 'use client';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import { Plus, TrashIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -22,10 +23,13 @@ import {
 } from '@/services/queries/vaquinhaHistory';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 import BirthdayPersonFilter from './birthday-person-filter';
-import VaquinhaHistoryFormDialog from './form-dialog';
-import VaquinhaHistoryTimeline from './timeline';
 import TimelineSkeleton from './timeline-skeleton';
+import VaquinhaHistoryTimeline from './timeline';
 import YearFilter from './year-filter';
+
+const VaquinhaHistoryFormDialog = dynamic(() => import('./form-dialog'), {
+  ssr: false,
+});
 
 export const HistoricoClient = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);

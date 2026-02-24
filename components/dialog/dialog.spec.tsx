@@ -148,20 +148,20 @@ describe('GenericDialog', () => {
     expect(content).toHaveAttribute('class', '');
   });
 
-  it('should set aria-describedby to title', () => {
+  it('should render title for accessibility', () => {
     const title = 'Dialog Title';
     render(<GenericDialog {...defaultProps} title={title} />);
 
-    const content = screen.getByTestId('dialog-content');
-    expect(content).toHaveAttribute('aria-describedby', title);
+    const titleEl = screen.getByTestId('dialog-title');
+    expect(titleEl).toHaveTextContent(title);
   });
 
-  it('should set aria-description to provided description', () => {
+  it('should render description for accessibility', () => {
     const description = 'Dialog Description';
     render(<GenericDialog {...defaultProps} description={description} />);
 
-    const content = screen.getByTestId('dialog-content');
-    expect(content).toHaveAttribute('aria-description', description);
+    const descEl = screen.getByTestId('dialog-description');
+    expect(descEl).toHaveTextContent(description);
   });
 
   it('should call onOpenChange when dialog state changes', () => {
@@ -262,7 +262,7 @@ describe('GenericDialog', () => {
     expect(desc).toHaveTextContent(specialDesc);
   });
 
-  it('should maintain accessibility attributes in dialog content', () => {
+  it('should maintain accessibility with title and description', () => {
     const title = 'Accessible Dialog';
     const description = 'This is an accessible dialog';
 
@@ -274,9 +274,10 @@ describe('GenericDialog', () => {
       />
     );
 
-    const content = screen.getByTestId('dialog-content');
-    expect(content).toHaveAttribute('aria-describedby', title);
-    expect(content).toHaveAttribute('aria-description', description);
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(title);
+    expect(screen.getByTestId('dialog-description')).toHaveTextContent(
+      description
+    );
   });
 
   it('should render with custom className and maintain functionality', () => {

@@ -27,6 +27,13 @@ vi.mock('./lulus/utils', () => ({
   },
 }));
 
+const mockToastSuccess = vi.fn();
+vi.mock('sonner', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+  },
+}));
+
 describe('PixInfo', () => {
   const mockParticipant: Person = {
     id: 1,
@@ -47,7 +54,6 @@ describe('PixInfo', () => {
         writeText: vi.fn().mockResolvedValue(undefined),
       },
     });
-    globalThis.alert = vi.fn();
   });
 
   it('should render pix icon', () => {
@@ -81,26 +87,26 @@ describe('PixInfo', () => {
     );
   });
 
-  it('should show alert on desktop when copying', () => {
+  it('should show toast on desktop when copying', () => {
     mockUseIsMobile.mockReturnValue({ isMobile: false });
     render(<PixInfo participant={mockParticipant} />);
 
-    const button = screen.getByRole('button');
+    const button = screen.getByRole('button', { name: 'Copiar chave PIX' });
     fireEvent.click(button);
 
-    expect(globalThis.alert).toHaveBeenCalledWith(
-      'QRCode copiado com sucesso!'
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      'Chave PIX copiada com sucesso!'
     );
   });
 
-  it('should not show alert on mobile when copying', () => {
+  it('should not show toast on mobile when copying', () => {
     mockUseIsMobile.mockReturnValue({ isMobile: true });
     render(<PixInfo participant={mockParticipant} />);
 
-    const button = screen.getByRole('button');
+    const button = screen.getByRole('button', { name: 'Copiar chave PIX' });
     fireEvent.click(button);
 
-    expect(globalThis.alert).not.toHaveBeenCalled();
+    expect(mockToastSuccess).not.toHaveBeenCalled();
   });
 
   it('should render with email pix key type', () => {

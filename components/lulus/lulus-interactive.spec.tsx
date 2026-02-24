@@ -135,32 +135,27 @@ describe('LulusInteractive', () => {
   });
 
   describe('Loading State', () => {
-    it('should render loading skeletons when user is loading', () => {
+    it('should render content immediately when user is loading', () => {
       mockUseUserVerification.mockReturnValue({
         user: null,
         isLoading: true,
       });
 
-      const { container } = render(
-        <LulusInteractive initialParticipants={mockParticipants} />
-      );
+      render(<LulusInteractive initialParticipants={mockParticipants} />);
 
-      const skeletons = container.querySelectorAll('.lulu-card');
-      expect(skeletons).toHaveLength(6);
+      expect(screen.getByTestId('filter-component')).toBeInTheDocument();
+      expect(screen.getByTestId('next-birthday-card')).toBeInTheDocument();
     });
 
-    it('should show animated loading header when loading', () => {
+    it('should not block content on auth loading', () => {
       mockUseUserVerification.mockReturnValue({
         user: null,
         isLoading: true,
       });
 
-      const { container } = render(
-        <LulusInteractive initialParticipants={mockParticipants} />
-      );
+      render(<LulusInteractive initialParticipants={mockParticipants} />);
 
-      const animatedHeader = container.querySelector('.animate-pulse');
-      expect(animatedHeader).toBeInTheDocument();
+      expect(screen.getByText(/Somos 3 Lulus/)).toBeInTheDocument();
     });
   });
 

@@ -1,5 +1,10 @@
-import Animation from '@/components/animation';
+import dynamic from 'next/dynamic';
 import { GiftIcon } from 'lucide-react';
+
+const Animation = dynamic(() => import('@/components/animation'), {
+  ssr: false,
+  loading: () => <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-muted" />,
+});
 
 interface NextBirthdayBannerProps {
   daysForBirthday: number;
@@ -13,9 +18,9 @@ const NextBirthdayBanner = ({ daysForBirthday }: NextBirthdayBannerProps) => (
           <GiftIcon className="h-6 w-6 text-primary animate-pulse" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-primary">
+          <p className="text-lg font-bold text-primary">
             Próxima Aniversariante
-          </h3>
+          </p>
           <p className="text-2xl font-bold text-foreground">
             {daysForBirthday === 1
               ? `${daysForBirthday} dia`

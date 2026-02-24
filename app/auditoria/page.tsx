@@ -1,6 +1,14 @@
+import type { Metadata } from 'next';
+import { Suspense } from 'react';
+
 import AuditLogSkeleton from '@/components/audit/AuditLogList/AuditLogSkeleton';
 import AuditPage from '@/components/audit/AuditPage';
-import { Suspense } from 'react';
+
+export const metadata: Metadata = {
+  title: 'Auditoria | Luluzinha',
+  description:
+    'Registro de alterações e atividades no sistema. Visualize o histórico de modificações.',
+};
 
 const AuditPageSkeleton = () => (
   <div className="container mx-auto py-8 px-4">

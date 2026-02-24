@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Offline | Luluzinha',
+  description: 'Você está offline. Verifique sua conexão com a internet.',
+};
 
 const OfflinePage = () => {
   return (

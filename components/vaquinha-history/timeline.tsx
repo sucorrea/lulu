@@ -53,7 +53,7 @@ const TimelineItem = memo(function TimelineItem({
                     (e.currentTarget as HTMLElement)?.blur();
                     onEdit(item);
                   }}
-                  className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
                   aria-label={`Editar registro de ${item.birthdayPersonName}`}
                 >
                   <Edit className="h-3.5 w-3.5" aria-hidden="true" />
@@ -63,7 +63,7 @@ const TimelineItem = memo(function TimelineItem({
               {onDelete && (
                 <button
                   onClick={() => onDelete(item.id)}
-                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2 rounded px-2 py-1 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
                   aria-label={`Excluir registro de ${item.birthdayPersonName}`}
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
