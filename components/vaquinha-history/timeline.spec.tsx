@@ -4,12 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { VaquinhaHistoryTimeline } from './timeline';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 
-const mockUseUserVerification = vi.fn();
-
-vi.mock('@/hooks/user-verify', () => ({
-  useUserVerification: () => mockUseUserVerification(),
-}));
-
 describe('VaquinhaHistoryTimeline', () => {
   const mockHistory: VaquinhaHistory[] = [
     {
@@ -33,21 +27,22 @@ describe('VaquinhaHistoryTimeline', () => {
   ];
 
   it('should render empty state when no history', () => {
-    mockUseUserVerification.mockReturnValue({ user: null });
-    render(<VaquinhaHistoryTimeline history={[]} />);
+    render(<VaquinhaHistoryTimeline history={[]} isAuthenticated={false} />);
     expect(screen.getByText('Nenhum histórico encontrado')).toBeInTheDocument();
   });
 
   it('should render history items grouped by year', () => {
-    mockUseUserVerification.mockReturnValue({ user: null });
-    render(<VaquinhaHistoryTimeline history={mockHistory} />);
+    render(
+      <VaquinhaHistoryTimeline history={mockHistory} isAuthenticated={false} />
+    );
     expect(screen.getByText('2024')).toBeInTheDocument();
     expect(screen.getByText('2023')).toBeInTheDocument();
   });
 
   it('should render timeline item header with birthday person and responsible names', () => {
-    mockUseUserVerification.mockReturnValue({ user: null });
-    render(<VaquinhaHistoryTimeline history={mockHistory} />);
+    render(
+      <VaquinhaHistoryTimeline history={mockHistory} isAuthenticated={false} />
+    );
 
     expect(screen.getByText('Deborah')).toBeInTheDocument();
     expect(screen.getByText('Stella')).toBeInTheDocument();
@@ -56,10 +51,10 @@ describe('VaquinhaHistoryTimeline', () => {
   });
 
   it('should hide actions when not authenticated', () => {
-    mockUseUserVerification.mockReturnValue({ user: null });
     render(
       <VaquinhaHistoryTimeline
         history={mockHistory}
+        isAuthenticated={false}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />
@@ -70,13 +65,13 @@ describe('VaquinhaHistoryTimeline', () => {
   });
 
   it('should render with edit and delete actions', () => {
-    mockUseUserVerification.mockReturnValue({ user: { uid: '1' } });
     const onEdit = vi.fn();
     const onDelete = vi.fn();
 
     render(
       <VaquinhaHistoryTimeline
         history={mockHistory}
+        isAuthenticated={true}
         onEdit={onEdit}
         onDelete={onDelete}
       />
@@ -90,7 +85,6 @@ describe('VaquinhaHistoryTimeline', () => {
   });
 
   it('should call edit and delete handlers', async () => {
-    mockUseUserVerification.mockReturnValue({ user: { uid: '1' } });
     const onEdit = vi.fn();
     const onDelete = vi.fn();
     const user = userEvent.setup();
@@ -98,6 +92,7 @@ describe('VaquinhaHistoryTimeline', () => {
     render(
       <VaquinhaHistoryTimeline
         history={mockHistory}
+        isAuthenticated={true}
         onEdit={onEdit}
         onDelete={onDelete}
       />
