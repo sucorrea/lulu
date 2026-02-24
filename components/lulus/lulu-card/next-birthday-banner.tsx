@@ -3,7 +3,9 @@ import { GiftIcon } from 'lucide-react';
 
 const Animation = dynamic(() => import('@/components/animation'), {
   ssr: false,
-  loading: () => <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-muted" />,
+  loading: () => (
+    <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-muted" />
+  ),
 });
 
 interface NextBirthdayBannerProps {

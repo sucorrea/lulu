@@ -65,7 +65,9 @@ describe('BirthdayPersonFilter', () => {
 
     const select = screen.getByRole('combobox');
     expect(select).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Todas as aniversariantes' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'Todas as aniversariantes' })
+    ).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Ana' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Deborah' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Stella' })).toBeInTheDocument();
@@ -155,7 +157,9 @@ describe('BirthdayPersonFilter', () => {
       />
     );
 
-    expect(screen.getByRole('option', { name: 'Todas as aniversariantes' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'Todas as aniversariantes' })
+    ).toBeInTheDocument();
     expect(screen.getAllByRole('option')).toHaveLength(1);
   });
 });

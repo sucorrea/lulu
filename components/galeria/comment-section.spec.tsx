@@ -278,7 +278,7 @@ describe('CommentSection', () => {
     it('should have comment scroll container with max-height', () => {
       const { container } = renderCommentSection(mockComments, 'user-1');
 
-      const scrollContainer = container.querySelector('.max-h-26');
+      const scrollContainer = container.querySelector('[class*="max-h-"]');
       expect(scrollContainer).toBeInTheDocument();
       expect(scrollContainer).toHaveClass('overflow-y-auto');
     });

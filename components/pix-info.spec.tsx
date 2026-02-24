@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import PixInfo from './pix-info';
 import { Person } from './lulus/types';
 
@@ -87,16 +87,18 @@ describe('PixInfo', () => {
     );
   });
 
-  it('should show toast on desktop when copying', () => {
+  it('should show toast on desktop when copying', async () => {
     mockUseIsMobile.mockReturnValue({ isMobile: false });
     render(<PixInfo participant={mockParticipant} />);
 
     const button = screen.getByRole('button', { name: 'Copiar chave PIX' });
     fireEvent.click(button);
 
-    expect(mockToastSuccess).toHaveBeenCalledWith(
-      'Chave PIX copiada com sucesso!'
-    );
+    await waitFor(() => {
+      expect(mockToastSuccess).toHaveBeenCalledWith(
+        'Chave PIX copiada com sucesso!'
+      );
+    });
   });
 
   it('should not show toast on mobile when copying', () => {

@@ -35,7 +35,7 @@ const CommentSection = memo(function CommentSection({
     <section aria-label="Comentários">
       {hasComments ? (
         <ul
-          className="mb-2 max-h-26 overflow-y-auto list-none p-0 m-0"
+          className="mb-2 max-h-[6.5rem] overflow-y-auto list-none p-0 m-0"
           aria-label="Lista de comentários"
         >
           {comments.map((commentItem) => (

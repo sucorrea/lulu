@@ -68,7 +68,6 @@ const UploadPhotoGallery = () => {
             accept="image/*"
             onChange={handlePhotoUploadGallery}
             className="block"
-            multiple
           />
         </div>
       </GenericDialog>

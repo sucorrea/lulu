@@ -21,12 +21,17 @@ export const DeviceProvider = ({ children }: PropsWithChildren) => {
   const [isMobileState, setIsMobileState] = useState<boolean>(false);
 
   useEffect(() => {
-    const mediaQuery = globalThis.matchMedia(MOBILE_MEDIA_QUERY);
+    const matchMedia = globalThis.matchMedia;
+    if (typeof matchMedia !== 'function') {
+      return;
+    }
+
+    const mediaQuery = matchMedia(MOBILE_MEDIA_QUERY);
     const updateState = () => setIsMobileState(mediaQuery.matches);
 
     updateState();
-    mediaQuery.addEventListener('change', updateState);
 
+    mediaQuery.addEventListener('change', updateState);
     return () => mediaQuery.removeEventListener('change', updateState);
   }, []);
 

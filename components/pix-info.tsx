@@ -13,11 +13,17 @@ interface PixInfoProps {
 const PixInfo = ({ participant }: PixInfoProps) => {
   const { isMobile } = useIsMobile();
 
-  const handleCopy = () => {
-    if (!isMobile) {
-      toast.success('Chave PIX copiada com sucesso!');
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(participant.pix_key ?? '');
+      if (!isMobile) {
+        toast.success('Chave PIX copiada com sucesso!');
+      }
+    } catch {
+      if (!isMobile) {
+        toast.error('Não foi possível copiar a chave PIX');
+      }
     }
-    navigator.clipboard.writeText(participant.pix_key ?? '');
   };
 
   return (

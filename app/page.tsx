@@ -3,7 +3,10 @@ import { preload } from 'react-dom';
 import ErrorState from '@/components/error-state';
 
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
-import { getNextBirthday, getParticipantPhotoUrl } from '@/components/lulus/utils';
+import {
+  getNextBirthday,
+  getParticipantPhotoUrl,
+} from '@/components/lulus/utils';
 
 const Lulus = dynamic(() => import('@/components/lulus/lulus'), {
   ssr: true,
