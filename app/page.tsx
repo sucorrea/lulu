@@ -52,7 +52,7 @@ const Home = async () => {
   return (
     <section className="bg-muted/40 py-10 md:py-14">
       <div className="container space-y-6">
-        <header className="space-y-2 text-center md:text-left">
+        <header className="space-y-2">
           <h1 className="lulu-header text-2xl md:text-3xl">Participantes</h1>
           <p className="text-sm md:text-base text-muted-foreground">
             Veja quem faz parte dessa rede de carinho e amizade

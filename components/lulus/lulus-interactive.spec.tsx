@@ -63,6 +63,15 @@ vi.mock('./filter/filter', () => ({
   ),
 }));
 
+vi.mock('./badge-lulu-participants', () => ({
+  default: () => {
+    const total = mockUseGetCurrentYearAssignments();
+    const { data: assignments, isLoading, isError } = total;
+    const count = isLoading || isError ? null : Object.keys(assignments?.byBirthday ?? {}).length;
+    return <div>{`${count ?? '—'} Participantes da vaquinha`}</div>;
+  },
+}));
+
 vi.mock('./lulu-card/lulu-card-home', () => ({
   default: ({
     participant,

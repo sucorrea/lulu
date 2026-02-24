@@ -198,7 +198,7 @@ export const VaquinhaHistoryFormDialog = ({
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isLoading} className="capitalize">
+              <Button type="submit" disabled={isLoading}>
                 {submitLabel}
               </Button>
             </DialogFooter>
