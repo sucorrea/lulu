@@ -7,8 +7,10 @@ import {
   getNextBirthday,
   getParticipantPhotoUrl,
 } from '@/components/lulus/utils';
+import Header from '@/components/layout/header';
+import PageLayout from '@/components/layout/page-layout';
 
-const Lulus = dynamic(() => import('@/components/lulus/lulus'), {
+const Lulus = dynamic(() => import('@/components/lulus/lulus-interactive'), {
   ssr: true,
   loading: () => (
     <div className="flex min-h-[200px] items-center justify-center">
@@ -30,14 +32,12 @@ const Home = async () => {
 
   if (error || !participants) {
     return (
-      <section className="bg-muted/40 py-10 md:py-14">
-        <div className="container">
-          <ErrorState
-            title="Erro ao carregar participantes"
-            message="Não foi possível carregar a lista de participantes. Por favor, recarregue a página."
-          />
-        </div>
-      </section>
+      <PageLayout>
+        <ErrorState
+          title="Erro ao carregar participantes"
+          message="Não foi possível carregar a lista de participantes. Por favor, recarregue a página."
+        />
+      </PageLayout>
     );
   }
 
@@ -50,19 +50,13 @@ const Home = async () => {
   }
 
   return (
-    <section className="bg-muted/40 py-10 md:py-14">
-      <div className="container space-y-6">
-        <header className="space-y-2">
-          <h1 className="lulu-header text-2xl md:text-3xl">Participantes</h1>
-          <p className="text-sm md:text-base text-muted-foreground">
-            Veja quem faz parte dessa rede de carinho e amizade
-          </p>
-        </header>
-        <div className="rounded-2xl border border-border bg-card/80 p-2 md:p-4">
-          <Lulus participants={participants} />
-        </div>
-      </div>
-    </section>
+    <PageLayout>
+      <Header
+        title="Participantes"
+        description="Veja quem faz parte dessa rede de carinho e amizade"
+      />
+      <Lulus initialParticipants={participants} />
+    </PageLayout>
   );
 };
 

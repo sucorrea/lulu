@@ -1,6 +1,6 @@
 'use client';
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Plus, TrashIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -22,9 +22,11 @@ import {
   useUpdateVaquinhaHistory,
 } from '@/services/queries/vaquinhaHistory';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
+import Header from '../layout/header';
+import PageLayout from '../layout/page-layout';
 import BirthdayPersonFilter from './birthday-person-filter';
-import TimelineSkeleton from './timeline-skeleton';
 import VaquinhaHistoryTimeline from './timeline';
+import TimelineSkeleton from './timeline-skeleton';
 import YearFilter from './year-filter';
 
 const VaquinhaHistoryFormDialog = dynamic(() => import('./form-dialog'), {
@@ -244,9 +246,9 @@ export const HistoricoClient = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <Skeleton className="h-9 w-64 mb-2" />
+      <PageLayout>
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
           <Skeleton className="h-5 w-96" />
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -254,7 +256,7 @@ export const HistoricoClient = () => {
           <Skeleton className="h-10 w-48" />
         </div>
         <TimelineSkeleton />
-      </div>
+      </PageLayout>
     );
   }
 
@@ -271,16 +273,12 @@ export const HistoricoClient = () => {
   return (
     <>
       <LiveAnnounce message={announcement} politeness="polite" />
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="lulu-header text-2xl md:text-3xl">
-            Histórico de Vaquinhas
-          </h1>
-          <p className="text-muted-foreground">
-            Acompanhe quem foi responsável pelas vaquinhas ao longo dos anos
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <PageLayout>
+        <Header
+          title="Histórico de Vaquinhas"
+          description="Acompanhe quem foi responsável pelas vaquinhas ao longo dos anos"
+        />
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
             {availableYears && availableYears.length > 0 && (
               <YearFilter
@@ -325,7 +323,7 @@ export const HistoricoClient = () => {
           editingItem={editingItem}
           isLoading={addMutation.isPending || updateMutation.isPending}
         />
-      </div>
+      </PageLayout>
     </>
   );
 };

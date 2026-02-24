@@ -32,6 +32,8 @@ import { ParticipantSelection } from './participant-selection';
 import { SorteioResultPreview } from './sorteio-result-preview';
 import { YearSelector } from './year-selector';
 import { Person } from '../lulus/types';
+import Header from '../layout/header';
+import PageLayout from '../layout/page-layout';
 
 const LOADING_SKELETON_KEYS = [
   'loading-skeleton-1',
@@ -215,18 +217,18 @@ export const SorteioClient = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <Skeleton className="h-9 w-64 mb-2" />
+      <PageLayout>
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
           <Skeleton className="h-5 w-96" />
         </div>
-        <Skeleton className="h-10 w-40 mb-6" />
+        <Skeleton className="h-10 w-40" />
         <div className="space-y-3">
           {LOADING_SKELETON_KEYS.map((key) => (
             <Skeleton key={key} className="h-12 w-full" />
           ))}
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -241,17 +243,12 @@ export const SorteioClient = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="lulu-header text-2xl md:text-3xl">
-          Sorteio da Vaquinha
-        </h1>
-        <p className="text-muted-foreground">
-          Selecione quem confirmou participação e realize o sorteio
-        </p>
-      </div>
-
-      <div className="mb-6">
+    <PageLayout>
+      <Header
+        title="Sorteio da Vaquinha"
+        description="Selecione quem confirmou participação e realize o sorteio"
+      />
+      <div className="max-w-4xl px-4">
         <YearSelector selectedYear={selectedYear} onChange={setSelectedYear} />
       </div>
 
@@ -416,7 +413,7 @@ export const SorteioClient = () => {
           </div>
         )}
       </GenericDialog>
-    </div>
+    </PageLayout>
   );
 };
 

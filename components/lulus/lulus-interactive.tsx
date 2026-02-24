@@ -19,7 +19,10 @@ import { Person } from './types';
 import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
 import BadgeLulu from './badge-lulu';
 
-const BadgeLuluParticipants = dynamic(() => import('./badge-lulu-participants'), { ssr: false });
+const BadgeLuluParticipants = dynamic(
+  () => import('./badge-lulu-participants'),
+  { ssr: false }
+);
 
 interface LulusInteractiveProps {
   initialParticipants: Person[];
@@ -76,7 +79,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen">
       <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
       <BadgeLuluParticipants />
       {!!user && (

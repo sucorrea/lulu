@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
-import AuditLogSkeleton from '@/components/audit/AuditLogList/AuditLogSkeleton';
-import AuditPage from '@/components/audit/AuditPage';
+import AuditLogSkeleton from '@/components/audit/audit-log-skeleton';
+import AuditPage from '@/components/audit/audit-page/audit';
 
 export const metadata: Metadata = {
   title: 'Auditoria | Luluzinha',

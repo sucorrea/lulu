@@ -1,32 +1,26 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchParticipants } from '@/services/queries/fetchParticipants';
 import { Person } from '@/components/lulus/types';
-import { AuditLogList } from '@/components/audit/AuditLogList';
-import { FIELD_LABELS } from '@/components/audit/AuditLogList/constants';
+import { AuditLogList } from '@/components/audit/audit-log-list';
+import { FIELD_LABELS } from '@/components/audit/constants';
 import ErrorState from '@/components/error-state';
-import { Skeleton } from '@/components/ui/skeleton';
-import { AuditFilters } from './AuditFilters';
-import { useAuditFilters } from './useAuditFilters';
-import { useAuditData } from './useAuditData';
+import Header from '@/components/layout/header';
+import PageLayout from '@/components/layout/page-layout';
+import { AuditFilters } from './audit-filters';
+import { useAuditFilters } from './use-audit-filters';
+import { useAuditData } from './use-audit-data';
 import { ALL_PARTICIPANTS_VALUE } from './constants';
 
-export const AuditPage = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
+const AuditPageContent = () => {
   const { filters, setParticipantId, setLimit, setSearch } = useAuditFilters();
 
   const { data: participants = [], isLoading: isLoadingParticipants } =
     useQuery({
       queryKey: ['participants'],
       queryFn: fetchParticipants,
-      enabled: isMounted,
     });
 
   const {
@@ -38,7 +32,7 @@ export const AuditPage = () => {
   } = useAuditData(
     filters.participantId,
     filters.limit,
-    isMounted && participants.length > 0
+    participants.length > 0
   );
 
   const filteredLogs = useMemo(() => {
@@ -67,49 +61,12 @@ export const AuditPage = () => {
     return participant?.fullName || participant?.name || 'Participante';
   };
 
-  if (!isMounted) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <div className="mb-8">
-          <h1 className="lulu-header text-2xl md:text-3xl">
-            Histórico de Auditoria
-          </h1>
-          <p className="text-muted-foreground">
-            Visualize todas as alterações realizadas nos dados dos participantes
-          </p>
-        </div>
-
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {Array.from({ length: 3 }, (_, i) => `filter-skeleton-${i}`).map(
-              (id) => (
-                <Skeleton key={id} className="h-10" />
-              )
-            )}
-          </div>
-
-          <div className="space-y-4">
-            {Array.from({ length: 5 }, (_, i) => `log-skeleton-${i}`).map(
-              (id) => (
-                <Skeleton key={id} className="h-24 rounded-xl" />
-              )
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="lulu-header text-2xl md:text-3xl">
-          Histórico de Auditoria
-        </h1>
-        <p className="text-muted-foreground">
-          Visualize todas as alterações realizadas nos dados dos participantes
-        </p>
-      </div>
+    <PageLayout>
+      <Header
+        title="Histórico de Auditoria"
+        description="Visualize todas as alterações realizadas nos dados dos participantes"
+      />
       <AuditFilters
         selectedParticipant={filters.participantId}
         limitCount={filters.limit}
@@ -117,7 +74,7 @@ export const AuditPage = () => {
         onParticipantChange={setParticipantId}
         onLimitChange={setLimit}
         onSearchChange={setSearch}
-        isLoadingParticipants={!isMounted || isLoadingParticipants}
+        isLoadingParticipants={isLoadingParticipants}
       />
 
       {(() => {
@@ -155,8 +112,8 @@ export const AuditPage = () => {
           />
         );
       })()}
-    </div>
+    </PageLayout>
   );
 };
 
-export default AuditPage;
+export default AuditPageContent;

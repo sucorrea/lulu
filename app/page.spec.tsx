@@ -6,7 +6,7 @@ vi.mock('@/app/actions/participants', () => ({
   getParticipantsWithEditTokens: () => Promise.resolve([]),
 }));
 
-vi.mock('@/components/lulus/lulus', () => ({
+vi.mock('@/components/lulus/lulus-interactive', () => ({
   default: () => <div>Lulus Component</div>,
 }));
 

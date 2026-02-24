@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input';
 import { SelectWithOptions } from '@/components/ui/select-with-options';
 import { fetchParticipants } from '@/services/queries/fetchParticipants';
 
-import { ALL_PARTICIPANTS_VALUE, LIMIT_OPTIONS } from '../constants';
-import { AuditFiltersProps } from '../types';
+import { ALL_PARTICIPANTS_VALUE, LIMIT_OPTIONS } from './constants';
+import { AuditFiltersProps } from './types';
 
 const AuditFiltersComponent = ({
   selectedParticipant,

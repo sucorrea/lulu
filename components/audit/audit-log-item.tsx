@@ -5,8 +5,8 @@ import { User, FileText, Clock } from 'lucide-react';
 import { AuditLog } from '@/services/audit';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatValue, formatDateTime } from '../formatters';
-import { FIELD_LABELS } from '../constants';
+import { formatValue, formatDateTime } from './formatters';
+import { FIELD_LABELS } from './constants';
 
 interface AuditLogItemProps {
   log: AuditLog;

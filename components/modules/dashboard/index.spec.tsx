@@ -255,16 +255,12 @@ describe('DashboardPage', () => {
       <DashboardPage participants={mockParticipants} />
     );
 
-    const page = container.querySelector('.min-h-screen');
+    const section = container.querySelector('section');
+    const innerDiv = container.querySelector('section > div');
     const grid = container.querySelector('.grid');
 
-    expect(page).toHaveClass(
-      'bg-background',
-      'px-4',
-      'pb-24',
-      'pt-6',
-      'md:px-8'
-    );
+    expect(section).toHaveClass('bg-muted/40', 'py-6', 'md:py-8');
+    expect(innerDiv).toHaveClass('container', 'space-y-6');
     expect(grid).toHaveClass('grid-cols-1', 'gap-4', 'md:grid-cols-2');
   });
 });
