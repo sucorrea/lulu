@@ -520,13 +520,13 @@ O endpoint verifica o token do caller, confirma `admin: true` no claim, valida q
 
 #### Permissões por coleção (Firestore)
 
-| Coleção              | Leitura     | Escrita     |
-| -------------------- | ----------- | ----------- |
-| `participants`       | Autenticado | Admin       |
-| `participants/audit` | Admin       | Admin       |
-| `vaquinha-history`   | Autenticado | Admin       |
-| `galeria-likes`      | Autenticado | Autenticado |
-| `galeria-comments`   | Autenticado | Autenticado |
+| Coleção              | Leitura | Escrita     |
+| -------------------- | ------- | ----------- |
+| `participants`       | Público | Admin       |
+| `participants/audit` | Público | Admin       |
+| `vaquinha-history`   | Público | Admin       |
+| `galeria-likes`      | Público | Autenticado |
+| `galeria-comments`   | Público | Autenticado |
 
 ```bash
 # Deploy das regras

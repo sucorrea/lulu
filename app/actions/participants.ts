@@ -1,6 +1,6 @@
 'use server';
 
-import { unstable_cache } from 'next/cache';
+import { revalidateTag, unstable_cache } from 'next/cache';
 
 import { encryptId } from '@/lib/crypto';
 import { getParticipants } from '@/services/participants-server';
@@ -19,4 +19,8 @@ const getCachedParticipants = unstable_cache(
 
 export const getParticipantsWithEditTokens = async () => {
   return getCachedParticipants();
+};
+
+export const revalidateParticipantsCache = async () => {
+  revalidateTag('participants', 'max');
 };

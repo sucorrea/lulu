@@ -1,13 +1,19 @@
 import admin from 'firebase-admin';
-import { existsSync, readFileSync } from 'fs';
-import { resolve } from 'path';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-  admin.initializeApp({
-    credential: admin.credential.cert(
-      JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-    ),
-  });
+  try {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  } catch {
+    console.error(
+      'FIREBASE_SERVICE_ACCOUNT_KEY contém JSON inválido. Verifique se a variável de ambiente contém o JSON válido da service account.'
+    );
+    process.exit(1);
+  }
 } else {
   const serviceAccountPath = resolve(process.cwd(), 'serviceAccountKey.json');
 
@@ -18,10 +24,19 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
     process.exit(1);
   }
 
-  const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf-8'));
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+  try {
+    const serviceAccount = JSON.parse(
+      readFileSync(serviceAccountPath, 'utf-8')
+    );
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  } catch {
+    console.error(
+      `serviceAccountKey.json contém JSON inválido. Caminho: ${serviceAccountPath}`
+    );
+    process.exit(1);
+  }
 }
 
 const setAdminClaim = async (emailOrUid: string, grant = true) => {
@@ -60,7 +75,9 @@ if (!emailOrUid) {
   process.exit(1);
 }
 
-setAdminClaim(emailOrUid, !revoke).catch((error: Error) => {
-  console.error('Erro:', error.message);
+try {
+  await setAdminClaim(emailOrUid, !revoke);
+} catch (error) {
+  console.error('Erro:', (error as Error).message);
   process.exit(1);
-});
+}

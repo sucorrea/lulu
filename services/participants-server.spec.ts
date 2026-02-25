@@ -62,4 +62,23 @@ describe('participants-server', () => {
 
     expect(result).toBeNull();
   });
+
+  it('getParticipants propagates error when adminDb fails', async () => {
+    const networkError = new Error('Network error');
+    mockGet.mockRejectedValueOnce(networkError);
+
+    const { getParticipants } = await load();
+
+    await expect(getParticipants()).rejects.toThrow('Network error');
+  });
+
+  it('getParticipantById returns null when adminDb fails', async () => {
+    const permissionError = new Error('Permission denied');
+    mockDocGet.mockRejectedValueOnce(permissionError);
+
+    const { getParticipantById } = await load();
+
+    const result = await getParticipantById('1');
+    expect(result).toBeNull();
+  });
 });

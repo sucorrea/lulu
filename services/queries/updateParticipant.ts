@@ -1,4 +1,5 @@
 import { Person } from '@/components/lulus/types';
+import { revalidateParticipantsCache } from '@/app/actions/participants';
 import { assertAdmin } from '@/lib/auth-guard';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
@@ -70,6 +71,7 @@ export const useUpdateParticipantData = (participantId: string) => {
     onSuccess: () => {
       refetchParticipant();
       queryClient.invalidateQueries({ queryKey: ['get-all-participants'] });
+      revalidateParticipantsCache();
     },
     onError: () => {
       console.warn('Error updating participant data');

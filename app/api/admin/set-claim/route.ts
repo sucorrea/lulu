@@ -22,14 +22,28 @@ export const POST = async (request: NextRequest) => {
     let decodedToken;
     try {
       decodedToken = await adminAuth.verifyIdToken(idToken);
-    } catch {
+    } catch (error) {
+      console.error('Falha ao verificar token:', error);
       return NextResponse.json(
         { error: 'Token inválido ou expirado' },
         { status: 401 }
       );
     }
 
-    if (!decodedToken.admin) {
+    let callerUser;
+    try {
+      callerUser = await adminAuth.getUser(decodedToken.uid);
+    } catch (error) {
+      console.error(`Caller '${decodedToken.uid}' não encontrado:`, error);
+      return NextResponse.json(
+        { error: 'Usuário autenticado não encontrado' },
+        { status: 401 }
+      );
+    }
+
+    const callerClaims =
+      (callerUser.customClaims as Record<string, unknown>) ?? {};
+    if (callerClaims.admin !== true) {
       return NextResponse.json(
         { error: 'Apenas administradores podem alterar o acesso admin' },
         { status: 403 }
@@ -47,10 +61,21 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    if (!grantAdmin && decodedToken.uid === targetUid) {
+      return NextResponse.json(
+        {
+          error:
+            'Não é possível revogar seu próprio acesso admin. Peça a outro administrador.',
+        },
+        { status: 403 }
+      );
+    }
+
     let targetUser;
     try {
       targetUser = await adminAuth.getUser(targetUid);
-    } catch {
+    } catch (error) {
+      console.error(`Usuário '${targetUid}' não encontrado:`, error);
       return NextResponse.json(
         { error: `Usuário com UID '${targetUid}' não encontrado` },
         { status: 404 }

@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "check": "yarn lint && yarn typecheck && yarn test",
     "postinstall": "node scripts/copy-wasm.mjs",
+    "prettier": "npx prettier --write .",
     "prepare": "husky"
   },
   "dependencies": {

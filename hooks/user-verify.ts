@@ -13,7 +13,7 @@ export const useUserVerification = () => {
 
       if (currentUser) {
         try {
-          const tokenResult = await getIdTokenResult(currentUser);
+          const tokenResult = await getIdTokenResult(currentUser, true);
           setIsAdmin(!!tokenResult.claims.admin);
         } catch {
           setIsAdmin(false);
