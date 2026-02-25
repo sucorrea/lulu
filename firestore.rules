@@ -23,8 +23,10 @@ service cloud.firestore {
       }
     }
 
+    // vaquinha-history: read público (exibe responsável nos cards);
+    // write restrito a admin
     match /vaquinha-history/{historyId} {
-      allow read: if isAuthenticated();
+      allow read: if true;
       allow write: if isAdmin();
     }
 
