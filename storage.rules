@@ -12,7 +12,7 @@ service firebase.storage {
     }
 
     match /gallery/{allPaths=**} {
-      allow read: if isAuthenticated();
+      allow read: if true;
       allow write: if isAdmin();
     }
 
