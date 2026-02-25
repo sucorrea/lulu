@@ -5,14 +5,14 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactNode } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
-import { AuditLogList } from './AuditLogList';
-import { AuditLogItem } from './AuditLogList/AuditLogItem';
-import { AuditLogSkeleton } from './AuditLogList/AuditLogSkeleton';
-import { AuditPage } from './AuditPage';
-import { AuditFilters } from './AuditPage/AuditFilters';
-import { useAuditData } from './AuditPage/useAuditData';
-import { useAuditFilters } from './AuditPage/useAuditFilters';
-import { formatValue, formatDateTime } from './AuditLogList/formatters';
+import { AuditLogList } from './audit-log-list';
+import { AuditLogItem } from './audit-log-item';
+import { AuditLogSkeleton } from './audit-log-skeleton';
+import { AuditPage } from './audit-page/audit';
+import { AuditFilters } from './audit-page/audit-filters';
+import { useAuditData } from './audit-page/use-audit-data';
+import { useAuditFilters } from './audit-page/use-audit-filters';
+import { formatValue, formatDateTime } from './formatters';
 import type { AuditLog } from '@/services/audit';
 import type { Person } from '@/components/lulus/types';
 import * as auditService from '@/services/audit';
@@ -764,6 +764,7 @@ describe('Audit Components', () => {
           selectedParticipant="all"
           limitCount={20}
           searchTerm=""
+          participants={mockParticipants}
           onParticipantChange={vi.fn()}
           onLimitChange={vi.fn()}
           onSearchChange={vi.fn()}
@@ -787,6 +788,7 @@ describe('Audit Components', () => {
           selectedParticipant="all"
           limitCount={20}
           searchTerm=""
+          participants={mockParticipants}
           onParticipantChange={vi.fn()}
           onLimitChange={vi.fn()}
           onSearchChange={onSearchChange}
@@ -809,6 +811,7 @@ describe('Audit Components', () => {
           selectedParticipant="all"
           limitCount={20}
           searchTerm=""
+          participants={mockParticipants}
           onParticipantChange={vi.fn()}
           onLimitChange={vi.fn()}
           onSearchChange={vi.fn()}
@@ -827,6 +830,7 @@ describe('Audit Components', () => {
           selectedParticipant="all"
           limitCount={20}
           searchTerm="test"
+          participants={mockParticipants}
           onParticipantChange={vi.fn()}
           onLimitChange={vi.fn()}
           onSearchChange={vi.fn()}

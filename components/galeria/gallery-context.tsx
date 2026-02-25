@@ -41,6 +41,13 @@ type LikeAction = {
   isCurrentlyLiked: boolean;
 };
 
+type CommentState = Record<string, GaleriaComment[]>;
+
+type CommentAction =
+  | { type: 'add'; photo: string; comment: GaleriaComment }
+  | { type: 'edit'; photo: string; commentId: string; text: string }
+  | { type: 'delete'; photo: string; commentId: string };
+
 interface GalleryContextType {
   photos: string[];
   isLoading: boolean;
@@ -101,6 +108,31 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
     return state;
   });
 
+  const [optimisticComments, setOptimisticComments] = useOptimistic<
+    CommentState,
+    CommentAction
+  >(firestoreComments, (state, action) => {
+    const current = state[action.photo] ?? [];
+    if (action.type === 'add') {
+      return { ...state, [action.photo]: [...current, action.comment] };
+    }
+    if (action.type === 'edit') {
+      return {
+        ...state,
+        [action.photo]: current.map((c) =>
+          c.id === action.commentId ? { ...c, comment: action.text } : c
+        ),
+      };
+    }
+    if (action.type === 'delete') {
+      return {
+        ...state,
+        [action.photo]: current.filter((c) => c.id !== action.commentId),
+      };
+    }
+    return state;
+  });
+
   const selectedPhoto =
     selectedIndex === null ? null : (photos[selectedIndex] ?? null);
 
@@ -145,8 +177,8 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const getComments = useCallback(
-    (photo: string) => firestoreComments[photo] ?? [],
-    [firestoreComments]
+    (photo: string) => optimisticComments[photo] ?? [],
+    [optimisticComments]
   );
 
   const toggleLike = useCallback(
@@ -192,13 +224,33 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       const photoId = getPhotoId(selectedPhoto);
-      await addCommentToPhoto(photoId, {
+      const optimisticComment: GaleriaComment = {
+        id: `opt-${globalThis.crypto.randomUUID()}`,
         userId: user.uid,
         displayName: user.displayName ?? user.email ?? 'Usuário',
         comment: text.trim(),
+        createdAt: new Date().toISOString(),
+      };
+
+      startTransition(async () => {
+        setOptimisticComments({
+          type: 'add',
+          photo: selectedPhoto,
+          comment: optimisticComment,
+        });
+
+        try {
+          await addCommentToPhoto(photoId, {
+            userId: user.uid,
+            displayName: user.displayName ?? user.email ?? 'Usuário',
+            comment: text.trim(),
+          });
+        } catch (error) {
+          console.error('Error adding comment:', error);
+        }
       });
     },
-    [user, selectedPhoto, getPhotoId]
+    [user, selectedPhoto, getPhotoId, setOptimisticComments]
   );
 
   const editComment = useCallback(
@@ -207,9 +259,24 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       const photoId = getPhotoId(selectedPhoto);
-      await editCommentOnPhoto(photoId, commentId, text.trim());
+      const trimmed = text.trim();
+
+      startTransition(async () => {
+        setOptimisticComments({
+          type: 'edit',
+          photo: selectedPhoto,
+          commentId,
+          text: trimmed,
+        });
+
+        try {
+          await editCommentOnPhoto(photoId, commentId, trimmed);
+        } catch (error) {
+          console.error('Error editing comment:', error);
+        }
+      });
     },
-    [selectedPhoto, getPhotoId]
+    [selectedPhoto, getPhotoId, setOptimisticComments]
   );
 
   const deleteComment = useCallback(
@@ -218,9 +285,22 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       const photoId = getPhotoId(selectedPhoto);
-      await deleteCommentFromPhoto(photoId, commentId);
+
+      startTransition(async () => {
+        setOptimisticComments({
+          type: 'delete',
+          photo: selectedPhoto,
+          commentId,
+        });
+
+        try {
+          await deleteCommentFromPhoto(photoId, commentId);
+        } catch (error) {
+          console.error('Error deleting comment:', error);
+        }
+      });
     },
-    [selectedPhoto, getPhotoId]
+    [selectedPhoto, getPhotoId, setOptimisticComments]
   );
 
   const value = useMemo(

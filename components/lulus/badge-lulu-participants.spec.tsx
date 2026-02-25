@@ -40,9 +40,7 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(
-      screen.getByText(/— Participantes da vaquinha/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/— Participantes da vaquinha/)).toBeInTheDocument();
   });
 
   it('should display dash when assignments query fails', () => {
@@ -54,9 +52,7 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(
-      screen.getByText(/— Participantes da vaquinha/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/— Participantes da vaquinha/)).toBeInTheDocument();
   });
 
   it('should display zero when byBirthday is empty', () => {

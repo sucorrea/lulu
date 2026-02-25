@@ -9,11 +9,9 @@ type ErrorProps = Readonly<{
   reset: () => void;
 }>;
 
-export default function ErrorFallback({ error, reset }: ErrorProps) {
+const ErrorFallback = ({ error, reset }: ErrorProps) => {
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Error boundary caught:', error);
-    }
+    console.error('[ErrorBoundary]', error.digest ?? error.message, error);
   }, [error]);
 
   return (
@@ -25,4 +23,6 @@ export default function ErrorFallback({ error, reset }: ErrorProps) {
       />
     </div>
   );
-}
+};
+
+export default ErrorFallback;

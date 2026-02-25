@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import Animation from './animation';
 
 vi.mock('@lottiefiles/dotlottie-react', () => ({
+  setWasmUrl: vi.fn(),
   DotLottieReact: ({
     src,
     loop,

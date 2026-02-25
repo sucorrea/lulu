@@ -34,6 +34,7 @@ const PixInfo = ({ participant }: PixInfoProps) => {
           alt="Pix"
           width={20}
           height={20}
+          sizes="20px"
           className="w-5 h-5"
         />
         {NameKey[participant.pix_key_type ?? 'none']}

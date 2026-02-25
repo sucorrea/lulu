@@ -1,8 +1,8 @@
 import { AlertCircle } from 'lucide-react';
 import { AuditLog } from '@/services/audit';
 import { Card, CardContent } from '@/components/ui/card';
-import { AuditLogItem } from './AuditLogItem';
-import { AuditLogSkeleton } from './AuditLogSkeleton';
+import { AuditLogItem } from './audit-log-item';
+import { AuditLogSkeleton } from './audit-log-skeleton';
 
 interface AuditLogListProps {
   logs: AuditLog[];

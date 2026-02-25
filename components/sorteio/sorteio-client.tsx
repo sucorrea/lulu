@@ -1,18 +1,10 @@
 'use client';
 import { useCallback, useMemo, useState } from 'react';
 
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Dices,
-  Loader2,
-  RefreshCw,
-  Save,
-} from 'lucide-react';
+import { CheckCircle2, Dices, Loader2, RefreshCw, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 import ErrorState from '@/components/error-state';
-import { GenericDialog } from '@/components/dialog/dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDisclosure } from '@/hooks/use-disclosure';
@@ -29,9 +21,12 @@ import type {
 } from '@/services/vaquinhaHistory';
 
 import { ParticipantSelection } from './participant-selection';
+import { SorteioConfirmDialog } from './sorteio-confirm-dialog';
 import { SorteioResultPreview } from './sorteio-result-preview';
 import { YearSelector } from './year-selector';
 import { Person } from '../lulus/types';
+import Header from '../layout/header';
+import PageLayout from '../layout/page-layout';
 
 const LOADING_SKELETON_KEYS = [
   'loading-skeleton-1',
@@ -215,18 +210,18 @@ export const SorteioClient = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <Skeleton className="h-9 w-64 mb-2" />
+      <PageLayout>
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
           <Skeleton className="h-5 w-96" />
         </div>
-        <Skeleton className="h-10 w-40 mb-6" />
+        <Skeleton className="h-10 w-40" />
         <div className="space-y-3">
           {LOADING_SKELETON_KEYS.map((key) => (
             <Skeleton key={key} className="h-12 w-full" />
           ))}
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -241,17 +236,12 @@ export const SorteioClient = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="lulu-header text-2xl md:text-3xl">
-          Sorteio da Vaquinha
-        </h1>
-        <p className="text-muted-foreground">
-          Selecione quem confirmou participação e realize o sorteio
-        </p>
-      </div>
-
-      <div className="mb-6">
+    <PageLayout>
+      <Header
+        title="Sorteio da Vaquinha"
+        description="Selecione quem confirmou participação e realize o sorteio"
+      />
+      <div className="max-w-4xl px-4">
         <YearSelector selectedYear={selectedYear} onChange={setSelectedYear} />
       </div>
 
@@ -378,45 +368,17 @@ export const SorteioClient = () => {
         </div>
       )}
 
-      <GenericDialog
+      <SorteioConfirmDialog
         open={isConfirmDialogOpen}
         onOpenChange={setConfirmDialogOpen}
-        title="Confirmar Sorteio"
-        description={`Deseja salvar o sorteio de ${selectedYear}?`}
-        footer={
-          <>
-            <Button variant="outline" onClick={onCloseConfirmDialog}>
-              Cancelar
-            </Button>
-            <Button
-              onClick={handleConfirmSave}
-              disabled={batchAddMutation.isPending}
-            >
-              {batchAddMutation.isPending ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Save className="h-4 w-4 mr-2" />
-              )}
-              Salvar
-            </Button>
-          </>
-        }
-      >
-        <p>
-          Isso criará <strong>{sorteioResult?.pairs.length}</strong> atribuições
-          para a vaquinha de {selectedYear}.
-        </p>
-        {sorteioResult?.relaxed && (
-          <div className="mt-3 flex items-start gap-2 rounded-md bg-amber-50 p-3 dark:bg-amber-950">
-            <AlertTriangle className="h-4 w-4 mt-0.5 text-amber-600" />
-            <p className="text-sm text-amber-700 dark:text-amber-300">
-              Algumas atribuições podem repetir o ano anterior, pois não foi
-              possível evitar todas as repetições.
-            </p>
-          </div>
-        )}
-      </GenericDialog>
-    </div>
+        onClose={onCloseConfirmDialog}
+        onConfirm={handleConfirmSave}
+        selectedYear={selectedYear}
+        pairCount={sorteioResult?.pairs.length ?? 0}
+        hasRelaxed={sorteioResult?.relaxed ?? false}
+        isPending={batchAddMutation.isPending}
+      />
+    </PageLayout>
   );
 };
 

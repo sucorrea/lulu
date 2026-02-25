@@ -13,14 +13,18 @@ export const LiveAnnounce = ({
   politeness = 'polite',
   clearDelay = 5000,
 }: LiveAnnounceProps) => {
-  const [displayedMessage, setDisplayedMessage] = useState(message);
+  const [prevMessage, setPrevMessage] = useState(message);
+  const [isCleared, setIsCleared] = useState(false);
+
+  if (prevMessage !== message) {
+    setPrevMessage(message);
+    setIsCleared(false);
+  }
 
   useEffect(() => {
-    setDisplayedMessage(message);
-
     if (clearDelay > 0 && message) {
       const timer = setTimeout(() => {
-        setDisplayedMessage('');
+        setIsCleared(true);
       }, clearDelay);
 
       return () => {
@@ -29,6 +33,8 @@ export const LiveAnnounce = ({
     }
     return undefined;
   }, [message, clearDelay]);
+
+  const displayedMessage = isCleared ? '' : message;
 
   if (!displayedMessage) {
     return null;

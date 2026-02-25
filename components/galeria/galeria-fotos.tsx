@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import dynamic from 'next/dynamic';
 
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -13,6 +13,8 @@ import UploadPhotoGallery from './upload-photo-gallery';
 const PhotoModal = dynamic(() => import('./photo-modal'), { ssr: false });
 import { CommentProvider } from './comment-context';
 import { GalleryProvider, useGallery } from './gallery-context';
+import Header from '../layout/header';
+import PageLayout from '../layout/page-layout';
 
 const SKELETON_COUNT = 15;
 const VIRTUALIZATION_THRESHOLD = 50;
@@ -32,13 +34,7 @@ const GalleryContent = () => {
     deleteComment,
   } = useGallery();
 
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const showSkeleton = !isClient || isLoading;
+  const showSkeleton = isLoading;
 
   const parentRef = useRef<HTMLUListElement | null>(null);
 
@@ -171,15 +167,18 @@ const GalleryContent = () => {
 
 const GaleriaFotos = () => {
   return (
-    <div className="mx-auto max-w-3xl p-4 md:p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="lulu-header mb-0 text-2xl md:text-3xl">Galeria</h1>
+    <PageLayout>
+      <Header
+        title="Galeria"
+        description="Galeria de fotos da vaquinha. Compartilhe momentos, curta e comente as fotos."
+      />
+      <div className="flex items-start justify-between gap-4">
         <UploadPhotoGallery />
       </div>
       <GalleryProvider>
         <GalleryContent />
       </GalleryProvider>
-    </div>
+    </PageLayout>
   );
 };
 

@@ -86,7 +86,6 @@ vi.mock('./participant-selection', () => ({
     onSelectAll,
     onClearSelection,
   }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     participants: any[];
     selectedIds: Set<number>;
     onToggle: (id: number) => void;
@@ -120,7 +119,6 @@ vi.mock('./sorteio-result-preview', () => ({
     isSaved,
     relaxed,
   }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pairs: any[];
     relaxed: boolean;
     isSaved?: boolean;

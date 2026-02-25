@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
-import AuditLogSkeleton from '@/components/audit/AuditLogList/AuditLogSkeleton';
-import AuditPage from '@/components/audit/AuditPage';
+import AuditLogSkeleton from '@/components/audit/audit-log-skeleton';
+import AuditPage from '@/components/audit/audit-page/audit';
+import Header from '@/components/layout/header';
+import PageLayout from '@/components/layout/page-layout';
 
 export const metadata: Metadata = {
   title: 'Auditoria | Luluzinha',
@@ -11,12 +13,11 @@ export const metadata: Metadata = {
 };
 
 const AuditPageSkeleton = () => (
-  <div className="container mx-auto py-8 px-4">
-    <div className="mb-8">
-      <div className="h-9 bg-muted rounded w-64 mb-2 animate-pulse" />
-      <div className="h-5 bg-muted rounded w-96 animate-pulse" />
-    </div>
-
+  <PageLayout>
+    <Header
+      title="Histórico de Auditoria"
+      description="Visualize todas as alterações realizadas nos dados dos participantes"
+    />
     <div className="mb-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {Array.from({ length: 3 }, (_, i) => `filter-${i}`).map((id) => (
@@ -25,13 +26,15 @@ const AuditPageSkeleton = () => (
       </div>
     </div>
     <AuditLogSkeleton />
-  </div>
+  </PageLayout>
 );
 
-const AuditPageRoute = () => (
-  <Suspense fallback={<AuditPageSkeleton />}>
-    <AuditPage />
-  </Suspense>
-);
+const AuditPageRoute = async () => {
+  return (
+    <Suspense fallback={<AuditPageSkeleton />}>
+      <AuditPage />
+    </Suspense>
+  );
+};
 
 export default AuditPageRoute;

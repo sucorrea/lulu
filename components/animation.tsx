@@ -1,5 +1,7 @@
 import { CSSProperties } from 'react';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { DotLottieReact, setWasmUrl } from '@lottiefiles/dotlottie-react';
+
+setWasmUrl('/wasm/dotlottie-player.wasm');
 
 interface AnimationProps {
   src?: string;

@@ -19,7 +19,10 @@ describe('BadgeLulu', () => {
 
   it('should render custom icon when icon prop is provided', () => {
     const { container } = render(
-      <BadgeLulu text="17 Participantes" icon={<Gift data-testid="custom-icon" />} />
+      <BadgeLulu
+        text="17 Participantes"
+        icon={<Gift data-testid="custom-icon" />}
+      />
     );
 
     expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
@@ -31,7 +34,12 @@ describe('BadgeLulu', () => {
     const { container } = render(<BadgeLulu text="Test" />);
 
     const wrapper = container.firstElementChild;
-    expect(wrapper).toHaveClass('flex', 'md:justify-end', 'xs:justify-center', 'mb-2');
+    expect(wrapper).toHaveClass(
+      'flex',
+      'md:justify-end',
+      'xs:justify-center',
+      'mb-2'
+    );
   });
 
   it('should apply font-semibold to text', () => {

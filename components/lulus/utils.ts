@@ -32,18 +32,18 @@ type SignoValues = {
 };
 
 const ZODIAC_SIGNS: SignoValues[] = [
-  { value: 'aries', label: 'Áries', icon: 'noto-v1:aries' },
-  { value: 'touro', label: 'Touro', icon: 'noto-v1:taurus' },
-  { value: 'gemeos', label: 'Gêmeos', icon: 'noto-v1:gemini' },
-  { value: 'cancer', label: 'Câncer', icon: 'noto-v1:cancer' },
-  { value: 'leao', label: 'Leão', icon: 'noto-v1:leo' },
-  { value: 'virgem', label: 'Virgem', icon: 'noto-v1:virgo' },
-  { value: 'libra', label: 'Libra', icon: 'noto-v1:libra' },
-  { value: 'escorpiao', label: 'Escorpião', icon: 'noto-v1:scorpio' },
-  { value: 'sagitario', label: 'Sagitário', icon: 'noto-v1:sagittarius' },
-  { value: 'capricornio', label: 'Capricórnio', icon: 'noto-v1:capricorn' },
-  { value: 'aquario', label: 'Aquário', icon: 'noto-v1:aquarius' },
-  { value: 'peixes', label: 'Peixes', icon: 'noto-v1:pisces' },
+  { value: 'aries', label: 'Áries', icon: 'aries' },
+  { value: 'touro', label: 'Touro', icon: 'taurus' },
+  { value: 'gemeos', label: 'Gêmeos', icon: 'gemini' },
+  { value: 'cancer', label: 'Câncer', icon: 'cancer' },
+  { value: 'leao', label: 'Leão', icon: 'leo' },
+  { value: 'virgem', label: 'Virgem', icon: 'virgo' },
+  { value: 'libra', label: 'Libra', icon: 'libra' },
+  { value: 'escorpiao', label: 'Escorpião', icon: 'scorpio' },
+  { value: 'sagitario', label: 'Sagitário', icon: 'sagittarius' },
+  { value: 'capricornio', label: 'Capricórnio', icon: 'capricorn' },
+  { value: 'aquario', label: 'Aquário', icon: 'aquarius' },
+  { value: 'peixes', label: 'Peixes', icon: 'pisces' },
 ];
 
 const ZODIAC_DATES: Array<{

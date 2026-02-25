@@ -24,6 +24,7 @@ const WhatsappInfo = ({ participant }: WhatsappInfoProps) => (
       alt="Whatsapp"
       width={20}
       height={20}
+      sizes="20px"
       className="w-5 h-5"
     />
     <span className="ml-1 text-xs">

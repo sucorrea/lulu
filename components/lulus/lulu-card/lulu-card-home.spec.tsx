@@ -25,9 +25,9 @@ vi.mock('next/link', () => ({
   )),
 }));
 
-vi.mock('@iconify/react', () => ({
-  Icon: vi.fn(({ icon }) => (
-    <div data-testid="iconify-icon" data-icon={icon} />
+vi.mock('../zodiac-icon', () => ({
+  default: vi.fn(({ icon }) => (
+    <div data-testid="zodiac-icon" data-icon={icon} />
   )),
 }));
 
@@ -585,12 +585,9 @@ describe('LulusCardHome', () => {
         />
       );
 
-      const icons = screen.getAllByTestId('iconify-icon');
-      const zodiacIcon = icons.find(
-        (el) => el.dataset?.icon === 'noto-v1:capricorn'
-      );
-      expect(zodiacIcon).toBeDefined();
+      const zodiacIcon = screen.getByTestId('zodiac-icon');
       expect(zodiacIcon).toBeInTheDocument();
+      expect(zodiacIcon.dataset?.icon).toBe('capricorn');
     });
 
     it('should render instagram link when instagram is provided', () => {

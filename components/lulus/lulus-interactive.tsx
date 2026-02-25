@@ -13,13 +13,22 @@ import { useQuery } from '@tanstack/react-query';
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
 import { useGetCurrentYearAssignments } from '@/services/queries/vaquinhaHistory';
 
-import Filter from './filter/filter';
 import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
 import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
 import BadgeLulu from './badge-lulu';
 
-const BadgeLuluParticipants = dynamic(() => import('./badge-lulu-participants'), { ssr: false });
+const Filter = dynamic(() => import('./filter/filter'), {
+  ssr: false,
+  loading: () => (
+    <div className="mb-6 h-10 animate-pulse rounded-lg bg-muted" aria-hidden />
+  ),
+});
+
+const BadgeLuluParticipants = dynamic(
+  () => import('./badge-lulu-participants'),
+  { ssr: false }
+);
 
 interface LulusInteractiveProps {
   initialParticipants: Person[];
@@ -33,18 +42,33 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const { user } = useUserVerification();
   const { data: assignments } = useGetCurrentYearAssignments();
 
-  const { data: participants = initialParticipants } = useQuery({
+  const { data: participantsList = initialParticipants } = useQuery({
     queryKey: ['get-all-participants-with-tokens'],
     queryFn: getParticipantsWithEditTokens,
     initialData: initialParticipants,
     staleTime: 5 * 60 * 1000,
   });
-  const participantsList = participants;
 
   const nextBirthday = useMemo(
     () => getNextBirthday(participantsList),
     [participantsList]
   );
+
+  const daysForBirthday = useMemo(() => {
+    if (!nextBirthday) {
+      return 0;
+    }
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const bd = new Date(nextBirthday.date);
+    const next = new Date(currentYear, bd.getMonth(), bd.getDate());
+    if (today > next) {
+      next.setFullYear(currentYear + 1);
+    }
+    return Math.ceil(
+      Math.abs(next.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+  }, [nextBirthday]);
 
   const filteredParticipants = useMemo(
     () =>
@@ -76,7 +100,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen">
       <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
       <BadgeLuluParticipants />
       {!!user && (
@@ -94,6 +118,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           <LulusCardHome
             participant={nextBirthday}
             isNextBirthday
+            daysForBirthday={daysForBirthday}
             user={!!user}
             participants={participantsList}
             showDetails={false}
@@ -113,7 +138,11 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           {filteredParticipants.map((participant, index) => (
             <div
               key={participant.id}
-              className={index > 1 ? '[content-visibility:auto]' : undefined}
+              className={
+                index > 1
+                  ? '[content-visibility:auto] [contain-intrinsic-size:auto_320px]'
+                  : undefined
+              }
             >
               <LulusCardHome
                 participant={participant}

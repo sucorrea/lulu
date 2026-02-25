@@ -1,43 +1,31 @@
-import dynamic from 'next/dynamic';
+import { headers } from 'next/headers';
+import { Suspense } from 'react';
 import { preload } from 'react-dom';
-import ErrorState from '@/components/error-state';
 
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
+import ErrorState from '@/components/error-state';
+import Header from '@/components/layout/header';
+import PageLayout from '@/components/layout/page-layout';
+import Lulus from '@/components/lulus/lulus-interactive';
+import SkeletonLulusInteractive from '@/components/lulus/skeleton-lulus-interactive';
 import {
   getNextBirthday,
   getParticipantPhotoUrl,
 } from '@/components/lulus/utils';
 
-const Lulus = dynamic(() => import('@/components/lulus/lulus'), {
-  ssr: true,
-  loading: () => (
-    <div className="flex min-h-[200px] items-center justify-center">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-    </div>
-  ),
-});
+const LulusDataFetcher = async () => {
+  await headers();
 
-const Home = async () => {
   let participants;
-  let error = false;
 
   try {
     participants = await getParticipantsWithEditTokens();
-  } catch (e) {
-    console.error('Erro ao buscar participantes:', e);
-    error = true;
-  }
-
-  if (error || !participants) {
+  } catch {
     return (
-      <section className="bg-muted/40 py-10 md:py-14">
-        <div className="container">
-          <ErrorState
-            title="Erro ao carregar participantes"
-            message="Não foi possível carregar a lista de participantes. Por favor, recarregue a página."
-          />
-        </div>
-      </section>
+      <ErrorState
+        title="Erro ao carregar participantes"
+        message="Não foi possível carregar os dados. Verifique sua conexão e tente novamente."
+      />
     );
   }
 
@@ -48,22 +36,19 @@ const Home = async () => {
   if (lcpPhotoUrl) {
     preload(lcpPhotoUrl, { as: 'image', fetchPriority: 'high' });
   }
-
-  return (
-    <section className="bg-muted/40 py-10 md:py-14">
-      <div className="container space-y-6">
-        <header className="space-y-2">
-          <h1 className="lulu-header text-2xl md:text-3xl">Participantes</h1>
-          <p className="text-sm md:text-base text-muted-foreground">
-            Veja quem faz parte dessa rede de carinho e amizade
-          </p>
-        </header>
-        <div className="rounded-2xl border border-border bg-card/80 p-2 md:p-4">
-          <Lulus participants={participants} />
-        </div>
-      </div>
-    </section>
-  );
+  return <Lulus initialParticipants={participants} />;
 };
+
+const Home = () => (
+  <PageLayout>
+    <Header
+      title="Participantes"
+      description="Veja quem faz parte dessa rede de carinho e amizade"
+    />
+    <Suspense fallback={<SkeletonLulusInteractive />}>
+      <LulusDataFetcher />
+    </Suspense>
+  </PageLayout>
+);
 
 export default Home;

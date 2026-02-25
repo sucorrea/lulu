@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import LulusInteractive from './lulus-interactive';
 import { Person } from './types';
 
@@ -67,7 +67,10 @@ vi.mock('./badge-lulu-participants', () => ({
   default: () => {
     const total = mockUseGetCurrentYearAssignments();
     const { data: assignments, isLoading, isError } = total;
-    const count = isLoading || isError ? null : Object.keys(assignments?.byBirthday ?? {}).length;
+    const count =
+      isLoading || isError
+        ? null
+        : Object.keys(assignments?.byBirthday ?? {}).length;
     return <div>{`${count ?? '—'} Participantes da vaquinha`}</div>;
   },
 }));
@@ -144,13 +147,15 @@ describe('LulusInteractive', () => {
   });
 
   describe('Loading State', () => {
-    it('should render content immediately when user is loading', () => {
+    it('should render content immediately when user is loading', async () => {
       mockUseUserVerification.mockReturnValue({
         user: null,
         isLoading: true,
       });
 
-      render(<LulusInteractive initialParticipants={mockParticipants} />);
+      await act(async () => {
+        render(<LulusInteractive initialParticipants={mockParticipants} />);
+      });
 
       expect(screen.getByTestId('filter-component')).toBeInTheDocument();
       expect(screen.getByTestId('next-birthday-card')).toBeInTheDocument();

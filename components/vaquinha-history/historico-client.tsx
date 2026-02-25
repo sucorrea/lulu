@@ -1,6 +1,6 @@
 'use client';
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useCallback, useMemo, useState } from 'react';
 
 import { Plus, TrashIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -22,9 +22,11 @@ import {
   useUpdateVaquinhaHistory,
 } from '@/services/queries/vaquinhaHistory';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
+import Header from '../layout/header';
+import PageLayout from '../layout/page-layout';
 import BirthdayPersonFilter from './birthday-person-filter';
-import TimelineSkeleton from './timeline-skeleton';
 import VaquinhaHistoryTimeline from './timeline';
+import TimelineSkeleton from './timeline-skeleton';
 import YearFilter from './year-filter';
 
 const VaquinhaHistoryFormDialog = dynamic(() => import('./form-dialog'), {
@@ -36,7 +38,6 @@ export const HistoricoClient = () => {
   const [selectedBirthdayPerson, setSelectedBirthdayPerson] = useState<
     string | null
   >(null);
-  const [announcement, setAnnouncement] = useState<string>('');
   const [editingItem, setEditingItem] = useState<VaquinhaHistory | null>(null);
 
   const { isLoading: isLoadingAuth, user: isAuthenticated } =
@@ -109,17 +110,40 @@ export const HistoricoClient = () => {
     return Array.from(names).sort((a, b) => a.localeCompare(b));
   }, [baseHistory]);
 
+  // Derived: if selectedBirthdayPerson is no longer in the available list, treat as null
+  const effectiveBirthdayPerson = useMemo(
+    () =>
+      selectedBirthdayPerson &&
+      availableBirthdayPersons.includes(selectedBirthdayPerson)
+        ? selectedBirthdayPerson
+        : null,
+    [selectedBirthdayPerson, availableBirthdayPersons]
+  );
+
   const history = useMemo(() => {
     if (!baseHistory) {
       return [];
     }
-    if (!selectedBirthdayPerson) {
+    if (!effectiveBirthdayPerson) {
       return baseHistory;
     }
     return baseHistory.filter(
-      (item) => item.birthdayPersonName === selectedBirthdayPerson
+      (item) => item.birthdayPersonName === effectiveBirthdayPerson
     );
-  }, [baseHistory, selectedBirthdayPerson]);
+  }, [baseHistory, effectiveBirthdayPerson]);
+
+  const announcement = useMemo(() => {
+    const parts: string[] = [];
+    if (selectedYear !== null) {
+      parts.push(`ano ${selectedYear}`);
+    }
+    if (effectiveBirthdayPerson) {
+      parts.push(`aniversariante ${effectiveBirthdayPerson}`);
+    }
+    return parts.length > 0
+      ? `Filtrando histórico por ${parts.join(' e ')}`
+      : 'Mostrando todos os registros';
+  }, [selectedYear, effectiveBirthdayPerson]);
 
   const sortedParticipants = useMemo(
     () =>
@@ -212,41 +236,21 @@ export const HistoricoClient = () => {
     }
   }, [selectedYear, refetchAll, refetchFiltered]);
 
-  useEffect(() => {
-    if (!isDialogOpen) {
-      setEditingItem(null);
-    }
-  }, [isDialogOpen]);
-
-  useEffect(() => {
-    if (
-      selectedBirthdayPerson &&
-      !availableBirthdayPersons.includes(selectedBirthdayPerson)
-    ) {
-      setSelectedBirthdayPerson(null);
-    }
-  }, [availableBirthdayPersons, selectedBirthdayPerson]);
-
-  useEffect(() => {
-    const parts: string[] = [];
-    if (selectedYear !== null) {
-      parts.push(`ano ${selectedYear}`);
-    }
-    if (selectedBirthdayPerson) {
-      parts.push(`aniversariante ${selectedBirthdayPerson}`);
-    }
-    setAnnouncement(
-      parts.length > 0
-        ? `Filtrando histórico por ${parts.join(' e ')}`
-        : 'Mostrando todos os registros'
-    );
-  }, [selectedYear, selectedBirthdayPerson]);
+  const handleDialogOpenChange = useCallback(
+    (open: boolean) => {
+      setDialogOpen(open);
+      if (!open) {
+        setEditingItem(null);
+      }
+    },
+    [setDialogOpen]
+  );
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <Skeleton className="h-9 w-64 mb-2" />
+      <PageLayout>
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
           <Skeleton className="h-5 w-96" />
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -254,7 +258,7 @@ export const HistoricoClient = () => {
           <Skeleton className="h-10 w-48" />
         </div>
         <TimelineSkeleton />
-      </div>
+      </PageLayout>
     );
   }
 
@@ -271,16 +275,12 @@ export const HistoricoClient = () => {
   return (
     <>
       <LiveAnnounce message={announcement} politeness="polite" />
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="lulu-header text-2xl md:text-3xl">
-            Histórico de Vaquinhas
-          </h1>
-          <p className="text-muted-foreground">
-            Acompanhe quem foi responsável pelas vaquinhas ao longo dos anos
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <PageLayout>
+        <Header
+          title="Histórico de Vaquinhas"
+          description="Acompanhe quem foi responsável pelas vaquinhas ao longo dos anos"
+        />
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
             {availableYears && availableYears.length > 0 && (
               <YearFilter
@@ -292,7 +292,7 @@ export const HistoricoClient = () => {
             {availableBirthdayPersons.length > 0 && (
               <BirthdayPersonFilter
                 persons={availableBirthdayPersons}
-                selectedPerson={selectedBirthdayPerson}
+                selectedPerson={effectiveBirthdayPerson}
                 onPersonChange={setSelectedBirthdayPerson}
               />
             )}
@@ -310,22 +310,21 @@ export const HistoricoClient = () => {
           )}
         </div>
 
-        <Suspense fallback={<TimelineSkeleton />}>
-          <VaquinhaHistoryTimeline
-            history={history || []}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-          />
-        </Suspense>
+        <VaquinhaHistoryTimeline
+          history={history || []}
+          isAuthenticated={!!isAuthenticated}
+          onEdit={handleEditClick}
+          onDelete={handleDeleteClick}
+        />
         <VaquinhaHistoryFormDialog
           open={isDialogOpen}
-          onOpenChange={setDialogOpen}
+          onOpenChange={handleDialogOpenChange}
           onSubmit={handleSubmit}
           participants={sortedParticipants}
           editingItem={editingItem}
           isLoading={addMutation.isPending || updateMutation.isPending}
         />
-      </div>
+      </PageLayout>
     </>
   );
 };

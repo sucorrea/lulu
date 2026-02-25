@@ -1,15 +1,18 @@
 {
   "name": "Luluzinha",
   "short_name": "Luluzinha",
-  "description": "O site das Lulus",
+  "description": "PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard, histórico e auditoria em tempo real.",
   "start_url": "/",
   "scope": "/",
   "id": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
+  "lang": "pt-BR",
+  "categories": ["social", "lifestyle"],
   "icons": [
     {
       "src": "/icons/manifest-icon-192.maskable.png",
@@ -36,6 +39,13 @@
       "purpose": "maskable"
     }
   ],
-  "lang": "pt-BR",
-  "categories": ["social", "lifestyle"]
+  "screenshots": [
+    {
+      "src": "/icons/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tela inicial do Luluzinha"
+    }
+  ]
 }

@@ -36,27 +36,76 @@ const withSerwist = withSerwistInit({
   swSrc: 'app/sw.ts',
   swDest: 'public/sw.js',
   cacheOnNavigation: true,
-  register: true,
+  register: false,
   reloadOnOnline: true,
   disable: process.env.NODE_ENV !== 'production',
   additionalPrecacheEntries: [{ url: '/offline', revision }],
   exclude: [/.map$/, /^manifest.*\.js$/],
-  globPublicPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff2}'],
+  globPublicPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff2,wasm}'],
 });
 
+const securityHeaders = [
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  {
+    key: 'Cross-Origin-Opener-Policy',
+    value: 'same-origin-allow-popups',
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()',
+  },
+  {
+    key: 'Content-Security-Policy',
+    value: [
+      "default-src 'self'",
+      [
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'",
+        'https://apis.google.com',
+        'https://accounts.google.com',
+      ].join(' '),
+      "style-src 'self' 'unsafe-inline' https://accounts.google.com",
+      "img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.google.com https://*.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      [
+        "connect-src 'self'",
+        'https://*.googleapis.com',
+        'https://*.firebaseio.com',
+        'wss://*.firebaseio.com',
+        'https://firebasestorage.googleapis.com',
+        'https://identitytoolkit.googleapis.com',
+        'https://accounts.google.com',
+        'https://apis.google.com',
+      ].join(' '),
+      "frame-src 'self' https://accounts.google.com https://apis.google.com https://*.firebaseapp.com",
+      "frame-ancestors 'none'",
+    ].join('; '),
+  },
+];
+
 const nextConfig: NextConfig = {
+  cacheComponents: true,
+  async headers() {
+    return [
+      {
+        source: '/wasm/:file*',
+        headers: [
+          { key: 'Content-Type', value: 'application/wasm' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+        ],
+      },
+      { source: '/(.*)', headers: securityHeaders },
+    ];
+  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
       },
-      {
-        protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
-        pathname: '/v0/b/api-lulus-app.appspot.com/o/image/**',
-      },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
 };
 

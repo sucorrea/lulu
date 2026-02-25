@@ -7,11 +7,13 @@ const GaleriaLoading = () => (
       <Skeleton className="h-9 w-24" />
     </div>
     <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6 list-none p-0 m-0">
-      {Array.from({ length: 12 }, (_, i) => (
-        <li key={i} className="relative">
-          <Skeleton className="w-full aspect-square rounded" />
-        </li>
-      ))}
+      {Array.from({ length: 12 }, (_, i) => `galeria-skeleton-${i}`).map(
+        (key) => (
+          <li key={key} className="relative">
+            <Skeleton className="w-full aspect-square rounded" />
+          </li>
+        )
+      )}
     </ul>
   </div>
 );

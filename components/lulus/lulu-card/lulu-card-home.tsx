@@ -1,9 +1,8 @@
 'use client';
-import { useCallback } from 'react';
 
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
-import { Icon } from '@iconify/react';
 import { CakeIcon, Edit2Icon } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -23,14 +22,9 @@ import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
 import LinkIconWithText from '../link-with-icon';
 import MoreInforAccordion from '../more-info';
 import { Person } from '../types';
-import {
-  formatDate,
-  getNextBirthday,
-  getParticipantPhotoUrl,
-  getSigno,
-} from '../utils';
-import dynamic from 'next/dynamic';
+import { formatDate, getParticipantPhotoUrl, getSigno } from '../utils';
 import NextBirthdayBanner from './next-birthday-banner';
+import ZodiacIcon from '../zodiac-icon';
 
 const ResponsableGift = dynamic(() => import('./responsable-gift'), {
   ssr: false,
@@ -42,6 +36,7 @@ const styleIcon =
 interface LulusCardHomeProps {
   participant: Person;
   isNextBirthday?: boolean;
+  daysForBirthday?: number;
   user: boolean;
   participants: Person[];
   showDetails?: boolean;
@@ -50,6 +45,7 @@ interface LulusCardHomeProps {
 const LulusCardHome = ({
   participant,
   isNextBirthday = false,
+  daysForBirthday = 0,
   user,
   participants,
   showDetails = true,
@@ -57,32 +53,11 @@ const LulusCardHome = ({
   const styleCard = isNextBirthday
     ? 'border-primary border-2 shadow-lulu-lg'
     : 'shadow-lulu-sm';
-
-  const calculateDaysUntilBirthday = useCallback((birthdayDate: Date) => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const nextBirthday = new Date(
-      currentYear,
-      birthdayDate.getMonth(),
-      birthdayDate.getDate()
-    );
-
-    if (today > nextBirthday) {
-      nextBirthday.setFullYear(currentYear + 1);
-    }
-
-    const diffTime = Math.abs(nextBirthday.getTime() - today.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  }, []);
-
-  const dataNextBirthday = new Date(getNextBirthday(participants)?.date || '');
-  const daysForBirthday = calculateDaysUntilBirthday(dataNextBirthday);
   const token = participant.editToken ?? String(participant.id);
 
   return (
     <Card className={cn('lulu-card mx-auto w-full max-w-md p-2', styleCard)}>
-      <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto p-4">
+      <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto p-2">
         {user && showDetails && (
           <TooltipProvider>
             <Tooltip>
@@ -103,7 +78,7 @@ const LulusCardHome = ({
         {isNextBirthday && (
           <NextBirthdayBanner daysForBirthday={daysForBirthday} />
         )}
-        <div className="flex flex-row gap-4 items-start">
+        <div className="flex flex-row gap-4 items-start pt-2">
           <Avatar
             className="h-20 w-20 border-4 border-primary/20 ring-2 ring-primary shrink-0"
             key={getParticipantPhotoUrl(participant)}
@@ -136,9 +111,9 @@ const LulusCardHome = ({
                   link={`${LINK_HOROSCOPO_DIARIO}${getSigno(new Date(participant.date)).value}/`}
                   text={getSigno(new Date(participant.date)).label ?? ''}
                   icon={
-                    <Icon
+                    <ZodiacIcon
                       icon={getSigno(new Date(participant.date)).icon}
-                      className="text-primary [&_path]:fill-current"
+                      className="text-primary"
                     />
                   }
                 />
@@ -150,11 +125,24 @@ const LulusCardHome = ({
                     link={`${LINK_INSTAGRAM}${participant.instagram}`}
                     text={`@${participant.instagram}`}
                     icon={
-                      <Icon
-                        icon="mdi:instagram"
-                        className="text-primary shrink-0"
-                        width="0.875rem"
-                        height="0.875rem"
+                      <span
+                        aria-hidden="true"
+                        className="text-primary"
+                        style={{
+                          display: 'inline-block',
+                          width: '0.875rem',
+                          height: '0.875rem',
+                          flexShrink: 0,
+                          WebkitMaskImage: "url('/icons/instagram.svg')",
+                          WebkitMaskRepeat: 'no-repeat',
+                          WebkitMaskSize: 'contain',
+                          WebkitMaskPosition: 'center',
+                          maskImage: "url('/icons/instagram.svg')",
+                          maskRepeat: 'no-repeat',
+                          maskSize: 'contain',
+                          maskPosition: 'center',
+                          backgroundColor: 'currentColor',
+                        }}
                       />
                     }
                   />

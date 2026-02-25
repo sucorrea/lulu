@@ -9,6 +9,7 @@ export const useAuditLogs = (
     queryKey: ['audit-logs', participantId, limitCount],
     queryFn: () => getAuditLogs(participantId, limitCount),
     enabled: participantId > 0,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -21,6 +22,7 @@ export const useAuditLogsByUser = (
     queryKey: ['audit-logs', participantId, userId, limitCount],
     queryFn: () => getAuditLogsByUser(participantId, userId, limitCount),
     enabled: participantId > 0 && !!userId,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -30,6 +32,7 @@ export const useAllAuditLogs = (
 ) => {
   return useQuery({
     queryKey: ['audit-logs-all', participantIds, limitCount],
+    staleTime: 5 * 60 * 1000,
     queryFn: async () => {
       const allLogs: Array<AuditLog & { participantId: number }> = [];
 

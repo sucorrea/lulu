@@ -24,6 +24,9 @@ coverage-report/
 # production
 /build
 
+# generated wasm (regenerated via postinstall)
+/public/wasm/
+
 # misc
 .DS_Store
 *.pem

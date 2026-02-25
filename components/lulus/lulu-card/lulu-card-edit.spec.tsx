@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import LulusCardEdit from './lulu-card-edit';
 import type { Person } from '../types';
 
@@ -90,7 +90,9 @@ describe('LulusCardEdit', () => {
       isLoading: true,
     } as unknown as ReturnType<typeof mod.useGetParticipantById>);
 
-    render(<LulusCardEdit participantId="1" />);
+    await act(async () => {
+      render(<LulusCardEdit participantId="1" />);
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('bounce-loader')).toBeInTheDocument();
@@ -104,7 +106,9 @@ describe('LulusCardEdit', () => {
       isLoading: false,
     } as unknown as ReturnType<typeof mod.useGetParticipantById>);
 
-    render(<LulusCardEdit participantId="1" />);
+    await act(async () => {
+      render(<LulusCardEdit participantId="1" />);
+    });
 
     await waitFor(() => {
       expect(
@@ -120,7 +124,9 @@ describe('LulusCardEdit', () => {
       isLoading: false,
     } as unknown as ReturnType<typeof mod.useGetParticipantById>);
 
-    render(<LulusCardEdit participantId="1" />);
+    await act(async () => {
+      render(<LulusCardEdit participantId="1" />);
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('card')).toBeInTheDocument();

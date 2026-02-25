@@ -9,6 +9,7 @@ import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
 import { likePhoto, unlikePhoto } from '@/services/galeriaLikes';
 import { useGalleryRealtime } from './use-gallery-realtime';
 import { onGetPhotoId } from './utils';
+import { useGallery } from './gallery-context';
 import GaleriaFotos from './galeria-fotos';
 
 type UserData = {
@@ -39,6 +40,47 @@ vi.mock('next/dynamic', () => ({
   },
 }));
 vi.mock('./use-gallery-realtime');
+vi.mock('./photo-modal', () => ({
+  default: function MockPhotoModal() {
+    const {
+      selectedIndex,
+      selectedPhoto,
+      closePhoto,
+      nextPhoto,
+      prevPhoto,
+      getPhotoStats,
+      getComments,
+      user,
+    } = useGallery();
+
+    if (selectedIndex === null || selectedPhoto === null) {
+      return null;
+    }
+
+    const stats = getPhotoStats(selectedIndex);
+    const comments = getComments(selectedPhoto);
+
+    return (
+      <div data-testid="photo-modal">
+        <button onClick={closePhoto} data-testid="modal-close">
+          Close
+        </button>
+        <button onClick={nextPhoto} aria-label="Próxima foto">
+          Next
+        </button>
+        <button onClick={prevPhoto} aria-label="Foto anterior">
+          Prev
+        </button>
+        <button onClick={() => null} data-testid="modal-like">
+          Like
+        </button>
+        <div data-testid="modal-likes">{stats.likesCount}</div>
+        <div data-testid="modal-comments">{comments.length}</div>
+        <div data-testid="modal-user">{user?.uid ?? null}</div>
+      </div>
+    );
+  },
+}));
 vi.mock('./utils');
 vi.mock('@/services/galeriaComments');
 vi.mock('@/services/galeriaLikes');
