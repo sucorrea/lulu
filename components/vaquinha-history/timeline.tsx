@@ -38,41 +38,37 @@ const TimelineItem = memo(function TimelineItem({
         className="absolute -left-[2.6rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-primary border-4 border-background"
         aria-hidden="true"
       />
-      <CardContent className="pt-4">
+      <CardContent className={cn('pt-4', !isAuthenticated && 'p-2')}>
         <div className="flex flex-1 items-center gap-2 flex-wrap">
           <span className="font-medium">{item.birthdayPersonName}</span>
           <ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
           <span className="font-medium">{item.responsibleName}</span>
         </div>
-        <div className="flex flex-col gap-3">
-          {isAuthenticated && (onEdit || onDelete) && (
-            <div className="flex items-center justify-end gap-2">
-              {onEdit && (
-                <button
-                  onClick={(e) => {
-                    (e.currentTarget as HTMLElement)?.blur();
-                    onEdit(item);
-                  }}
-                  className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
-                  aria-label={`Editar registro de ${item.birthdayPersonName}`}
-                >
-                  <Edit className="h-3.5 w-3.5" aria-hidden="true" />
-                  Editar
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={() => onDelete(item.id)}
-                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
-                  aria-label={`Excluir registro de ${item.birthdayPersonName}`}
-                >
-                  <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                  Excluir
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+        {isAuthenticated && (onEdit || onDelete) && (
+          <div className="flex items-center justify-end">
+            {onEdit && (
+              <button
+                onClick={(e) => {
+                  (e.currentTarget as HTMLElement)?.blur();
+                  onEdit(item);
+                }}
+                className="inline-flex items-center text-sm text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
+                aria-label={`Editar registro de ${item.birthdayPersonName}`}
+              >
+                <Edit className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={() => onDelete(item.id)}
+                className="inline-flex items-center text-sm text-destructive hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
+                aria-label={`Excluir registro de ${item.birthdayPersonName}`}
+              >
+                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
