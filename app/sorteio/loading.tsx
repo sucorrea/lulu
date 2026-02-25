@@ -7,9 +7,11 @@ const SorteioLoading = () => (
       <Skeleton className="h-4 w-80" />
     </div>
     <div className="space-y-3">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <Skeleton key={i} className="h-14 w-full rounded-lg" />
-      ))}
+      {Array.from({ length: 8 }, (_, i) => `sorteio-skeleton-${i}`).map(
+        (key) => (
+          <Skeleton key={key} className="h-14 w-full rounded-lg" />
+        )
+      )}
     </div>
     <div className="mt-6 flex justify-end gap-3">
       <Skeleton className="h-10 w-32" />
