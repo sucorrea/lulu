@@ -23,6 +23,8 @@ const PwaUpdateManager = dynamic(() =>
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {

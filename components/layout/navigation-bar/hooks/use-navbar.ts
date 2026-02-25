@@ -23,7 +23,7 @@ export const useNavbar = (): UseNavbarResult => {
   const isAuthenticated = useMemo(() => !!user, [user]);
   const userFirstName = useMemo(
     () => (user?.displayName ? user.displayName.split(' ')[0] : null),
-    [user?.displayName]
+    [user]
   );
   const currentYear = CURRENT_YEAR;
 

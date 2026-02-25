@@ -2,6 +2,10 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import Home from './page';
 
+vi.mock('next/headers', () => ({
+  headers: vi.fn().mockResolvedValue(new Headers()),
+}));
+
 vi.mock('@/app/actions/participants', () => ({
   getParticipantsWithEditTokens: vi.fn().mockResolvedValue([]),
 }));

@@ -1,6 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { Plus, TrashIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -38,7 +38,6 @@ export const HistoricoClient = () => {
   const [selectedBirthdayPerson, setSelectedBirthdayPerson] = useState<
     string | null
   >(null);
-  const [announcement, setAnnouncement] = useState<string>('');
   const [editingItem, setEditingItem] = useState<VaquinhaHistory | null>(null);
 
   const { isLoading: isLoadingAuth, user: isAuthenticated } =
@@ -111,17 +110,40 @@ export const HistoricoClient = () => {
     return Array.from(names).sort((a, b) => a.localeCompare(b));
   }, [baseHistory]);
 
+  // Derived: if selectedBirthdayPerson is no longer in the available list, treat as null
+  const effectiveBirthdayPerson = useMemo(
+    () =>
+      selectedBirthdayPerson &&
+      availableBirthdayPersons.includes(selectedBirthdayPerson)
+        ? selectedBirthdayPerson
+        : null,
+    [selectedBirthdayPerson, availableBirthdayPersons]
+  );
+
   const history = useMemo(() => {
     if (!baseHistory) {
       return [];
     }
-    if (!selectedBirthdayPerson) {
+    if (!effectiveBirthdayPerson) {
       return baseHistory;
     }
     return baseHistory.filter(
-      (item) => item.birthdayPersonName === selectedBirthdayPerson
+      (item) => item.birthdayPersonName === effectiveBirthdayPerson
     );
-  }, [baseHistory, selectedBirthdayPerson]);
+  }, [baseHistory, effectiveBirthdayPerson]);
+
+  const announcement = useMemo(() => {
+    const parts: string[] = [];
+    if (selectedYear !== null) {
+      parts.push(`ano ${selectedYear}`);
+    }
+    if (effectiveBirthdayPerson) {
+      parts.push(`aniversariante ${effectiveBirthdayPerson}`);
+    }
+    return parts.length > 0
+      ? `Filtrando histórico por ${parts.join(' e ')}`
+      : 'Mostrando todos os registros';
+  }, [selectedYear, effectiveBirthdayPerson]);
 
   const sortedParticipants = useMemo(
     () =>
@@ -214,35 +236,15 @@ export const HistoricoClient = () => {
     }
   }, [selectedYear, refetchAll, refetchFiltered]);
 
-  useEffect(() => {
-    if (!isDialogOpen) {
-      setEditingItem(null);
-    }
-  }, [isDialogOpen]);
-
-  useEffect(() => {
-    if (
-      selectedBirthdayPerson &&
-      !availableBirthdayPersons.includes(selectedBirthdayPerson)
-    ) {
-      setSelectedBirthdayPerson(null);
-    }
-  }, [availableBirthdayPersons, selectedBirthdayPerson]);
-
-  useEffect(() => {
-    const parts: string[] = [];
-    if (selectedYear !== null) {
-      parts.push(`ano ${selectedYear}`);
-    }
-    if (selectedBirthdayPerson) {
-      parts.push(`aniversariante ${selectedBirthdayPerson}`);
-    }
-    setAnnouncement(
-      parts.length > 0
-        ? `Filtrando histórico por ${parts.join(' e ')}`
-        : 'Mostrando todos os registros'
-    );
-  }, [selectedYear, selectedBirthdayPerson]);
+  const handleDialogOpenChange = useCallback(
+    (open: boolean) => {
+      setDialogOpen(open);
+      if (!open) {
+        setEditingItem(null);
+      }
+    },
+    [setDialogOpen]
+  );
 
   if (isLoading) {
     return (
@@ -290,7 +292,7 @@ export const HistoricoClient = () => {
             {availableBirthdayPersons.length > 0 && (
               <BirthdayPersonFilter
                 persons={availableBirthdayPersons}
-                selectedPerson={selectedBirthdayPerson}
+                selectedPerson={effectiveBirthdayPerson}
                 onPersonChange={setSelectedBirthdayPerson}
               />
             )}
@@ -316,7 +318,7 @@ export const HistoricoClient = () => {
         />
         <VaquinhaHistoryFormDialog
           open={isDialogOpen}
-          onOpenChange={setDialogOpen}
+          onOpenChange={handleDialogOpenChange}
           onSubmit={handleSubmit}
           participants={sortedParticipants}
           editingItem={editingItem}

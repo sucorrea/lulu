@@ -57,7 +57,7 @@ const LulusCardHome = ({
 
   return (
     <Card className={cn('lulu-card mx-auto w-full max-w-md p-2', styleCard)}>
-      <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto">
+      <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto p-2">
         {user && showDetails && (
           <TooltipProvider>
             <Tooltip>
