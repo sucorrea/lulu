@@ -10,6 +10,7 @@ import { DeviceProvider } from '@/providers/device-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { CURRENT_YEAR } from '@/lib/constants';
+import { VaulPatch } from '@/components/layout/vaul-patch';
 import './globals.css';
 
 const Footer = dynamic(() => import('@/components/layout/footer'));
@@ -102,6 +103,7 @@ const RootLayout = ({
             </DeviceProvider>
             <PwaUpdateManager />
             <Toaster />
+            <VaulPatch />
           </ThemeProvider>
         </ReactQueryProvider>
       </body>

@@ -2,6 +2,10 @@ import { DocumentData, DocumentSnapshot } from 'firebase/firestore';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { updateParticipantData } from './updateParticipant';
 
+vi.mock('@/lib/auth-guard', () => ({
+  assertAdmin: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('@/services/firebase', () => ({
   db: {},
 }));

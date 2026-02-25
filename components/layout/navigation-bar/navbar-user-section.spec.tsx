@@ -244,8 +244,7 @@ describe('NavbarUserSection', () => {
       />
     );
 
-    const greeting = screen.getByText((content) => content.includes('Olá'));
-    expect(greeting).toBeInTheDocument();
+    expect(screen.getByText('Olá, usuário')).toBeInTheDocument();
   });
 
   it('should handle authenticated with empty string firstName', () => {
@@ -257,8 +256,7 @@ describe('NavbarUserSection', () => {
       />
     );
 
-    const greeting = screen.getByText((content) => content.includes('Olá'));
-    expect(greeting).toBeInTheDocument();
+    expect(screen.getByText('Olá, usuário')).toBeInTheDocument();
   });
 
   it('should toggle between login and authenticated states', () => {

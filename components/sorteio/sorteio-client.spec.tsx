@@ -257,6 +257,7 @@ const setupDefaultMocks = (
       ? ({} as ReturnType<typeof useUserVerification>['user'])
       : null,
     isLogged: isAuthenticated,
+    isAdmin: isAuthenticated,
     isLoading: isLoadingAuth,
     handleLogout: vi.fn(),
   });

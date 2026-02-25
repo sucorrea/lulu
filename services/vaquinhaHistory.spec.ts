@@ -13,6 +13,10 @@ import {
   VaquinhaHistoryInput,
 } from './vaquinhaHistory';
 
+vi.mock('@/lib/auth-guard', () => ({
+  assertAdmin: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('./firebase', () => ({
   db: {},
 }));

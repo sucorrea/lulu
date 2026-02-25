@@ -293,7 +293,10 @@ describe('HistoricoClient', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseUserVerification.mockReturnValue({ isLoading: false, user: true });
+    mockUseUserVerification.mockReturnValue({
+      isLoading: false,
+      isAdmin: true,
+    });
     mockUseGetAllParticipants.mockReturnValue({
       data: participants,
       isLoading: false,

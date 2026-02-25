@@ -4,6 +4,7 @@ import BounceLoader from 'react-spinners/BounceLoader';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
+import { useUserVerification } from '@/hooks/user-verify';
 import { useGetParticipantById } from '@/services/queries/fetchParticipants';
 import EditPhoto from '../edit-photo';
 import PersonForm from '../form-edit-data/person-form';
@@ -13,6 +14,7 @@ interface LulusCardEditContentProps {
 }
 
 const LulusCardEditContent = ({ participantId }: LulusCardEditContentProps) => {
+  const { isAdmin } = useUserVerification();
   const { data: participant, isLoading } = useGetParticipantById(participantId);
 
   if (isLoading) {
@@ -54,8 +56,12 @@ const LulusCardEditContent = ({ participantId }: LulusCardEditContentProps) => {
                     {participant.name}
                   </h2>
                 </div>
-                <EditPhoto participant={participant} />
-                <PersonForm initialData={participant} />
+                {isAdmin && (
+                  <>
+                    <EditPhoto participant={participant} />
+                    <PersonForm initialData={participant} />
+                  </>
+                )}
               </div>
             </div>
           </div>

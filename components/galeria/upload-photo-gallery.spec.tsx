@@ -6,6 +6,7 @@ import UploadPhotoGallery from './upload-photo-gallery';
 vi.mock('@/hooks/user-verify', () => ({
   useUserVerification: () => ({
     user: { uid: 'test-user-id' },
+    isAdmin: true,
   }),
 }));
 
@@ -50,13 +51,8 @@ vi.mock('lucide-react', () => ({
   Upload: () => <span data-testid="upload-icon">Upload Icon</span>,
 }));
 
-vi.mock('firebase/storage', () => ({
-  ref: vi.fn(),
-  uploadBytes: vi.fn().mockResolvedValue({}),
-}));
-
-vi.mock('@/services/firebase', () => ({
-  storage: {},
+vi.mock('@/services/queries/uploadGalleryPhoto', () => ({
+  uploadGalleryPhoto: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('UploadPhotoGallery', () => {

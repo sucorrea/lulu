@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 interface VaquinhaHistoryTimelineProps {
   history: VaquinhaHistory[];
-  isAuthenticated: boolean;
+  isAdmin: boolean;
   onEdit?: (item: VaquinhaHistory) => void;
   onDelete?: (id: string) => void;
 }
@@ -17,12 +17,12 @@ const TimelineItem = memo(function TimelineItem({
   item,
   onEdit,
   onDelete,
-  isAuthenticated,
+  isAdmin,
 }: {
   item: VaquinhaHistory;
   onEdit?: (item: VaquinhaHistory) => void;
   onDelete?: (id: string) => void;
-  isAuthenticated: boolean;
+  isAdmin: boolean;
 }) {
   return (
     <Card
@@ -38,13 +38,13 @@ const TimelineItem = memo(function TimelineItem({
         className="absolute -left-[2.6rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-primary border-4 border-background"
         aria-hidden="true"
       />
-      <CardContent className={cn('pt-4', !isAuthenticated && 'p-2')}>
+      <CardContent className={cn('pt-4', !isAdmin && 'p-2')}>
         <div className="flex flex-1 items-center gap-2 flex-wrap">
           <span className="font-medium">{item.birthdayPersonName}</span>
           <ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
           <span className="font-medium">{item.responsibleName}</span>
         </div>
-        {isAuthenticated && (onEdit || onDelete) && (
+        {isAdmin && (onEdit || onDelete) && (
           <div className="flex items-center justify-end">
             {onEdit && (
               <button
@@ -76,7 +76,7 @@ const TimelineItem = memo(function TimelineItem({
 
 export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
   history,
-  isAuthenticated,
+  isAdmin,
   onEdit,
   onDelete,
 }: VaquinhaHistoryTimelineProps) {
@@ -155,7 +155,7 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
                     item={item}
                     onEdit={onEdit}
                     onDelete={onDelete}
-                    isAuthenticated={isAuthenticated}
+                    isAdmin={isAdmin}
                   />
                 </li>
               ))}

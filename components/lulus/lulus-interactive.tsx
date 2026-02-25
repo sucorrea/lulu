@@ -39,7 +39,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
 
-  const { user } = useUserVerification();
+  const { isAdmin } = useUserVerification();
   const { data: assignments } = useGetCurrentYearAssignments();
 
   const { data: participantsList = initialParticipants } = useQuery({
@@ -103,7 +103,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     <div className="min-h-screen">
       <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
       <BadgeLuluParticipants />
-      {!!user && (
+      {isAdmin && (
         <div className="mb-4 flex justify-end">
           <Button asChild variant="outline" size="sm">
             <Link href="/sorteio">
@@ -119,7 +119,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
             participant={nextBirthday}
             isNextBirthday
             daysForBirthday={daysForBirthday}
-            user={!!user}
+            user={isAdmin}
             participants={participantsList}
             showDetails={false}
           />
@@ -146,7 +146,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
             >
               <LulusCardHome
                 participant={participant}
-                user={!!user}
+                user={isAdmin}
                 participants={participantsList}
               />
             </div>

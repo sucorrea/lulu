@@ -440,7 +440,7 @@ describe('GaleriaFotos', () => {
       await waitFor(() => {
         expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
       });
-      // The real component renders multiple navigation buttons (prev/next). We target the "Previous" button.
+
       const prevButton = screen.getByRole('button', { name: /Foto anterior/i });
       fireEvent.click(prevButton);
 

@@ -27,22 +27,18 @@ describe('VaquinhaHistoryTimeline', () => {
   ];
 
   it('should render empty state when no history', () => {
-    render(<VaquinhaHistoryTimeline history={[]} isAuthenticated={false} />);
+    render(<VaquinhaHistoryTimeline history={[]} isAdmin={false} />);
     expect(screen.getByText('Nenhum histórico encontrado')).toBeInTheDocument();
   });
 
   it('should render history items grouped by year', () => {
-    render(
-      <VaquinhaHistoryTimeline history={mockHistory} isAuthenticated={false} />
-    );
+    render(<VaquinhaHistoryTimeline history={mockHistory} isAdmin={false} />);
     expect(screen.getByText('2024')).toBeInTheDocument();
     expect(screen.getByText('2023')).toBeInTheDocument();
   });
 
   it('should render timeline item header with birthday person and responsible names', () => {
-    render(
-      <VaquinhaHistoryTimeline history={mockHistory} isAuthenticated={false} />
-    );
+    render(<VaquinhaHistoryTimeline history={mockHistory} isAdmin={false} />);
 
     expect(screen.getByText('Deborah')).toBeInTheDocument();
     expect(screen.getByText('Stella')).toBeInTheDocument();
@@ -54,7 +50,7 @@ describe('VaquinhaHistoryTimeline', () => {
     render(
       <VaquinhaHistoryTimeline
         history={mockHistory}
-        isAuthenticated={false}
+        isAdmin={false}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />
@@ -71,14 +67,14 @@ describe('VaquinhaHistoryTimeline', () => {
     render(
       <VaquinhaHistoryTimeline
         history={mockHistory}
-        isAuthenticated={true}
+        isAdmin={true}
         onEdit={onEdit}
         onDelete={onDelete}
       />
     );
 
-    const editButtons = screen.getAllByText('Editar');
-    const deleteButtons = screen.getAllByText('Excluir');
+    const editButtons = screen.getAllByRole('button', { name: /editar/i });
+    const deleteButtons = screen.getAllByRole('button', { name: /excluir/i });
 
     expect(editButtons).toHaveLength(2);
     expect(deleteButtons).toHaveLength(2);
@@ -92,14 +88,14 @@ describe('VaquinhaHistoryTimeline', () => {
     render(
       <VaquinhaHistoryTimeline
         history={mockHistory}
-        isAuthenticated={true}
+        isAdmin={true}
         onEdit={onEdit}
         onDelete={onDelete}
       />
     );
 
-    await user.click(screen.getAllByText('Editar')[0]);
-    await user.click(screen.getAllByText('Excluir')[0]);
+    await user.click(screen.getAllByRole('button', { name: /editar/i })[0]);
+    await user.click(screen.getAllByRole('button', { name: /excluir/i })[0]);
 
     expect(onEdit).toHaveBeenCalledWith(mockHistory[0]);
     expect(onDelete).toHaveBeenCalledWith('1');

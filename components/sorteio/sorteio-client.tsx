@@ -51,8 +51,7 @@ export const SorteioClient = () => {
   );
   const [step, setStep] = useState<SorteioStep>('selection');
 
-  const { user: isAuthenticated, isLoading: isLoadingAuth } =
-    useUserVerification();
+  const { isAdmin, isLoading: isLoadingAuth } = useUserVerification();
 
   const {
     data: participants,
@@ -285,7 +284,7 @@ export const SorteioClient = () => {
             onClearSelection={handleClearSelection}
           />
 
-          {isAuthenticated && (
+          {isAdmin && (
             <div className="mt-6 flex">
               <Button
                 size="sm"
@@ -313,7 +312,7 @@ export const SorteioClient = () => {
             relaxed={sorteioResult.relaxed}
           />
 
-          {isAuthenticated && (
+          {isAdmin && (
             <div className="mt-6 flex flex-col gap-3">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button

@@ -1,5 +1,6 @@
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { assertAdmin } from '@/lib/auth-guard';
 import app from '../firebase';
 
 export const uploadPhoto = async ({
@@ -9,6 +10,8 @@ export const uploadPhoto = async ({
   file: File;
   participantId: string;
 }) => {
+  await assertAdmin();
+
   const storage = getStorage(app);
   const storageRef = ref(storage, `images/${participantId}.jpg`);
   await uploadBytes(storageRef, file);

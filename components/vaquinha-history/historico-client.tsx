@@ -40,8 +40,7 @@ export const HistoricoClient = () => {
   >(null);
   const [editingItem, setEditingItem] = useState<VaquinhaHistory | null>(null);
 
-  const { isLoading: isLoadingAuth, user: isAuthenticated } =
-    useUserVerification();
+  const { isLoading: isLoadingAuth, isAdmin } = useUserVerification();
 
   const { data: participants, isLoading: isLoadingParticipants } =
     useGetAllParticipants();
@@ -110,7 +109,6 @@ export const HistoricoClient = () => {
     return Array.from(names).sort((a, b) => a.localeCompare(b));
   }, [baseHistory]);
 
-  // Derived: if selectedBirthdayPerson is no longer in the available list, treat as null
   const effectiveBirthdayPerson = useMemo(
     () =>
       selectedBirthdayPerson &&
@@ -297,7 +295,7 @@ export const HistoricoClient = () => {
               />
             )}
           </div>
-          {isAuthenticated && (
+          {isAdmin && (
             <Button
               onClick={(e) => {
                 (e.currentTarget as HTMLElement)?.blur();
@@ -312,7 +310,7 @@ export const HistoricoClient = () => {
 
         <VaquinhaHistoryTimeline
           history={history || []}
-          isAuthenticated={!!isAuthenticated}
+          isAdmin={isAdmin}
           onEdit={handleEditClick}
           onDelete={handleDeleteClick}
         />

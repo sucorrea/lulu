@@ -29,7 +29,7 @@ export const NavbarUserSection = memo(function NavbarUserSection({
     return (
       <div className="flex items-center gap-2 md:gap-4">
         <span className="whitespace-nowrap text-sm font-medium">
-          Olá, {userFirstName}
+          {userFirstName ? `Olá, ${userFirstName}` : 'Olá, usuário'}
         </span>
         <Button
           onClick={onLogout}
