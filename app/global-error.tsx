@@ -13,9 +13,7 @@ type GlobalErrorProps = Readonly<{
 
 const GlobalError = ({ error, reset }: GlobalErrorProps) => {
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Global error boundary caught:', error);
-    }
+    console.error('[ErrorBoundary]', error.digest ?? error.message, error);
   }, [error]);
 
   return (

@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 
 import { getParticipants } from '@/services/participants-server';
-import ErrorState from '@/components/error-state';
+import PageError from '@/components/layout/page-error';
 import DashboardPage from '@/components/modules/dashboard';
 
 const Dashboard = async () => {
@@ -17,7 +17,7 @@ const Dashboard = async () => {
 
   if (error || !participants) {
     return (
-      <ErrorState
+      <PageError
         title="Erro ao carregar dashboard"
         message="Não foi possível carregar os dados dos participantes. Verifique sua conexão e tente novamente."
       />

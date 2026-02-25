@@ -14,8 +14,8 @@ const HomeLoading = () => (
       </div>
     </div>
     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <Skeleton key={i} className="h-48 w-full rounded-lg" />
+      {Array.from({ length: 6 }, (_, i) => `home-skeleton-${i}`).map((key) => (
+        <Skeleton key={key} className="h-48 w-full rounded-lg" />
       ))}
     </div>
   </div>

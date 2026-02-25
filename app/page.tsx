@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { preload } from 'react-dom';
 
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
+import ErrorState from '@/components/error-state';
 import Header from '@/components/layout/header';
 import PageLayout from '@/components/layout/page-layout';
 import Lulus from '@/components/lulus/lulus-interactive';
@@ -14,7 +15,20 @@ import {
 
 const LulusDataFetcher = async () => {
   await headers();
-  const participants = await getParticipantsWithEditTokens();
+
+  let participants;
+
+  try {
+    participants = await getParticipantsWithEditTokens();
+  } catch {
+    return (
+      <ErrorState
+        title="Erro ao carregar participantes"
+        message="Não foi possível carregar os dados. Verifique sua conexão e tente novamente."
+      />
+    );
+  }
+
   const nextBirthday = getNextBirthday(participants);
   const lcpPhotoUrl = nextBirthday
     ? getParticipantPhotoUrl(nextBirthday)

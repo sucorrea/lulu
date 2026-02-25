@@ -46,6 +46,7 @@ describe('usePwaUpdate', () => {
       value: {
         controller: null,
         ready: Promise.resolve(mockRegistration),
+        register: vi.fn().mockResolvedValue(mockRegistration),
       },
       writable: true,
       configurable: true,
@@ -81,9 +82,13 @@ describe('usePwaUpdate', () => {
   });
 
   it('should handle service worker ready promise rejection', async () => {
+    const rejectedReady = Promise.reject(new Error('Service Worker error'));
+    rejectedReady.catch(() => {});
+
     Object.defineProperty(globalThis.navigator, 'serviceWorker', {
       value: {
-        ready: Promise.reject(new Error('Service Worker error')),
+        ready: rejectedReady,
+        register: vi.fn().mockResolvedValue(undefined),
       },
       writable: true,
       configurable: true,
@@ -127,6 +132,7 @@ describe('usePwaUpdate', () => {
       value: {
         controller: {} as ServiceWorker,
         ready: Promise.resolve(mockRegistration),
+        register: vi.fn().mockResolvedValue(mockRegistration),
       },
       writable: true,
       configurable: true,

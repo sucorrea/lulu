@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL || 'https://lulupage.vercel.app/';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://luluzinha.web.app';
 
 const robots = (): MetadataRoute.Robots => {
   return {
