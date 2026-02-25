@@ -11,7 +11,7 @@
     "test:coverage": "vitest run",
     "typecheck": "tsc --noEmit",
     "check": "yarn lint && yarn typecheck && yarn test",
-    "postinstall": "node scripts/copy-wasm.js",
+    "postinstall": "node scripts/copy-wasm.mjs",
     "prepare": "husky"
   },
   "dependencies": {
