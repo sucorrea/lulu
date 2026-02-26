@@ -85,7 +85,14 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  cacheComponents: true,
+  serverExternalPackages: [
+    'firebase-admin',
+    '@google-cloud/firestore',
+    '@google-cloud/storage',
+    '@grpc/grpc-js',
+    'google-gax',
+    '@opentelemetry/api',
+  ],
   async headers() {
     return [
       {

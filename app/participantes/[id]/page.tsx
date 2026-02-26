@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { cacheLife, cacheTag } from 'next/cache';
+import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import LulusCardEdit from '@/components/lulus/lulu-card/lulu-card-edit';
@@ -9,17 +9,22 @@ import {
   getParticipants,
 } from '@/services/participants-server';
 
-const getCachedParticipantName = async (id: string): Promise<string> => {
-  'use cache';
-  cacheLife('hours');
-  cacheTag('participants');
-  const participant = await getParticipantById(id);
-  return participant?.name ?? 'Editar participante';
-};
+const getCachedParticipantName = unstable_cache(
+  async (id: string): Promise<string> => {
+    const participant = await getParticipantById(id);
+    return participant?.name ?? 'Editar participante';
+  },
+  ['participant-name'],
+  { revalidate: 3600, tags: ['participants'] }
+);
 
 export const generateStaticParams = async () => {
-  const participants = await getParticipants();
-  return participants.map((p) => ({ id: encryptId(String(p.id)) }));
+  try {
+    const participants = await getParticipants();
+    return participants.map((p) => ({ id: encryptId(String(p.id)) }));
+  } catch {
+    return [];
+  }
 };
 
 interface PageParams {

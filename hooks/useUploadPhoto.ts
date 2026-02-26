@@ -1,3 +1,4 @@
+import { revalidateParticipantsCache } from '@/app/actions/participants';
 import { useGetParticipantById } from '@/services/queries/fetchParticipants';
 import { uploadPhoto } from '@/services/queries/uploadPhoto';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -11,6 +12,7 @@ export const useUploadPhoto = (participantId: string) => {
     onSuccess: () => {
       refetchParticipant();
       queryClient.invalidateQueries({ queryKey: ['get-all-participants'] });
+      revalidateParticipantsCache();
     },
     onError: () => refetchParticipant(),
   });

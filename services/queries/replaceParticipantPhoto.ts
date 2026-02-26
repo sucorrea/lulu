@@ -5,12 +5,15 @@ import {
   deleteObject,
 } from 'firebase/storage';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { assertAdmin } from '@/lib/auth-guard';
 import { storage, db } from '../firebase';
 
 export const replaceParticipantPhoto = async (
   participantId: string,
   file: File
 ) => {
+  await assertAdmin();
+
   const participantRef = doc(db, 'participants', participantId);
 
   const snapshot = await getDoc(participantRef);

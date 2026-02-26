@@ -25,7 +25,7 @@ interface PersonFormProps {
 
 const PersonForm = ({ initialData }: PersonFormProps) => {
   const router = useRouter();
-  const { user } = useUserVerification();
+  const { user, isAdmin } = useUserVerification();
   const defaultValues = defaultValuesPerson(initialData ?? null);
   const { mutate } = useUpdateParticipantData(String(initialData?.id));
   const {
@@ -46,8 +46,8 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
       return;
     }
 
-    if (!user) {
-      toast.error('Usuário não autenticado');
+    if (!isAdmin || !user) {
+      toast.error('Acesso restrito a administradores');
       return;
     }
 

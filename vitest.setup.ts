@@ -41,4 +41,5 @@ vi.mock('firebase/auth', () => ({
     return () => {};
   }),
   signOut: vi.fn(() => Promise.resolve()),
+  getIdTokenResult: vi.fn(() => Promise.resolve({ claims: {} })),
 }));

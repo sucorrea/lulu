@@ -21,6 +21,7 @@ vi.mock('@/hooks/user-verify', () => ({
       email: 'test@example.com',
     },
     isLogged: true,
+    isAdmin: true,
     handleLogout: vi.fn(),
   })),
 }));

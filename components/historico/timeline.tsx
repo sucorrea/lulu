@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 interface VaquinhaHistoryTimelineProps {
   history: VaquinhaHistory[];
-  isAuthenticated: boolean;
+  isAdmin: boolean;
   onEdit?: (item: VaquinhaHistory) => void;
   onDelete?: (id: string) => void;
 }
@@ -17,12 +17,12 @@ const TimelineItem = memo(function TimelineItem({
   item,
   onEdit,
   onDelete,
-  isAuthenticated,
+  isAdmin,
 }: {
   item: VaquinhaHistory;
   onEdit?: (item: VaquinhaHistory) => void;
   onDelete?: (id: string) => void;
-  isAuthenticated: boolean;
+  isAdmin: boolean;
 }) {
   return (
     <Card
@@ -38,41 +38,37 @@ const TimelineItem = memo(function TimelineItem({
         className="absolute -left-[2.6rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-primary border-4 border-background"
         aria-hidden="true"
       />
-      <CardContent className="pt-4">
+      <CardContent className={cn('pt-4', !isAdmin && 'p-2')}>
         <div className="flex flex-1 items-center gap-2 flex-wrap">
           <span className="font-medium">{item.birthdayPersonName}</span>
           <ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
           <span className="font-medium">{item.responsibleName}</span>
         </div>
-        <div className="flex flex-col gap-3">
-          {isAuthenticated && (onEdit || onDelete) && (
-            <div className="flex items-center justify-end gap-2">
-              {onEdit && (
-                <button
-                  onClick={(e) => {
-                    (e.currentTarget as HTMLElement)?.blur();
-                    onEdit(item);
-                  }}
-                  className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
-                  aria-label={`Editar registro de ${item.birthdayPersonName}`}
-                >
-                  <Edit className="h-3.5 w-3.5" aria-hidden="true" />
-                  Editar
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={() => onDelete(item.id)}
-                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
-                  aria-label={`Excluir registro de ${item.birthdayPersonName}`}
-                >
-                  <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                  Excluir
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+        {isAdmin && (onEdit || onDelete) && (
+          <div className="flex items-center justify-end">
+            {onEdit && (
+              <button
+                onClick={(e) => {
+                  (e.currentTarget as HTMLElement)?.blur();
+                  onEdit(item);
+                }}
+                className="inline-flex items-center text-sm text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
+                aria-label={`Editar registro de ${item.birthdayPersonName}`}
+              >
+                <Edit className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={() => onDelete(item.id)}
+                className="inline-flex items-center text-sm text-destructive hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors"
+                aria-label={`Excluir registro de ${item.birthdayPersonName}`}
+              >
+                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -80,7 +76,7 @@ const TimelineItem = memo(function TimelineItem({
 
 export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
   history,
-  isAuthenticated,
+  isAdmin,
   onEdit,
   onDelete,
 }: VaquinhaHistoryTimelineProps) {
@@ -128,7 +124,7 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
           style={{ animationDelay: `${yearIndex * 100}ms` }}
           aria-labelledby={`year-${year}`}
         >
-          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
+          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
             <h2
               id={`year-${year}`}
               className="text-2xl font-bold flex items-center gap-2"
@@ -145,8 +141,8 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
             {[...groupedByYear[year]]
               .sort(
                 (a, b) =>
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime()
+                  new Date(a.birthdayDate!).getTime() -
+                  new Date(b.birthdayDate!).getTime()
               )
               .map((item, index) => (
                 <li
@@ -159,7 +155,7 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
                     item={item}
                     onEdit={onEdit}
                     onDelete={onDelete}
-                    isAuthenticated={isAuthenticated}
+                    isAdmin={isAdmin}
                   />
                 </li>
               ))}

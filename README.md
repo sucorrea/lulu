@@ -157,6 +157,97 @@ Continuous Deployment
 
 ---
 
+## Sistema de Administrador
+
+A aplicação possui controle de acesso em três níveis, protegido por Firebase Custom Claims:
+
+| Nível               | Permissões                                                                          |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| **Não autenticado** | Visualizar dados públicos                                                           |
+| **Autenticado**     | Curtir fotos, comentar na galeria                                                   |
+| **Admin**           | Tudo acima + editar participantes, gerenciar histórico, fazer sorteio, enviar fotos |
+
+### Proteção em 3 Camadas
+
+```
+┌──────────────────────────────────────────────┐
+│  1. UI         → botões/formulários ocultos  │
+│  2. Serviço    → assertAdmin() antes de      │
+│                  qualquer escrita            │
+│  3. Firestore/Storage Rules → validação no   │
+│                               servidor       │
+└──────────────────────────────────────────────┘
+```
+
+### Como Funciona
+
+A identidade de admin é armazenada como **Custom Claim** no JWT do Firebase (`{ "admin": true }`). O cliente lê o claim via `getIdTokenResult(user)` e o Firestore/Storage valida via `request.auth.token.admin == true`.
+
+**Fluxo:**
+
+```
+Login → onAuthStateChanged → getIdTokenResult → setIsAdmin(!!claims.admin)
+```
+
+**Hook:** `useUserVerification()` → retorna `{ user, isAdmin, isLoaded, isLogged, handleLogout }`
+**Guard:** `assertAdmin()` em `lib/auth-guard.ts` → força refresh do token e lança erro se o usuário não for admin
+
+### Definir o Primeiro Admin (CLI)
+
+```bash
+# Conceder admin (por e-mail ou UID)
+npx ts-node scripts/set-admin.ts <email-ou-uid>
+
+# Revogar admin
+npx ts-node scripts/set-admin.ts <email-ou-uid> --revoke
+
+# Usando env var em vez de serviceAccountKey.json
+FIREBASE_SERVICE_ACCOUNT_KEY='...' npx ts-node scripts/set-admin.ts <email-ou-uid>
+
+# Exemplos:
+npx ts-node scripts/set-admin.ts oliver.sueli@gmail.com
+npx ts-node scripts/set-admin.ts 3PAs2kahMjde4eqV6TObJ8sXXvz2
+```
+
+> Após rodar o script, faça **logout e login** na aplicação para o novo token JWT entrar em vigor.
+
+### Conceder Admin via API (após ter um admin)
+
+```bash
+POST /api/admin/set-claim
+Authorization: Bearer <id-token-do-admin>
+Content-Type: application/json
+
+{ "targetUid": "<uid-do-novo-admin>" }
+```
+
+### Regras de Segurança (Firestore)
+
+| Coleção              | Leitura | Escrita     |
+| -------------------- | ------- | ----------- |
+| `participants`       | Público | Admin       |
+| `participants/audit` | Público | Admin       |
+| `vaquinha-history`   | Público | Admin       |
+| `galeria-likes`      | Público | Autenticado |
+| `galeria-comments`   | Público | Autenticado |
+
+```bash
+# Deploy das regras
+firebase deploy --only firestore:rules,storage
+```
+
+### Variável de Ambiente em Produção
+
+Em produção, **não use** o arquivo `serviceAccountKey.json`. Configure a variável:
+
+```env
+FIREBASE_SERVICE_ACCOUNT_KEY='{"type":"service_account","project_id":"..."}'
+```
+
+No **Vercel**: `Settings → Environment Variables → FIREBASE_SERVICE_ACCOUNT_KEY`
+
+---
+
 ## Stack Tecnológica
 
 ### Frontend Core

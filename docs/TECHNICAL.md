@@ -7,6 +7,7 @@
 - [Padrões de Código](#padrões-de-código)
 - [Service Worker e PWA](#service-worker-e-pwa)
 - [Firebase Integration](#firebase-integration)
+  - [Autenticação e Controle de Acesso (Admin)](#autenticação-e-controle-de-acesso-admin)
 - [React Query Strategy](#react-query-strategy)
 - [Tema e Estilização](#tema-e-estilização)
 
@@ -447,6 +448,102 @@ export const useUploadPhoto = () => {
   return { upload, progress, url };
 };
 ```
+
+### Autenticação e Controle de Acesso (Admin)
+
+A identidade de admin é armazenada como **Custom Claim** no JWT do Firebase e validada em três camadas:
+
+```
+┌──────────────────────────────────────────────┐
+│  1. UI         → botões/formulários ocultos  │
+│  2. Serviço    → assertAdmin() antes de      │
+│                  qualquer escrita            │
+│  3. Firestore/Storage Rules → servidor       │
+└──────────────────────────────────────────────┘
+```
+
+#### Fluxo de autenticação
+
+```
+Login → onAuthStateChanged → getIdTokenResult(user) → setIsAdmin(!!claims.admin)
+```
+
+#### Guard de serviço
+
+```typescript
+// lib/auth-guard.ts
+export const assertAdmin = async (): Promise<void> => {
+  const currentUser = auth.currentUser;
+  if (!currentUser) throw new Error('Usuário não autenticado');
+  // forceRefresh=true garante que claims revogadas sejam detectadas imediatamente
+  const tokenResult = await getIdTokenResult(currentUser, true);
+  if (!tokenResult.claims.admin)
+    throw new Error('Acesso restrito a administradores');
+};
+```
+
+Os componentes chamam `useUserVerification()` diretamente para obter `{ isAdmin, isLoading }`.
+
+#### Definir o primeiro admin (CLI)
+
+```bash
+# Conceder admin (por e-mail ou UID)
+npx ts-node scripts/set-admin.ts oliver.sueli@gmail.com
+npx ts-node scripts/set-admin.ts 3PAs2kahMjde4eqV6TObJ8sXXvz2
+
+# Revogar admin
+npx ts-node scripts/set-admin.ts oliver.sueli@gmail.com --revoke
+
+# Em ambientes sem serviceAccountKey.json (CI/CD)
+FIREBASE_SERVICE_ACCOUNT_KEY='...' npx ts-node scripts/set-admin.ts <email-ou-uid>
+```
+
+> Após rodar o script, faça **logout e login** na aplicação. O JWT é cacheado e só atualiza no próximo login.
+
+#### Conceder ou revogar admin via API (após ter um admin)
+
+```bash
+# Conceder
+POST /api/admin/set-claim
+Authorization: Bearer <id-token-do-admin>
+Content-Type: application/json
+{ "targetUid": "<uid-do-usuario>" }
+
+# Revogar
+POST /api/admin/set-claim
+Authorization: Bearer <id-token-do-admin>
+Content-Type: application/json
+{ "targetUid": "<uid-do-usuario>", "admin": false }
+```
+
+O endpoint verifica o token do caller, confirma `admin: true` no claim, valida que o `targetUid` existe e faz merge com claims existentes antes de aplicar.
+
+#### Permissões por coleção (Firestore)
+
+| Coleção              | Leitura | Escrita     |
+| -------------------- | ------- | ----------- |
+| `participants`       | Público | Admin       |
+| `participants/audit` | Público | Admin       |
+| `vaquinha-history`   | Público | Admin       |
+| `galeria-likes`      | Público | Autenticado |
+| `galeria-comments`   | Público | Autenticado |
+
+```bash
+# Deploy das regras
+firebase deploy --only firestore:rules,storage
+```
+
+#### Variável de ambiente em produção
+
+Em produção, **não use** o arquivo `serviceAccountKey.json`. Configure:
+
+```env
+FIREBASE_SERVICE_ACCOUNT_KEY='{"type":"service_account","project_id":"..."}'
+```
+
+No **Vercel**: `Settings → Environment Variables → FIREBASE_SERVICE_ACCOUNT_KEY`
+
+`lib/firebase-admin.ts` já está configurado para ler essa variável automaticamente.
 
 ---
 

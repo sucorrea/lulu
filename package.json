@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "check": "yarn lint && yarn typecheck && yarn test",
     "postinstall": "node scripts/copy-wasm.mjs",
+    "prettier": "npx prettier --write .",
     "prepare": "husky"
   },
   "dependencies": {
@@ -38,6 +39,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^11.7.3",
+    "firebase-admin": "^13.6.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.469.0",
     "next": "^16.1.6",

@@ -11,7 +11,7 @@ import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
 import { toast } from 'sonner';
 
 const UploadPhotoGallery = () => {
-  const { user } = useUserVerification();
+  const { user, isAdmin } = useUserVerification();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { refetch } = useGetGalleryImages();
 
@@ -24,10 +24,10 @@ const UploadPhotoGallery = () => {
       (async () => {
         try {
           const photoId = `${user.uid}_${Date.now()}`;
-          const { ref, uploadBytes } = await import('firebase/storage');
-          const { storage } = await import('@/services/firebase');
-          const storageRef = ref(storage, `gallery/${photoId}`);
-          await uploadBytes(storageRef, file);
+          const { uploadGalleryPhoto } = await import(
+            '@/services/queries/uploadGalleryPhoto'
+          );
+          await uploadGalleryPhoto({ file, photoId });
           onClose();
           refetch();
         } catch {
@@ -42,7 +42,7 @@ const UploadPhotoGallery = () => {
 
   return (
     <>
-      {user && (
+      {isAdmin && (
         <div className="mb-4 flex justify-start">
           <Button onClick={() => onOpen()} className="gap-2">
             <Upload className="h-4 w-4" />

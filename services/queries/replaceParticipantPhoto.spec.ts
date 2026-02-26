@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+vi.mock('@/lib/auth-guard', () => ({
+  assertAdmin: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('../firebase', () => ({
   storage: {},
   db: {},

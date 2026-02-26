@@ -1,4 +1,5 @@
 import { db } from './firebase';
+import { assertAdmin } from '@/lib/auth-guard';
 import {
   collection,
   doc,
@@ -35,6 +36,8 @@ export type VaquinhaHistoryInput = Omit<
 export const addVaquinhaHistory = async (
   data: VaquinhaHistoryInput
 ): Promise<string> => {
+  await assertAdmin();
+
   const historyRef = doc(collection(db, 'vaquinha-history'));
   const historyData: VaquinhaHistory = {
     ...data,
@@ -50,6 +53,8 @@ export const updateVaquinhaHistory = async (
   id: string,
   data: Partial<VaquinhaHistoryInput>
 ): Promise<void> => {
+  await assertAdmin();
+
   const ref = doc(db, 'vaquinha-history', id);
   await updateDoc(ref, {
     ...data,
@@ -58,6 +63,8 @@ export const updateVaquinhaHistory = async (
 };
 
 export const deleteVaquinhaHistory = async (id: string): Promise<void> => {
+  await assertAdmin();
+
   const ref = doc(db, 'vaquinha-history', id);
   await deleteDoc(ref);
 };
@@ -200,6 +207,8 @@ export const fetchAvailableYears = async (): Promise<number[]> => {
 export const batchAddVaquinhaHistory = async (
   items: VaquinhaHistoryInput[]
 ): Promise<string[]> => {
+  await assertAdmin();
+
   const batch = writeBatch(db);
   const ids: string[] = [];
 

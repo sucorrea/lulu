@@ -2,6 +2,10 @@ import { DocumentData, DocumentSnapshot } from 'firebase/firestore';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { updateParticipantData } from './updateParticipant';
 
+vi.mock('@/lib/auth-guard', () => ({
+  assertAdmin: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('@/services/firebase', () => ({
   db: {},
 }));
@@ -170,5 +174,27 @@ describe('updateParticipantData', () => {
     ).resolves.not.toThrow();
 
     expect(updateDoc).toHaveBeenCalled();
+  });
+
+  it('should warn and proceed without audit when getDoc fails', async () => {
+    const { updateDoc, getDoc } = await import('firebase/firestore');
+    const { createAuditLog } = await import('@/services/audit');
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    vi.mocked(getDoc).mockRejectedValueOnce(new Error('Firestore error'));
+
+    await expect(
+      updateParticipantData('1', {
+        updatedData: { name: 'New Name' },
+        userId: 'user123',
+        userName: 'João',
+      })
+    ).resolves.not.toThrow();
+
+    expect(updateDoc).toHaveBeenCalled();
+    expect(createAuditLog).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
+
+    warnSpy.mockRestore();
   });
 });

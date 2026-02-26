@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
+    // participants: read público para galeria/auditoria acessíveis sem login
+    match /participants/{participantId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      match /audit/{auditId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // audit: regra explícita para collectionGroup('audit') usado em getAllAuditLogs
+    match /{path=**}/audit/{auditId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // vaquinha-history: read público (exibe responsável nos cards);
+    // write restrito a admin
+    match /vaquinha-history/{historyId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /galeria-likes/{likeId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /galeria-comments/{commentId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+  }
+}
