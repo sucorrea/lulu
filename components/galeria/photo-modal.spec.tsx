@@ -99,7 +99,6 @@ vi.mock('./gallery-context', async (importOriginal) => {
   };
 });
 
-
 const mockComments: GaleriaComment[] = [
   {
     id: 'c1',

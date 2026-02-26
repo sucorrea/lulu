@@ -78,7 +78,9 @@ const PhotoItem = memo(function PhotoItem({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            if (!isDeleting) confirmDeletePhoto(() => onDelete(index));
+            if (!isDeleting) {
+              confirmDeletePhoto(() => onDelete(index));
+            }
           }}
           disabled={isDeleting}
           aria-label={`Excluir foto ${index + 1} da galeria`}
