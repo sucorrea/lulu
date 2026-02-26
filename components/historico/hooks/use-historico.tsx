@@ -1,14 +1,7 @@
-'use client';
-import dynamic from 'next/dynamic';
 import { useCallback, useMemo, useState } from 'react';
 
-import { Plus, TrashIcon } from 'lucide-react';
+import { TrashIcon } from 'lucide-react';
 import { toast } from 'sonner';
-
-import ErrorState from '@/components/error-state';
-import { Button } from '@/components/ui/button';
-import { LiveAnnounce } from '@/components/ui/live-announce';
-import { Skeleton } from '@/components/ui/skeleton';
 
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useUserVerification } from '@/hooks/user-verify';
@@ -22,18 +15,8 @@ import {
   useUpdateVaquinhaHistory,
 } from '@/services/queries/vaquinhaHistory';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
-import Header from '../layout/header';
-import PageLayout from '../layout/page-layout';
-import BirthdayPersonFilter from './birthday-person-filter';
-import VaquinhaHistoryTimeline from './timeline';
-import TimelineSkeleton from './timeline-skeleton';
-import YearFilter from './year-filter';
 
-const VaquinhaHistoryFormDialog = dynamic(() => import('./form-dialog'), {
-  ssr: false,
-});
-
-export const HistoricoClient = () => {
+export const useHistorico = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedBirthdayPerson, setSelectedBirthdayPerson] = useState<
     string | null
@@ -244,87 +227,35 @@ export const HistoricoClient = () => {
     [setDialogOpen]
   );
 
-  if (isLoading) {
-    return (
-      <PageLayout>
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-5 w-96" />
-        </div>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <Skeleton className="h-10 w-40" />
-          <Skeleton className="h-10 w-48" />
-        </div>
-        <TimelineSkeleton />
-      </PageLayout>
-    );
-  }
-
-  if (isError) {
-    return (
-      <ErrorState
-        title="Erro ao carregar histórico"
-        message="Não foi possível carregar o histórico de vaquinhas. Verifique sua conexão e tente novamente."
-        onRetry={handleRetry}
-      />
-    );
-  }
-
-  return (
-    <>
-      <LiveAnnounce message={announcement} politeness="polite" />
-      <PageLayout>
-        <Header
-          title="Histórico de Vaquinhas"
-          description="Acompanhe quem foi responsável pelas vaquinhas ao longo dos anos"
-        />
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
-            {availableYears && availableYears.length > 0 && (
-              <YearFilter
-                years={availableYears}
-                selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
-              />
-            )}
-            {availableBirthdayPersons.length > 0 && (
-              <BirthdayPersonFilter
-                persons={availableBirthdayPersons}
-                selectedPerson={effectiveBirthdayPerson}
-                onPersonChange={setSelectedBirthdayPerson}
-              />
-            )}
-          </div>
-          {isAdmin && (
-            <Button
-              onClick={(e) => {
-                (e.currentTarget as HTMLElement)?.blur();
-                handleAddClick();
-              }}
-            >
-              <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
-              Adicionar Registro
-            </Button>
-          )}
-        </div>
-
-        <VaquinhaHistoryTimeline
-          history={history || []}
-          isAdmin={isAdmin}
-          onEdit={handleEditClick}
-          onDelete={handleDeleteClick}
-        />
-        <VaquinhaHistoryFormDialog
-          open={isDialogOpen}
-          onOpenChange={handleDialogOpenChange}
-          onSubmit={handleSubmit}
-          participants={sortedParticipants}
-          editingItem={editingItem}
-          isLoading={addMutation.isPending || updateMutation.isPending}
-        />
-      </PageLayout>
-    </>
-  );
+  return {
+    // state
+    selectedYear,
+    setSelectedYear,
+    selectedBirthdayPerson,
+    setSelectedBirthdayPerson,
+    editingItem,
+    // auth
+    isAdmin,
+    // loading / error
+    isLoading,
+    isError,
+    // data
+    history,
+    availableYears,
+    availableBirthdayPersons,
+    effectiveBirthdayPerson,
+    sortedParticipants,
+    announcement,
+    // dialog
+    isDialogOpen,
+    handleDialogOpenChange,
+    // mutations loading
+    isMutating: addMutation.isPending || updateMutation.isPending,
+    // handlers
+    handleAddClick,
+    handleEditClick,
+    handleDeleteClick,
+    handleSubmit,
+    handleRetry,
+  };
 };
-
-export default HistoricoClient;

@@ -24,6 +24,7 @@ type SelectWithOptionsProps = {
   triggerClassName?: string;
   triggerId?: string;
   triggerWrapper?: React.ComponentType<{ children: React.ReactNode }>;
+  modal?: boolean;
 };
 
 export const SelectWithOptions = ({
@@ -35,6 +36,7 @@ export const SelectWithOptions = ({
   triggerClassName,
   triggerId,
   triggerWrapper,
+  modal = true,
 }: SelectWithOptionsProps) => {
   const trigger = (
     <SelectTrigger id={triggerId} className={cn(triggerClassName)}>
@@ -47,6 +49,7 @@ export const SelectWithOptions = ({
       value={String(value)}
       onValueChange={onValueChange}
       disabled={disabled}
+      modal={modal}
     >
       {triggerWrapper
         ? React.createElement(triggerWrapper, null, trigger)

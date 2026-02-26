@@ -8,14 +8,6 @@ import * as z from 'zod';
 import { Person } from '@/components/lulus/types';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import {
   Form,
   FormControl,
   FormField,
@@ -25,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { SelectWithOptions } from '@/components/ui/select-with-options';
+import { GenericDialog } from '@/components/dialog/dialog';
 import { VaquinhaHistory } from '@/services/vaquinhaHistory';
 
 const formSchema = z.object({
@@ -74,6 +67,7 @@ const ParticipantSelectField = ({
           }))}
           placeholder="Selecione..."
           triggerWrapper={FormControl}
+          modal={false}
         />
         <FormMessage />
       </FormItem>
@@ -144,68 +138,70 @@ export const VaquinhaHistoryFormDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>
-            {editingItem ? 'Editar' : 'Adicionar'} Histórico de Vaquinha
-          </DialogTitle>
-          <DialogDescription>
-            Registre quem foi responsável pela vaquinha e quem foi o
-            aniversariante.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
+    <GenericDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={`${editingItem ? 'Editar' : 'Adicionar'} Histórico de Vaquinha`}
+      description="Registre quem foi responsável pela vaquinha e quem foi o aniversariante."
+      className="sm:max-w-[500px]"
+      footer={
+        <>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
           >
-            <FormField
-              control={form.control}
-              name="year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ano</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="2026"
-                      {...field}
-                      max={2026}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <ParticipantSelectField
-              control={form.control}
-              name="birthdayPersonId"
-              label="Aniversariante"
-              participants={participants}
-            />
-            <ParticipantSelectField
-              control={form.control}
-              name="responsibleId"
-              label="Quem foi responsável"
-              participants={participants}
-            />
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {submitLabel}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            form="vaquinha-history-form"
+            disabled={isLoading}
+          >
+            {submitLabel}
+          </Button>
+        </>
+      }
+    >
+      <Form {...form}>
+        <form
+          id="vaquinha-history-form"
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-4"
+        >
+          <FormField
+            control={form.control}
+            name="year"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ano</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="2026"
+                    {...field}
+                    max={2026}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <ParticipantSelectField
+            control={form.control}
+            name="birthdayPersonId"
+            label="Aniversariante"
+            participants={participants}
+          />
+          <ParticipantSelectField
+            control={form.control}
+            name="responsibleId"
+            label="Quem foi responsável"
+            participants={participants}
+          />
+        </form>
+      </Form>
+    </GenericDialog>
   );
 };
 

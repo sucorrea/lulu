@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { HistoricoClient } from '@/components/vaquinha-history/historico-client';
+import { HistoricoClient } from '@/components/historico/historico-client';
 
 export const metadata: Metadata = {
   title: 'Histórico | Luluzinha',

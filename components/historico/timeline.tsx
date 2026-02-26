@@ -124,7 +124,7 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
           style={{ animationDelay: `${yearIndex * 100}ms` }}
           aria-labelledby={`year-${year}`}
         >
-          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
+          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
             <h2
               id={`year-${year}`}
               className="text-2xl font-bold flex items-center gap-2"
@@ -141,8 +141,8 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
             {[...groupedByYear[year]]
               .sort(
                 (a, b) =>
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime()
+                  new Date(a.birthdayDate!).getTime() -
+                  new Date(b.birthdayDate!).getTime()
               )
               .map((item, index) => (
                 <li

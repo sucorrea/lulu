@@ -21,7 +21,7 @@ export const BirthdayPersonFilter = ({
 
   return (
     <div className="flex items-center gap-3">
-      <Gift className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+      <Gift className="h-5 w-6 text-muted-foreground" aria-hidden="true" />
       <SelectWithOptions
         value={selectedPerson ?? 'all'}
         onValueChange={(value) =>
