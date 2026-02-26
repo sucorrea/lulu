@@ -1,7 +1,16 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import UploadPhotoGallery from './upload-photo-gallery';
+
+const mockOnClose = vi.fn();
+const mockRefetch = vi.fn();
 
 vi.mock('@/hooks/user-verify', () => ({
   useUserVerification: () => ({
@@ -14,14 +23,18 @@ vi.mock('@/hooks/use-disclosure', () => ({
   useDisclosure: () => ({
     isOpen: false,
     onOpen: vi.fn(),
-    onClose: vi.fn(),
+    onClose: mockOnClose,
   }),
 }));
 
 vi.mock('@/services/queries/fetchParticipants', () => ({
   useGetGalleryImages: () => ({
-    refetch: vi.fn(),
+    refetch: mockRefetch,
   }),
+}));
+
+vi.mock('sonner', () => ({
+  toast: { error: vi.fn() },
 }));
 
 vi.mock('@/components/dialog/dialog', () => ({
@@ -362,6 +375,77 @@ describe('UploadPhotoGallery', () => {
       rerender(<UploadPhotoGallery />);
 
       expect(screen.getByTestId('generic-dialog')).toBeInTheDocument();
+    });
+  });
+
+  describe('File Upload Interactions', () => {
+    it('should call onClose and refetch after successful file upload', async () => {
+      const { uploadGalleryPhoto } = await import(
+        '@/services/queries/uploadGalleryPhoto'
+      );
+      vi.mocked(uploadGalleryPhoto).mockResolvedValue(undefined);
+
+      const { container } = render(<UploadPhotoGallery />);
+      const fileInput = container.querySelector(
+        'input[type="file"]'
+      ) as HTMLInputElement;
+
+      const file = new File(['content'], 'photo.jpg', { type: 'image/jpeg' });
+
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [file] } });
+        await new Promise((r) => setTimeout(r, 0));
+      });
+
+      await waitFor(() => {
+        expect(mockOnClose).toHaveBeenCalled();
+        expect(mockRefetch).toHaveBeenCalled();
+      });
+    });
+
+    it('should show toast error when upload fails', async () => {
+      const { uploadGalleryPhoto } = await import(
+        '@/services/queries/uploadGalleryPhoto'
+      );
+      vi.mocked(uploadGalleryPhoto).mockRejectedValue(
+        new Error('Upload failed')
+      );
+
+      const { toast } = await import('sonner');
+
+      const { container } = render(<UploadPhotoGallery />);
+      const fileInput = container.querySelector(
+        'input[type="file"]'
+      ) as HTMLInputElement;
+
+      const file = new File(['content'], 'fail.jpg', { type: 'image/jpeg' });
+
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [file] } });
+        await new Promise((r) => setTimeout(r, 0));
+      });
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith(
+          'Erro ao enviar foto.',
+          expect.objectContaining({ position: 'bottom-center' })
+        );
+      });
+    });
+
+    it('should do nothing when no file is selected', async () => {
+      const { container } = render(<UploadPhotoGallery />);
+      const fileInput = container.querySelector(
+        'input[type="file"]'
+      ) as HTMLInputElement;
+
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [] } });
+        await new Promise((r) => setTimeout(r, 0));
+      });
+
+      expect(mockOnClose).not.toHaveBeenCalled();
+      expect(mockRefetch).not.toHaveBeenCalled();
     });
   });
 });

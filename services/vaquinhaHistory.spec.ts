@@ -21,7 +21,11 @@ vi.mock('./firebase', () => ({
   db: {},
 }));
 
+const mockBatchSet = vi.fn();
+const mockBatchCommit = vi.fn(() => Promise.resolve());
+
 vi.mock('firebase/firestore', () => ({
+  writeBatch: vi.fn(() => ({ set: mockBatchSet, commit: mockBatchCommit })),
   collection: vi.fn(() => ({ id: 'mock-collection' })),
   doc: vi.fn((_, collectionName, id) => ({
     id: id || 'mock-id',
@@ -288,6 +292,34 @@ describe('vaquinhaHistory service', () => {
   describe('deleteVaquinhaHistory', () => {
     it('should delete a vaquinha history entry', async () => {
       await expect(deleteVaquinhaHistory('test-id')).resolves.not.toThrow();
+    });
+  });
+
+  describe('batchAddVaquinhaHistory', () => {
+    it('should batch add multiple vaquinha history entries', async () => {
+      const { batchAddVaquinhaHistory } = await import('./vaquinhaHistory');
+      const items: VaquinhaHistoryInput[] = [
+        {
+          year: 2024,
+          responsibleId: 1,
+          responsibleName: 'Responsavel 1',
+          birthdayPersonId: 2,
+          birthdayPersonName: 'Aniversariante 1',
+        },
+        {
+          year: 2024,
+          responsibleId: 3,
+          responsibleName: 'Responsavel 2',
+          birthdayPersonId: 4,
+          birthdayPersonName: 'Aniversariante 2',
+        },
+      ];
+
+      const ids = await batchAddVaquinhaHistory(items);
+
+      expect(ids).toHaveLength(2);
+      expect(mockBatchSet).toHaveBeenCalledTimes(2);
+      expect(mockBatchCommit).toHaveBeenCalled();
     });
   });
 });

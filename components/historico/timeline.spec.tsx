@@ -100,4 +100,30 @@ describe('VaquinhaHistoryTimeline', () => {
     expect(onEdit).toHaveBeenCalledWith(mockHistory[0]);
     expect(onDelete).toHaveBeenCalledWith('1');
   });
+
+  it('should not show action buttons when isAdmin is true but no handlers are provided', () => {
+    render(<VaquinhaHistoryTimeline history={mockHistory} isAdmin={true} />);
+
+    expect(
+      screen.queryByRole('button', { name: /editar/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /excluir/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should show only edit button when only onEdit is provided', () => {
+    render(
+      <VaquinhaHistoryTimeline
+        history={mockHistory}
+        isAdmin={true}
+        onEdit={vi.fn()}
+      />
+    );
+
+    expect(screen.getAllByRole('button', { name: /editar/i })).toHaveLength(2);
+    expect(
+      screen.queryByRole('button', { name: /excluir/i })
+    ).not.toBeInTheDocument();
+  });
 });

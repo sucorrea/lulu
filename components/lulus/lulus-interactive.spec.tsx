@@ -313,6 +313,27 @@ describe('LulusInteractive', () => {
     });
   });
 
+  describe('Birthday Calculation', () => {
+    it('should calculate days for birthday when birthday already passed this year', () => {
+      const participantWithPastBirthday: Person[] = [
+        {
+          id: 99,
+          name: 'Past Birthday Person',
+          fullName: 'Past Birthday Person Full',
+          date: '1990-01-05',
+          month: 'Janeiro',
+          city: 'SP',
+        },
+      ];
+
+      render(
+        <LulusInteractive initialParticipants={participantWithPastBirthday} />
+      );
+
+      expect(screen.queryByTestId('next-birthday-card')).toBeInTheDocument();
+    });
+  });
+
   describe('User Authentication', () => {
     it('should pass user status to participant cards when authenticated', () => {
       mockUseUserVerification.mockReturnValue({
