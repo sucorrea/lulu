@@ -142,4 +142,44 @@ describe('LikeUnlikeButton', () => {
     );
     expect(getByRole('button')).toHaveTextContent('0');
   });
+
+  it('applies custom className to the button', () => {
+    const { getByRole } = render(
+      <LikeUnlikeButton
+        liked={false}
+        likes={3}
+        handleLike={handleLike}
+        index={0}
+        className="text-white custom-class"
+      />
+    );
+    expect(getByRole('button')).toHaveClass('text-white', 'custom-class');
+  });
+
+  it('icon uses text-current when not liked so it inherits container color', () => {
+    const { getByRole } = render(
+      <LikeUnlikeButton
+        liked={false}
+        likes={3}
+        handleLike={handleLike}
+        index={0}
+      />
+    );
+    const svg = getByRole('button').querySelector('svg');
+    expect(svg).toHaveClass('text-current');
+    expect(svg).not.toHaveClass('text-muted-foreground');
+  });
+
+  it('icon uses text-primary and fill-primary when liked', () => {
+    const { getByRole } = render(
+      <LikeUnlikeButton
+        liked={true}
+        likes={3}
+        handleLike={handleLike}
+        index={0}
+      />
+    );
+    const svg = getByRole('button').querySelector('svg');
+    expect(svg).toHaveClass('text-primary', 'fill-primary');
+  });
 });

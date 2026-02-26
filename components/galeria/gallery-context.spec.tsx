@@ -12,6 +12,7 @@ import {
   editCommentOnPhoto,
   deleteCommentFromPhoto,
 } from '@/services/galeriaComments';
+import { deleteGalleryPhoto } from '@/services/queries/deleteGalleryPhoto';
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
@@ -40,6 +41,14 @@ vi.mock('@/services/galeriaComments', () => ({
   deleteCommentFromPhoto: vi.fn(),
 }));
 
+vi.mock('@/services/queries/deleteGalleryPhoto', () => ({
+  deleteGalleryPhoto: vi.fn(),
+}));
+
+vi.mock('sonner', () => ({
+  toast: { success: vi.fn(), error: vi.fn() },
+}));
+
 const renderGalleryHook = () => {
   return renderHook(() => useGallery(), {
     wrapper: ({ children }) => <GalleryProvider>{children}</GalleryProvider>,
@@ -64,6 +73,7 @@ describe('GalleryContext', () => {
 
     vi.mocked(useUserVerification).mockReturnValue({
       user: mockUser,
+      isAdmin: false,
       loading: false,
     } as unknown as ReturnType<typeof useUserVerification>);
 
@@ -297,6 +307,100 @@ describe('GalleryContext', () => {
 
       expect(stats.isLiked).toBe(true);
       expect(stats.likesCount).toBe(2);
+    });
+  });
+
+  describe('isAdmin', () => {
+    it('should expose isAdmin as false by default', () => {
+      const { result } = renderGalleryHook();
+      expect(result.current.isAdmin).toBe(false);
+    });
+
+    it('should expose isAdmin as true when user is admin', () => {
+      vi.mocked(useUserVerification).mockReturnValue({
+        user: mockUser,
+        isAdmin: true,
+        loading: false,
+      } as unknown as ReturnType<typeof useUserVerification>);
+
+      const { result } = renderGalleryHook();
+      expect(result.current.isAdmin).toBe(true);
+    });
+  });
+
+  describe('deletePhoto', () => {
+    it('should call deleteGalleryPhoto with the photo URL', async () => {
+      vi.mocked(deleteGalleryPhoto).mockResolvedValue(undefined);
+      const { result } = renderGalleryHook();
+
+      await act(async () => {
+        await result.current.deletePhoto(0);
+      });
+
+      expect(deleteGalleryPhoto).toHaveBeenCalledWith('photo-1');
+    });
+
+    it('should close the photo modal when deleting the currently selected photo', async () => {
+      vi.mocked(deleteGalleryPhoto).mockResolvedValue(undefined);
+      const { result } = renderGalleryHook();
+
+      act(() => {
+        result.current.selectPhoto(1);
+      });
+      expect(result.current.selectedIndex).toBe(1);
+
+      await act(async () => {
+        await result.current.deletePhoto(1);
+      });
+
+      expect(result.current.selectedIndex).toBeNull();
+    });
+
+    it('should not close the modal when deleting a different photo', async () => {
+      vi.mocked(deleteGalleryPhoto).mockResolvedValue(undefined);
+      const { result } = renderGalleryHook();
+
+      act(() => {
+        result.current.selectPhoto(0);
+      });
+
+      await act(async () => {
+        await result.current.deletePhoto(2);
+      });
+
+      expect(result.current.selectedIndex).toBe(0);
+    });
+
+    it('should do nothing when photo index is out of range', async () => {
+      const { result } = renderGalleryHook();
+
+      await act(async () => {
+        await result.current.deletePhoto(99);
+      });
+
+      expect(deleteGalleryPhoto).not.toHaveBeenCalled();
+    });
+
+    it('should show error toast and not throw when deleteGalleryPhoto fails', async () => {
+      const { toast } = await import('sonner');
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      vi.mocked(deleteGalleryPhoto).mockRejectedValue(
+        new Error('storage error')
+      );
+      const { result } = renderGalleryHook();
+
+      await expect(
+        act(async () => {
+          await result.current.deletePhoto(0);
+        })
+      ).resolves.not.toThrow();
+
+      expect(toast.error).toHaveBeenCalledWith('Erro ao excluir a foto.', {
+        position: 'bottom-center',
+      });
+      consoleSpy.mockRestore();
     });
   });
 });

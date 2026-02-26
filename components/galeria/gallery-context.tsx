@@ -11,6 +11,8 @@ import {
   useTransition,
 } from 'react';
 
+import { toast } from 'sonner';
+
 import { useUserVerification } from '@/hooks/user-verify';
 import {
   addCommentToPhoto,
@@ -19,6 +21,7 @@ import {
   GaleriaComment,
 } from '@/services/galeriaComments';
 import { likePhoto, unlikePhoto } from '@/services/galeriaLikes';
+import { deleteGalleryPhoto } from '@/services/queries/deleteGalleryPhoto';
 import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
 
 import { useGalleryRealtime } from './use-gallery-realtime';
@@ -52,7 +55,9 @@ interface GalleryContextType {
   photos: string[];
   isLoading: boolean;
   isError: boolean;
+  isDeleting: boolean;
   user: ReturnType<typeof useUserVerification>['user'];
+  isAdmin: boolean;
   selectedIndex: number | null;
   selectedPhoto: string | null;
   getPhotoStats: (index: number) => PhotoStats;
@@ -62,6 +67,7 @@ interface GalleryContextType {
   nextPhoto: () => void;
   prevPhoto: () => void;
   toggleLike: (index: number) => void;
+  deletePhoto: (index: number) => Promise<void>;
   addComment: (text: string) => Promise<void>;
   editComment: (commentId: string, text: string) => Promise<void>;
   deleteComment: (commentId: string) => Promise<void>;
@@ -72,11 +78,12 @@ const GalleryContext = createContext<GalleryContextType | null>(null);
 
 export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const { user } = useUserVerification();
+  const { user, isAdmin } = useUserVerification();
   const { data, isLoading, isError, refetch } = useGetGalleryImages();
   const photos = useMemo(() => data ?? [], [data]);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [, startTransition] = useTransition();
 
   const getPhotoId = useCallback((photo: string) => onGetPhotoId(photo), []);
@@ -279,6 +286,32 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
     [selectedPhoto, getPhotoId, setOptimisticComments]
   );
 
+  const deletePhoto = useCallback(
+    async (index: number) => {
+      const photo = photos[index];
+      if (!photo || isDeleting) {
+        return;
+      }
+      setIsDeleting(true);
+      try {
+        await deleteGalleryPhoto(photo);
+        if (selectedIndex === index) {
+          closePhoto();
+        }
+        refetch();
+        toast.success('Foto excluída com sucesso.', {
+          position: 'bottom-center',
+        });
+      } catch (error) {
+        console.error('Error deleting photo:', error);
+        toast.error('Erro ao excluir a foto.', { position: 'bottom-center' });
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [photos, selectedIndex, closePhoto, refetch, isDeleting]
+  );
+
   const deleteComment = useCallback(
     async (commentId: string) => {
       if (!selectedPhoto) {
@@ -308,7 +341,9 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       photos,
       isLoading,
       isError,
+      isDeleting,
       user,
+      isAdmin,
       selectedIndex,
       selectedPhoto,
       getPhotoStats,
@@ -318,6 +353,7 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       nextPhoto,
       prevPhoto,
       toggleLike,
+      deletePhoto,
       addComment,
       editComment,
       deleteComment,
@@ -327,7 +363,9 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       photos,
       isLoading,
       isError,
+      isDeleting,
       user,
+      isAdmin,
       selectedIndex,
       selectedPhoto,
       getPhotoStats,
@@ -337,6 +375,7 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       nextPhoto,
       prevPhoto,
       toggleLike,
+      deletePhoto,
       addComment,
       editComment,
       deleteComment,

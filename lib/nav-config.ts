@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import {
-  Camera,
+  ImageIcon,
   FileText,
   History,
   Info,
@@ -17,10 +17,10 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Participantes', shortLabel: 'Particip.', icon: Users },
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/galeria', label: 'Galeria', icon: Camera },
-  { href: '/historico', label: 'Histórico', icon: History },
-  { href: '/auditoria', label: 'Auditoria', icon: FileText },
+  { href: '/dashboard', label: 'Dashboard', shortLabel: 'Dash.', icon: LayoutDashboard },
+  { href: '/galeria', label: 'Galeria', icon: ImageIcon },
+  { href: '/historico', label: 'Histórico', shortLabel: 'Hist.', icon: History },
+  { href: '/auditoria', label: 'Auditoria', shortLabel: 'Audit.', icon: FileText },
   { href: '/sobre', label: 'Sobre', icon: Info },
 ];
 

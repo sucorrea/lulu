@@ -28,6 +28,28 @@ describe('nav-config', () => {
       expect(hrefs).toContain('/historico');
       expect(hrefs).toContain('/sobre');
     });
+
+    it('should have shortLabel for items that need abbreviated labels on smaller screens', () => {
+      const participantes = NAV_ITEMS.find((i) => i.href === '/');
+      expect(participantes?.shortLabel).toBe('Particip.');
+
+      const dashboard = NAV_ITEMS.find((i) => i.href === '/dashboard');
+      expect(dashboard?.shortLabel).toBe('Dash.');
+
+      const historico = NAV_ITEMS.find((i) => i.href === '/historico');
+      expect(historico?.shortLabel).toBe('Hist.');
+
+      const auditoria = NAV_ITEMS.find((i) => i.href === '/auditoria');
+      expect(auditoria?.shortLabel).toBe('Audit.');
+    });
+
+    it('should allow shortLabel to be optional for items with short labels', () => {
+      const galeria = NAV_ITEMS.find((i) => i.href === '/galeria');
+      const sobre = NAV_ITEMS.find((i) => i.href === '/sobre');
+
+      expect(galeria?.label).toBe('Galeria');
+      expect(sobre?.label).toBe('Sobre');
+    });
   });
 
   describe('isCurrentRoute', () => {

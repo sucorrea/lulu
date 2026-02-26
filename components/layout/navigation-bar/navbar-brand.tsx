@@ -12,7 +12,7 @@ export const NavbarBrand = memo(function NavbarBrand({
   currentYear,
 }: NavbarBrandProps) {
   return (
-    <div className="flex items-center">
+    <div className="flex shrink-0 items-center">
       <Link href="/" className="flex items-center gap-1">
         <Image
           src="/luluzinha_no_background.png"

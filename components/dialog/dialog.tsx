@@ -18,6 +18,7 @@ type GenericDialogProps = {
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
+  titleClassName?: string;
 };
 
 export const GenericDialog = ({
@@ -28,16 +29,21 @@ export const GenericDialog = ({
   children,
   footer,
   className = '',
+  titleClassName = '',
 }: Readonly<GenericDialogProps>) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={className}>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className={titleClassName}>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        <div className="py-2">{children}</div>
-        {footer && <DialogFooter className="gap-2">{footer}</DialogFooter>}
+        <div className="min-w-0 overflow-hidden py-2">{children}</div>
+        {footer && (
+          <DialogFooter className="min-w-0 gap-2 overflow-hidden">
+            {footer}
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );

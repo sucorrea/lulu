@@ -11,6 +11,10 @@ vi.mock('next/image', () => ({
   },
 }));
 
+vi.mock('sonner', () => ({
+  toast: vi.fn(),
+}));
+
 vi.mock('./like-unlike-button', () => ({
   default: ({
     handleLike,
@@ -33,8 +37,13 @@ vi.mock('./like-unlike-button', () => ({
   ),
 }));
 
+vi.mock('@/components/dialog/dialog', () => ({
+  GenericDialog: () => null,
+}));
+
 const mockOnSelect = vi.fn();
 const mockOnLike = vi.fn();
+const mockOnDelete = vi.fn();
 
 const photoUrl = 'https://firebasestorage.googleapis.com/v0/b/app/o/photo.jpg';
 
@@ -42,7 +51,9 @@ const renderPhotoItem = (
   index: number = 0,
   liked: boolean = false,
   likes: number = 5,
-  commentCount: number = 3
+  commentCount: number = 3,
+  isAdmin: boolean = false,
+  isDeleting: boolean = false
 ) => {
   return render(
     <PhotoItem
@@ -51,8 +62,11 @@ const renderPhotoItem = (
       liked={liked}
       likes={likes}
       commentCount={commentCount}
+      isAdmin={isAdmin}
+      isDeleting={isDeleting}
       onSelect={mockOnSelect}
       onLike={mockOnLike}
+      onDelete={mockOnDelete}
     />
   );
 };
@@ -245,10 +259,10 @@ describe('PhotoItem', () => {
   });
 
   describe('Layout and Structure', () => {
-    it('should have flex layout for stats below photo', () => {
+    it('should have flex layout for stats overlay on photo', () => {
       const { container } = renderPhotoItem();
 
-      const statsContainer = container.querySelector('div.mt-1');
+      const statsContainer = container.querySelector('div.absolute.bottom-0');
       expect(statsContainer).toHaveClass('flex', 'justify-between');
     });
 
@@ -312,8 +326,11 @@ describe('PhotoItem', () => {
           liked={false}
           likes={5}
           commentCount={3}
+          isAdmin={false}
+          isDeleting={false}
           onSelect={mockOnSelect}
           onLike={mockOnLike}
+          onDelete={mockOnDelete}
         />
       );
 
@@ -326,8 +343,11 @@ describe('PhotoItem', () => {
           liked={false}
           likes={5}
           commentCount={3}
+          isAdmin={false}
+          isDeleting={false}
           onSelect={mockOnSelect}
           onLike={mockOnLike}
+          onDelete={mockOnDelete}
         />
       );
 
@@ -349,8 +369,11 @@ describe('PhotoItem', () => {
           liked={false}
           likes={5}
           commentCount={3}
+          isAdmin={false}
+          isDeleting={false}
           onSelect={mockOnSelect}
           onLike={mockOnLike}
+          onDelete={mockOnDelete}
         />
       );
 
@@ -358,12 +381,21 @@ describe('PhotoItem', () => {
     });
 
     it('should have keyboard accessible buttons', () => {
-      renderPhotoItem(0, false, 5, 3);
+      renderPhotoItem(0, false, 5, 3, false, false);
 
       const buttons = screen.getAllByRole('button');
       buttons.forEach((btn) => {
         expect(btn).not.toBeDisabled();
       });
+    });
+
+    it('should disable delete button when isDeleting is true', () => {
+      renderPhotoItem(0, false, 5, 3, true, true);
+
+      const deleteButton = screen.getByRole('button', {
+        name: /Excluir foto 1 da galeria/i,
+      });
+      expect(deleteButton).toBeDisabled();
     });
   });
 
@@ -402,6 +434,76 @@ describe('PhotoItem', () => {
       renderPhotoItem(99, false, 5, 3);
 
       expect(screen.getByAltText('Foto 100 da galeria')).toBeInTheDocument();
+    });
+  });
+
+  describe('Delete Button', () => {
+    it('should not render delete button when isAdmin is false', () => {
+      renderPhotoItem(0, false, 5, 3, false);
+
+      expect(
+        screen.queryByRole('button', { name: /Excluir foto 1 da galeria/i })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should render delete button when isAdmin is true', () => {
+      renderPhotoItem(0, false, 5, 3, true);
+
+      expect(
+        screen.getByRole('button', { name: /Excluir foto 1 da galeria/i })
+      ).toBeInTheDocument();
+    });
+
+    it('should have correct aria-label on delete button', () => {
+      renderPhotoItem(4, false, 5, 3, true);
+
+      expect(
+        screen.getByRole('button', { name: 'Excluir foto 5 da galeria' })
+      ).toBeInTheDocument();
+    });
+
+    it('should show confirmation toast when delete button is clicked', async () => {
+      const { toast } = await import('sonner');
+      renderPhotoItem(0, false, 5, 3, true);
+
+      fireEvent.click(
+        screen.getByRole('button', { name: /Excluir foto 1 da galeria/i })
+      );
+
+      expect(toast).toHaveBeenCalledWith(
+        'Excluir esta foto?',
+        expect.objectContaining({
+          description: 'Esta ação não pode ser desfeita.',
+          action: expect.objectContaining({ label: 'Excluir' }),
+          cancel: expect.objectContaining({ label: 'Cancelar' }),
+        })
+      );
+    });
+
+    it('should not call onDelete immediately when delete button is clicked', () => {
+      renderPhotoItem(0, false, 5, 3, true);
+
+      fireEvent.click(
+        screen.getByRole('button', { name: /Excluir foto 1 da galeria/i })
+      );
+
+      expect(mockOnDelete).not.toHaveBeenCalled();
+    });
+
+    it('should call onDelete with correct index when toast confirm action is triggered', async () => {
+      const { toast } = await import('sonner');
+      const toastMock = vi.mocked(toast);
+      renderPhotoItem(2, false, 5, 3, true);
+
+      fireEvent.click(
+        screen.getByRole('button', { name: /Excluir foto 3 da galeria/i })
+      );
+
+      const call = toastMock.mock.calls[0];
+      const options = call[1] as unknown as { action: { onClick: () => void } };
+      options.action.onClick();
+
+      expect(mockOnDelete).toHaveBeenCalledWith(2);
     });
   });
 });

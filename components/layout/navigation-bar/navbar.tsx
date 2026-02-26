@@ -18,15 +18,26 @@ const NavLink = memo(function NavLink({
   href,
   icon: Icon,
   label,
+  shortLabel,
   onClick,
   isActive,
 }: {
   href: string;
   icon: ComponentType<{ className?: string }>;
   label: string;
+  shortLabel?: string;
   onClick?: () => void;
   isActive?: boolean;
 }) {
+  const displayLabel = shortLabel ?? label;
+  const content = (
+    <>
+      <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+      <span className="hidden xl:inline">{label}</span>
+      <span className="inline xl:hidden">{displayLabel}</span>
+    </>
+  );
+
   if (isActive) {
     return (
       <Link
@@ -34,8 +45,7 @@ const NavLink = memo(function NavLink({
         aria-current="page"
         className={`${linkBaseClass} bg-muted text-foreground cursor-default pointer-events-none opacity-80`}
       >
-        <Icon className="w-4 h-4" aria-hidden="true" />
-        <span>{label}</span>
+        {content}
       </Link>
     );
   }
@@ -46,8 +56,7 @@ const NavLink = memo(function NavLink({
       className={`${linkBaseClass} text-muted-foreground hover:text-foreground hover:bg-muted`}
       onClick={onClick}
     >
-      <Icon className="w-4 h-4" aria-hidden="true" />
-      <span>{label}</span>
+      {content}
     </Link>
   );
 });
@@ -68,16 +77,17 @@ export const Navbar = memo(function Navbar() {
       <div className="container flex h-14 items-center justify-between gap-2 px-1.5">
         <NavbarBrand currentYear={currentYear} />
         <nav
-          className="flex flex-1 items-center justify-end gap-4"
+          className="flex min-w-0 flex-1 items-center justify-end gap-2 overflow-hidden md:gap-4"
           aria-label="Navegação principal"
         >
           <div className="hidden md:flex items-center gap-1">
-            {NAV_ITEMS.map(({ href, label, icon }) => (
+            {NAV_ITEMS.map(({ href, label, shortLabel, icon }) => (
               <NavLink
                 key={href}
                 href={href}
                 icon={icon}
                 label={label}
+                shortLabel={shortLabel}
                 isActive={isCurrentRoute(pathname, href)}
               />
             ))}
