@@ -82,7 +82,7 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
                       key={participant.id}
                       className="flex items-center py-0.5"
                     >
-                      <div className="w-6 h-6 flex items-center justify-center bg-primary text-primary-foreground rounded-full text-sm font-bold">
+                      <div className="w-6 h-6 flex items-center justify-center bg-primary text-primary-foreground rounded-full text-sm ">
                         {getDay(participant.date)}
                       </div>
                       <span className="ml-3">{participant.name}</span>
