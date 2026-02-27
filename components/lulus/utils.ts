@@ -263,7 +263,7 @@ export const signsStats = (participants: Person[]) => {
 
   for (const p of participants) {
     const d = new Date(p.date);
-    if (isNaN(d.getTime())) {
+    if (Number.isNaN(d.getTime())) {
       continue;
     }
     const { label } = getSigno(d);

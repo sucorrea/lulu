@@ -207,7 +207,7 @@ describe('DashboardPage', () => {
     const innerDiv = container.querySelector('section > div');
     const grid = container.querySelector('.grid');
 
-    expect(section).toHaveClass('bg-muted\/40', 'py-6', 'md:py-8');
+    expect(section).toHaveClass('bg-muted/40', 'py-6', 'md:py-8');
     expect(innerDiv).toHaveClass('container', 'space-y-6');
     expect(grid).toHaveClass('grid-cols-1', 'gap-4', 'md:grid-cols-2');
   });
