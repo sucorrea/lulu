@@ -153,13 +153,13 @@ describe('UploadPhotoGallery', () => {
       expect(cancelButton).toBeInTheDocument();
     });
 
-    it('should have ml-2 class on cancel button', () => {
+    it('should have min-w-0 on cancel button for overflow containment', () => {
       render(<UploadPhotoGallery />);
 
       const cancelButton = screen.getByRole('button', {
         name: /Cancelar/i,
       });
-      expect(cancelButton).toHaveClass('ml-2');
+      expect(cancelButton).toHaveClass('min-w-0');
     });
   });
 
@@ -171,23 +171,90 @@ describe('UploadPhotoGallery', () => {
       expect(fileInput).toHaveAttribute('accept', 'image/*');
     });
 
-    it('should render file input with block class', () => {
+    it('should render file input with sr-only for accessibility (hidden, triggered by button)', () => {
       const { container } = render(<UploadPhotoGallery />);
 
       const fileInput = container.querySelector('input[type="file"]');
-      expect(fileInput).toHaveClass('block');
+      expect(fileInput).toHaveClass('sr-only');
     });
 
-    it('should be in flex column container', () => {
-      const { container } = render(<UploadPhotoGallery />);
+    it('should have Escolher arquivo button that triggers file input', () => {
+      render(<UploadPhotoGallery />);
 
-      const flexContainer = container.querySelector('.flex-col');
-      expect(flexContainer).toBeInTheDocument();
-      expect(flexContainer).toHaveClass(
-        'items-center',
-        'justify-center',
-        'mb-4'
+      const chooseFileButton = screen.getByRole('button', {
+        name: /Escolher arquivo/i,
+      });
+      expect(chooseFileButton).toBeInTheDocument();
+    });
+
+    it('should show Nenhum arquivo escolhido placeholder before file is selected', () => {
+      render(<UploadPhotoGallery />);
+
+      expect(screen.getByText('Nenhum arquivo escolhido')).toBeInTheDocument();
+    });
+
+    it('should show selected filename after file is chosen', async () => {
+      const { uploadGalleryPhoto } = await import(
+        '@/services/queries/uploadGalleryPhoto'
       );
+      vi.mocked(uploadGalleryPhoto).mockReturnValue(new Promise(() => {}));
+
+      render(<UploadPhotoGallery />);
+
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
+      const file = new File(['content'], 'minha-foto.jpg', {
+        type: 'image/jpeg',
+      });
+
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [file] } });
+      });
+
+      expect(screen.getByText('minha-foto.jpg')).toBeInTheDocument();
+      expect(
+        screen.queryByText('Nenhum arquivo escolhido')
+      ).not.toBeInTheDocument();
+    });
+
+    it('should reset filename to placeholder when Cancel is clicked', async () => {
+      const { uploadGalleryPhoto } = await import(
+        '@/services/queries/uploadGalleryPhoto'
+      );
+      vi.mocked(uploadGalleryPhoto).mockReturnValue(new Promise(() => {}));
+
+      render(<UploadPhotoGallery />);
+
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
+      const file = new File(['content'], 'reset-test.jpg', {
+        type: 'image/jpeg',
+      });
+
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [file] } });
+      });
+
+      expect(screen.getByText('reset-test.jpg')).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: /Cancelar/i }));
+      });
+
+      expect(screen.queryByText('reset-test.jpg')).not.toBeInTheDocument();
+      expect(screen.getByText('Nenhum arquivo escolhido')).toBeInTheDocument();
+    });
+
+    it('should have file picker container with overflow containment', () => {
+      render(<UploadPhotoGallery />);
+
+      const chooseFileButton = screen.getByRole('button', {
+        name: /Escolher arquivo/i,
+      });
+      const filePickerContainer = chooseFileButton.closest('.overflow-hidden');
+      expect(filePickerContainer).toBeInTheDocument();
     });
   });
 
@@ -254,11 +321,12 @@ describe('UploadPhotoGallery', () => {
       expect(button).toBeVisible();
     });
 
-    it('should have accessible file input', () => {
-      const { container } = render(<UploadPhotoGallery />);
+    it('should have accessible file input with aria-label', () => {
+      render(<UploadPhotoGallery />);
 
-      const fileInput = container.querySelector('input[type="file"]');
-      expect(fileInput).toBeVisible();
+      const fileInput = screen.getByLabelText(/Selecionar foto para enviar/i);
+      expect(fileInput).toBeInTheDocument();
+      expect(fileInput).toHaveAttribute('type', 'file');
     });
 
     it('should have dialog with proper accessibility', () => {
@@ -275,7 +343,7 @@ describe('UploadPhotoGallery', () => {
 
       const fileInput = container.querySelector(
         'input[type="file"]'
-      ) as HTMLInputElement;
+      ) as unknown as HTMLInputElement;
       expect(fileInput.accept).toBe('image/*');
     });
 
@@ -340,15 +408,15 @@ describe('UploadPhotoGallery', () => {
       expect(buttonContainer).toHaveClass('flex', 'justify-start');
     });
 
-    it('should have flex flex-col on file input container', () => {
-      const { container } = render(<UploadPhotoGallery />);
+    it('should have file picker with flex layout and overflow containment', () => {
+      render(<UploadPhotoGallery />);
 
-      const fileContainer = container.querySelector('div.flex-col');
-      expect(fileContainer).toHaveClass(
-        'items-center',
-        'justify-center',
-        'mb-4'
-      );
+      const chooseFileButton = screen.getByRole('button', {
+        name: /Escolher arquivo/i,
+      });
+      const filePickerContainer = chooseFileButton.closest('.flex');
+      expect(filePickerContainer).toBeInTheDocument();
+      expect(filePickerContainer).toHaveClass('overflow-hidden');
     });
   });
 
@@ -385,10 +453,10 @@ describe('UploadPhotoGallery', () => {
       );
       vi.mocked(uploadGalleryPhoto).mockResolvedValue(undefined);
 
-      const { container } = render(<UploadPhotoGallery />);
-      const fileInput = container.querySelector(
-        'input[type="file"]'
-      ) as HTMLInputElement;
+      render(<UploadPhotoGallery />);
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
 
       const file = new File(['content'], 'photo.jpg', { type: 'image/jpeg' });
 
@@ -413,10 +481,10 @@ describe('UploadPhotoGallery', () => {
 
       const { toast } = await import('sonner');
 
-      const { container } = render(<UploadPhotoGallery />);
-      const fileInput = container.querySelector(
-        'input[type="file"]'
-      ) as HTMLInputElement;
+      render(<UploadPhotoGallery />);
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
 
       const file = new File(['content'], 'fail.jpg', { type: 'image/jpeg' });
 
@@ -434,10 +502,10 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should do nothing when no file is selected', async () => {
-      const { container } = render(<UploadPhotoGallery />);
-      const fileInput = container.querySelector(
-        'input[type="file"]'
-      ) as HTMLInputElement;
+      render(<UploadPhotoGallery />);
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(fileInput, { target: { files: [] } });
@@ -446,6 +514,24 @@ describe('UploadPhotoGallery', () => {
 
       expect(mockOnClose).not.toHaveBeenCalled();
       expect(mockRefetch).not.toHaveBeenCalled();
+    });
+
+    it('should trigger file input when Escolher arquivo button is clicked', () => {
+      render(<UploadPhotoGallery />);
+
+      const chooseFileButton = screen.getByRole('button', {
+        name: /Escolher arquivo/i,
+      });
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
+
+      const clickSpy = vi.spyOn(fileInput, 'click');
+
+      fireEvent.click(chooseFileButton);
+
+      expect(clickSpy).toHaveBeenCalled();
+      clickSpy.mockRestore();
     });
   });
 });

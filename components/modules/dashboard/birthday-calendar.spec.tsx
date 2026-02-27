@@ -219,8 +219,7 @@ describe('BirthdayCalendar', () => {
         'bg-primary',
         'text-primary-foreground',
         'rounded-full',
-        'text-sm',
-        'font-bold'
+        'text-sm'
       );
     });
   });
