@@ -4,8 +4,8 @@ import { isCurrentRoute, NAV_ITEMS } from './nav-config';
 
 describe('nav-config', () => {
   describe('NAV_ITEMS', () => {
-    it('should have 6 navigation items', () => {
-      expect(NAV_ITEMS).toHaveLength(6);
+    it('should have 8 navigation items', () => {
+      expect(NAV_ITEMS).toHaveLength(8);
     });
 
     it('should have correct structure for each item', () => {
@@ -27,6 +27,21 @@ describe('nav-config', () => {
       expect(hrefs).toContain('/auditoria');
       expect(hrefs).toContain('/historico');
       expect(hrefs).toContain('/sobre');
+      expect(hrefs).toContain('/meu-perfil');
+      expect(hrefs).toContain('/admin');
+    });
+
+    it('should have requiredRole for restricted routes', () => {
+      const meuPerfil = NAV_ITEMS.find((i) => i.href === '/meu-perfil');
+      expect(meuPerfil?.requiredRole).toBe('lulu');
+
+      const adminItem = NAV_ITEMS.find((i) => i.href === '/admin');
+      expect(adminItem?.requiredRole).toBe('admin');
+    });
+
+    it('should not have requiredRole for public routes', () => {
+      const publicRoutes = NAV_ITEMS.filter((i) => !i.requiredRole);
+      expect(publicRoutes.length).toBe(6);
     });
 
     it('should have shortLabel for items that need abbreviated labels on smaller screens', () => {

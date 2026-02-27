@@ -53,3 +53,4 @@ const app = initFirebaseAdmin();
 
 export const adminAuth = admin.auth(app);
 export const adminDb = admin.firestore(app);
+export const adminMessaging = admin.messaging(app);

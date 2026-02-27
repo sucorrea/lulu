@@ -67,13 +67,13 @@ describe('PixInfo', () => {
   it('should render pix key type label', () => {
     render(<PixInfo participant={mockParticipant} />);
 
-    expect(screen.getByText('CPF')).toBeInTheDocument();
+    expect(screen.getByText(/CPF/)).toBeInTheDocument();
   });
 
   it('should render pix key value', () => {
     render(<PixInfo participant={mockParticipant} />);
 
-    expect(screen.getByText(': 123.456.789-00')).toBeInTheDocument();
+    expect(screen.getByText(/123\.456\.789-00/)).toBeInTheDocument();
   });
 
   it('should copy pix key to clipboard on button click', async () => {
@@ -120,8 +120,8 @@ describe('PixInfo', () => {
 
     render(<PixInfo participant={participant} />);
 
-    expect(screen.getByText('Email')).toBeInTheDocument();
-    expect(screen.getByText(': test@example.com')).toBeInTheDocument();
+    expect(screen.getByText(/Email/)).toBeInTheDocument();
+    expect(screen.getByText(/test@example\.com/)).toBeInTheDocument();
   });
 
   it('should render with phone pix key type', () => {
@@ -133,8 +133,8 @@ describe('PixInfo', () => {
 
     render(<PixInfo participant={participant} />);
 
-    expect(screen.getByText('Celular')).toBeInTheDocument();
-    expect(screen.getByText(': 11999999999')).toBeInTheDocument();
+    expect(screen.getByText(/Celular/)).toBeInTheDocument();
+    expect(screen.getByText(/11999999999/)).toBeInTheDocument();
   });
 
   it('should render with random pix key type', () => {
@@ -146,8 +146,8 @@ describe('PixInfo', () => {
 
     render(<PixInfo participant={participant} />);
 
-    expect(screen.getByText('Aleatório')).toBeInTheDocument();
-    expect(screen.getByText(': abc-123-def-456')).toBeInTheDocument();
+    expect(screen.getByText(/Aleatório/)).toBeInTheDocument();
+    expect(screen.getByText(/abc-123-def-456/)).toBeInTheDocument();
   });
 
   it('should render with none pix key type when undefined', () => {
@@ -159,7 +159,7 @@ describe('PixInfo', () => {
 
     render(<PixInfo participant={participant} />);
 
-    expect(screen.getByText('Nenhum')).toBeInTheDocument();
+    expect(screen.getByText(/Nenhum/)).toBeInTheDocument();
   });
 
   it('should apply correct styling to container', () => {
@@ -221,6 +221,6 @@ describe('PixInfo', () => {
 
     render(<PixInfo participant={participant} />);
 
-    expect(screen.getByText('Nenhum')).toBeInTheDocument();
+    expect(screen.getByText(/Nenhum/)).toBeInTheDocument();
   });
 });

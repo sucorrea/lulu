@@ -46,3 +46,50 @@ const serwist = new Serwist({
 });
 
 serwist.addEventListeners();
+
+const sw = globalThis as unknown as ServiceWorkerGlobalScope;
+
+sw.addEventListener('push', (event) => {
+  if (!event.data) {
+    return;
+  }
+
+  let payload: {
+    notification?: { title?: string; body?: string; icon?: string };
+    data?: Record<string, string>;
+  };
+  try {
+    payload = event.data.json();
+  } catch {
+    return;
+  }
+
+  const title = payload.notification?.title ?? 'Luluzinha';
+  const options: NotificationOptions = {
+    body: payload.notification?.body ?? '',
+    icon: payload.notification?.icon ?? '/icons/icon-192x192.png',
+    badge: '/icons/icon-72x72.png',
+    data: payload.data,
+  };
+
+  event.waitUntil(sw.registration.showNotification(title, options));
+});
+
+sw.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const url = event.notification.data?.url ?? '/';
+
+  event.waitUntil(
+    sw.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url.includes(url) && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        return sw.clients.openWindow(url);
+      })
+  );
+});

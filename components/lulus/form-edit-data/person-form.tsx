@@ -19,15 +19,18 @@ import { personSchema } from './validation';
 
 export type PersonFormData = z.infer<typeof personSchema>;
 
+type FormMode = 'admin' | 'self-edit';
+
 interface PersonFormProps {
   initialData: Person | null;
+  mode?: FormMode;
 }
 
-const PersonForm = ({ initialData }: PersonFormProps) => {
+const PersonForm = ({ initialData, mode = 'admin' }: PersonFormProps) => {
   const router = useRouter();
   const { user, isAdmin } = useUserVerification();
   const defaultValues = defaultValuesPerson(initialData ?? null);
-  const { mutate } = useUpdateParticipantData(String(initialData?.id));
+  const { mutate } = useUpdateParticipantData(String(initialData?.id), mode);
   const {
     control,
     register,
@@ -46,10 +49,17 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
       return;
     }
 
-    if (!isAdmin || !user) {
+    if (mode === 'admin' && (!isAdmin || !user)) {
       toast.error('Acesso restrito a administradores');
       return;
     }
+
+    if (mode === 'self-edit' && !user) {
+      toast.error('Você precisa estar logada');
+      return;
+    }
+
+    const currentUser = user!;
 
     mutate(
       {
@@ -57,9 +67,9 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
           ...data,
           date: new Date(data.date).toISOString(),
         },
-        userId: user.uid,
-        userName: user.displayName ?? user.email ?? 'Usuário',
-        userEmail: user.email ?? undefined,
+        userId: currentUser.uid,
+        userName: currentUser.displayName ?? currentUser.email ?? 'Usuário',
+        userEmail: currentUser.email ?? undefined,
         auditMetadata: {
           source: 'web-form',
         },

@@ -6,6 +6,8 @@ import {
   Info,
   LayoutDashboard,
   Users,
+  Shield,
+  UserCircle,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -13,6 +15,7 @@ export interface NavItem {
   label: string;
   shortLabel?: string;
   icon: ComponentType<{ className?: string; size?: number }>;
+  requiredRole?: 'admin' | 'lulu';
 }
 
 export const NAV_ITEMS: NavItem[] = [
@@ -37,6 +40,19 @@ export const NAV_ITEMS: NavItem[] = [
     icon: FileText,
   },
   { href: '/sobre', label: 'Sobre', icon: Info },
+  {
+    href: '/meu-perfil',
+    label: 'Meu Perfil',
+    shortLabel: 'Perfil',
+    icon: UserCircle,
+    requiredRole: 'lulu',
+  },
+  {
+    href: '/admin',
+    label: 'Admin',
+    icon: Shield,
+    requiredRole: 'admin',
+  },
 ];
 
 export const isCurrentRoute = (pathname: string, href: string): boolean => {

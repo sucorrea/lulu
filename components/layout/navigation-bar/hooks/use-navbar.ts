@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 
 import { CURRENT_YEAR } from '@/lib/constants';
 import { useUserVerification } from '@/hooks/user-verify';
+import { useAutoLinkAccount } from '@/hooks/use-auto-link-account';
+import type { Role } from '@/components/lulus/types';
 
 interface UseNavbarResult {
   isAuthenticated: boolean;
@@ -13,11 +15,15 @@ interface UseNavbarResult {
   userFirstName: string | null;
   currentYear: number;
   handleLogout: () => void;
+  isAdmin: boolean;
+  role: Role;
 }
 
 export const useNavbar = (): UseNavbarResult => {
   const pathname = usePathname();
-  const { user, isLoading, handleLogout } = useUserVerification();
+  const { user, isLoading, isAdmin, role, handleLogout } =
+    useUserVerification();
+  useAutoLinkAccount(user);
 
   const isLoginPage = useMemo(() => pathname === '/login', [pathname]);
   const isAuthenticated = useMemo(() => !!user, [user]);
@@ -34,5 +40,7 @@ export const useNavbar = (): UseNavbarResult => {
     userFirstName,
     currentYear,
     handleLogout: () => void handleLogout(),
+    isAdmin,
+    role,
   };
 };

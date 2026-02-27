@@ -7,6 +7,7 @@ const mockCert = vi.fn((creds) => creds);
 const mockApplicationDefault = vi.fn(() => 'applicationDefault');
 const mockAuth = vi.fn(() => ({ auth: 'mock-auth' }));
 const mockFirestore = vi.fn(() => ({ firestore: 'mock-firestore' }));
+const mockMessaging = vi.fn(() => ({ messaging: 'mock-messaging' }));
 
 const mockAdmin = {
   apps: [] as unknown[],
@@ -15,6 +16,7 @@ const mockAdmin = {
   credential: { cert: mockCert, applicationDefault: mockApplicationDefault },
   auth: mockAuth,
   firestore: mockFirestore,
+  messaging: mockMessaging,
 };
 
 vi.mock('firebase-admin', () => ({
@@ -133,9 +135,10 @@ describe('firebase-admin initFirebaseAdmin', () => {
     expect(mockApplicationDefault).toHaveBeenCalled();
   });
 
-  it('should export adminAuth and adminDb', async () => {
+  it('should export adminAuth, adminDb and adminMessaging', async () => {
     const mod = await import('./firebase-admin');
     expect(mod.adminAuth).toBeDefined();
     expect(mod.adminDb).toBeDefined();
+    expect(mod.adminMessaging).toBeDefined();
   });
 });

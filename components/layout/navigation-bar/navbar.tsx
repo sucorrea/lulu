@@ -70,7 +70,22 @@ export const Navbar = memo(function Navbar() {
     userFirstName,
     currentYear,
     handleLogout,
+    isAdmin,
+    role,
   } = useNavbar();
+
+  const visibleItems = NAV_ITEMS.filter((item) => {
+    if (!item.requiredRole) {
+      return true;
+    }
+    if (item.requiredRole === 'admin') {
+      return isAdmin;
+    }
+    if (item.requiredRole === 'lulu') {
+      return role === 'lulu' || isAdmin;
+    }
+    return false;
+  });
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur md:px-2">
@@ -81,7 +96,7 @@ export const Navbar = memo(function Navbar() {
           aria-label="Navegação principal"
         >
           <div className="hidden md:flex items-center gap-1">
-            {NAV_ITEMS.map(({ href, label, shortLabel, icon }) => (
+            {visibleItems.map(({ href, label, shortLabel, icon }) => (
               <NavLink
                 key={href}
                 href={href}

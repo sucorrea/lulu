@@ -7,6 +7,26 @@ import { db, storage } from '../firebase';
 import { getDownloadURL, ref } from 'firebase/storage';
 
 const PixTypesSchema = z.enum(['cpf', 'email', 'phone', 'random', 'none']);
+const RoleSchema = z.enum(['admin', 'lulu', 'visitante']);
+const ShirtSizeSchema = z.enum(['PP', 'P', 'M', 'G', 'GG', 'XG']);
+
+const WishListItemSchema = z.object({
+  item: z.string(),
+  url: z.string().optional(),
+  preco: z.number().optional(),
+  comprado: z.boolean().optional(),
+  compradorNome: z.string().optional(),
+});
+
+const AddressSchema = z.object({
+  cep: z.string().optional(),
+  rua: z.string().optional(),
+  numero: z.string().optional(),
+  complemento: z.string().optional(),
+  bairro: z.string().optional(),
+  cidade: z.string().optional(),
+  estado: z.string().optional(),
+});
 
 export const PersonSchema = z.object({
   id: z.number(),
@@ -24,6 +44,19 @@ export const PersonSchema = z.object({
   city: z.string().default(''),
   photoURL: z.string().optional(),
   photoUpdatedAt: z.number().optional(),
+  uid: z.string().optional(),
+  authEmail: z.string().optional(),
+  role: RoleSchema.optional(),
+  fcmTokens: z.array(z.string()).optional(),
+  wishList: z.array(WishListItemSchema).optional(),
+  shirtSize: ShirtSizeSchema.optional(),
+  shoeSize: z.string().optional(),
+  favoriteColor: z.string().optional(),
+  allergies: z.string().optional(),
+  address: AddressSchema.optional(),
+  hobbies: z.string().optional(),
+  favoriteStore: z.string().optional(),
+  giftNotes: z.string().optional(),
 });
 
 const parseParticipant = (raw: unknown): Person => {

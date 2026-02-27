@@ -25,27 +25,25 @@ const PixInfo = ({ participant }: PixInfoProps) => {
       }
     }
   };
-
+  const nameKey = NameKey[participant.pix_key_type ?? 'none'];
   return (
-    <div className="flex text-xs">
-      <div className="flex gap-1">
-        <Image
-          src="/pix.svg"
-          alt="Pix"
-          width={20}
-          height={20}
-          sizes="20px"
-          className="w-5 h-5"
-        />
-        {NameKey[participant.pix_key_type ?? 'none']}
-      </div>
+    <div className="flex items-center gap-1 text-xs">
+      <Image
+        src="/pix.svg"
+        alt="Pix"
+        width={20}
+        height={20}
+        sizes="20px"
+        className="h-5 w-5 shrink-0"
+      />
+      {nameKey && `${nameKey}: `}
       <button
         type="button"
         className="text-xs bg-transparent border-0 p-0 cursor-pointer hover:underline"
         onClick={handleCopy}
         aria-label="Copiar chave PIX"
       >
-        {`: ${participant.pix_key}`}
+        {` ${participant.pix_key}`}
       </button>
     </div>
   );

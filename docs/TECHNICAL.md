@@ -7,7 +7,10 @@
 - [Padrões de Código](#padrões-de-código)
 - [Service Worker e PWA](#service-worker-e-pwa)
 - [Firebase Integration](#firebase-integration)
-  - [Autenticação e Controle de Acesso (Admin)](#autenticação-e-controle-de-acesso-admin)
+  - [Autenticação e Controle de Acesso (Roles)](#autenticação-e-controle-de-acesso-roles)
+- [Painel Administrativo](#painel-administrativo)
+- [Self-Edit (Meu Perfil)](#self-edit-meu-perfil)
+- [Push Notifications (FCM)](#push-notifications-fcm)
 - [React Query Strategy](#react-query-strategy)
 - [Tema e Estilização](#tema-e-estilização)
 
@@ -75,29 +78,41 @@ lulu/
 │   │   └── upload-form.tsx
 │   │
 │   ├── lulus/                    # Feature: Participantes
-│   │   ├── person-form.tsx
+│   │   ├── form-edit-data/
+│   │   │   ├── person-form.tsx   # Formulário (mode: admin | self-edit)
+│   │   │   ├── gift-profile-form.tsx # Perfil de presente (wish list, tamanhos)
+│   │   │   └── validation.ts     # Schemas Zod (person, gift, address)
 │   │   ├── person-list.tsx
-│   │   └── types.ts
+│   │   └── types.ts              # Person, Role, WishListItem, Address, ShirtSize
 │   │
 │   ├── vaquinha-history/         # Feature: Histórico
 │   ├── audit/                    # Feature: Auditoria
 │   ├── data-table/               # Tabela genérica (TanStack)
 │   ├── layout/                   # Layout components
-│   │   ├── navbar.tsx
-│   │   ├── footer.tsx
+│   │   ├── navbar.tsx            # Nav com filtragem por role
+│   │   ├── footer.tsx            # Footer com filtragem por role
 │   │   └── pwa-update-manager.tsx
 │   └── modules/                  # Módulos específicos
+│       ├── admin/                # Painel administrativo
+│       │   ├── admin-participant-form.tsx  # Cadastro de novas lulus
+│       │   └── role-manager.tsx           # Gerenciamento de roles
+│       └── notifications/        # Push Notifications
+│           ├── notification-opt-in.tsx     # Opt-in UI
+│           └── fcm-foreground-handler.tsx  # Handler foreground messages
 │
 ├── services/                     # Business Logic + Firebase
 │   ├── firebase.ts               # Firebase config & exports
+│   ├── fcm.ts                    # Push notifications (FCM client)
 │   ├── galeriaComments.ts        # CRUD Comentários
 │   ├── galeriaLikes.ts           # CRUD Likes
 │   ├── vaquinhaHistory.ts        # CRUD Histórico
 │   ├── participants-server.ts    # Server-side participants
+│   ├── participants-admin.ts     # CRUD Admin (cadastro, roles, exclusão)
 │   │
 │   ├── queries/                  # React Query hooks
 │   │   ├── fetchParticipants.ts
-│   │   ├── updateParticipant.ts
+│   │   ├── updateParticipant.ts  # Mutation com mode admin | self-edit
+│   │   ├── adminParticipants.ts  # Hooks admin (create, delete, updateRole)
 │   │   ├── useGalleryQueries.ts
 │   │   └── useHistoryQueries.ts
 │   │
@@ -105,7 +120,8 @@ lulu/
 │
 ├── hooks/                        # Custom React Hooks
 │   ├── use-disclosure.ts         # Modal state management
-│   ├── user-verify.ts            # Auth verification
+│   ├── user-verify.ts            # Auth + role + participantId
+│   ├── use-auto-link-account.ts  # Auto-link Auth UID ↔ participant
 │   ├── useUploadPhoto.ts         # Photo upload logic
 │   └── usePwaUpdate.ts           # PWA update notifications
 │
@@ -117,6 +133,8 @@ lulu/
 ├── lib/                          # Utilities & Helpers
 │   ├── utils.ts                  # cn(), formatters
 │   ├── crypto.ts                 # Encryption helpers
+│   ├── auth-guard.ts             # assertAdmin(), assertOwnerOrAdmin()
+│   ├── nav-config.ts             # Itens de navegação com requiredRole
 │   └── i18n/                     # Internacionalização
 │
 └── public/                       # Static assets
@@ -449,24 +467,44 @@ export const useUploadPhoto = () => {
 };
 ```
 
-### Autenticação e Controle de Acesso (Admin)
+### Autenticação e Controle de Acesso (Roles)
 
-A identidade de admin é armazenada como **Custom Claim** no JWT do Firebase e validada em três camadas:
+O sistema suporta **três papéis (roles)**: `admin`, `lulu` e `visitante`.
+
+- **admin**: Custom Claim no JWT do Firebase + campo `role` no Firestore
+- **lulu**: Participante vinculada, pode editar o próprio perfil
+- **visitante**: Padrão para qualquer usuário autenticado sem vínculo
+
+A identidade é validada em três camadas:
 
 ```
-┌──────────────────────────────────────────────┐
-│  1. UI         → botões/formulários ocultos  │
-│  2. Serviço    → assertAdmin() antes de      │
-│                  qualquer escrita            │
-│  3. Firestore/Storage Rules → servidor       │
-└──────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│  1. UI         → nav/botões filtrados por role           │
+│  2. Serviço    → assertAdmin() / assertOwnerOrAdmin()    │
+│  3. Firestore/Storage Rules → servidor                   │
+└──────────────────────────────────────────────────────────┘
 ```
 
 #### Fluxo de autenticação
 
 ```
-Login → onAuthStateChanged → getIdTokenResult(user) → setIsAdmin(!!claims.admin)
+Login → onAuthStateChanged →
+  getIdTokenResult(user) → setIsAdmin(!!claims.admin) →
+  query('participants', where('authEmail', '==', email)) →
+  setRole(data.role) + setParticipantId(doc.id)
 ```
+
+O hook `useUserVerification()` retorna:
+
+```typescript
+{
+  user, isLogged, isAdmin, isLulu, role, participantId, isLoading, handleLogout;
+}
+```
+
+#### Auto-Link de Conta
+
+O hook `useAutoLinkAccount(user)` vincula automaticamente o UID do Firebase Auth ao documento do participante quando `authEmail` bate com o e-mail do usuário logado. Usa `useRef` para evitar execuções duplicadas.
 
 #### Guard de serviço
 
@@ -475,14 +513,25 @@ Login → onAuthStateChanged → getIdTokenResult(user) → setIsAdmin(!!claims.
 export const assertAdmin = async (): Promise<void> => {
   const currentUser = auth.currentUser;
   if (!currentUser) throw new Error('Usuário não autenticado');
-  // forceRefresh=true garante que claims revogadas sejam detectadas imediatamente
   const tokenResult = await getIdTokenResult(currentUser, true);
   if (!tokenResult.claims.admin)
     throw new Error('Acesso restrito a administradores');
 };
+
+export const assertOwnerOrAdmin = async (
+  participantId: string
+): Promise<void> => {
+  // Permite se admin; caso contrário, verifica se data.uid === currentUser.uid
+};
 ```
 
-Os componentes chamam `useUserVerification()` diretamente para obter `{ isAdmin, isLoading }`.
+#### Navegação Filtrada por Role
+
+`lib/nav-config.ts` define `requiredRole?: 'admin' | 'lulu'` em cada `NavItem`. Navbar e Footer filtram itens de acordo com `isAdmin` e `role` do usuário:
+
+- `/admin` → visível apenas para admins
+- `/meu-perfil` → visível para lulus (e admins)
+- Demais rotas → visíveis para todos
 
 #### Definir o primeiro admin (CLI)
 
@@ -520,13 +569,18 @@ O endpoint verifica o token do caller, confirma `admin: true` no claim, valida q
 
 #### Permissões por coleção (Firestore)
 
-| Coleção              | Leitura | Escrita     |
-| -------------------- | ------- | ----------- |
-| `participants`       | Público | Admin       |
-| `participants/audit` | Público | Admin       |
-| `vaquinha-history`   | Público | Admin       |
-| `galeria-likes`      | Público | Autenticado |
-| `galeria-comments`   | Público | Autenticado |
+| Coleção              | Leitura | Criar/Excluir | Atualizar                                               |
+| -------------------- | ------- | ------------- | ------------------------------------------------------- |
+| `participants`       | Público | Admin         | Admin OU owner (sem alterar `role`, `uid`, `authEmail`) |
+| `participants/audit` | Público | Autenticado   | Autenticado                                             |
+| `vaquinha-history`   | Público | Admin         | Admin                                                   |
+| `galeria-likes`      | Público | Autenticado   | Autenticado                                             |
+| `galeria-comments`   | Público | Autenticado   | Autenticado                                             |
+
+Funções helper nas Firestore Rules:
+
+- `isOwner(participantId)` → `resource.data.uid == request.auth.uid`
+- `isNotChangingProtectedFields()` → impede alteração de `role`, `uid`, `authEmail`
 
 ```bash
 # Deploy das regras
@@ -544,6 +598,142 @@ FIREBASE_SERVICE_ACCOUNT_KEY='{"type":"service_account","project_id":"..."}'
 No **Vercel**: `Settings → Environment Variables → FIREBASE_SERVICE_ACCOUNT_KEY`
 
 `lib/firebase-admin.ts` já está configurado para ler essa variável automaticamente.
+
+---
+
+## Painel Administrativo
+
+### Rota `/admin`
+
+Página client-side com duas abas: **Cadastrar** e **Roles**.
+
+#### Cadastrar Lulu
+
+- Formulário com campos: `fullName`, `name`, `date`, `month`, `city`, `authEmail`, `role`
+- Usa `useCreateParticipant()` → chama `participants-admin.ts` → `setDoc()` no Firestore
+- ID auto-incrementado a partir do maior ID existente
+
+#### Gerenciar Roles
+
+- Lista todos os participantes com dropdown de role (`admin`, `lulu`, `visitante`)
+- Ao mudar para `admin`, chama `/api/admin/set-claim` para setar Custom Claim
+- Permite excluir participantes via `useDeleteParticipant()`
+
+### Serviço `participants-admin.ts`
+
+Funções protegidas por `assertAdmin()`:
+
+- `createParticipant(data)` → cria doc com ID sequencial
+- `deleteParticipant(participantId)` → exclui doc
+- `updateParticipantRole(participantId, role)` → atualiza campo `role`
+- `fetchAllParticipantsAdmin()` → lista todos ordenados por nome
+
+---
+
+## Self-Edit (Meu Perfil)
+
+### Rota `/meu-perfil`
+
+Página onde lulus editam seu próprio cadastro. Requer `role === 'lulu'` ou `isAdmin`.
+
+Componentes:
+
+1. **PersonForm** (mode: `self-edit`) → campos básicos (nome, telefone, instagram, PIX)
+2. **GiftProfileForm** → perfil de presentes com campos adicionais
+3. **NotificationOptIn** → ativar/desativar push notifications
+
+### GiftProfileForm
+
+Formulário com `useFieldArray` para lista de desejos dinâmica:
+
+| Campo           | Tipo             | Descrição                           |
+| --------------- | ---------------- | ----------------------------------- |
+| `wishList`      | `WishListItem[]` | Lista de desejos (item, url, preço) |
+| `shirtSize`     | `ShirtSize`      | PP, P, M, G, GG, XG                 |
+| `shoeSize`      | `string`         | Número do calçado                   |
+| `favoriteColor` | `string`         | Cor favorita                        |
+| `allergies`     | `string`         | Alergias e restrições               |
+| `address`       | `Address`        | Endereço para entrega               |
+| `hobbies`       | `string`         | Hobbies e interesses                |
+| `favoriteStore` | `string`         | Loja/marca favorita                 |
+| `giftNotes`     | `string`         | Observações para presentes          |
+
+Validação via `giftProfileSchema` (Zod) em `validation.ts`.
+
+---
+
+## Push Notifications (FCM)
+
+### Arquitetura
+
+```
+┌────────────┐     ┌──────────────┐     ┌──────────────┐
+│  Client    │────▶│  Service     │────▶│  Firestore   │
+│  Opt-in    │     │  Worker (SW) │     │  fcmTokens[] │
+└────────────┘     └──────────────┘     └──────────────┘
+       │                  ▲
+       │                  │ push event
+       ▼                  │
+┌────────────┐     ┌──────────────┐
+│  FCM API   │────▶│  Firebase    │
+│  (Server)  │     │  Messaging   │
+└────────────┘     └──────────────┘
+```
+
+### Serviço Client (`services/fcm.ts`)
+
+| Função                                          | Descrição                                           |
+| ----------------------------------------------- | --------------------------------------------------- |
+| `getMessagingInstance()`                        | Retorna instância FCM (null se não suportado)       |
+| `requestNotificationPermission(participantId)`  | Solicita permissão + salva token                    |
+| `removeNotificationToken(participantId, token)` | Remove token do Firestore                           |
+| `setupForegroundMessages()`                     | Exibe toast com `onMessage()` em foreground         |
+| `hasNotificationPermission()`                   | Verifica se `Notification.permission === 'granted'` |
+| `getStoredFcmToken(participantId)`              | Lê tokens FCM do documento                          |
+
+### Service Worker (`app/sw.ts`)
+
+Handlers adicionados ao Serwist SW:
+
+- **`push`**: Mostra `showNotification()` com título, body e ícone
+- **`notificationclick`**: Abre/foca a URL do `data.url` da notificação
+
+### API Routes
+
+#### `POST /api/notifications/send`
+
+Envia push para tokens FCM especificados.
+
+- **Auth**: Bearer token de admin OU `CRON_SECRET`
+- **Body**: `{ title, body, tokens, link? }`
+- **Limpeza**: Remove tokens inválidos automaticamente via batch update
+
+#### `GET /api/cron/birthday-notifications`
+
+Cron job para notificações de aniversário.
+
+- **Auth**: `Authorization: Bearer <CRON_SECRET>`
+- **Lógica**: Verifica aniversários de hoje e daqui a 5 dias
+- **Batch**: Envia em lotes de 500 tokens
+
+### Foreground Handler (`fcm-foreground-handler.tsx`)
+
+Importado dinamicamente no `layout.tsx` → chama `setupForegroundMessages()` no mount.
+
+### CSP (Content Security Policy)
+
+`next.config.ts` atualizado com os domínios FCM:
+
+```
+connect-src: https://fcm.googleapis.com https://push.services.mozilla.com
+```
+
+### Variáveis de Ambiente (FCM)
+
+| Variável                         | Descrição                        |
+| -------------------------------- | -------------------------------- |
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY` | VAPID key para Web Push          |
+| `CRON_SECRET`                    | Secret para autenticar cron jobs |
 
 ---
 

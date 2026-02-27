@@ -11,21 +11,34 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.token.admin == true;
     }
 
+    function isOwner(participantId) {
+      return isAuthenticated()
+        && resource.data.uid == request.auth.uid;
+    }
+
+    function isNotChangingProtectedFields() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['role', 'uid', 'authEmail']);
+    }
+
     // participants: read público para galeria/auditoria acessíveis sem login
     match /participants/{participantId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isAdmin();
+      allow delete: if isAdmin();
+      allow update: if isAdmin()
+        || (isOwner(participantId) && isNotChangingProtectedFields());
 
       match /audit/{auditId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isAuthenticated();
       }
     }
 
     // audit: regra explícita para collectionGroup('audit') usado em getAllAuditLogs
     match /{path=**}/audit/{auditId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuthenticated();
     }
 
     // vaquinha-history: read público (exibe responsável nos cards);

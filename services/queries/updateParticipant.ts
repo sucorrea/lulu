@@ -1,11 +1,13 @@
 import { Person } from '@/components/lulus/types';
 import { revalidateParticipantsCache } from '@/app/actions/participants';
-import { assertAdmin } from '@/lib/auth-guard';
+import { assertAdmin, assertOwnerOrAdmin } from '@/lib/auth-guard';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useGetParticipantById } from './fetchParticipants';
 import { calculateDiff, createAuditLog, hasChanges } from '../audit';
+
+export type UpdateMode = 'admin' | 'self-edit';
 
 export interface UpdateParticipantOptions {
   updatedData: Partial<Person>;
@@ -21,9 +23,14 @@ export interface UpdateParticipantOptions {
 
 export const updateParticipantData = async (
   participantId: string,
-  options: UpdateParticipantOptions
+  options: UpdateParticipantOptions,
+  mode: UpdateMode = 'admin'
 ) => {
-  await assertAdmin();
+  if (mode === 'self-edit') {
+    await assertOwnerOrAdmin(participantId);
+  } else {
+    await assertAdmin();
+  }
 
   const participantRef = doc(db, 'participants', participantId);
   const { updatedData, userId, userName, userEmail, auditMetadata } = options;
@@ -61,13 +68,16 @@ export const updateParticipantData = async (
   }
 };
 
-export const useUpdateParticipantData = (participantId: string) => {
+export const useUpdateParticipantData = (
+  participantId: string,
+  mode: UpdateMode = 'admin'
+) => {
   const queryClient = useQueryClient();
   const { refetch: refetchParticipant } = useGetParticipantById(participantId);
 
   return useMutation({
     mutationFn: (options: UpdateParticipantOptions) =>
-      updateParticipantData(participantId, options),
+      updateParticipantData(participantId, options, mode),
     onSuccess: () => {
       refetchParticipant();
       queryClient.invalidateQueries({ queryKey: ['get-all-participants'] });

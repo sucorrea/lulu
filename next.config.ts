@@ -77,6 +77,8 @@ const securityHeaders = [
         'https://identitytoolkit.googleapis.com',
         'https://accounts.google.com',
         'https://apis.google.com',
+        'https://fcm.googleapis.com',
+        'https://push.services.mozilla.com',
       ].join(' '),
       "frame-src 'self' https://accounts.google.com https://apis.google.com https://*.firebaseapp.com",
       "frame-ancestors 'none'",

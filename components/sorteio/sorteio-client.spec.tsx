@@ -258,6 +258,9 @@ const setupDefaultMocks = (
       : null,
     isLogged: isAuthenticated,
     isAdmin: isAuthenticated,
+    isLulu: false,
+    role: 'visitante',
+    participantId: undefined,
     isLoading: isLoadingAuth,
     handleLogout: vi.fn(),
   });

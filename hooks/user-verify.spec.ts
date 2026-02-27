@@ -24,6 +24,16 @@ vi.mock('@/services/firebase', () => ({
   auth: {
     signOut: () => mockSignOut(),
   },
+  db: {},
+}));
+
+const mockGetDocs = vi.fn();
+
+vi.mock('firebase/firestore', () => ({
+  collection: vi.fn(),
+  query: vi.fn(),
+  where: vi.fn(),
+  getDocs: (...args: unknown[]) => mockGetDocs(...args),
 }));
 
 describe('useUserVerification', () => {
@@ -31,6 +41,7 @@ describe('useUserVerification', () => {
     vi.clearAllMocks();
     mockGetAuth.mockReturnValue({});
     mockGetIdTokenResult.mockResolvedValue({ claims: {} });
+    mockGetDocs.mockResolvedValue({ empty: true, docs: [] });
   });
 
   it('should initialize with loading state', () => {
@@ -72,8 +83,31 @@ describe('useUserVerification', () => {
 
     await waitFor(() => {
       expect(result.current.isAdmin).toBe(true);
+      expect(result.current.role).toBe('admin');
       expect(result.current.isLogged).toBe(true);
       expect(result.current.isLoading).toBe(false);
+    });
+  });
+
+  it('should set role to lulu when participant has lulu role', async () => {
+    const mockUser = { uid: '123', email: 'lulu@test.com' } as User;
+    mockGetIdTokenResult.mockResolvedValue({ claims: {} });
+    mockGetDocs.mockResolvedValue({
+      empty: false,
+      docs: [{ id: 'p1', data: () => ({ role: 'lulu' }) }],
+    });
+    mockOnAuthStateChanged.mockImplementation((_, callback) => {
+      callback(mockUser);
+      return vi.fn();
+    });
+
+    const { result } = renderHook(() => useUserVerification());
+
+    await waitFor(() => {
+      expect(result.current.role).toBe('lulu');
+      expect(result.current.isLulu).toBe(true);
+      expect(result.current.participantId).toBe('p1');
+      expect(result.current.isAdmin).toBe(false);
     });
   });
 
@@ -130,6 +164,8 @@ describe('useUserVerification', () => {
     await waitFor(() => {
       expect(mockSignOut).toHaveBeenCalled();
       expect(result.current.isAdmin).toBe(false);
+      expect(result.current.role).toBe('visitante');
+      expect(result.current.participantId).toBeUndefined();
     });
   });
 

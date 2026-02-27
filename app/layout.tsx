@@ -27,6 +27,12 @@ const PwaUpdateManager = dynamic(() =>
   }))
 );
 
+const FcmForegroundHandler = dynamic(() =>
+  import('@/components/modules/notifications/fcm-foreground-handler').then(
+    (m) => ({ default: m.FcmForegroundHandler })
+  )
+);
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -111,6 +117,7 @@ const RootLayout = ({
               </div>
             </DeviceProvider>
             <PwaUpdateManager />
+            <FcmForegroundHandler />
             <Toaster />
             <VaulPatch />
           </ThemeProvider>
