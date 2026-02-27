@@ -18,7 +18,7 @@ interface PhotoItemProps {
   isDeleting: boolean;
   onSelect: (index: number) => void;
   onLike: (index: number) => void;
-  onDelete: (index: number) => void;
+  onDelete: (photo: string) => void;
 }
 
 const PhotoItem = memo(function PhotoItem({
@@ -79,7 +79,7 @@ const PhotoItem = memo(function PhotoItem({
             e.preventDefault();
             e.stopPropagation();
             if (!isDeleting) {
-              confirmDeletePhoto(() => onDelete(index));
+              confirmDeletePhoto(() => onDelete(photo));
             }
           }}
           disabled={isDeleting}

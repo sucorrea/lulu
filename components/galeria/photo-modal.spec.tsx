@@ -342,7 +342,7 @@ describe('PhotoModal', () => {
       expect(mockValues.deletePhoto).not.toHaveBeenCalled();
     });
 
-    it('should call deletePhoto with current index when Excluir is clicked in confirmation dialog', () => {
+    it('should call deletePhoto with current photo URL when Excluir is clicked in confirmation dialog', () => {
       const { mockValues } = renderPhotoModal({
         isAdmin: true,
         selectedIndex: 3,
@@ -351,7 +351,7 @@ describe('PhotoModal', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Excluir foto' }));
       fireEvent.click(screen.getByRole('button', { name: 'Excluir' }));
 
-      expect(mockValues.deletePhoto).toHaveBeenCalledWith(3);
+      expect(mockValues.deletePhoto).toHaveBeenCalledWith(photoUrl);
     });
   });
 });

@@ -503,7 +503,7 @@ describe('PhotoItem', () => {
       const options = call[1] as unknown as { action: { onClick: () => void } };
       options.action.onClick();
 
-      expect(mockOnDelete).toHaveBeenCalledWith(2);
+      expect(mockOnDelete).toHaveBeenCalledWith(photoUrl);
     });
   });
 });

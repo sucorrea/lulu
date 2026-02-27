@@ -67,33 +67,52 @@ const DashboardPage = ({ participants }: DashboardPageProps) => (
               (a, b) => b.total - a.total
             );
             const max = Math.max(...stats.map((s) => s.total), 1);
-            return stats.map((s) => (
-              <div key={s.name} className="flex items-center gap-2">
-                <div className="flex w-36 shrink-0 items-center gap-2">
+            return (
+              <div role="list" aria-label="Distribuição por signo">
+                {stats.map((s) => (
                   <div
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md
-                   p-1 bg-primary shadow-md"
+                    key={s.name}
+                    role="listitem"
+                    className="flex items-center gap-2"
                   >
-                    {ZODIAC_ICONS[s.name] && (
-                      <ZodiacIcon
-                        icon={ZODIAC_ICONS[s.name]}
-                        className="text-white"
+                    <div className="flex w-36 shrink-0 items-center gap-2">
+                      <div
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md
+                   p-1 bg-primary shadow-md"
+                        aria-hidden="true"
+                      >
+                        {ZODIAC_ICONS[s.name] && (
+                          <ZodiacIcon
+                            icon={ZODIAC_ICONS[s.name]}
+                            className="text-white"
+                          />
+                        )}
+                      </div>
+                      <span className="text-sm">{s.name}</span>
+                    </div>
+                    <div
+                      className="h-2 flex-1 overflow-hidden rounded-full bg-primary/20"
+                      role="meter"
+                      aria-label={`${s.name}: ${s.total} participante${s.total === 1 ? '' : 's'}`}
+                      aria-valuenow={s.total}
+                      aria-valuemin={0}
+                      aria-valuemax={max}
+                    >
+                      <div
+                        className="h-2 rounded-full bg-primary transition-all"
+                        style={{ width: `${(s.total / max) * 100}%` }}
                       />
-                    )}
+                    </div>
+                    <span
+                      className="w-4 shrink-0 text-right text-sm font-bold text-primary"
+                      aria-hidden="true"
+                    >
+                      {s.total}
+                    </span>
                   </div>
-                  <span className="text-sm">{s.name}</span>
-                </div>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-primary/20">
-                  <div
-                    className="h-2 rounded-full bg-primary transition-all"
-                    style={{ width: `${(s.total / max) * 100}%` }}
-                  />
-                </div>
-                <span className="w-4 shrink-0 text-right text-sm font-bold text-primary">
-                  {s.total}
-                </span>
+                ))}
               </div>
-            ));
+            );
           })()}
         </CardContent>
       </Card>

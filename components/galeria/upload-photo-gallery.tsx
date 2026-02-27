@@ -1,5 +1,5 @@
 'use client';
-import { ChangeEvent, useCallback, useRef } from 'react';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
 
 import { Upload } from 'lucide-react';
 
@@ -15,6 +15,12 @@ const UploadPhotoGallery = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { refetch } = useGetGalleryImages();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+
+  const handleClose = useCallback(() => {
+    setSelectedFileName(null);
+    onClose();
+  }, [onClose]);
 
   const handlePhotoUploadGallery = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,6 +28,7 @@ const UploadPhotoGallery = () => {
       if (!file || !user) {
         return;
       }
+      setSelectedFileName(file.name);
       (async () => {
         try {
           const photoId = `${user.uid}_${Date.now()}`;
@@ -29,7 +36,7 @@ const UploadPhotoGallery = () => {
             '@/services/queries/uploadGalleryPhoto'
           );
           await uploadGalleryPhoto({ file, photoId });
-          onClose();
+          handleClose();
           refetch();
         } catch {
           toast.error('Erro ao enviar foto.', {
@@ -38,7 +45,7 @@ const UploadPhotoGallery = () => {
         }
       })();
     },
-    [user, onClose, refetch]
+    [user, handleClose, refetch]
   );
 
   return (
@@ -54,11 +61,11 @@ const UploadPhotoGallery = () => {
       <GenericDialog
         className="w-[calc(100%-2rem)] min-w-0 max-w-[min(400px,95vw)] overflow-hidden rounded sm:max-w-[50%]"
         open={isOpen}
-        onOpenChange={(open) => (open ? onOpen() : onClose())}
+        onOpenChange={(open) => (open ? onOpen() : handleClose())}
         title="Enviar Foto"
         description="Envie uma foto para a galeria"
         footer={
-          <Button onClick={() => onClose()} className="w-full min-w-0">
+          <Button onClick={() => handleClose()} className="w-full min-w-0">
             Cancelar
           </Button>
         }
@@ -74,7 +81,7 @@ const UploadPhotoGallery = () => {
             Escolher arquivo
           </Button>
           <span className="min-w-0 truncate text-sm text-muted-foreground">
-            Nenhum arquivo escolhido
+            {selectedFileName ?? 'Nenhum arquivo escolhido'}
           </span>
         </div>
         <input

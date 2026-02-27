@@ -262,7 +262,11 @@ export const signsStats = (participants: Person[]) => {
   const signsMap: Record<string, number> = {};
 
   for (const p of participants) {
-    const { label } = getSigno(new Date(p.date));
+    const d = new Date(p.date);
+    if (isNaN(d.getTime())) {
+      continue;
+    }
+    const { label } = getSigno(d);
     signsMap[label] = (signsMap[label] || 0) + 1;
   }
 

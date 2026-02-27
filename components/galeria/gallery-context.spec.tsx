@@ -334,7 +334,7 @@ describe('GalleryContext', () => {
       const { result } = renderGalleryHook();
 
       await act(async () => {
-        await result.current.deletePhoto(0);
+        await result.current.deletePhoto('photo-1');
       });
 
       expect(deleteGalleryPhoto).toHaveBeenCalledWith('photo-1');
@@ -350,7 +350,7 @@ describe('GalleryContext', () => {
       expect(result.current.selectedIndex).toBe(1);
 
       await act(async () => {
-        await result.current.deletePhoto(1);
+        await result.current.deletePhoto('photo-2');
       });
 
       expect(result.current.selectedIndex).toBeNull();
@@ -365,17 +365,17 @@ describe('GalleryContext', () => {
       });
 
       await act(async () => {
-        await result.current.deletePhoto(2);
+        await result.current.deletePhoto('photo-3');
       });
 
       expect(result.current.selectedIndex).toBe(0);
     });
 
-    it('should do nothing when photo index is out of range', async () => {
+    it('should do nothing when photo URL is empty', async () => {
       const { result } = renderGalleryHook();
 
       await act(async () => {
-        await result.current.deletePhoto(99);
+        await result.current.deletePhoto('');
       });
 
       expect(deleteGalleryPhoto).not.toHaveBeenCalled();
@@ -393,7 +393,7 @@ describe('GalleryContext', () => {
 
       await expect(
         act(async () => {
-          await result.current.deletePhoto(0);
+          await result.current.deletePhoto('photo-1');
         })
       ).resolves.not.toThrow();
 

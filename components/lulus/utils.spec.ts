@@ -406,6 +406,17 @@ describe('utils', () => {
       expect(result).toEqual([]);
     });
 
+    it('should skip participants with invalid dates without throwing', () => {
+      const participants: Person[] = [
+        { ...mockPerson, id: 1, date: 'not-a-date' as unknown as Date },
+        { ...mockPerson, id: 2, date: new Date(2000, 2, 21) },
+      ];
+
+      const result = signsStats(participants);
+      const aries = result.find((s) => s.name === 'Áries');
+      expect(aries?.total).toBe(1);
+    });
+
     it('should handle various zodiac signs', () => {
       const participants: Person[] = [
         { ...mockPerson, id: 1, date: new Date('2000-01-15') },

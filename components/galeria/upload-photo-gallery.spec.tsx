@@ -187,9 +187,63 @@ describe('UploadPhotoGallery', () => {
       expect(chooseFileButton).toBeInTheDocument();
     });
 
-    it('should show Nenhum arquivo escolhido placeholder', () => {
+    it('should show Nenhum arquivo escolhido placeholder before file is selected', () => {
       render(<UploadPhotoGallery />);
 
+      expect(screen.getByText('Nenhum arquivo escolhido')).toBeInTheDocument();
+    });
+
+    it('should show selected filename after file is chosen', async () => {
+      const { uploadGalleryPhoto } = await import(
+        '@/services/queries/uploadGalleryPhoto'
+      );
+      vi.mocked(uploadGalleryPhoto).mockReturnValue(new Promise(() => {}));
+
+      render(<UploadPhotoGallery />);
+
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
+      const file = new File(['content'], 'minha-foto.jpg', {
+        type: 'image/jpeg',
+      });
+
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [file] } });
+      });
+
+      expect(screen.getByText('minha-foto.jpg')).toBeInTheDocument();
+      expect(
+        screen.queryByText('Nenhum arquivo escolhido')
+      ).not.toBeInTheDocument();
+    });
+
+    it('should reset filename to placeholder when Cancel is clicked', async () => {
+      const { uploadGalleryPhoto } = await import(
+        '@/services/queries/uploadGalleryPhoto'
+      );
+      vi.mocked(uploadGalleryPhoto).mockReturnValue(new Promise(() => {}));
+
+      render(<UploadPhotoGallery />);
+
+      const fileInput = screen.getByLabelText(
+        /Selecionar foto para enviar/i
+      ) as unknown as HTMLInputElement;
+      const file = new File(['content'], 'reset-test.jpg', {
+        type: 'image/jpeg',
+      });
+
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [file] } });
+      });
+
+      expect(screen.getByText('reset-test.jpg')).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: /Cancelar/i }));
+      });
+
+      expect(screen.queryByText('reset-test.jpg')).not.toBeInTheDocument();
       expect(screen.getByText('Nenhum arquivo escolhido')).toBeInTheDocument();
     });
 

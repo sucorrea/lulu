@@ -67,7 +67,7 @@ interface GalleryContextType {
   nextPhoto: () => void;
   prevPhoto: () => void;
   toggleLike: (index: number) => void;
-  deletePhoto: (index: number) => Promise<void>;
+  deletePhoto: (photo: string) => Promise<void>;
   addComment: (text: string) => Promise<void>;
   editComment: (commentId: string, text: string) => Promise<void>;
   deleteComment: (commentId: string) => Promise<void>;
@@ -287,15 +287,14 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const deletePhoto = useCallback(
-    async (index: number) => {
-      const photo = photos[index];
+    async (photo: string) => {
       if (!photo || isDeleting) {
         return;
       }
       setIsDeleting(true);
       try {
         await deleteGalleryPhoto(photo);
-        if (selectedIndex === index) {
+        if (selectedPhoto === photo) {
           closePhoto();
         }
         refetch();
@@ -309,7 +308,7 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
         setIsDeleting(false);
       }
     },
-    [photos, selectedIndex, closePhoto, refetch, isDeleting]
+    [selectedPhoto, closePhoto, refetch, isDeleting]
   );
 
   const deleteComment = useCallback(

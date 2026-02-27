@@ -153,7 +153,7 @@ const PhotoModal = memo(function PhotoModal() {
               variant="destructive"
               className="w-full"
               onClick={() => {
-                deletePhoto(index);
+                deletePhoto(photo);
                 onCloseDeletePhoto();
               }}
             >
