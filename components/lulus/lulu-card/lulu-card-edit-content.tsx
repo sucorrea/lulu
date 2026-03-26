@@ -8,14 +8,20 @@ import { useUserVerification } from '@/hooks/user-verify';
 import { useGetParticipantById } from '@/services/queries/fetchParticipants';
 import EditPhoto from '../edit-photo';
 import PersonForm from '../form-edit-data/person-form';
+import { GiftProfileForm } from '../form-edit-data/gift-profile-form';
+import { NotificationOptIn } from '@/components/modules/notifications/notification-opt-in';
 
 interface LulusCardEditContentProps {
   participantId: string;
 }
 
 const LulusCardEditContent = ({ participantId }: LulusCardEditContentProps) => {
-  const { isAdmin } = useUserVerification();
+  const {
+    isAdmin,
+    participantId: currentUserParticipantId,
+  } = useUserVerification();
   const { data: participant, isLoading } = useGetParticipantById(participantId);
+  const isOwner = currentUserParticipantId === participantId;
 
   if (isLoading) {
     return (
@@ -59,8 +65,38 @@ const LulusCardEditContent = ({ participantId }: LulusCardEditContentProps) => {
                 {isAdmin && (
                   <>
                     <EditPhoto participant={participant} />
-                    <PersonForm initialData={participant} />
+                    <PersonForm initialData={participant} mode="admin" />
                   </>
+                )}
+                {!isAdmin && isOwner && (
+                  <PersonForm initialData={participant} mode="self-edit" />
+                )}
+                {(isAdmin || isOwner) && (
+                  <>
+                    <div className="mt-6 border-t pt-6">
+                      <h3 className="text-lg font-semibold mb-4">
+                        Informações para Presentes
+                      </h3>
+                      <GiftProfileForm
+                        participantId={participantId}
+                        initialData={participant}
+                        mode={isAdmin ? 'admin' : 'self-edit'}
+                      />
+                    </div>
+                    {isOwner && (
+                      <div className="mt-6 border-t pt-6">
+                        <h3 className="text-lg font-semibold mb-4">
+                          Notificações
+                        </h3>
+                        <NotificationOptIn />
+                      </div>
+                    )}
+                  </>
+                )}
+                {!isAdmin && !isOwner && (
+                  <p className="text-muted-foreground text-center mt-4">
+                    Você não tem permissão para editar este perfil.
+                  </p>
                 )}
               </div>
             </div>

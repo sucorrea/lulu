@@ -10,4 +10,5 @@ export const defaultValuesPerson = (initialValues: Person | null) => ({
   instagram: initialValues?.instagram ?? '',
   pix_key_type: initialValues?.pix_key_type ?? 'none',
   pix_key: initialValues?.pix_key ?? '',
+  role: initialValues?.role ?? 'lulu',
 });

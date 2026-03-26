@@ -23,8 +23,17 @@ export const useAutoLinkAccount = (user: User | null) => {
     const linkAccount = async () => {
       try {
         const participantsRef = collection(db, 'participants');
-        const q = query(participantsRef, where('authEmail', '==', user.email));
-        const snapshot = await getDocs(q);
+
+        // Try authEmail first, then fallback to email (legacy participants)
+        let snapshot = await getDocs(
+          query(participantsRef, where('authEmail', '==', user.email))
+        );
+
+        if (snapshot.empty) {
+          snapshot = await getDocs(
+            query(participantsRef, where('email', '==', user.email))
+          );
+        }
 
         if (snapshot.empty) {
           return;

@@ -29,6 +29,7 @@ describe('form-edit-data utils', () => {
         instagram: 'testuser',
         pix_key_type: 'email',
         pix_key: 'test@pix.com',
+        role: 'lulu',
       });
     });
 
@@ -52,6 +53,7 @@ describe('form-edit-data utils', () => {
         instagram: '',
         pix_key_type: 'none',
         pix_key: '',
+        role: 'lulu',
       });
     });
 

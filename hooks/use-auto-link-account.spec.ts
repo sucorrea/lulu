@@ -45,6 +45,23 @@ describe('useAutoLinkAccount', () => {
     expect(mockUpdateDoc).not.toHaveBeenCalled();
   });
 
+  it('should fallback to email field when authEmail not found', async () => {
+    const mockUser = { uid: '123', email: 'test@test.com' } as User;
+    // authEmail query → empty, email query → found with no uid
+    mockGetDocs
+      .mockResolvedValueOnce({ empty: true, docs: [] })
+      .mockResolvedValueOnce({
+        empty: false,
+        docs: [{ id: 'p1', data: () => ({}) }],
+      });
+
+    renderHook(() => useAutoLinkAccount(mockUser));
+
+    await waitFor(() => {
+      expect(mockUpdateDoc).toHaveBeenCalled();
+    });
+  });
+
   it('should mark as linked when uid already matches', async () => {
     const mockUser = { uid: '123', email: 'test@test.com' } as User;
     mockGetDocs.mockResolvedValue({

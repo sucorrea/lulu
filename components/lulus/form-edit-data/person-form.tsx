@@ -11,11 +11,18 @@ import { Label } from '@/components/ui/label';
 import { SelectWithOptions } from '@/components/ui/select-with-options';
 
 import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
+import { useUpdateParticipantRole } from '@/services/queries/adminParticipants';
 import { useUserVerification } from '@/hooks/user-verify';
-import { Person, PixTypes } from '../types';
+import { Person, PixTypes, Role } from '../types';
 import { NameKey } from '../utils';
 import { defaultValuesPerson } from './utils';
 import { personSchema } from './validation';
+
+const ROLE_OPTIONS: { value: Role; label: string }[] = [
+  { value: 'admin', label: 'Admin' },
+  { value: 'lulu', label: 'Lulu' },
+  { value: 'visitante', label: 'Visitante' },
+];
 
 export type PersonFormData = z.infer<typeof personSchema>;
 
@@ -31,6 +38,7 @@ const PersonForm = ({ initialData, mode = 'admin' }: PersonFormProps) => {
   const { user, isAdmin } = useUserVerification();
   const defaultValues = defaultValuesPerson(initialData ?? null);
   const { mutate } = useUpdateParticipantData(String(initialData?.id), mode);
+  const { mutate: updateRole } = useUpdateParticipantRole();
   const {
     control,
     register,
@@ -60,6 +68,8 @@ const PersonForm = ({ initialData, mode = 'admin' }: PersonFormProps) => {
     }
 
     const currentUser = user!;
+    const roleChanged =
+      mode === 'admin' && data.role && data.role !== initialData?.role;
 
     mutate(
       {
@@ -75,7 +85,33 @@ const PersonForm = ({ initialData, mode = 'admin' }: PersonFormProps) => {
         },
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
+          if (roleChanged && data.role) {
+            updateRole({
+              participantId: String(initialData?.id),
+              role: data.role as Role,
+            });
+
+            if (data.role === 'admin' && initialData?.authEmail) {
+              try {
+                const token = await currentUser.getIdToken();
+                await fetch('/api/admin/set-claim', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    targetUid: initialData.authEmail,
+                    admin: true,
+                  }),
+                });
+              } catch {
+                console.warn('Erro ao setar claim admin');
+              }
+            }
+          }
+
           toast.success('Dados atualizados com sucesso', {
             position: 'bottom-center',
           });
@@ -149,6 +185,28 @@ const PersonForm = ({ initialData, mode = 'admin' }: PersonFormProps) => {
           error={errors.instagram?.message}
         />
       </div>
+
+      {mode === 'admin' && (
+        <div>
+          <Label>Role</Label>
+          <Controller
+            control={control}
+            name="role"
+            render={({ field }) => (
+              <SelectWithOptions
+                value={field.value ?? 'lulu'}
+                onValueChange={field.onChange}
+                options={ROLE_OPTIONS.map((r) => ({
+                  value: r.value,
+                  label: r.label,
+                }))}
+                placeholder="Selecione a role"
+                triggerClassName="w-full"
+              />
+            )}
+          />
+        </div>
+      )}
 
       <div className="border-2 rounded-sm p-3 md:p-4 space-y-3">
         <p className="text-sm font-bold">Pix</p>

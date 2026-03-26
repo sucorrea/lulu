@@ -111,6 +111,30 @@ describe('useUserVerification', () => {
     });
   });
 
+  it('should find participant by email fallback when uid and authEmail not found', async () => {
+    const mockUser = { uid: '123', email: 'admin@test.com' } as User;
+    mockGetIdTokenResult.mockResolvedValue({ claims: { admin: true } });
+    // uid query → empty, authEmail query → empty, email query → found
+    mockGetDocs
+      .mockResolvedValueOnce({ empty: true, docs: [] })
+      .mockResolvedValueOnce({ empty: true, docs: [] })
+      .mockResolvedValueOnce({
+        empty: false,
+        docs: [{ id: 'p-admin', data: () => ({ role: 'admin' }) }],
+      });
+    mockOnAuthStateChanged.mockImplementation((_, callback) => {
+      callback(mockUser);
+      return vi.fn();
+    });
+
+    const { result } = renderHook(() => useUserVerification());
+
+    await waitFor(() => {
+      expect(result.current.isAdmin).toBe(true);
+      expect(result.current.participantId).toBe('p-admin');
+    });
+  });
+
   it('should set isAdmin to false when getIdTokenResult fails', async () => {
     const mockUser = { uid: '123', email: 'test@test.com' } as User;
     mockGetIdTokenResult.mockRejectedValue(new Error('Token error'));

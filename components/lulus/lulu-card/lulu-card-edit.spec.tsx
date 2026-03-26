@@ -56,6 +56,25 @@ vi.mock('../form-edit-data/person-form', () => ({
   )),
 }));
 
+vi.mock('../form-edit-data/gift-profile-form', () => ({
+  GiftProfileForm: vi.fn(() => (
+    <div data-testid="gift-profile-form">Gift Profile Form</div>
+  )),
+}));
+
+vi.mock('@/components/modules/notifications/notification-opt-in', () => ({
+  NotificationOptIn: vi.fn(() => (
+    <div data-testid="notification-opt-in">Notification Opt In</div>
+  )),
+}));
+
+vi.mock('@/hooks/user-verify', () => ({
+  useUserVerification: vi.fn(() => ({
+    isAdmin: true,
+    participantId: '1',
+  })),
+}));
+
 vi.mock('@/services/queries/fetchParticipants', () => ({
   useGetParticipantById: vi.fn(() => ({
     data: null,

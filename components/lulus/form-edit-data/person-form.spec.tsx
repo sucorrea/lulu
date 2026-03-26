@@ -33,6 +33,12 @@ vi.mock('@/services/queries/updateParticipant', () => ({
   })),
 }));
 
+vi.mock('@/services/queries/adminParticipants', () => ({
+  useUpdateParticipantRole: vi.fn(() => ({
+    mutate: vi.fn(),
+  })),
+}));
+
 vi.mock('@/components/ui/button', () => ({
   Button: ({
     children,
@@ -291,7 +297,8 @@ describe('PersonForm', () => {
   it('should render select for pix_key_type', () => {
     render(<PersonForm initialData={mockPerson} />);
 
-    expect(screen.getByTestId('select')).toBeDefined();
+    const selects = screen.getAllByTestId('select');
+    expect(selects.length).toBeGreaterThanOrEqual(1);
   });
 
   it('should render all pix type options', () => {
@@ -409,5 +416,21 @@ describe('PersonForm', () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('should render role select in admin mode', () => {
+    render(<PersonForm initialData={mockPerson} mode="admin" />);
+
+    expect(screen.getByText('Role')).toBeInTheDocument();
+    expect(screen.getByTestId('select-item-admin')).toBeDefined();
+    expect(screen.getByTestId('select-item-lulu')).toBeDefined();
+    expect(screen.getByTestId('select-item-visitante')).toBeDefined();
+  });
+
+  it('should not render role select in self-edit mode', () => {
+    render(<PersonForm initialData={mockPerson} mode="self-edit" />);
+
+    expect(screen.queryByText('Role')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('select-item-admin')).toBeNull();
   });
 });

@@ -114,7 +114,7 @@ export const GET = async (request: NextRequest) => {
             birthdayPersonTokens,
             `🎉 Feliz aniversário, ${participant.name}!`,
             'Todas as lulus desejam um dia maravilhoso para você! 💕',
-            '/meu-perfil'
+            '/'
           );
         }
 

@@ -91,6 +91,13 @@ vi.mock('./lulu-card/lulu-card-home', () => ({
   ),
 }));
 
+vi.mock('@/components/modules/notifications/notification-home-banner', () => ({
+  NotificationHomeBanner: ({ participantId }: { participantId?: string }) =>
+    participantId ? (
+      <div data-testid="notification-home-banner">Notification Banner</div>
+    ) : null,
+}));
+
 describe('LulusInteractive', () => {
   const mockParticipants: Person[] = [
     {

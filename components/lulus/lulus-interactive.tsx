@@ -13,6 +13,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getParticipantsWithEditTokens } from '@/app/actions/participants';
 import { useGetCurrentYearAssignments } from '@/services/queries/vaquinhaHistory';
 
+import { NotificationHomeBanner } from '@/components/modules/notifications/notification-home-banner';
+
 import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
 import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
@@ -39,7 +41,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
   const [sortBy, setSortBy] = useState('date');
   const [filterMonth, setFilterMonth] = useState('all');
 
-  const { isAdmin } = useUserVerification();
+  const { isAdmin, participantId } = useUserVerification();
   const { data: assignments } = useGetCurrentYearAssignments();
 
   const { data: participantsList = initialParticipants } = useQuery({
@@ -101,6 +103,9 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
 
   return (
     <div className="min-h-screen">
+      {participantId && (
+        <NotificationHomeBanner participantId={participantId} />
+      )}
       <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
       <BadgeLuluParticipants />
       {isAdmin && (
@@ -148,6 +153,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
                 participant={participant}
                 user={isAdmin}
                 participants={participantsList}
+                canEdit={isAdmin || participantId === String(participant.id)}
               />
             </div>
           ))}

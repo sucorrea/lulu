@@ -35,6 +35,7 @@ export const personSchema = z.object({
   instagram: z.string().optional(),
   pix_key_type: z.enum(['cpf', 'email', 'phone', 'random', 'none']),
   pix_key: z.string().optional(),
+  role: z.enum(['admin', 'lulu', 'visitante']).optional(),
 });
 
 export const giftProfileSchema = z.object({

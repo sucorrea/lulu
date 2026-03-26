@@ -113,6 +113,7 @@ export const useGetParticipantById = (id: string) => {
   return useQuery<Person | null>({
     queryKey: ['get-participant-by-id', id],
     queryFn: () => fetchParticipantById(id),
+    enabled: !!id,
   });
 };
 

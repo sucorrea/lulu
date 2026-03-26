@@ -40,6 +40,7 @@ interface LulusCardHomeProps {
   user: boolean;
   participants: Person[];
   showDetails?: boolean;
+  canEdit?: boolean;
 }
 
 const LulusCardHome = ({
@@ -49,6 +50,7 @@ const LulusCardHome = ({
   user,
   participants,
   showDetails = true,
+  canEdit,
 }: LulusCardHomeProps) => {
   const styleCard = isNextBirthday
     ? 'border-primary border-2 shadow-lulu-lg'
@@ -58,7 +60,7 @@ const LulusCardHome = ({
   return (
     <Card className={cn('lulu-card mx-auto w-full max-w-md p-2', styleCard)}>
       <CardContent className="flex h-full flex-col justify-between gap-2 overflow-x-auto p-2">
-        {user && showDetails && (
+        {(canEdit ?? user) && showDetails && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

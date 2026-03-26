@@ -40,8 +40,14 @@ export const requestNotificationPermission = async (
   }
 
   const messaging = getMessagingInstance();
-  if (!messaging || !VAPID_KEY) {
-    toast.error('Configuração FCM incompleta');
+  if (!messaging) {
+    toast.error('Navegador não suporta Firebase Messaging');
+    return null;
+  }
+  if (!VAPID_KEY) {
+    toast.error(
+      'VAPID key não configurada. Defina NEXT_PUBLIC_FIREBASE_VAPID_KEY no .env.local'
+    );
     return null;
   }
 

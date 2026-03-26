@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Users,
   Shield,
-  UserCircle,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -40,13 +39,6 @@ export const NAV_ITEMS: NavItem[] = [
     icon: FileText,
   },
   { href: '/sobre', label: 'Sobre', icon: Info },
-  {
-    href: '/meu-perfil',
-    label: 'Meu Perfil',
-    shortLabel: 'Perfil',
-    icon: UserCircle,
-    requiredRole: 'lulu',
-  },
   {
     href: '/admin',
     label: 'Admin',

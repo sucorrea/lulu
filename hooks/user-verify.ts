@@ -26,21 +26,49 @@ export const useUserVerification = () => {
             setRole('admin');
           }
 
-          if (currentUser.email) {
-            const participantsRef = collection(db, 'participants');
-            const q = query(
+          // Try to find participant: by uid first, then authEmail, then email (legacy)
+          const participantsRef = collection(db, 'participants');
+          let participantDoc = null;
+
+          // 1. By uid (already linked)
+          const uidQuery = query(
+            participantsRef,
+            where('uid', '==', currentUser.uid)
+          );
+          const uidSnap = await getDocs(uidQuery);
+          if (!uidSnap.empty) {
+            participantDoc = uidSnap.docs[0];
+          }
+
+          // 2. By authEmail (admin-set linkage)
+          if (!participantDoc && currentUser.email) {
+            const authEmailQuery = query(
               participantsRef,
               where('authEmail', '==', currentUser.email)
             );
-            const snapshot = await getDocs(q);
+            const authEmailSnap = await getDocs(authEmailQuery);
+            if (!authEmailSnap.empty) {
+              participantDoc = authEmailSnap.docs[0];
+            }
+          }
 
-            if (!snapshot.empty) {
-              const participantDoc = snapshot.docs[0];
-              setParticipantId(participantDoc.id);
-              const data = participantDoc.data();
-              if (!adminClaim && data.role) {
-                setRole(data.role as Role);
-              }
+          // 3. By email field (legacy participants)
+          if (!participantDoc && currentUser.email) {
+            const emailQuery = query(
+              participantsRef,
+              where('email', '==', currentUser.email)
+            );
+            const emailSnap = await getDocs(emailQuery);
+            if (!emailSnap.empty) {
+              participantDoc = emailSnap.docs[0];
+            }
+          }
+
+          if (participantDoc) {
+            setParticipantId(participantDoc.id);
+            const data = participantDoc.data();
+            if (!adminClaim && data.role) {
+              setRole(data.role as Role);
             }
           }
         } catch {

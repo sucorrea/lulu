@@ -19,9 +19,12 @@ import { giftProfileSchema, shirtSizes } from './validation';
 
 type GiftProfileFormData = z.infer<typeof giftProfileSchema>;
 
+type FormMode = 'admin' | 'self-edit';
+
 interface GiftProfileFormProps {
   participantId: string;
   initialData: Person;
+  mode?: FormMode;
 }
 
 const ESTADOS = [
@@ -57,11 +60,12 @@ const ESTADOS = [
 export const GiftProfileForm = ({
   participantId,
   initialData,
+  mode = 'self-edit',
 }: GiftProfileFormProps) => {
   const { user } = useUserVerification();
   const { mutate, isPending } = useUpdateParticipantData(
     participantId,
-    'self-edit'
+    mode
   );
 
   const {
@@ -105,7 +109,7 @@ export const GiftProfileForm = ({
         userId: user.uid,
         userName: user.displayName ?? user.email ?? 'Usuário',
         userEmail: user.email ?? undefined,
-        auditMetadata: { source: 'self-edit-gift-profile' },
+        auditMetadata: { source: `${mode}-gift-profile` },
       },
       {
         onSuccess: () => {
