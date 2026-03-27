@@ -13,10 +13,10 @@ interface NextBirthdayBannerProps {
 }
 
 const NextBirthdayBanner = ({ daysForBirthday }: NextBirthdayBannerProps) => (
-  <div className="mb-4 rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-l-4 border-primary p-4 -mx-4 -mt-4">
+  <div className="mb-4 ml-1 rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-l-4 border-primary p-4 -mx-4 -mt-3">
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 shrink-0">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 shrink-0 !overflow-x-hidden">
           <GiftIcon className="h-6 w-6 text-primary animate-pulse" />
         </div>
         <div>
@@ -31,7 +31,7 @@ const NextBirthdayBanner = ({ daysForBirthday }: NextBirthdayBannerProps) => (
           <p className="text-xs text-muted-foreground">até o grande dia!</p>
         </div>
       </div>
-      <Animation className="h-16 w-16 shrink-0" />
+      <Animation className="h-16 w-16 shrink-0 xs: hidden" />
     </div>
   </div>
 );

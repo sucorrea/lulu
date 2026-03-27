@@ -13,16 +13,13 @@ import { ReactNode } from 'react';
 
 vi.mock('../firebase', () => ({
   db: {},
-  storage: {},
 }));
 
 const mockGetDocs = vi.fn();
 const mockGetDoc = vi.fn();
 const mockCollection = vi.fn();
 const mockDoc = vi.fn();
-const mockRef = vi.fn();
-const mockGetDownloadURL = vi.fn();
-const mockListAll = vi.fn();
+const mockCloudinaryListGallery = vi.fn();
 
 vi.mock('firebase/firestore', () => ({
   collection: (db: unknown, path: string) => mockCollection(db, path),
@@ -31,10 +28,9 @@ vi.mock('firebase/firestore', () => ({
   getDoc: (ref: unknown) => mockGetDoc(ref),
 }));
 
-vi.mock('firebase/storage', () => ({
-  ref: (storage: unknown, path: string) => mockRef(storage, path),
-  getDownloadURL: (ref: unknown) => mockGetDownloadURL(ref),
-  listAll: (ref: unknown) => mockListAll(ref),
+vi.mock('../cloudinary', () => ({
+  cloudinaryListGallery: (...args: unknown[]) =>
+    mockCloudinaryListGallery(...args),
 }));
 
 const createWrapper = (options?: { retry?: number | false }) => {
@@ -270,60 +266,36 @@ describe('fetchParticipants', () => {
   describe('fetchGalleryImages', () => {
     it('should fetch gallery images successfully', async () => {
       const mockUrls = [
-        'https://example.com/image1.jpg',
-        'https://example.com/image2.jpg',
+        'https://res.cloudinary.com/demo/image/upload/gallery/image1.jpg',
+        'https://res.cloudinary.com/demo/image/upload/gallery/image2.jpg',
       ];
 
-      const mockItems = [{ name: 'image1.jpg' }, { name: 'image2.jpg' }];
-
-      mockListAll.mockResolvedValue({
-        items: mockItems,
-      });
-
-      mockGetDownloadURL
-        .mockResolvedValueOnce(mockUrls[0])
-        .mockResolvedValueOnce(mockUrls[1]);
+      mockCloudinaryListGallery.mockResolvedValue(mockUrls);
 
       const result = await fetchGalleryImages();
 
       expect(result).toEqual(mockUrls);
-      expect(mockRef).toHaveBeenCalledWith({}, 'gallery');
-      expect(mockListAll).toHaveBeenCalledTimes(1);
-      expect(mockGetDownloadURL).toHaveBeenCalledTimes(2);
+      expect(mockCloudinaryListGallery).toHaveBeenCalledTimes(1);
     });
 
     it('should return empty array when no images exist', async () => {
-      mockListAll.mockResolvedValue({
-        items: [],
-      });
+      mockCloudinaryListGallery.mockResolvedValue([]);
 
       const result = await fetchGalleryImages();
 
       expect(result).toEqual([]);
-      expect(mockListAll).toHaveBeenCalledTimes(1);
+      expect(mockCloudinaryListGallery).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('useGetGalleryImages', () => {
     it('should return query with gallery images', async () => {
       const mockUrls = [
-        'https://example.com/image1.jpg',
-        'https://example.com/image2.jpg',
+        'https://res.cloudinary.com/demo/image/upload/gallery/image1.jpg',
+        'https://res.cloudinary.com/demo/image/upload/gallery/image2.jpg',
       ];
 
-      const mockItems = [{ name: 'image1.jpg' }, { name: 'image2.jpg' }];
-
-      mockListAll.mockResolvedValue({
-        items: mockItems,
-      });
-
-      mockGetDownloadURL
-        .mockResolvedValueOnce(mockUrls[0])
-        .mockResolvedValueOnce(mockUrls[1]);
-
-      const consoleLogSpy = vi
-        .spyOn(console, 'log')
-        .mockImplementation(() => {});
+      mockCloudinaryListGallery.mockResolvedValue(mockUrls);
 
       const { result } = renderHook(() => useGetGalleryImages(), {
         wrapper: createWrapper(),
@@ -334,12 +306,10 @@ describe('fetchParticipants', () => {
       });
 
       expect(result.current.data).toEqual(mockUrls);
-
-      consoleLogSpy.mockRestore();
     });
 
     it('should handle loading state', () => {
-      mockListAll.mockImplementation(() => new Promise(() => {}));
+      mockCloudinaryListGallery.mockImplementation(() => new Promise(() => {}));
 
       const { result } = renderHook(() => useGetGalleryImages(), {
         wrapper: createWrapper(),
@@ -351,7 +321,7 @@ describe('fetchParticipants', () => {
 
     it('should handle error state', async () => {
       const errorMessage = 'Failed to fetch images';
-      mockListAll.mockRejectedValue(new Error(errorMessage));
+      mockCloudinaryListGallery.mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useGetGalleryImages(), {
         wrapper: createWrapper({ retry: 2 }),
@@ -368,15 +338,14 @@ describe('fetchParticipants', () => {
     });
 
     it('should retry on failure', async () => {
-      const mockUrls = ['https://example.com/image1.jpg'];
-      const mockItems = [{ name: 'image1.jpg' }];
+      const mockUrls = [
+        'https://res.cloudinary.com/demo/image/upload/gallery/image1.jpg',
+      ];
 
-      mockListAll
+      mockCloudinaryListGallery
         .mockRejectedValueOnce(new Error('First attempt failed'))
         .mockRejectedValueOnce(new Error('Second attempt failed'))
-        .mockResolvedValueOnce({ items: mockItems });
-
-      mockGetDownloadURL.mockResolvedValue(mockUrls[0]);
+        .mockResolvedValueOnce(mockUrls);
 
       const { result } = renderHook(() => useGetGalleryImages(), {
         wrapper: createWrapper({ retry: 2 }),
@@ -390,7 +359,7 @@ describe('fetchParticipants', () => {
       );
 
       expect(result.current.data).toEqual(mockUrls);
-      expect(mockListAll).toHaveBeenCalledTimes(3);
+      expect(mockCloudinaryListGallery).toHaveBeenCalledTimes(3);
     });
   });
 });

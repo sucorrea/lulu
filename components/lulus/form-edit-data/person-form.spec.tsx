@@ -338,9 +338,8 @@ describe('PersonForm', () => {
   });
 
   it('should pass user info to mutation when submitting form', async () => {
-    const { useUpdateParticipantData } = await import(
-      '@/services/queries/updateParticipant'
-    );
+    const { useUpdateParticipantData } =
+      await import('@/services/queries/updateParticipant');
     const mockMutate = vi.fn();
     vi.mocked(useUpdateParticipantData).mockReturnValue({
       mutate: mockMutate,
@@ -375,9 +374,8 @@ describe('PersonForm', () => {
 
   it('should show error toast when user is not authenticated', async () => {
     const { useUserVerification } = await import('@/hooks/user-verify');
-    const { useUpdateParticipantData } = await import(
-      '@/services/queries/updateParticipant'
-    );
+    const { useUpdateParticipantData } =
+      await import('@/services/queries/updateParticipant');
 
     const mockMutate = vi.fn();
     vi.mocked(useUpdateParticipantData).mockReturnValue({

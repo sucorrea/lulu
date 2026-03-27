@@ -1,13 +1,10 @@
-import { ref, deleteObject } from 'firebase/storage';
-
-import { assertAdmin } from '@/lib/auth-guard';
-import { storage } from '../firebase';
+import { cloudinaryDelete } from '../cloudinary';
+import { extractCloudinaryPublicId } from './extractCloudinaryPublicId';
 
 const INVALID_URL_ERROR = 'URL de foto inválida';
+const CLOUDINARY_DOMAIN = 'res.cloudinary.com';
 
 export const deleteGalleryPhoto = async (photoUrl: string) => {
-  await assertAdmin();
-
   let url: URL;
   try {
     url = new URL(photoUrl);
@@ -15,11 +12,14 @@ export const deleteGalleryPhoto = async (photoUrl: string) => {
     throw new Error(INVALID_URL_ERROR);
   }
 
-  const pathSegment = url.pathname.split('/o/')[1];
-  if (!pathSegment) {
+  if (!url.hostname.includes(CLOUDINARY_DOMAIN)) {
     throw new Error(INVALID_URL_ERROR);
   }
-  const storagePath = decodeURIComponent(pathSegment);
-  const photoRef = ref(storage, storagePath);
-  await deleteObject(photoRef);
+
+  const publicId = extractCloudinaryPublicId(url.pathname);
+  if (!publicId) {
+    throw new Error(INVALID_URL_ERROR);
+  }
+
+  await cloudinaryDelete(publicId);
 };

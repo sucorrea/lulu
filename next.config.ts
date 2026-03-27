@@ -66,14 +66,14 @@ const securityHeaders = [
         'https://accounts.google.com',
       ].join(' '),
       "style-src 'self' 'unsafe-inline' https://accounts.google.com",
-      "img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.google.com https://*.googleapis.com",
+      "img-src 'self' data: blob: https://res.cloudinary.com https://*.google.com https://*.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       [
         "connect-src 'self'",
         'https://*.googleapis.com',
         'https://*.firebaseio.com',
         'wss://*.firebaseio.com',
-        'https://firebasestorage.googleapis.com',
+        'https://res.cloudinary.com',
         'https://identitytoolkit.googleapis.com',
         'https://accounts.google.com',
         'https://apis.google.com',
@@ -109,7 +109,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
+        hostname: 'res.cloudinary.com',
       },
     ],
     formats: ['image/avif', 'image/webp'],

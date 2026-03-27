@@ -257,7 +257,6 @@ yarn format
    ```
 
 4. **Configurar Variáveis de Ambiente**
-
    - Acesse o dashboard do Vercel
    - Vá em Settings > Environment Variables
    - Adicione todas as variáveis do `.env.local`
@@ -349,18 +348,15 @@ yarn format
 **Passos:**
 
 1. **Conectar repositório GitHub**
-
    - Acesse [Netlify](https://netlify.com)
    - "New site from Git"
    - Selecione o repositório
 
 2. **Configurar Build Settings**
-
    - Build command: `yarn build`
    - Publish directory: `.next`
 
 3. **Adicionar Variáveis de Ambiente**
-
    - Site settings > Environment variables
    - Adicione todas as variáveis
 

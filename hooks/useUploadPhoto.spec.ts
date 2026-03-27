@@ -47,9 +47,8 @@ describe('useUploadPhoto', () => {
 
   it('should refetch, invalidate queries, and revalidate cache on success', async () => {
     const { useUploadPhoto } = await import('./useUploadPhoto');
-    const { revalidateParticipantsCache } = await import(
-      '@/app/actions/participants'
-    );
+    const { revalidateParticipantsCache } =
+      await import('@/app/actions/participants');
 
     useUploadPhoto('participant-123');
 
@@ -75,9 +74,8 @@ describe('useUploadPhoto', () => {
   });
 
   it('should pass the participant id to useGetParticipantById', async () => {
-    const { useGetParticipantById } = await import(
-      '@/services/queries/fetchParticipants'
-    );
+    const { useGetParticipantById } =
+      await import('@/services/queries/fetchParticipants');
     const { useUploadPhoto } = await import('./useUploadPhoto');
 
     useUploadPhoto('participant-789');
