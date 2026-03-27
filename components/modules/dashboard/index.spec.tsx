@@ -9,62 +9,6 @@ const { mockSignsStats, mockMonthDashboard } = vi.hoisted(() => ({
   mockMonthDashboard: ['Jan', 'Fev', 'Mar'],
 }));
 
-vi.mock('recharts', () => ({
-  ResponsiveContainer: ({
-    children,
-    width,
-    height,
-  }: {
-    children: React.ReactNode;
-    width: string;
-    height: number;
-  }) => (
-    <div
-      data-testid="responsive-container"
-      data-width={width}
-      data-height={height}
-    >
-      {children}
-    </div>
-  ),
-  PieChart: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="pie-chart">{children}</div>
-  ),
-  Pie: ({
-    data,
-    dataKey,
-    nameKey,
-    cx,
-    cy,
-    outerRadius,
-    children,
-  }: {
-    data: unknown[];
-    dataKey: string;
-    nameKey: string;
-    cx: string;
-    cy: string;
-    outerRadius: number;
-    children: React.ReactNode;
-  }) => (
-    <div
-      data-testid="pie"
-      data-length={data.length}
-      data-key={dataKey}
-      data-name-key={nameKey}
-      data-cx={cx}
-      data-cy={cy}
-      data-outer-radius={outerRadius}
-    >
-      {children}
-    </div>
-  ),
-  Cell: ({ fill }: { fill: string }) => (
-    <div data-testid="cell" data-fill={fill} />
-  ),
-  Tooltip: () => <div data-testid="tooltip" />,
-}));
-
 vi.mock('../../ui/card', () => ({
   Card: ({
     children,
@@ -121,10 +65,16 @@ vi.mock('./birthday-calendar', () => ({
 vi.mock('../../lulus/utils', () => ({
   monthDashboard: mockMonthDashboard,
   signsStats: (participants: Person[]) => mockSignsStats(participants),
+  ZODIAC_ICONS: {
+    Áries: 'aries',
+    Touro: 'taurus',
+  },
 }));
 
-vi.mock('../../lulus/constants', () => ({
-  COLORS: ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28BFE'],
+vi.mock('../../lulus/zodiac-icon', () => ({
+  default: ({ icon, className }: { icon: string; className?: string }) => (
+    <span data-testid="zodiac-icon" data-icon={icon} className={className} />
+  ),
 }));
 
 describe('DashboardPage', () => {
@@ -198,56 +148,54 @@ describe('DashboardPage', () => {
     expect(screen.getByText('0')).toBeInTheDocument();
   });
 
-  it('should render pie chart with expected props and data', () => {
+  it('should call signsStats with participants', () => {
     render(<DashboardPage participants={mockParticipants} />);
 
-    const pie = screen.getByTestId('pie');
-    expect(pie).toHaveAttribute('data-length', '2');
-    expect(pie).toHaveAttribute('data-key', 'total');
-    expect(pie).toHaveAttribute('data-name-key', 'name');
-    expect(pie).toHaveAttribute('data-cx', '50%');
-    expect(pie).toHaveAttribute('data-cy', '50%');
-    expect(pie).toHaveAttribute('data-outer-radius', '100');
-  });
-
-  it('should call signsStats twice with participants', () => {
-    render(<DashboardPage participants={mockParticipants} />);
-
-    expect(mockSignsStats).toHaveBeenCalledTimes(2);
     expect(mockSignsStats).toHaveBeenCalledWith(mockParticipants);
   });
 
-  it('should render cells with colors cycling through COLORS', () => {
+  it('should render sign names from signsStats', () => {
+    render(<DashboardPage participants={mockParticipants} />);
+
+    expect(screen.getByText('Áries')).toBeInTheDocument();
+    expect(screen.getByText('Touro')).toBeInTheDocument();
+  });
+
+  it('should render sign totals from signsStats', () => {
+    render(<DashboardPage participants={mockParticipants} />);
+
+    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.getByText('6')).toBeInTheDocument();
+  });
+
+  it('should render signs sorted descending by total', () => {
     mockSignsStats.mockReturnValue([
-      { name: 'Áries', total: 4 },
+      { name: 'Áries', total: 2 },
       { name: 'Touro', total: 6 },
-      { name: 'Gêmeos', total: 3 },
-      { name: 'Câncer', total: 5 },
-      { name: 'Leão', total: 2 },
-      { name: 'Virgem', total: 7 },
+      { name: 'Gêmeos', total: 4 },
     ]);
 
     render(<DashboardPage participants={mockParticipants} />);
 
-    const cells = screen.getAllByTestId('cell');
-    expect(cells).toHaveLength(6);
-    expect(cells[0]).toHaveAttribute('data-fill', '#0088FE');
-    expect(cells[1]).toHaveAttribute('data-fill', '#00C49F');
-    expect(cells[2]).toHaveAttribute('data-fill', '#FFBB28');
-    expect(cells[3]).toHaveAttribute('data-fill', '#FF8042');
-    expect(cells[4]).toHaveAttribute('data-fill', '#A28BFE');
-    expect(cells[5]).toHaveAttribute('data-fill', '#0088FE');
+    const taurus = screen.getByText('Touro');
+    const gemini = screen.getByText('Gêmeos');
+    const aries = screen.getByText('Áries');
+
+    // compareDocumentPosition returns 4 (FOLLOWING) when taurus precedes gemini
+    expect(
+      taurus.compareDocumentPosition(gemini) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(
+      gemini.compareDocumentPosition(aries) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
   });
 
-  it('should render tooltip and responsive container for pie chart', () => {
+  it('should render ZodiacIcon for signs present in ZODIAC_ICONS', () => {
     render(<DashboardPage participants={mockParticipants} />);
 
-    expect(screen.getByTestId('tooltip')).toBeInTheDocument();
-
-    const containers = screen.getAllByTestId('responsive-container');
-    expect(containers).toHaveLength(1);
-    expect(containers[0]).toHaveAttribute('data-width', '100%');
-    expect(containers[0]).toHaveAttribute('data-height', '250');
+    const icons = screen.getAllByTestId('zodiac-icon');
+    expect(icons.length).toBeGreaterThan(0);
+    expect(icons[0]).toHaveAttribute('class', 'text-white');
   });
 
   it('should keep expected layout classes', () => {

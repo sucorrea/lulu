@@ -26,8 +26,11 @@ const GalleryContent = () => {
     isLoading,
     isError,
     refetch,
+    isAdmin,
+    isDeleting,
     selectPhoto,
     toggleLike,
+    deletePhoto,
     getPhotoStats,
     addComment,
     editComment,
@@ -120,8 +123,11 @@ const GalleryContent = () => {
                     liked={stats.isLiked}
                     likes={stats.likesCount}
                     commentCount={stats.commentCount}
+                    isAdmin={isAdmin}
+                    isDeleting={isDeleting}
                     onSelect={selectPhoto}
                     onLike={toggleLike}
+                    onDelete={deletePhoto}
                   />
                 </div>
               );
@@ -145,8 +151,11 @@ const GalleryContent = () => {
                   liked={stats.isLiked}
                   likes={stats.likesCount}
                   commentCount={stats.commentCount}
+                  isAdmin={isAdmin}
+                  isDeleting={isDeleting}
                   onSelect={selectPhoto}
                   onLike={toggleLike}
+                  onDelete={deletePhoto}
                 />
               </li>
             );

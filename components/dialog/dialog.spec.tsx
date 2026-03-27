@@ -239,6 +239,22 @@ describe('GenericDialog', () => {
     expect(childrenContainer).toHaveClass('py-2');
   });
 
+  it('should wrap children with min-w-0 and overflow-hidden for overflow containment', () => {
+    render(<GenericDialog {...defaultProps} />);
+
+    const childrenContainer =
+      screen.getByTestId('dialog-children').parentElement;
+    expect(childrenContainer).toHaveClass('min-w-0', 'overflow-hidden');
+  });
+
+  it('should apply min-w-0 and overflow-hidden to footer for overflow containment', () => {
+    const footer = <button data-testid="footer-btn">Close</button>;
+    render(<GenericDialog {...defaultProps} footer={footer} />);
+
+    const footerElement = screen.getByTestId('dialog-footer');
+    expect(footerElement).toHaveClass('min-w-0', 'overflow-hidden');
+  });
+
   it('should handle empty description string', () => {
     render(<GenericDialog {...defaultProps} description="" />);
 

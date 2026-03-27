@@ -15,6 +15,12 @@ import './globals.css';
 
 const Footer = dynamic(() => import('@/components/layout/footer'));
 
+const VisitCounter = dynamic(() =>
+  import('@/components/layout/visit-counter').then((m) => ({
+    default: m.VisitCounter,
+  }))
+);
+
 const PwaUpdateManager = dynamic(() =>
   import('@/components/layout/pwa-update-manager').then((m) => ({
     default: m.PwaUpdateManager,
@@ -100,6 +106,9 @@ const RootLayout = ({
                 {children}
               </main>
               <Footer />
+              <div className="fixed bottom-20 right-3 z-30 md:bottom-3">
+                <VisitCounter />
+              </div>
             </DeviceProvider>
             <PwaUpdateManager />
             <Toaster />

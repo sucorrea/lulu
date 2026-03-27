@@ -11,6 +11,7 @@ interface LikeUnlikeButtonProps {
   likes: number;
   handleLike: (index: number) => void;
   index: number;
+  className?: string;
 }
 
 interface LegacyLikeUnlikeButtonProps {
@@ -18,6 +19,7 @@ interface LegacyLikeUnlikeButtonProps {
   likes: number[];
   handleLike: (index: number) => void;
   index: number;
+  className?: string;
 }
 
 type CombinedProps = LikeUnlikeButtonProps | LegacyLikeUnlikeButtonProps;
@@ -52,7 +54,8 @@ const LikeUnlikeButton = memo(function LikeUnlikeButton(props: CombinedProps) {
       onClick={handleClick}
       className={cn(
         'flex items-center justify-center gap-1 rounded-full px-2 py-1 text-sm transition-[color,transform] duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95',
-        isLiked ? 'scale-110 text-primary' : 'text-muted-foreground'
+        isLiked ? 'scale-110 text-primary' : 'text-muted-foreground',
+        props.className
       )}
       aria-label={ariaLabel}
       aria-pressed={isLiked}
@@ -60,7 +63,7 @@ const LikeUnlikeButton = memo(function LikeUnlikeButton(props: CombinedProps) {
       <HeartIcon
         className={cn(
           'h-4 w-4 shrink-0 transition-colors',
-          isLiked ? 'text-primary fill-primary' : 'text-muted-foreground'
+          isLiked ? 'text-primary fill-primary' : 'text-current'
         )}
         aria-hidden
       />

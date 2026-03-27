@@ -11,6 +11,7 @@ export const getParticipantPhotoUrl = (person: Person): string => {
     ? `${base}${sep}v=${person.photoUpdatedAt}`
     : base;
 };
+
 export type Signos =
   | 'aries'
   | 'touro'
@@ -105,6 +106,11 @@ export const getSigno = (dataNascimento: Date): SignoValues => {
 
   return ZODIAC_SIGNS[zodiacEntry.sign];
 };
+
+export const ZODIAC_ICONS: Record<string, string> = Object.fromEntries(
+  ZODIAC_SIGNS.map(({ label, icon }) => [label, icon])
+);
+
 export const monthDashboard = [
   'Jan',
   'Fev',
@@ -252,45 +258,17 @@ export const birthdayStats = (participants: Person[]) =>
       .length,
   }));
 
-const getSign = (day: number, month: number): string => {
-  const signs = [
-    { name: 'Capricórnio', start: [12, 22], end: [1, 19] },
-    { name: 'Aquário', start: [1, 20], end: [2, 18] },
-    { name: 'Peixes', start: [2, 19], end: [3, 20] },
-    { name: 'Áries', start: [3, 21], end: [4, 19] },
-    { name: 'Touro', start: [4, 20], end: [5, 20] },
-    { name: 'Gêmeos', start: [5, 21], end: [6, 20] },
-    { name: 'Câncer', start: [6, 21], end: [7, 22] },
-    { name: 'Leão', start: [7, 23], end: [8, 22] },
-    { name: 'Virgem', start: [8, 23], end: [9, 22] },
-    { name: 'Libra', start: [9, 23], end: [10, 22] },
-    { name: 'Escorpião', start: [10, 23], end: [11, 21] },
-    { name: 'Sagitário', start: [11, 22], end: [12, 21] },
-  ];
-
-  for (const sign of signs) {
-    const [startMonth, startDay] = sign.start;
-    const [endMonth, endDay] = sign.end;
-
-    if (
-      (month === startMonth && day >= startDay) ||
-      (month === endMonth && day <= endDay)
-    ) {
-      return sign.name;
-    }
-  }
-
-  return 'Desconhecido';
-};
-
 export const signsStats = (participants: Person[]) => {
   const signsMap: Record<string, number> = {};
 
-  participants.forEach((p) => {
-    const date = new Date(p.date);
-    const sign = getSign(date.getDate(), date.getMonth() + 1);
-    signsMap[sign] = (signsMap[sign] || 0) + 1;
-  });
+  for (const p of participants) {
+    const d = new Date(p.date);
+    if (Number.isNaN(d.getTime())) {
+      continue;
+    }
+    const { label } = getSigno(d);
+    signsMap[label] = (signsMap[label] || 0) + 1;
+  }
 
   return Object.entries(signsMap).map(([name, total]) => ({
     name,

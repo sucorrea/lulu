@@ -82,9 +82,13 @@ vi.mock('./comment-section', () => ({
   default: () => <div data-testid="comment-section">Comment Section</div>,
 }));
 
-vi.mock('./utils', () => ({
-  downloadPhoto: vi.fn().mockResolvedValue(undefined),
-}));
+vi.mock('./utils', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...(actual as object),
+    downloadPhoto: vi.fn().mockResolvedValue(undefined),
+  };
+});
 
 const mockUseGallery = vi.fn();
 vi.mock('./gallery-context', async (importOriginal) => {
@@ -134,6 +138,9 @@ const setupGalleryMock = (overrides = {}) => {
     addComment: vi.fn(),
     editComment: vi.fn(),
     deleteComment: vi.fn(),
+    isAdmin: false,
+    isDeleting: false,
+    deletePhoto: vi.fn(),
     ...overrides,
   };
 
@@ -297,6 +304,54 @@ describe('PhotoModal', () => {
       await waitFor(() => {
         expect(mockValues.nextPhoto).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('Delete Button', () => {
+    it('should not render delete button when isAdmin is false', () => {
+      renderPhotoModal({ isAdmin: false });
+
+      expect(
+        screen.queryByRole('button', { name: /Excluir foto/i })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should render delete button when isAdmin is true', () => {
+      renderPhotoModal({ isAdmin: true });
+
+      expect(
+        screen.getByRole('button', { name: 'Excluir foto' })
+      ).toBeInTheDocument();
+    });
+
+    it('should show confirmation dialog when delete button is clicked', () => {
+      renderPhotoModal({ isAdmin: true });
+
+      fireEvent.click(screen.getByRole('button', { name: 'Excluir foto' }));
+
+      expect(
+        screen.getByRole('dialog', { name: 'Excluir esta foto?' })
+      ).toBeInTheDocument();
+    });
+
+    it('should not call deletePhoto immediately when delete button is clicked', () => {
+      const { mockValues } = renderPhotoModal({ isAdmin: true });
+
+      fireEvent.click(screen.getByRole('button', { name: 'Excluir foto' }));
+
+      expect(mockValues.deletePhoto).not.toHaveBeenCalled();
+    });
+
+    it('should call deletePhoto with current photo URL when Excluir is clicked in confirmation dialog', () => {
+      const { mockValues } = renderPhotoModal({
+        isAdmin: true,
+        selectedIndex: 3,
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: 'Excluir foto' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Excluir' }));
+
+      expect(mockValues.deletePhoto).toHaveBeenCalledWith(photoUrl);
     });
   });
 });

@@ -1,3 +1,14 @@
+import { toast } from 'sonner';
+
+export const confirmDeletePhoto = (onConfirm: () => void) => {
+  toast('Excluir esta foto?', {
+    description: 'Esta ação não pode ser desfeita.',
+    position: 'bottom-center',
+    action: { label: 'Excluir', onClick: onConfirm },
+    cancel: { label: 'Cancelar', onClick: () => {} },
+  });
+};
+
 export const onGetPhotoId = (photo: string) => {
   try {
     const url = new URL(photo);

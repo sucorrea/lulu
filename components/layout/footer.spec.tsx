@@ -67,7 +67,7 @@ describe('Footer', () => {
 
     const dashboardLink = screen.getByTestId('link-/dashboard');
     expect(dashboardLink).toBeInTheDocument();
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Dash.')).toBeInTheDocument();
   });
 
   it('should render galeria link', () => {
@@ -85,7 +85,7 @@ describe('Footer', () => {
 
     const auditoriaLink = screen.getByTestId('link-/auditoria');
     expect(auditoriaLink).toBeInTheDocument();
-    expect(screen.getByText('Auditoria')).toBeInTheDocument();
+    expect(screen.getByText('Audit.')).toBeInTheDocument();
   });
 
   it('should render historico link', () => {
@@ -94,7 +94,7 @@ describe('Footer', () => {
 
     const historicoLink = screen.getByTestId('link-/historico');
     expect(historicoLink).toBeInTheDocument();
-    expect(screen.getByText('Histórico')).toBeInTheDocument();
+    expect(screen.getByText('Hist.')).toBeInTheDocument();
   });
 
   it('should apply text-primary class to active link (participantes)', () => {
@@ -196,15 +196,15 @@ describe('Footer', () => {
     });
   });
 
-  it('should render all text labels correctly', () => {
+  it('should render all text labels correctly (using shortLabel when available)', () => {
     mockUsePathname.mockReturnValue('/');
     render(<Footer />);
 
     expect(screen.getByText('Particip.')).toBeInTheDocument();
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Dash.')).toBeInTheDocument();
     expect(screen.getByText('Galeria')).toBeInTheDocument();
-    expect(screen.getByText('Auditoria')).toBeInTheDocument();
-    expect(screen.getByText('Histórico')).toBeInTheDocument();
+    expect(screen.getByText('Audit.')).toBeInTheDocument();
+    expect(screen.getByText('Hist.')).toBeInTheDocument();
     expect(screen.getByText('Sobre')).toBeInTheDocument();
   });
 

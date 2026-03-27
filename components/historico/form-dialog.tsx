@@ -145,22 +145,24 @@ export const VaquinhaHistoryFormDialog = ({
       description="Registre quem foi responsável pela vaquinha e quem foi o aniversariante."
       className="sm:max-w-[500px]"
       footer={
-        <>
+        <div className="flex gap-2">
           <Button
             type="button"
             variant="outline"
+            className="w-full"
             onClick={() => onOpenChange(false)}
           >
             Cancelar
           </Button>
           <Button
+            className="w-full"
             type="submit"
             form="vaquinha-history-form"
             disabled={isLoading}
           >
             {submitLabel}
           </Button>
-        </>
+        </div>
       }
     >
       <Form {...form}>
