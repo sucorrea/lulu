@@ -10,7 +10,7 @@ vi.mock('sonner', () => ({
 const STORAGE_KEY = 'pwa-install-dismissed';
 
 const mockMatchMedia = (standalone: boolean) => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: vi.fn().mockImplementation((query: string) => ({
       matches: query === '(display-mode: standalone)' ? standalone : false,
@@ -35,7 +35,7 @@ const dispatchInstallPromptEvent = () => {
     platforms: ['web'],
   });
   act(() => {
-    window.dispatchEvent(event);
+    globalThis.dispatchEvent(event);
   });
   return event;
 };
@@ -107,6 +107,29 @@ describe('usePwaInstall', () => {
     );
   });
 
+  it('should show iOS toast when on iPadOS Safari (desktop UA + touch)', () => {
+    Object.defineProperty(globalThis.navigator, 'userAgent', {
+      get: () =>
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+      configurable: true,
+    });
+    Object.defineProperty(globalThis.navigator, 'maxTouchPoints', {
+      get: () => 5,
+      configurable: true,
+    });
+
+    renderHook(() => usePwaInstall());
+
+    expect(toast).toHaveBeenCalledWith(
+      'Instale o app Luluzinha!',
+      expect.objectContaining({
+        description:
+          'Toque em Compartilhar ↑ e depois "Adicionar à Tela Início".',
+        duration: 12000,
+      })
+    );
+  });
+
   it('should not show iOS toast when on iOS Chrome (CriOS)', () => {
     Object.defineProperty(globalThis.navigator, 'userAgent', {
       get: () =>
@@ -136,7 +159,7 @@ describe('usePwaInstall', () => {
       platforms: ['web'],
     });
     act(() => {
-      window.dispatchEvent(event);
+      globalThis.dispatchEvent(event);
     });
 
     const toastCall = vi.mocked(toast).mock.calls[0];
@@ -160,7 +183,7 @@ describe('usePwaInstall', () => {
       platforms: ['web'],
     });
     act(() => {
-      window.dispatchEvent(event);
+      globalThis.dispatchEvent(event);
     });
 
     const toastCall = vi.mocked(toast).mock.calls[0];
@@ -186,7 +209,7 @@ describe('usePwaInstall', () => {
   });
 
   it('should remove beforeinstallprompt listener on unmount', () => {
-    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    const removeEventListenerSpy = vi.spyOn(globalThis, 'removeEventListener');
 
     const { unmount } = renderHook(() => usePwaInstall());
     unmount();

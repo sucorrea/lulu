@@ -6,8 +6,7 @@ import { toast } from 'sonner';
 const STORAGE_KEY = 'pwa-install-dismissed';
 
 const isAlreadyInstalled = () =>
-  globalThis.window !== undefined &&
-  window.matchMedia('(display-mode: standalone)').matches;
+  globalThis.window?.matchMedia('(display-mode: standalone)').matches;
 
 const wasDismissed = () => {
   try {
@@ -25,15 +24,48 @@ const markDismissed = () => {
 
 const isIosSafari = () => {
   const ua = navigator.userAgent;
-  const isIos = /iphone|ipad|ipod/i.test(ua);
   const isSafari = /safari/i.test(ua) && !/chrome|crios|fxios/i.test(ua);
-  return isIos && isSafari;
+  const isIosUa = /iphone|ipad|ipod/i.test(ua);
+  const isIpadOs = /macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
+  return (isIosUa || isIpadOs) && isSafari;
 };
 
 const showIosToast = () => {
   toast('Instale o app Luluzinha!', {
     description: 'Toque em Compartilhar ↑ e depois "Adicionar à Tela Início".',
     duration: 12000,
+    onDismiss: markDismissed,
+  });
+};
+
+const handleInstallClick = (
+  getPrompt: () => BeforeInstallPromptEvent | null,
+  clearPrompt: () => void
+) => {
+  const prompt = getPrompt();
+  if (!prompt) {
+    return;
+  }
+  prompt.prompt();
+  prompt.userChoice.then((choice) => {
+    if (choice.outcome === 'accepted') {
+      markDismissed();
+    }
+    clearPrompt();
+  });
+};
+
+const showInstallToast = (
+  getPrompt: () => BeforeInstallPromptEvent | null,
+  clearPrompt: () => void
+) => {
+  toast('Instale o app Luluzinha!', {
+    description: 'Adicione ao seu dispositivo para acesso rápido.',
+    duration: Infinity,
+    action: {
+      label: 'Instalar',
+      onClick: () => handleInstallClick(getPrompt, clearPrompt),
+    },
     onDismiss: markDismissed,
   });
 };
@@ -58,33 +90,21 @@ export const usePwaInstall = () => {
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       deferredPrompt = event as BeforeInstallPromptEvent;
-
-      toast('Instale o app Luluzinha!', {
-        description: 'Adicione ao seu dispositivo para acesso rápido.',
-        duration: Infinity,
-        action: {
-          label: 'Instalar',
-          onClick: () => {
-            if (!deferredPrompt) {
-              return;
-            }
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choice) => {
-              if (choice.outcome === 'accepted') {
-                markDismissed();
-              }
-              deferredPrompt = null;
-            });
-          },
-        },
-        onDismiss: markDismissed,
-      });
+      showInstallToast(
+        () => deferredPrompt,
+        () => {
+          deferredPrompt = null;
+        }
+      );
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    globalThis.window.addEventListener(
+      'beforeinstallprompt',
+      handleBeforeInstallPrompt
+    );
 
     return () => {
-      window.removeEventListener(
+      globalThis.window.removeEventListener(
         'beforeinstallprompt',
         handleBeforeInstallPrompt
       );
