@@ -1,4 +1,5 @@
 import { cloudinaryDelete } from '../cloudinary';
+import { extractCloudinaryPublicId } from './extractCloudinaryPublicId';
 
 const INVALID_URL_ERROR = 'URL de foto inválida';
 const CLOUDINARY_DOMAIN = 'res.cloudinary.com';
@@ -15,13 +16,10 @@ export const deleteGalleryPhoto = async (photoUrl: string) => {
     throw new Error(INVALID_URL_ERROR);
   }
 
-  const pathParts = url.pathname.split('/upload/');
-  if (!pathParts[1]) {
+  const publicId = extractCloudinaryPublicId(url.pathname);
+  if (!publicId) {
     throw new Error(INVALID_URL_ERROR);
   }
-
-  const publicIdWithExt = pathParts[1].replace(/^v\d+\//, '');
-  const publicId = publicIdWithExt.replace(/\.[^.]+$/, '');
 
   await cloudinaryDelete(publicId);
 };

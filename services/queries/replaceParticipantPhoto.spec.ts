@@ -242,4 +242,35 @@ describe('replaceParticipantPhoto', () => {
       publicId: 'special file (1)',
     });
   });
+
+  it('should decode the old Cloudinary publicId before deletion', async () => {
+    const participantId = 'participant-encoded';
+    const oldImageUrl =
+      'https://res.cloudinary.com/demo/image/upload/v1234567890/images/special%20caf%C3%A9.jpg';
+    const newImageUrl =
+      'https://res.cloudinary.com/demo/image/upload/v1234567890/images/new-image.jpg';
+    const file = new File(['content'], 'new-image.jpg', { type: 'image/jpeg' });
+
+    const mockDocRef = { id: participantId };
+    const mockSnapshot = {
+      data: () => ({
+        id: 7,
+        name: 'Encoded User',
+        picture: oldImageUrl,
+      }),
+    };
+
+    mockDoc.mockReturnValue(mockDocRef);
+    mockGetDoc.mockResolvedValue(mockSnapshot);
+    mockCloudinaryDelete.mockResolvedValue(undefined);
+    mockCloudinaryUpload.mockResolvedValue({
+      url: newImageUrl,
+      publicId: 'images/new-image',
+    });
+    mockUpdateDoc.mockResolvedValue(undefined);
+
+    await replaceParticipantPhoto(participantId, file);
+
+    expect(mockCloudinaryDelete).toHaveBeenCalledWith('images/special café');
+  });
 });

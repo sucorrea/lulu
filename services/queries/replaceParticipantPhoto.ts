@@ -1,6 +1,7 @@
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { cloudinaryUpload, cloudinaryDelete } from '../cloudinary';
 import { db } from '../firebase';
+import { extractCloudinaryPublicId } from './extractCloudinaryPublicId';
 
 const CLOUDINARY_DOMAIN = 'res.cloudinary.com';
 
@@ -21,10 +22,8 @@ export const replaceParticipantPhoto = async (
   if (data.picture?.includes(CLOUDINARY_DOMAIN)) {
     try {
       const url = new URL(data.picture);
-      const pathParts = url.pathname.split('/upload/');
-      if (pathParts[1]) {
-        const publicIdWithExt = pathParts[1].replace(/^v\d+\//, '');
-        const publicId = publicIdWithExt.replace(/\.[^.]+$/, '');
+      const publicId = extractCloudinaryPublicId(url.pathname);
+      if (publicId) {
         await cloudinaryDelete(publicId);
       }
     } catch (err) {
