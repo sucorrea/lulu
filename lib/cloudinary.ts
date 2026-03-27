@@ -6,4 +6,4 @@ cloudinary.config({
   api_secret: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
 });
 
-export default cloudinary;
+export { cloudinary as default };

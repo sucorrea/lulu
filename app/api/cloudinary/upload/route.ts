@@ -36,7 +36,7 @@ export const POST = async (request: NextRequest) => {
             },
             (error, result) => {
               if (error || !result) {
-                reject(error ?? new Error('Upload falhou'));
+                reject(new Error(error?.message ?? 'Upload falhou'));
               } else {
                 resolve(result);
               }
