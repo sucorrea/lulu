@@ -27,6 +27,12 @@ const PwaUpdateManager = dynamic(() =>
   }))
 );
 
+const PwaInstallManager = dynamic(() =>
+  import('@/components/layout/pwa-install-manager').then((m) => ({
+    default: m.PwaInstallManager,
+  }))
+);
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -111,6 +117,7 @@ const RootLayout = ({
               </div>
             </DeviceProvider>
             <PwaUpdateManager />
+            <PwaInstallManager />
             <Toaster />
             <VaulPatch />
           </ThemeProvider>
