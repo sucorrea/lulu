@@ -46,9 +46,8 @@ describe('updateParticipantData', () => {
 
   it('should create audit log when user info is provided and there are changes', async () => {
     const { updateDoc, getDoc } = await import('firebase/firestore');
-    const { calculateDiff, createAuditLog, hasChanges } = await import(
-      '@/services/audit'
-    );
+    const { calculateDiff, createAuditLog, hasChanges } =
+      await import('@/services/audit');
 
     const mockDocData = {
       name: 'Old Name',
@@ -139,9 +138,8 @@ describe('updateParticipantData', () => {
 
   it('should complete update even if audit log creation fails', async () => {
     const { updateDoc, getDoc } = await import('firebase/firestore');
-    const { createAuditLog, hasChanges, calculateDiff } = await import(
-      '@/services/audit'
-    );
+    const { createAuditLog, hasChanges, calculateDiff } =
+      await import('@/services/audit');
 
     const mockDocSnapshot = {
       exists: () => true,

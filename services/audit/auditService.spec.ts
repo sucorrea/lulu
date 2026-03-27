@@ -295,9 +295,8 @@ describe('auditService', () => {
 
   describe('getAuditLogsByUser', () => {
     it('should filter logs by userId', async () => {
-      const { getDocs, where, orderBy, limit } = await import(
-        'firebase/firestore'
-      );
+      const { getDocs, where, orderBy, limit } =
+        await import('firebase/firestore');
 
       const mockSnapshot = {
         forEach: vi.fn(),
@@ -500,9 +499,8 @@ describe('auditService', () => {
 
   describe('getAllAuditLogs', () => {
     it('should fetch all audit logs across participants using collectionGroup', async () => {
-      const { getDocs, collectionGroup, query, orderBy, limit } = await import(
-        'firebase/firestore'
-      );
+      const { getDocs, collectionGroup, query, orderBy, limit } =
+        await import('firebase/firestore');
 
       const mockSnapshot = {
         forEach: (callback: (doc: unknown) => void) => {

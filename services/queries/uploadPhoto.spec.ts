@@ -2,12 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { uploadPhoto } from './uploadPhoto';
 
 vi.mock('../cloudinary', () => ({
-  cloudinaryUpload: vi
-    .fn()
-    .mockResolvedValue({
-      url: 'https://res.cloudinary.com/demo/image/upload/images/123.jpg',
-      publicId: 'images/123',
-    }),
+  cloudinaryUpload: vi.fn().mockResolvedValue({
+    url: 'https://res.cloudinary.com/demo/image/upload/images/123.jpg',
+    publicId: 'images/123',
+  }),
 }));
 
 vi.mock('../firebase', () => ({

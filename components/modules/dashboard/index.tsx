@@ -68,12 +68,12 @@ const DashboardPage = ({ participants }: DashboardPageProps) => (
             );
             const max = Math.max(...stats.map((s) => s.total), 1);
             return (
-              <ul aria-label="Distribuição por signo" className="list-none p-0 m-0">
+              <ul
+                aria-label="Distribuição por signo"
+                className="list-none p-0 m-0"
+              >
                 {stats.map((s) => (
-                  <li
-                    key={s.name}
-                    className="flex items-center gap-2"
-                  >
+                  <li key={s.name} className="flex items-center gap-2">
                     <div className="flex w-36 shrink-0 items-center gap-2">
                       <div
                         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md

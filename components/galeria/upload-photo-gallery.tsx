@@ -32,9 +32,8 @@ const UploadPhotoGallery = () => {
       (async () => {
         try {
           const photoId = `${user.uid}_${Date.now()}`;
-          const { uploadGalleryPhoto } = await import(
-            '@/services/queries/uploadGalleryPhoto'
-          );
+          const { uploadGalleryPhoto } =
+            await import('@/services/queries/uploadGalleryPhoto');
           await uploadGalleryPhoto({ file, photoId });
           handleClose();
           refetch();

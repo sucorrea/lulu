@@ -194,9 +194,8 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should show selected filename after file is chosen', async () => {
-      const { uploadGalleryPhoto } = await import(
-        '@/services/queries/uploadGalleryPhoto'
-      );
+      const { uploadGalleryPhoto } =
+        await import('@/services/queries/uploadGalleryPhoto');
       vi.mocked(uploadGalleryPhoto).mockReturnValue(new Promise(() => {}));
 
       render(<UploadPhotoGallery />);
@@ -219,9 +218,8 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should reset filename to placeholder when Cancel is clicked', async () => {
-      const { uploadGalleryPhoto } = await import(
-        '@/services/queries/uploadGalleryPhoto'
-      );
+      const { uploadGalleryPhoto } =
+        await import('@/services/queries/uploadGalleryPhoto');
       vi.mocked(uploadGalleryPhoto).mockReturnValue(new Promise(() => {}));
 
       render(<UploadPhotoGallery />);
@@ -448,9 +446,8 @@ describe('UploadPhotoGallery', () => {
 
   describe('File Upload Interactions', () => {
     it('should call onClose and refetch after successful file upload', async () => {
-      const { uploadGalleryPhoto } = await import(
-        '@/services/queries/uploadGalleryPhoto'
-      );
+      const { uploadGalleryPhoto } =
+        await import('@/services/queries/uploadGalleryPhoto');
       vi.mocked(uploadGalleryPhoto).mockResolvedValue(undefined);
 
       render(<UploadPhotoGallery />);
@@ -472,9 +469,8 @@ describe('UploadPhotoGallery', () => {
     });
 
     it('should show toast error when upload fails', async () => {
-      const { uploadGalleryPhoto } = await import(
-        '@/services/queries/uploadGalleryPhoto'
-      );
+      const { uploadGalleryPhoto } =
+        await import('@/services/queries/uploadGalleryPhoto');
       vi.mocked(uploadGalleryPhoto).mockRejectedValue(
         new Error('Upload failed')
       );
