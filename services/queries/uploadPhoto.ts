@@ -1,7 +1,6 @@
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { assertAdmin } from '@/lib/auth-guard';
-import app from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { cloudinaryUpload } from '../cloudinary';
+import { db } from '../firebase';
 
 export const uploadPhoto = async ({
   file,
@@ -10,15 +9,12 @@ export const uploadPhoto = async ({
   file: File;
   participantId: string;
 }) => {
-  await assertAdmin();
+  const { url: downloadURL } = await cloudinaryUpload({
+    file,
+    folder: 'images',
+    publicId: participantId,
+  });
 
-  const storage = getStorage(app);
-  const storageRef = ref(storage, `images/${participantId}.jpg`);
-  await uploadBytes(storageRef, file);
-
-  const downloadURL = await getDownloadURL(storageRef);
-
-  const db = getFirestore(app);
   const docRef = doc(db, 'participants', participantId);
   await setDoc(
     docRef,
