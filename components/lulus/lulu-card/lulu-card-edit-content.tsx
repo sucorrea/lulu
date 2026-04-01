@@ -16,10 +16,8 @@ interface LulusCardEditContentProps {
 }
 
 const LulusCardEditContent = ({ participantId }: LulusCardEditContentProps) => {
-  const {
-    isAdmin,
-    participantId: currentUserParticipantId,
-  } = useUserVerification();
+  const { isAdmin, participantId: currentUserParticipantId } =
+    useUserVerification();
   const { data: participant, isLoading } = useGetParticipantById(participantId);
   const isOwner = currentUserParticipantId === participantId;
 

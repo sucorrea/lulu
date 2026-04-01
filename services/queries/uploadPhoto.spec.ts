@@ -1,23 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { uploadPhoto } from './uploadPhoto';
 
-vi.mock('@/lib/auth-guard', () => ({
-  assertAdmin: vi.fn().mockResolvedValue(undefined),
+vi.mock('../cloudinary', () => ({
+  cloudinaryUpload: vi.fn().mockResolvedValue({
+    url: 'https://res.cloudinary.com/demo/image/upload/images/123.jpg',
+    publicId: 'images/123',
+  }),
 }));
 
 vi.mock('../firebase', () => ({
-  default: {},
-}));
-
-vi.mock('firebase/storage', () => ({
-  getStorage: vi.fn(() => ({})),
-  ref: vi.fn(() => ({})),
-  uploadBytes: vi.fn().mockResolvedValue({}),
-  getDownloadURL: vi.fn().mockResolvedValue('https://example.com/photo.jpg'),
+  db: {},
 }));
 
 vi.mock('firebase/firestore', () => ({
-  getFirestore: vi.fn(() => ({})),
   doc: vi.fn(() => ({})),
   setDoc: vi.fn().mockResolvedValue(undefined),
 }));
@@ -27,76 +22,62 @@ describe('uploadPhoto', () => {
     vi.clearAllMocks();
   });
 
-  it('should call assertAdmin before uploading', async () => {
-    const { assertAdmin } = await import('@/lib/auth-guard');
-    const { getDownloadURL } = await import('firebase/storage');
-
-    vi.mocked(getDownloadURL).mockResolvedValue(
-      'https://example.com/photo.jpg'
-    );
+  it('should call cloudinaryUpload with correct params', async () => {
+    const { cloudinaryUpload } = await import('../cloudinary');
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     await uploadPhoto({ file, participantId: '123' });
 
-    expect(assertAdmin).toHaveBeenCalled();
+    expect(cloudinaryUpload).toHaveBeenCalledWith({
+      file,
+      folder: 'images',
+      publicId: '123',
+    });
   });
 
-  it('should upload the file to storage using the participant id path', async () => {
-    const { ref, uploadBytes, getDownloadURL } = await import(
-      'firebase/storage'
-    );
-
-    vi.mocked(getDownloadURL).mockResolvedValue(
-      'https://example.com/photo.jpg'
-    );
+  it('should upload the file using the participant id as publicId', async () => {
+    const { cloudinaryUpload } = await import('../cloudinary');
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     await uploadPhoto({ file, participantId: 'participant-456' });
 
-    expect(ref).toHaveBeenCalledWith(
-      expect.anything(),
-      'images/participant-456.jpg'
+    expect(cloudinaryUpload).toHaveBeenCalledWith(
+      expect.objectContaining({ publicId: 'participant-456' })
     );
-    expect(uploadBytes).toHaveBeenCalled();
   });
 
   it('should save the download URL to Firestore', async () => {
-    const { getDownloadURL } = await import('firebase/storage');
     const { setDoc } = await import('firebase/firestore');
-
-    vi.mocked(getDownloadURL).mockResolvedValue(
-      'https://example.com/photo.jpg'
-    );
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     await uploadPhoto({ file, participantId: '123' });
 
     expect(setDoc).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({ photoURL: 'https://example.com/photo.jpg' }),
+      expect.objectContaining({
+        photoURL: 'https://res.cloudinary.com/demo/image/upload/images/123.jpg',
+      }),
       { merge: true }
     );
   });
 
   it('should return the download URL', async () => {
-    const { getDownloadURL } = await import('firebase/storage');
-    vi.mocked(getDownloadURL).mockResolvedValue(
-      'https://storage.example.com/img.jpg'
-    );
+    const { cloudinaryUpload } = await import('../cloudinary');
+    vi.mocked(cloudinaryUpload).mockResolvedValue({
+      url: 'https://res.cloudinary.com/demo/image/upload/images/img.jpg',
+      publicId: 'images/img',
+    });
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     const result = await uploadPhoto({ file, participantId: '123' });
 
-    expect(result).toBe('https://storage.example.com/img.jpg');
+    expect(result).toBe(
+      'https://res.cloudinary.com/demo/image/upload/images/img.jpg'
+    );
   });
 
   it('should include photoUpdatedAt timestamp in Firestore document', async () => {
-    const { getDownloadURL } = await import('firebase/storage');
     const { setDoc } = await import('firebase/firestore');
-
-    vi.mocked(getDownloadURL).mockResolvedValue(
-      'https://example.com/photo.jpg'
-    );
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     await uploadPhoto({ file, participantId: '123' });

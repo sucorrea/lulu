@@ -76,7 +76,9 @@ export const NotificationHomeBanner = ({
     >
       <Bell className="h-5 w-5 shrink-0 text-primary" />
       <div className="flex-1">
-        <p className="font-medium text-sm">Ativar notificações de aniversário</p>
+        <p className="font-medium text-sm">
+          Ativar notificações de aniversário
+        </p>
         <p className="text-xs text-muted-foreground">
           Receba lembretes 5 dias antes e no dia do aniversário das lulus.
         </p>

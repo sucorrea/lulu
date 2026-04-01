@@ -3,8 +3,8 @@ import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { z } from 'zod';
 
 import { Person } from '@/components/lulus/types';
-import { db, storage } from '../firebase';
-import { getDownloadURL, ref } from 'firebase/storage';
+import { db } from '../firebase';
+import { cloudinaryListGallery } from '../cloudinary';
 
 const PixTypesSchema = z.enum(['cpf', 'email', 'phone', 'random', 'none']);
 const RoleSchema = z.enum(['admin', 'lulu', 'visitante']);
@@ -118,15 +118,7 @@ export const useGetParticipantById = (id: string) => {
 };
 
 export const fetchGalleryImages = async () => {
-  const listAll = (await import('firebase/storage')).listAll;
-
-  const galleryRef = ref(storage, 'gallery');
-  const result = await listAll(galleryRef);
-  const urls = await Promise.all(
-    result.items.map((itemRef) => getDownloadURL(itemRef))
-  );
-
-  return urls;
+  return cloudinaryListGallery();
 };
 
 export const useGetGalleryImages = () => {

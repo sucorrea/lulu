@@ -1,19 +1,14 @@
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from 'firebase/storage';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { assertAdmin } from '@/lib/auth-guard';
-import { storage, db } from '../firebase';
+import { cloudinaryUpload, cloudinaryDelete } from '../cloudinary';
+import { db } from '../firebase';
+import { extractCloudinaryPublicId } from './extractCloudinaryPublicId';
+
+const CLOUDINARY_DOMAIN = 'res.cloudinary.com';
 
 export const replaceParticipantPhoto = async (
   participantId: string,
   file: File
 ) => {
-  await assertAdmin();
-
   const participantRef = doc(db, 'participants', participantId);
 
   const snapshot = await getDoc(participantRef);
@@ -24,26 +19,23 @@ export const replaceParticipantPhoto = async (
     throw new Error('Participante não encontrado');
   }
 
-  if (data.picture?.includes('firebasestorage.googleapis.com')) {
+  if (data.picture?.includes(CLOUDINARY_DOMAIN)) {
     try {
       const url = new URL(data.picture);
-      const pathname = decodeURIComponent(url.pathname);
-      const filePath = pathname
-        .split('/o/')[1]
-        .split('?')[0]
-        .replace('%2F', '/');
-
-      const oldImageRef = ref(storage, filePath);
-      await deleteObject(oldImageRef);
+      const publicId = extractCloudinaryPublicId(url.pathname);
+      if (publicId) {
+        await cloudinaryDelete(publicId);
+      }
     } catch (err) {
       console.warn('Erro ao deletar imagem antiga:', err);
     }
   }
 
-  const newFilePath = `images/${file.name}`;
-  const newImageRef = ref(storage, newFilePath);
-  await uploadBytes(newImageRef, file);
-  const newDownloadURL = await getDownloadURL(newImageRef);
+  const { url: newDownloadURL } = await cloudinaryUpload({
+    file,
+    folder: 'images',
+    publicId: file.name.replace(/\.[^.]+$/, ''),
+  });
 
   await updateDoc(participantRef, {
     picture: newDownloadURL,

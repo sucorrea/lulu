@@ -76,15 +76,15 @@ describe('NotificationHomeBanner', () => {
     mockHasNotificationPermission.mockReturnValue(true);
     mockGetStoredFcmToken.mockResolvedValue(['existing-token']);
 
-    const { container } = render(
-      <NotificationHomeBanner participantId="p1" />
-    );
+    const { container } = render(<NotificationHomeBanner participantId="p1" />);
 
     await waitFor(() => {
       expect(mockGetStoredFcmToken).toHaveBeenCalledWith('p1');
     });
 
-    expect(container.querySelector('[data-testid="notification-home-banner"]')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="notification-home-banner"]')
+    ).not.toBeInTheDocument();
   });
 
   it('should dismiss banner and set localStorage on close button click', async () => {
@@ -96,9 +96,7 @@ describe('NotificationHomeBanner', () => {
       ).toBeInTheDocument();
     });
 
-    fireEvent.click(
-      screen.getByLabelText('Fechar banner de notificações')
-    );
+    fireEvent.click(screen.getByLabelText('Fechar banner de notificações'));
 
     expect(
       screen.queryByTestId('notification-home-banner')
@@ -181,8 +179,6 @@ describe('NotificationHomeBanner', () => {
       expect(mockRequestNotificationPermission).toHaveBeenCalled();
     });
 
-    expect(
-      screen.getByTestId('notification-home-banner')
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('notification-home-banner')).toBeInTheDocument();
   });
 });

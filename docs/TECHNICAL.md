@@ -498,7 +498,14 @@ O hook `useUserVerification()` retorna:
 
 ```typescript
 {
-  user, isLogged, isAdmin, isLulu, role, participantId, isLoading, handleLogout;
+  (user,
+    isLogged,
+    isAdmin,
+    isLulu,
+    role,
+    participantId,
+    isLoading,
+    handleLogout);
 }
 ```
 

@@ -55,6 +55,7 @@ const LulusCardHome = ({
   const styleCard = isNextBirthday
     ? 'border-primary border-2 shadow-lulu-lg'
     : 'shadow-lulu-sm';
+
   const token = participant.editToken ?? String(participant.id);
 
   return (

@@ -63,10 +63,7 @@ export const GiftProfileForm = ({
   mode = 'self-edit',
 }: GiftProfileFormProps) => {
   const { user } = useUserVerification();
-  const { mutate, isPending } = useUpdateParticipantData(
-    participantId,
-    mode
-  );
+  const { mutate, isPending } = useUpdateParticipantData(participantId, mode);
 
   const {
     register,

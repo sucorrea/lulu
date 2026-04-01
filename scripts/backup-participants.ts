@@ -29,10 +29,7 @@ async function backup() {
     participants.push({ _docId: doc.id, ...doc.data() });
   });
 
-  const timestamp = new Date()
-    .toISOString()
-    .replace(/[:.]/g, '-')
-    .slice(0, -5);
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
   const filename = `backups/participants-backup-${timestamp}.json`;
 
   writeFileSync(

@@ -1,6 +1,4 @@
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
-import { assertAdmin } from '@/lib/auth-guard';
-import app from '../firebase';
+import { cloudinaryUpload } from '../cloudinary';
 
 export const uploadGalleryPhoto = async ({
   file,
@@ -9,9 +7,9 @@ export const uploadGalleryPhoto = async ({
   file: File;
   photoId: string;
 }) => {
-  await assertAdmin();
-
-  const storage = getStorage(app);
-  const storageRef = ref(storage, `gallery/${photoId}`);
-  await uploadBytes(storageRef, file);
+  await cloudinaryUpload({
+    file,
+    folder: 'gallery',
+    publicId: photoId,
+  });
 };

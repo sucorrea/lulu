@@ -14,75 +14,73 @@ export const Image = async () => {
   const faLuluSrc = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`;
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 48,
+        background: '#fdfbf7',
+        fontFamily: 'system-ui, sans-serif',
+        border: '8px solid #e4312b',
+        borderRadius: 24,
+        padding: 48,
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={faLuluSrc}
+        alt={alt}
+        width={280}
+        height={280}
+        style={{ borderRadius: 16, objectFit: 'cover' }}
+      />
       <div
         style={{
-          width: '100%',
-          height: '100%',
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 48,
-          background: '#fdfbf7',
-          fontFamily: 'system-ui, sans-serif',
-          border: '8px solid #e4312b',
-          borderRadius: 24,
-          padding: 48,
+          gap: 16,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={faLuluSrc}
-          alt={alt}
-          width={280}
-          height={280}
-          style={{ borderRadius: 16, objectFit: 'cover' }}
-        />
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 16,
+            fontSize: 88,
+            fontWeight: 800,
+            color: '#e4312b',
+            letterSpacing: '-2px',
+            textShadow: '2px 2px 0 rgba(0,0,0,0.06)',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              fontSize: 88,
-              fontWeight: 800,
-              color: '#e4312b',
-              letterSpacing: '-2px',
-              textShadow: '2px 2px 0 rgba(0,0,0,0.06)',
-            }}
-          >
-            Luluzinha
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              fontSize: 42,
-              color: '#111111',
-              fontWeight: 600,
-            }}
-          >
-            {year}
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              fontSize: 28,
-              color: '#6b6256',
-              marginTop: 8,
-            }}
-          >
-            O site das Lulus
-          </div>
+          Luluzinha
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            fontSize: 42,
+            color: '#111111',
+            fontWeight: 600,
+          }}
+        >
+          {year}
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            fontSize: 28,
+            color: '#6b6256',
+            marginTop: 8,
+          }}
+        >
+          O site das Lulus
         </div>
       </div>
-    ),
+    </div>,
     { ...size }
   );
 };

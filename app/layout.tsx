@@ -5,12 +5,12 @@ import { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 
 import { Navbar } from '@/components/layout/navigation-bar/navbar';
+import { VaulPatch } from '@/components/layout/vaul-patch';
 import { Toaster } from '@/components/ui/sonner';
+import { CURRENT_YEAR } from '@/lib/constants';
 import { DeviceProvider } from '@/providers/device-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
-import { CURRENT_YEAR } from '@/lib/constants';
-import { VaulPatch } from '@/components/layout/vaul-patch';
 import './globals.css';
 
 const Footer = dynamic(() => import('@/components/layout/footer'));
@@ -31,6 +31,11 @@ const FcmForegroundHandler = dynamic(() =>
   import('@/components/modules/notifications/fcm-foreground-handler').then(
     (m) => ({ default: m.FcmForegroundHandler })
   )
+);
+const PwaInstallManager = dynamic(() =>
+  import('@/components/layout/pwa-install-manager').then((m) => ({
+    default: m.PwaInstallManager,
+  }))
 );
 
 const inter = Inter({
@@ -118,6 +123,7 @@ const RootLayout = ({
             </DeviceProvider>
             <PwaUpdateManager />
             <FcmForegroundHandler />
+            <PwaInstallManager />
             <Toaster />
             <VaulPatch />
           </ThemeProvider>
