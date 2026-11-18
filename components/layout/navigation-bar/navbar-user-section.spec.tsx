@@ -171,14 +171,13 @@ describe('NavbarUserSection', () => {
 
     const logoutButton = screen.getByRole('button', { name: 'Sair' });
     expect(logoutButton).toHaveClass(
-      'rounded-md',
       'px-3',
       'py-1',
       'text-xs',
-      'text-white',
+      'text-destructive-foreground',
       'transition-colors',
-      'bg-red-500',
-      'hover:bg-red-600'
+      'bg-destructive',
+      'hover:bg-destructive/90'
     );
   });
 

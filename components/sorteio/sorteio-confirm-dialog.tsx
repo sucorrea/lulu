@@ -52,9 +52,9 @@ export const SorteioConfirmDialog = ({
       {selectedYear}.
     </p>
     {hasRelaxed && (
-      <div className="mt-3 flex items-start gap-2 rounded-md bg-amber-50 p-3 dark:bg-amber-950">
-        <AlertTriangle className="h-4 w-4 mt-0.5 text-amber-600" />
-        <p className="text-sm text-amber-700 dark:text-amber-300">
+      <div className="mt-3 flex items-start gap-2 rounded-xl bg-surface-warm p-3">
+        <AlertTriangle className="h-4 w-4 mt-0.5 text-gold" />
+        <p className="text-sm text-gold">
           Algumas atribuições podem repetir o ano anterior, pois não foi
           possível evitar todas as repetições.
         </p>

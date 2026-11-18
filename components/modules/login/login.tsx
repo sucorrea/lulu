@@ -95,7 +95,7 @@ const LoginPage = () => {
       return (
         <span className="flex items-center justify-center">
           <svg
-            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-foreground"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -134,19 +134,19 @@ const LoginPage = () => {
             </p>
           </div>
 
-          <h2 className="mb-6 text-center text-xl font-semibold text-foreground">
+          <h2 className="mb-6 text-center font-serif text-2xl font-bold text-foreground">
             {isLogin ? 'Entrar' : 'Criar conta'}
           </h2>
 
           {error && (
-            <div className="bg-destructive/10 text-destructive p-3 rounded-md mb-4 text-sm">
+            <div className="bg-destructive/10 text-destructive p-3 rounded-xl mb-4 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleAuth} className="space-y-4">
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="email"
                 placeholder="Email"
@@ -158,7 +158,7 @@ const LoginPage = () => {
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Senha"
@@ -170,7 +170,7 @@ const LoginPage = () => {
               <button
                 type="button"
                 onClick={onToggle}
-                className="absolute right-3 top-3"
+                className="absolute right-0 top-0 flex h-11 w-11 items-center justify-center"
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4 text-muted-foreground" />

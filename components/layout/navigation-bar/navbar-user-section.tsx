@@ -35,8 +35,8 @@ export const NavbarUserSection = memo(function NavbarUserSection({
           onClick={onLogout}
           size="icon"
           className={clsx(
-            'rounded-md px-3 py-1 text-xs text-white transition-colors',
-            'bg-red-500 hover:bg-red-600'
+            'px-3 py-1 text-xs transition-colors',
+            'bg-destructive text-destructive-foreground hover:bg-destructive/90'
           )}
         >
           Sair

@@ -89,7 +89,7 @@ describe('EditDeleteButton', () => {
 
       const buttons = container.querySelectorAll('button');
       buttons.forEach((btn) => {
-        expect(btn).toHaveClass('hover:bg-accent');
+        expect(btn).toHaveClass('hover:bg-surface-warm');
       });
     });
   });

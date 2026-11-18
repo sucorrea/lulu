@@ -81,7 +81,7 @@ const PhotoCameraUploader = () => {
           <div className="absolute bottom-2 right-2 flex gap-2">
             <button
               onClick={() => setPhoto(null)}
-              className="bg-red-500 text-white p-2 rounded-full"
+              className="bg-destructive text-destructive-foreground p-2 rounded-full"
             >
               Remover
             </button>
@@ -111,7 +111,7 @@ const PhotoCameraUploader = () => {
             </button>
             <button
               onClick={closeCamera}
-              className="bg-red-500 text-white p-2 rounded-full"
+              className="bg-destructive text-destructive-foreground p-2 rounded-full"
             >
               Cancelar
             </button>

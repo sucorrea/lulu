@@ -245,14 +245,14 @@ export const SorteioClient = () => {
       </div>
 
       {hasExistingDraw && step === 'selection' && (
-        <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-950">
+        <div className="mb-6 rounded-lg border border-accent bg-surface-warm p-4">
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <CheckCircle2 className="h-5 w-5 text-gold" />
             <div className="flex-1">
-              <p className="font-medium text-amber-800 dark:text-amber-200">
+              <p className="font-medium text-gold">
                 Sorteio de {selectedYear} já realizado
               </p>
-              <p className="text-sm text-amber-600 dark:text-amber-400">
+              <p className="text-sm text-gold">
                 {currentYearHistory?.length} atribuições encontradas.
               </p>
             </div>

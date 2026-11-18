@@ -163,7 +163,7 @@ const PersonForm = ({ initialData }: PersonFormProps) => {
             )}
           />
           {errors.pix_key_type && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-destructive text-sm mt-1">
               {errors.pix_key_type.message}
             </p>
           )}

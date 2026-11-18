@@ -28,16 +28,16 @@ export const GenericBottomSheet = ({
   return (
     <Drawer.Root open={open} onOpenChange={onOpenChange} autoFocus>
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 z-50 bg-black/80" />
+        <Drawer.Overlay className="fixed inset-0 z-50 bg-photo-scrim" />
         <Drawer.Content
           className={cn(
-            'fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border border-border bg-background',
+            'fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-3xl border border-border bg-card shadow-lulu-lg',
             className
           )}
         >
           <Drawer.Handle className="mx-auto mt-4 h-1.5 w-12 shrink-0 rounded-full bg-muted" />
           <div className="flex flex-col gap-2 overflow-y-auto p-4 pb-8">
-            <Drawer.Title className="text-lg font-semibold leading-none tracking-tight">
+            <Drawer.Title className="font-serif text-xl font-bold leading-none tracking-tight">
               {title}
             </Drawer.Title>
             {description && (

@@ -302,8 +302,8 @@ describe('PhotoCameraUploader', () => {
       await waitFor(() => {
         const removeButton = screen.getByRole('button', { name: /Remover/i });
         expect(removeButton).toHaveClass(
-          'bg-red-500',
-          'text-white',
+          'bg-destructive',
+          'text-destructive-foreground',
           'p-2',
           'rounded-full'
         );

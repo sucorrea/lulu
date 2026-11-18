@@ -17,16 +17,15 @@ const NotFound = () => {
           />
         </div>
 
-        <h1 className="text-4xl text-primary mb-2">Oops!</h1>
+        <h1 className="font-serif text-5xl font-bold text-primary mb-2">
+          Oops!
+        </h1>
         <p className="text-xl mb-6 text-foreground ">
           A página não foi encontrada
         </p>
 
         <div className="flex flex-col sm:flex-row  justify-center">
-          <Button
-            asChild
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 transition"
-          >
+          <Button asChild className="gap-2">
             <Link href="/">Voltar a Home</Link>
           </Button>
         </div>
@@ -34,7 +33,7 @@ const NotFound = () => {
 
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-primary/10"></div>
-        <div className="absolute top-1/4 right-10 w-12 h-12 rounded-full bg-secondary/20"></div>
+        <div className="absolute top-1/4 right-10 w-12 h-12 rounded-full bg-accent/20"></div>
         <div className="absolute bottom-1/3 left-1/4 w-16 h-16 rounded-full bg-accent/15"></div>
         <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-primary/5"></div>
       </div>

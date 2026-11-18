@@ -38,7 +38,7 @@ const EditDeleteButton = ({
         }}
         aria-label="Excluir comentário"
       >
-        <Trash2Icon size={15} className="text-red-500" />
+        <Trash2Icon size={15} className="text-destructive" />
       </Button>
     </div>
   );

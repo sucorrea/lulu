@@ -48,7 +48,7 @@ export const SorteioResultPreview = memo(
     return (
       <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-3">
-          <h2 className="text-lg font-semibold">
+          <h2 className="font-serif text-xl font-bold">
             {isSaved ? 'Resultado do Sorteio' : 'Preview do Sorteio'}
           </h2>
           <Badge variant="secondary">{pairs.length} atribuições</Badge>
@@ -62,10 +62,7 @@ export const SorteioResultPreview = memo(
             </Badge>
           )}
           {relaxed && (
-            <Badge
-              variant="outline"
-              className="border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-400"
-            >
+            <Badge variant="outline" className="border-accent text-gold">
               <AlertTriangle className="h-3 w-3 mr-1" />
               Restrições relaxadas
             </Badge>
@@ -73,9 +70,9 @@ export const SorteioResultPreview = memo(
         </div>
 
         {relaxed && (
-          <div className="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 p-3 dark:border-amber-700 dark:bg-amber-950">
-            <AlertTriangle className="h-4 w-4 mt-0.5 text-amber-600 shrink-0" />
-            <p className="text-sm text-amber-700 dark:text-amber-300">
+          <div className="flex items-start gap-2 rounded-xl border border-accent bg-surface-warm p-3">
+            <AlertTriangle className="h-4 w-4 mt-0.5 text-gold shrink-0" />
+            <p className="text-sm text-gold">
               Não foi possível evitar todas as repetições do ano anterior.
               Algumas participantes podem ter pegado a mesma pessoa do ano
               passado.
