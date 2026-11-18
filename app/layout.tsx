@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import { Inter } from 'next/font/google';
+import { Cormorant_Garamond, Manrope } from 'next/font/google';
 import { ReactNode } from 'react';
 
 import type { Metadata, Viewport } from 'next';
@@ -33,11 +33,17 @@ const PwaInstallManager = dynamic(() =>
   }))
 );
 
-const inter = Inter({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['600', '700'],
+  variable: '--font-cormorant',
   display: 'swap',
-  preload: true,
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -88,7 +94,11 @@ const RootLayout = ({
   children: ReactNode;
 }>) => {
   return (
-    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={`${cormorant.variable} ${manrope.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" />
       </head>

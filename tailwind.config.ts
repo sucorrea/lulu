@@ -60,6 +60,23 @@ const config: Config = {
           DEFAULT: 'var(--card)',
           foreground: 'var(--card-foreground)',
         },
+        gold: 'var(--gold-foreground)',
+        'surface-warm': 'var(--surface-warm)',
+      },
+      fontFamily: {
+        serif: [
+          'var(--font-cormorant)',
+          'Georgia',
+          'Cambria',
+          'Times New Roman',
+          'serif',
+        ],
+        sans: [
+          'var(--font-manrope)',
+          'system-ui',
+          '-apple-system',
+          'sans-serif',
+        ],
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -67,9 +84,9 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       boxShadow: {
-        'lulu-sm': '2px 2px 0px rgba(0, 0, 0, 0.15)',
-        'lulu-md': '3px 3px 0px rgba(0, 0, 0, 0.15)',
-        'lulu-lg': '4px 4px 0px rgba(0, 0, 0, 0.15)',
+        'lulu-sm': '0 2px 14px rgba(42, 26, 31, 0.06)',
+        'lulu-md': '0 6px 24px rgba(42, 26, 31, 0.08)',
+        'lulu-lg': '0 12px 40px rgba(42, 26, 31, 0.10)',
       },
       animation: {
         'lulu-bounce': 'lulu-bounce 0.5s ease-in-out',
