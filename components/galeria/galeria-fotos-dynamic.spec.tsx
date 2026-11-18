@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/dynamic', () => ({
   default: (
     _importFn: unknown,
-    options?: { loading?: () => React.ReactNode }
+    options?: { loading?: () => ReactNode }
   ) => {
     const Loading = options?.loading;
     return () => (Loading ? <Loading /> : null);

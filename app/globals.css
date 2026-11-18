@@ -13,6 +13,8 @@
   --accent-foreground: #2a1a1f;
   --gold-foreground: #856520;
   --surface-warm: #f8f1e4;
+  --photo-scrim: rgba(42, 10, 20, 0.9);
+  --photo-scrim-foreground: #f3e3c0;
   --muted: #f3ece0;
   --muted-foreground: #5e5050;
   --destructive: #b42318;

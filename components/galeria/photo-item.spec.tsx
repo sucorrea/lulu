@@ -266,6 +266,13 @@ describe('PhotoItem', () => {
       expect(statsContainer).toHaveClass('flex', 'justify-between');
     });
 
+    it('should use the photo scrim token for overlay contrast', () => {
+      const { container } = renderPhotoItem();
+
+      const statsContainer = container.querySelector('div.absolute.bottom-0');
+      expect(statsContainer).toHaveClass('bg-photo-scrim');
+    });
+
     it('should have overflow-hidden for image', () => {
       const { container } = renderPhotoItem();
 

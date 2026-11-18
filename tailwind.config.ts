@@ -62,6 +62,8 @@ const config: Config = {
         },
         gold: 'var(--gold-foreground)',
         'surface-warm': 'var(--surface-warm)',
+        'photo-scrim': 'var(--photo-scrim)',
+        'photo-scrim-foreground': 'var(--photo-scrim-foreground)',
       },
       fontFamily: {
         serif: [

@@ -52,17 +52,17 @@ const PhotoItem = memo(function PhotoItem({
         />
       </button>
 
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-1.5 py-1 bg-primary/70 rounded-b-2xl [&_svg]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] [&_span]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-1.5 py-1 bg-photo-scrim rounded-b-2xl [&_svg]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] [&_span]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
         <LikeUnlikeButton
           handleLike={onLike}
           liked={liked}
           likes={likes}
           index={index}
-          className="text-primary-foreground text-xs py-0.5 [&>span]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+          className="text-photo-scrim-foreground text-xs py-0.5 [&>span]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
         />
         <button
           onClick={() => onSelect(index)}
-          className="flex items-center gap-1 text-xs text-primary-foreground drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] hover:text-primary-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="flex items-center gap-1 text-xs text-photo-scrim-foreground drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] hover:text-photo-scrim-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-label={`Ver ${commentCount} comentário${commentCount === 1 ? '' : 's'} da foto`}
         >
           <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
