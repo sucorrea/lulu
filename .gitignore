@@ -68,3 +68,7 @@ docs-ai/*
 # Scripts e backups
 backups/
 serviceAccountKey.json
+
+# Claude Code
+CLAUDE.md
+.superpowers/
