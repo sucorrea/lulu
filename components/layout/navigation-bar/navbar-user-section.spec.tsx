@@ -171,8 +171,8 @@ describe('NavbarUserSection', () => {
 
     const logoutButton = screen.getByRole('button', { name: 'Sair' });
     expect(logoutButton).toHaveClass(
-      'px-3',
-      'py-1',
+      'px-4',
+      'min-h-11',
       'text-xs',
       'text-destructive-foreground',
       'transition-colors',
@@ -181,7 +181,7 @@ describe('NavbarUserSection', () => {
     );
   });
 
-  it('should set logout button size to icon', () => {
+  it('should set logout button size to sm', () => {
     render(
       <NavbarUserSection
         {...defaultProps}
@@ -191,7 +191,7 @@ describe('NavbarUserSection', () => {
     );
 
     const logoutButton = screen.getByRole('button', { name: 'Sair' });
-    expect(logoutButton).toHaveAttribute('data-size', 'icon');
+    expect(logoutButton).toHaveAttribute('data-size', 'sm');
   });
 
   it('should have flex layout with gap when authenticated', () => {

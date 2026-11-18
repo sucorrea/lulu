@@ -83,7 +83,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => (
                         {ZODIAC_ICONS[s.name] && (
                           <ZodiacIcon
                             icon={ZODIAC_ICONS[s.name]}
-                            className="text-white"
+                            className="text-primary-foreground"
                           />
                         )}
                       </div>

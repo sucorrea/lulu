@@ -153,7 +153,7 @@ describe('PhotoCameraUploader', () => {
 
       const cameraButton = screen.getByRole('button', { name: /Câmera/i });
       expect(cameraButton).toHaveClass(
-        'hover:bg-secondary/90',
+        'hover:bg-surface-warm',
         'transition-colors'
       );
     });
@@ -371,8 +371,8 @@ describe('PhotoCameraUploader', () => {
       const borderedDiv = container.querySelector('.border-2');
       expect(borderedDiv).toHaveClass(
         'border-dashed',
-        'border-gray-300',
-        'rounded-lg',
+        'border-border',
+        'rounded-2xl',
         'p-8',
         'text-center'
       );
@@ -384,20 +384,20 @@ describe('PhotoCameraUploader', () => {
       const uploadLabel = screen.getByText('Upload').parentElement;
       expect(uploadLabel).toHaveClass(
         'bg-primary',
-        'text-white',
-        'px-4',
-        'py-2',
-        'rounded-md',
+        'text-primary-foreground',
+        'px-5',
+        'min-h-11',
+        'rounded-full',
         'cursor-pointer'
       );
 
       const cameraButton = screen.getByRole('button', { name: /Câmera/i });
       expect(cameraButton).toHaveClass(
-        'bg-secondary',
-        'text-white',
-        'px-4',
-        'py-2',
-        'rounded-md',
+        'bg-card',
+        'text-primary',
+        'px-5',
+        'min-h-11',
+        'rounded-full',
         'flex',
         'items-center',
         'gap-2'

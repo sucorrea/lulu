@@ -105,7 +105,7 @@ const PhotoCameraUploader = () => {
           <div className="absolute bottom-2 right-2 flex gap-2">
             <button
               onClick={capturePhoto}
-              className="bg-green-500 text-white p-2 rounded-full"
+              className="bg-primary text-primary-foreground p-2 rounded-full"
             >
               Capturar
             </button>
@@ -122,12 +122,12 @@ const PhotoCameraUploader = () => {
 
     return (
       <div className="flex flex-col gap-4">
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-          <p className="text-gray-500 mb-4">
+        <div className="border-2 border-dashed border-border rounded-2xl p-8 text-center">
+          <p className="text-muted-foreground mb-4">
             Selecione uma foto ou use a câmera
           </p>
           <div className="flex justify-center gap-4">
-            <label className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 transition-colors">
+            <label className="bg-primary text-primary-foreground px-5 min-h-11 inline-flex items-center rounded-full font-semibold cursor-pointer hover:bg-primary/90 transition-colors">
               <span>Upload</span>
               <input
                 type="file"
@@ -138,7 +138,7 @@ const PhotoCameraUploader = () => {
             </label>
             <button
               onClick={openCamera}
-              className="bg-secondary text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-secondary/90 transition-colors"
+              className="border border-border bg-card text-primary px-5 min-h-11 rounded-full font-semibold flex items-center gap-2 hover:bg-surface-warm transition-colors"
             >
               <Camera size={18} />
               Câmera

@@ -197,7 +197,7 @@ describe('DashboardPage', () => {
 
     const icons = screen.getAllByTestId('zodiac-icon');
     expect(icons.length).toBeGreaterThan(0);
-    expect(icons[0]).toHaveAttribute('class', 'text-white');
+    expect(icons[0]).toHaveAttribute('class', 'text-primary-foreground');
   });
 
   it('should keep expected layout classes', () => {

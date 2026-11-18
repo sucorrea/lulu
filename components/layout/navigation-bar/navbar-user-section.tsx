@@ -33,9 +33,9 @@ export const NavbarUserSection = memo(function NavbarUserSection({
         </span>
         <Button
           onClick={onLogout}
-          size="icon"
+          size="sm"
           className={clsx(
-            'px-3 py-1 text-xs transition-colors',
+            'min-h-11 px-4 text-xs transition-colors',
             'bg-destructive text-destructive-foreground hover:bg-destructive/90'
           )}
         >
