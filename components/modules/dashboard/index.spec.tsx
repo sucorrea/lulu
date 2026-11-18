@@ -108,10 +108,12 @@ describe('DashboardPage', () => {
   it('should render main heading and description', () => {
     render(<DashboardPage participants={mockParticipants} />);
 
-    expect(screen.getByText('Dashboard das Lulus')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Agenda das Lulus' })
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Visão geral dos aniversários e signos das participantes, em um painel simples e visual.'
+        'Os aniversários do ano, a partir de agora, e os signos das Lulus.'
       )
     ).toBeInTheDocument();
   });

@@ -12,6 +12,7 @@ import {
   signsStats,
   formatDates,
   getInitials,
+  groupBirthdaysByMonthFrom,
   NameKey,
   meses,
   ZODIAC_ICONS,
@@ -581,5 +582,46 @@ describe('ordenação por próximas', () => {
       fixedToday
     );
     expect(result?.id).toBe(2);
+  });
+});
+
+describe('groupBirthdaysByMonthFrom', () => {
+  const make = (id: number, date: string): Person => ({
+    id,
+    name: `P${id}`,
+    fullName: `P${id}`,
+    date,
+    month: date.slice(5, 7),
+    city: 'C',
+  });
+  const people = [
+    make(1, '1980-01-10'),
+    make(2, '1990-11-25'),
+    make(3, '1991-11-03'),
+    make(4, '1992-12-01'),
+  ];
+  const today = new Date(2026, 10, 18);
+
+  it('starts at the current month and marks it', () => {
+    const groups = groupBirthdaysByMonthFrom(people, today);
+    expect(groups[0].monthIndex).toBe(10);
+    expect(groups[0].isCurrent).toBe(true);
+    expect(groups[0].label).toBe('Novembro');
+  });
+
+  it('places January after December', () => {
+    const groups = groupBirthdaysByMonthFrom(people, today);
+    expect(groups.map((g) => g.monthIndex)).toEqual([10, 11, 0]);
+  });
+
+  it('omits empty months', () => {
+    const groups = groupBirthdaysByMonthFrom(people, today);
+    expect(groups.every((g) => g.people.length > 0)).toBe(true);
+  });
+
+  it('sorts people by day and reads UTC day', () => {
+    const groups = groupBirthdaysByMonthFrom(people, today);
+    expect(groups[0].people.map((p) => p.day)).toEqual([3, 25]);
+    expect(groups[2].people[0].day).toBe(10);
   });
 });

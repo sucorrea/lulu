@@ -314,3 +314,37 @@ export const getInitials = (name: string): string => {
     .toUpperCase()
     .slice(0, 2);
 };
+
+export type MonthBirthdayGroup = {
+  monthIndex: number;
+  label: string;
+  isCurrent: boolean;
+  people: Array<{ person: Person; day: number }>;
+};
+
+export const groupBirthdaysByMonthFrom = (
+  participants: Person[],
+  today: Date = new Date()
+): MonthBirthdayGroup[] => {
+  const entries = participants.map((person) => {
+    const birth = new Date(person.date);
+    return {
+      person,
+      day: birth.getUTCDate(),
+      monthIndex: birth.getUTCMonth(),
+    };
+  });
+  const currentMonth = today.getMonth();
+  return Array.from({ length: 12 }, (_, offset) => {
+    const monthIndex = (currentMonth + offset) % 12;
+    return {
+      monthIndex,
+      label: meses[monthIndex].label,
+      isCurrent: monthIndex === currentMonth,
+      people: entries
+        .filter((entry) => entry.monthIndex === monthIndex)
+        .sort((a, b) => a.day - b.day)
+        .map(({ person, day }) => ({ person, day })),
+    };
+  }).filter((group) => group.people.length > 0);
+};
