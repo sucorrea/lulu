@@ -18,7 +18,7 @@ const LinkIconWithText = ({
   <Link href={link} target="_blank" rel="noopener noreferrer">
     <div className="flex items-center gap-1">
       {icon}
-      {!!showDescription && <p className="md:text-sm xs: text-xs">{text}</p>}
+      {!!showDescription && <p>{text}</p>}
     </div>
   </Link>
 );

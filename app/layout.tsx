@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   ),
   title: `Luluzinha ${CURRENT_YEAR}`,
   description:
-    'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard, histórico e auditoria em tempo real.',
+    'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, agenda, histórico e auditoria em tempo real.',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Luluzinha ${CURRENT_YEAR}`,
     description:
-      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
+      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, agenda e auditoria em tempo real.',
     type: 'website',
     locale: 'pt_BR',
   },
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `Luluzinha ${CURRENT_YEAR}`,
     description:
-      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
+      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, agenda e auditoria em tempo real.',
   },
 };
 

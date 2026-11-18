@@ -122,7 +122,7 @@ describe('LinkIconWithText', () => {
     expect(link).toHaveAttribute('href', 'https://different.com');
   });
 
-  it('should render description with correct text size classes', () => {
+  it('should inherit the text size from the parent', () => {
     render(
       <LinkIconWithText
         link="https://example.com"
@@ -133,6 +133,7 @@ describe('LinkIconWithText', () => {
     );
 
     const description = screen.getByText('Test Link');
-    expect(description).toHaveClass('md:text-sm', 'xs:', 'text-xs');
+    expect(description).not.toHaveClass('text-xs');
+    expect(description.className).toBe('');
   });
 });

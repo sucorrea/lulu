@@ -82,7 +82,7 @@ const Filter = ({
               onClick={handleClearFilters}
               variant="ghost"
               size="sm"
-              className="text-sm"
+              className="min-h-11 text-sm"
             >
               Limpar filtros
             </Button>

@@ -21,7 +21,7 @@ const EditDeleteButton = ({
       <Button
         size="sm"
         variant="ghost"
-        className="px-2 py-0.5"
+        className="min-h-11 min-w-11 px-2 py-0.5"
         onClick={() => {
           onEdit(comentSelected);
         }}
@@ -32,7 +32,7 @@ const EditDeleteButton = ({
       <Button
         size="sm"
         variant="ghost"
-        className="px-2 py-0.5"
+        className="min-h-11 min-w-11 px-2 py-0.5"
         onClick={() => {
           onDelete(comentSelected.id);
         }}

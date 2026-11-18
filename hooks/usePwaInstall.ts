@@ -95,13 +95,15 @@ export const usePwaInstall = () => {
     if (
       globalThis.window === undefined ||
       isAlreadyInstalled() ||
-      wasDismissed() ||
-      wasShownInSession()
+      wasDismissed()
     ) {
       return;
     }
 
     if (isIosSafari()) {
+      if (wasShownInSession()) {
+        return;
+      }
       markShownInSession();
       showIosToast();
       return;

@@ -28,14 +28,17 @@ const mockMatchMedia = (standalone: boolean) => {
 const dispatchInstallPromptEvent = (
   promptMock = vi.fn().mockResolvedValue(undefined)
 ) => {
-  const event = Object.assign(new Event('beforeinstallprompt'), {
-    prompt: promptMock,
-    userChoice: Promise.resolve({
-      outcome: 'dismissed' as const,
-      platform: '',
-    }),
-    platforms: ['web'],
-  });
+  const event = Object.assign(
+    new Event('beforeinstallprompt', { cancelable: true }),
+    {
+      prompt: promptMock,
+      userChoice: Promise.resolve({
+        outcome: 'dismissed' as const,
+        platform: '',
+      }),
+      platforms: ['web'],
+    }
+  );
   act(() => {
     globalThis.dispatchEvent(event);
   });
@@ -224,9 +227,11 @@ describe('usePwaInstall', () => {
 
     const options = vi.mocked(toast).mock.calls[0][1] as {
       onAutoClose?: () => void;
+      onDismiss?: () => void;
     };
-    options.onAutoClose?.();
 
+    expect(options).not.toHaveProperty('onAutoClose');
+    expect(options.onDismiss).toEqual(expect.any(Function));
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
   });
 
@@ -243,6 +248,36 @@ describe('usePwaInstall', () => {
 
     renderHook(() => usePwaInstall());
     dispatchInstallPromptEvent();
+
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it('should still intercept the native prompt after a reload in the same session', () => {
+    sessionStorage.setItem('pwa-install-shown', 'true');
+    const addEventListenerSpy = vi.spyOn(globalThis, 'addEventListener');
+
+    renderHook(() => usePwaInstall());
+    const event = dispatchInstallPromptEvent();
+
+    expect(addEventListenerSpy).toHaveBeenCalledWith(
+      'beforeinstallprompt',
+      expect.any(Function)
+    );
+    expect(event.defaultPrevented).toBe(true);
+    expect(toast).not.toHaveBeenCalled();
+
+    addEventListenerSpy.mockRestore();
+  });
+
+  it('should not show the iOS toast again in the same session', () => {
+    sessionStorage.setItem('pwa-install-shown', 'true');
+    Object.defineProperty(globalThis.navigator, 'userAgent', {
+      get: () =>
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+      configurable: true,
+    });
+
+    renderHook(() => usePwaInstall());
 
     expect(toast).not.toHaveBeenCalled();
   });

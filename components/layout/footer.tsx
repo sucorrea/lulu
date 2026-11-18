@@ -15,7 +15,7 @@ import {
 import { MoreMenuSheet } from './more-menu-sheet';
 
 const itemClass =
-  'flex min-h-[44px] min-w-[56px] flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg px-1 py-2 text-[10px] transition-colors active:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:min-w-0 sm:gap-1 sm:px-2 sm:py-1 sm:text-xs sm:hover:bg-muted';
+  'flex min-h-[44px] min-w-[56px] flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg px-1 py-2 text-xs transition-colors active:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:min-w-0 sm:gap-1 sm:px-2 sm:py-1 sm:hover:bg-muted';
 
 const Footer = () => {
   const pathname = usePathname();
@@ -50,9 +50,7 @@ const Footer = () => {
             title={label}
           >
             <Icon className="size-[18px] sm:size-5" aria-hidden />
-            <span className="max-w-[52px] truncate text-center sm:max-w-none sm:whitespace-nowrap">
-              {label}
-            </span>
+            <span className="whitespace-nowrap text-center">{label}</span>
           </Link>
         ))}
         <button
@@ -64,9 +62,7 @@ const Footer = () => {
           onClick={() => setMoreOpen(true)}
         >
           <Ellipsis className="size-[18px] sm:size-5" aria-hidden />
-          <span className="max-w-[52px] truncate text-center sm:max-w-none sm:whitespace-nowrap">
-            Mais
-          </span>
+          <span className="whitespace-nowrap text-center">Mais</span>
         </button>
       </nav>
       <MoreMenuSheet
