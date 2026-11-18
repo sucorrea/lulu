@@ -1,8 +1,9 @@
 import type { ComponentType } from 'react';
 import {
-  ImageIcon,
+  Dices,
   FileText,
   History,
+  ImageIcon,
   Info,
   LayoutDashboard,
   Users,
@@ -11,33 +12,62 @@ import {
 export interface NavItem {
   href: string;
   label: string;
-  shortLabel?: string;
   icon: ComponentType<{ className?: string; size?: number }>;
+  adminOnly?: boolean;
 }
 
+const LULUS: NavItem = { href: '/', label: 'Lulus', icon: Users };
+const AGENDA: NavItem = {
+  href: '/dashboard',
+  label: 'Agenda',
+  icon: LayoutDashboard,
+};
+const GALERIA: NavItem = {
+  href: '/galeria',
+  label: 'Galeria',
+  icon: ImageIcon,
+};
+const HISTORICO: NavItem = {
+  href: '/historico',
+  label: 'Histórico',
+  icon: History,
+};
+const AUDITORIA: NavItem = {
+  href: '/auditoria',
+  label: 'Auditoria',
+  icon: FileText,
+};
+const SOBRE: NavItem = { href: '/sobre', label: 'Sobre', icon: Info };
+const SORTEIO: NavItem = {
+  href: '/sorteio',
+  label: 'Sorteio',
+  icon: Dices,
+  adminOnly: true,
+};
+
 export const NAV_ITEMS: NavItem[] = [
-  { href: '/', label: 'Participantes', shortLabel: 'Particip.', icon: Users },
-  {
-    href: '/dashboard',
-    label: 'Dashboard',
-    shortLabel: 'Dash.',
-    icon: LayoutDashboard,
-  },
-  { href: '/galeria', label: 'Galeria', icon: ImageIcon },
-  {
-    href: '/historico',
-    label: 'Histórico',
-    shortLabel: 'Hist.',
-    icon: History,
-  },
-  {
-    href: '/auditoria',
-    label: 'Auditoria',
-    shortLabel: 'Audit.',
-    icon: FileText,
-  },
-  { href: '/sobre', label: 'Sobre', icon: Info },
+  LULUS,
+  AGENDA,
+  GALERIA,
+  HISTORICO,
+  AUDITORIA,
+  SOBRE,
+  SORTEIO,
 ];
+
+export const MOBILE_PRIMARY_NAV: NavItem[] = [
+  LULUS,
+  AGENDA,
+  GALERIA,
+  HISTORICO,
+];
+
+export const MORE_NAV_ITEMS: NavItem[] = [AUDITORIA, SOBRE, SORTEIO];
+
+export const filterNavByRole = (
+  items: NavItem[],
+  isAdmin: boolean
+): NavItem[] => items.filter((item) => !item.adminOnly || isAdmin);
 
 export const isCurrentRoute = (pathname: string, href: string): boolean => {
   if (href === '/') {

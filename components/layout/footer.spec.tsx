@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/link', () => ({
@@ -7,15 +7,26 @@ vi.mock('next/link', () => ({
     href,
     children,
     className,
+    onClick,
     ...rest
   }: {
     href: string;
     children: React.ReactNode;
     className?: string;
+    onClick?: () => void;
     'aria-label'?: string;
     title?: string;
   }) => (
-    <a href={href} className={className} data-testid={`link-${href}`} {...rest}>
+    <a
+      href={href}
+      className={className}
+      onClick={(event) => {
+        event.preventDefault();
+        onClick?.();
+      }}
+      data-testid={`link-${href}`}
+      {...rest}
+    >
       {children}
     </a>
   ),
@@ -25,260 +36,131 @@ vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
 }));
 
+vi.mock('@/hooks/user-verify', () => ({
+  useUserVerification: vi.fn(),
+}));
+
+vi.mock('vaul', () => ({
+  Drawer: {
+    Root: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
+      open ? <div data-testid="drawer-root">{children}</div> : null,
+    Portal: ({ children }: { children: React.ReactNode }) => (
+      <div>{children}</div>
+    ),
+    Overlay: () => <div />,
+    Content: ({ children }: { children: React.ReactNode }) => (
+      <div>{children}</div>
+    ),
+    Handle: () => <div />,
+    Title: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>,
+    Description: ({ children }: { children: React.ReactNode }) => (
+      <p>{children}</p>
+    ),
+  },
+}));
+
 import { usePathname } from 'next/navigation';
+import { useUserVerification } from '@/hooks/user-verify';
 import Footer from './footer';
 
 describe('Footer', () => {
   const mockUsePathname = usePathname as ReturnType<typeof vi.fn>;
+  const mockUseUser = useUserVerification as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUsePathname.mockReturnValue('/');
+    mockUseUser.mockReturnValue({ isAdmin: false });
   });
 
   it('should render footer element', () => {
-    mockUsePathname.mockReturnValue('/');
     render(<Footer />);
-
-    const footer = screen.getByRole('contentinfo');
-    expect(footer).toBeInTheDocument();
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
   });
 
-  it('should render six navigation links', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should render four links and a Mais button', () => {
     render(<Footer />);
-
-    const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(6);
+    expect(screen.getAllByRole('link')).toHaveLength(4);
+    expect(screen.getByRole('button', { name: 'Mais' })).toBeInTheDocument();
   });
 
-  it('should render participantes link', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should render primary labels', () => {
     render(<Footer />);
-
-    const participantesLink = screen.getByTestId('link-/');
-    expect(participantesLink).toBeInTheDocument();
-    expect(participantesLink).toHaveAttribute('aria-label', 'Participantes');
-    expect(screen.getByText('Particip.')).toBeInTheDocument();
+    ['Lulus', 'Agenda', 'Galeria', 'Histórico'].forEach((label) => {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    });
   });
 
-  it('should render dashboard link', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should open the sheet with Auditoria and Sobre', () => {
     render(<Footer />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mais' }));
 
-    const dashboardLink = screen.getByTestId('link-/dashboard');
-    expect(dashboardLink).toBeInTheDocument();
-    expect(screen.getByText('Dash.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Mais' })).toBeInTheDocument();
+    expect(screen.getByText('Auditoria')).toBeInTheDocument();
+    expect(screen.getByText('Sobre')).toBeInTheDocument();
+    expect(screen.queryByText('Sorteio')).not.toBeInTheDocument();
   });
 
-  it('should render galeria link', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should show Sorteio for admin', () => {
+    mockUseUser.mockReturnValue({ isAdmin: true });
     render(<Footer />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mais' }));
 
-    const galeriaLink = screen.getByTestId('link-/galeria');
-    expect(galeriaLink).toBeInTheDocument();
-    expect(screen.getByText('Galeria')).toBeInTheDocument();
+    expect(screen.getByText('Sorteio')).toBeInTheDocument();
   });
 
-  it('should render auditoria link', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should close the sheet when a link is clicked', () => {
     render(<Footer />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mais' }));
+    fireEvent.click(screen.getByText('Sobre'));
 
-    const auditoriaLink = screen.getByTestId('link-/auditoria');
-    expect(auditoriaLink).toBeInTheDocument();
-    expect(screen.getByText('Audit.')).toBeInTheDocument();
+    expect(screen.queryByTestId('drawer-root')).not.toBeInTheDocument();
   });
 
-  it('should render historico link', () => {
-    mockUsePathname.mockReturnValue('/');
+  it.each(['/sobre', '/auditoria', '/sorteio'])(
+    'should mark Mais as active on %s',
+    (path) => {
+      mockUsePathname.mockReturnValue(path);
+      render(<Footer />);
+      expect(screen.getByRole('button', { name: 'Mais' })).toHaveClass(
+        'text-primary'
+      );
+    }
+  );
+
+  it('should keep Mais inactive on primary routes', () => {
     render(<Footer />);
-
-    const historicoLink = screen.getByTestId('link-/historico');
-    expect(historicoLink).toBeInTheDocument();
-    expect(screen.getByText('Hist.')).toBeInTheDocument();
-  });
-
-  it('should apply text-primary class to active link (participantes)', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const participantesLink = screen.getByTestId('link-/');
-    expect(participantesLink).toHaveClass('text-primary');
-  });
-
-  it('should apply text-muted-foreground class to inactive links (participantes page)', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const dashboardLink = screen.getByTestId('link-/dashboard');
-    const galeriaLink = screen.getByTestId('link-/galeria');
-
-    expect(dashboardLink).toHaveClass('text-muted-foreground');
-    expect(galeriaLink).toHaveClass('text-muted-foreground');
-  });
-
-  it('should apply text-primary class to active link (dashboard)', () => {
-    mockUsePathname.mockReturnValue('/dashboard');
-    render(<Footer />);
-
-    const dashboardLink = screen.getByTestId('link-/dashboard');
-    expect(dashboardLink).toHaveClass('text-primary');
-  });
-
-  it('should apply text-muted-foreground class to inactive links (dashboard page)', () => {
-    mockUsePathname.mockReturnValue('/dashboard');
-    render(<Footer />);
-
-    const participantesLink = screen.getByTestId('link-/');
-    const galeriaLink = screen.getByTestId('link-/galeria');
-
-    expect(participantesLink).toHaveClass('text-muted-foreground');
-    expect(galeriaLink).toHaveClass('text-muted-foreground');
-  });
-
-  it('should apply text-primary class to active link (galeria)', () => {
-    mockUsePathname.mockReturnValue('/galeria');
-    render(<Footer />);
-
-    const galeriaLink = screen.getByTestId('link-/galeria');
-    expect(galeriaLink).toHaveClass('text-primary');
-  });
-
-  it('should apply text-muted-foreground class to inactive links (galeria page)', () => {
-    mockUsePathname.mockReturnValue('/galeria');
-    render(<Footer />);
-
-    const participantesLink = screen.getByTestId('link-/');
-    const dashboardLink = screen.getByTestId('link-/dashboard');
-
-    expect(participantesLink).toHaveClass('text-muted-foreground');
-    expect(dashboardLink).toHaveClass('text-muted-foreground');
-  });
-
-  it('should have footer fixed at bottom with proper styling', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('fixed', 'bottom-0', 'w-full');
-  });
-
-  it('should have container with flex layout', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const footer = screen.getByRole('contentinfo');
-    const container = footer.querySelector('.container');
-    expect(container).toHaveClass(
-      'flex',
-      'justify-around',
-      'gap-0',
-      'sm:gap-2'
+    expect(screen.getByRole('button', { name: 'Mais' })).toHaveClass(
+      'text-muted-foreground'
     );
   });
 
-  it('should have each link with flex column layout and center alignment', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should apply text-primary to the active link', () => {
+    mockUsePathname.mockReturnValue('/dashboard');
     render(<Footer />);
-
-    const links = screen.getAllByRole('link');
-    links.forEach((link) => {
-      expect(link).toHaveClass('flex', 'flex-col', 'items-center');
-    });
+    expect(screen.getByTestId('link-/dashboard')).toHaveClass('text-primary');
+    expect(screen.getByTestId('link-/')).toHaveClass('text-muted-foreground');
   });
 
-  it('should have each link with touch/desktop feedback classes', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const links = screen.getAllByRole('link');
-    links.forEach((link) => {
-      expect(link).toHaveClass('active:bg-muted', 'sm:hover:bg-muted');
-    });
-  });
-
-  it('should render all text labels correctly (using shortLabel when available)', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    expect(screen.getByText('Particip.')).toBeInTheDocument();
-    expect(screen.getByText('Dash.')).toBeInTheDocument();
-    expect(screen.getByText('Galeria')).toBeInTheDocument();
-    expect(screen.getByText('Audit.')).toBeInTheDocument();
-    expect(screen.getByText('Hist.')).toBeInTheDocument();
-    expect(screen.getByText('Sobre')).toBeInTheDocument();
-  });
-
-  it('should have consistent padding and border styling', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('border-t', 'border-border');
-  });
-
-  it('should have backdrop blur and background styling', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('bg-background/95', 'backdrop-blur');
-  });
-
-  it('should have shadow styling', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('shadow-lg');
-  });
-
-  it('should correctly identify active link when pathname is nested', () => {
+  it('should mark nested route as active', () => {
     mockUsePathname.mockReturnValue('/dashboard/users');
     render(<Footer />);
-
-    const dashboardLink = screen.getByTestId('link-/dashboard');
-    const participantesLink = screen.getByTestId('link-/');
-
-    expect(participantesLink).toHaveClass('text-muted-foreground');
-    expect(dashboardLink).toHaveClass('text-primary');
+    expect(screen.getByTestId('link-/dashboard')).toHaveClass('text-primary');
   });
 
-  it('should have all links with transition-colors class', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should have fixed footer styling', () => {
     render(<Footer />);
-
-    const links = screen.getAllByRole('link');
-    links.forEach((link) => {
-      expect(link).toHaveClass('transition-colors');
-    });
-  });
-
-  it('should render link text with mobile-first font size', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
-    const links = screen.getAllByRole('link');
-    links.forEach((link) => {
-      expect(link).toHaveClass('text-[10px]', 'sm:text-xs');
-    });
-  });
-
-  it('should have proper spacing between links', () => {
-    mockUsePathname.mockReturnValue('/');
-    render(<Footer />);
-
     const footer = screen.getByRole('contentinfo');
-    const container = footer.querySelector('.container');
-    expect(container).toHaveClass('gap-0', 'sm:gap-2');
+    expect(footer).toHaveClass('fixed', 'bottom-0', 'w-full', 'md:hidden');
   });
 
-  it('should have min touch target size for mobile accessibility', () => {
-    mockUsePathname.mockReturnValue('/');
+  it('should have touch target size on links and button', () => {
     render(<Footer />);
-
-    const links = screen.getAllByRole('link');
-    links.forEach((link) => {
-      expect(link).toHaveClass('min-h-[44px]', 'min-w-[56px]');
+    [
+      ...screen.getAllByRole('link'),
+      screen.getByRole('button', { name: 'Mais' }),
+    ].forEach((el) => {
+      expect(el).toHaveClass('min-h-[44px]');
     });
   });
 });

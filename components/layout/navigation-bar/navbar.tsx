@@ -4,7 +4,7 @@ import { memo, ComponentType } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { NAV_ITEMS, isCurrentRoute } from '@/lib/nav-config';
+import { NAV_ITEMS, filterNavByRole, isCurrentRoute } from '@/lib/nav-config';
 
 import { ThemeToggle } from './mode-toggle';
 import { NavbarBrand } from './navbar-brand';
@@ -18,23 +18,19 @@ const NavLink = memo(function NavLink({
   href,
   icon: Icon,
   label,
-  shortLabel,
   onClick,
   isActive,
 }: {
   href: string;
   icon: ComponentType<{ className?: string }>;
   label: string;
-  shortLabel?: string;
   onClick?: () => void;
   isActive?: boolean;
 }) {
-  const displayLabel = shortLabel ?? label;
   const content = (
     <>
       <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-      <span className="hidden xl:inline">{label}</span>
-      <span className="inline xl:hidden">{displayLabel}</span>
+      <span>{label}</span>
     </>
   );
 
@@ -68,6 +64,7 @@ export const Navbar = memo(function Navbar() {
     isLoadingUser,
     isLoginPage,
     userFirstName,
+    isAdmin,
     currentYear,
     handleLogout,
   } = useNavbar();
@@ -81,16 +78,17 @@ export const Navbar = memo(function Navbar() {
           aria-label="Navegação principal"
         >
           <div className="hidden md:flex items-center gap-1">
-            {NAV_ITEMS.map(({ href, label, shortLabel, icon }) => (
-              <NavLink
-                key={href}
-                href={href}
-                icon={icon}
-                label={label}
-                shortLabel={shortLabel}
-                isActive={isCurrentRoute(pathname, href)}
-              />
-            ))}
+            {filterNavByRole(NAV_ITEMS, isAdmin).map(
+              ({ href, label, icon }) => (
+                <NavLink
+                  key={href}
+                  href={href}
+                  icon={icon}
+                  label={label}
+                  isActive={isCurrentRoute(pathname, href)}
+                />
+              )
+            )}
           </div>
           <div className="flex items-center gap-2 md:gap-4">
             <NavbarUserSection
