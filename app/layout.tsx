@@ -120,11 +120,9 @@ const RootLayout = ({
               <Navbar />
               <main id="main-content" className="pb-20 md:pb-0">
                 {children}
+                <VisitCounter />
               </main>
               <Footer />
-              <div className="fixed bottom-20 right-3 z-30 md:bottom-3">
-                <VisitCounter />
-              </div>
             </DeviceProvider>
             <PwaUpdateManager />
             <PwaInstallManager />

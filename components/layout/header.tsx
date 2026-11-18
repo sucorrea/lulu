@@ -12,7 +12,9 @@ const Header = ({ title, description, eyebrow }: HeaderProps) => {
           {eyebrow}
         </p>
       )}
-      <h1 className="lulu-header text-2xl md:text-3xl">{title}</h1>
+      <h1 className="lulu-header font-serif text-[30px] leading-tight">
+        {title}
+      </h1>
       <p className="text-sm md:text-base text-muted-foreground">
         {description ?? ''}
       </p>

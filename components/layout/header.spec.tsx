@@ -41,7 +41,7 @@ describe('Header', () => {
     render(<Header title="Dashboard" />);
 
     const h1 = screen.getByRole('heading', { level: 1 });
-    expect(h1).toHaveClass('lulu-header');
+    expect(h1).toHaveClass('lulu-header', 'font-serif');
   });
 
   it('should render the eyebrow above the title when provided', () => {

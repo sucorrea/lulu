@@ -23,7 +23,7 @@ describe('PageLayout', () => {
     );
 
     const section = container.querySelector('section');
-    expect(section).toHaveClass('bg-muted/40', 'py-6', 'md:py-8');
+    expect(section).toHaveClass('bg-background', 'py-6', 'md:py-8');
   });
 
   it('should render inner div with container and space-y-6', () => {
