@@ -112,12 +112,12 @@ const config: Config = {
             height: '0',
           },
           to: {
-            height: withAlpha('--radix-accordion-content-height'),
+            height: 'var(--radix-accordion-content-height)',
           },
         },
         'accordion-up': {
           from: {
-            height: withAlpha('--radix-accordion-content-height'),
+            height: 'var(--radix-accordion-content-height)',
           },
           to: {
             height: '0',
