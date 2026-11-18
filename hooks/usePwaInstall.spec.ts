@@ -25,9 +25,11 @@ const mockMatchMedia = (standalone: boolean) => {
   });
 };
 
-const dispatchInstallPromptEvent = () => {
+const dispatchInstallPromptEvent = (
+  promptMock = vi.fn().mockResolvedValue(undefined)
+) => {
   const event = Object.assign(new Event('beforeinstallprompt'), {
-    prompt: vi.fn().mockResolvedValue(undefined),
+    prompt: promptMock,
     userChoice: Promise.resolve({
       outcome: 'dismissed' as const,
       platform: '',
@@ -43,6 +45,7 @@ const dispatchInstallPromptEvent = () => {
 describe('usePwaInstall', () => {
   beforeEach(() => {
     localStorage.clear();
+    sessionStorage.clear();
     mockMatchMedia(false);
     Object.defineProperty(globalThis.navigator, 'userAgent', {
       get: () =>
@@ -54,6 +57,7 @@ describe('usePwaInstall', () => {
   afterEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
   });
 
   it('should not show toast when app is already installed (standalone mode)', () => {
@@ -82,7 +86,9 @@ describe('usePwaInstall', () => {
       'Instale o app Luluzinha!',
       expect.objectContaining({
         description: 'Adicione ao seu dispositivo para acesso rápido.',
-        duration: Infinity,
+        id: 'pwa-install',
+        duration: 15000,
+        closeButton: true,
         action: expect.objectContaining({ label: 'Instalar' }),
       })
     );
@@ -102,7 +108,9 @@ describe('usePwaInstall', () => {
       expect.objectContaining({
         description:
           'Toque em Compartilhar ↑ e depois "Adicionar à Tela Início".',
+        id: 'pwa-install',
         duration: 12000,
+        closeButton: true,
       })
     );
   });
@@ -125,7 +133,9 @@ describe('usePwaInstall', () => {
       expect.objectContaining({
         description:
           'Toque em Compartilhar ↑ e depois "Adicionar à Tela Início".',
+        id: 'pwa-install',
         duration: 12000,
+        closeButton: true,
       })
     );
   });
@@ -206,6 +216,51 @@ describe('usePwaInstall', () => {
     options.onDismiss();
 
     expect(localStorage.getItem(STORAGE_KEY)).toBe('true');
+  });
+
+  it('should not mark dismissed when toast closes automatically', () => {
+    renderHook(() => usePwaInstall());
+    dispatchInstallPromptEvent();
+
+    const options = vi.mocked(toast).mock.calls[0][1] as {
+      onAutoClose?: () => void;
+    };
+    options.onAutoClose?.();
+
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
+  it('should show only one toast for consecutive beforeinstallprompt events', () => {
+    renderHook(() => usePwaInstall());
+    dispatchInstallPromptEvent();
+    dispatchInstallPromptEvent();
+
+    expect(toast).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not show toast when already shown in this session', () => {
+    sessionStorage.setItem('pwa-install-shown', 'true');
+
+    renderHook(() => usePwaInstall());
+    dispatchInstallPromptEvent();
+
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it('should use the latest prompt when Instalar is clicked after a second event', () => {
+    renderHook(() => usePwaInstall());
+    const firstPrompt = vi.fn().mockResolvedValue(undefined);
+    const secondPrompt = vi.fn().mockResolvedValue(undefined);
+    dispatchInstallPromptEvent(firstPrompt);
+    dispatchInstallPromptEvent(secondPrompt);
+
+    const options = vi.mocked(toast).mock.calls[0][1] as unknown as {
+      action: { onClick: () => void };
+    };
+    options.action.onClick();
+
+    expect(secondPrompt).toHaveBeenCalled();
+    expect(firstPrompt).not.toHaveBeenCalled();
   });
 
   it('should remove beforeinstallprompt listener on unmount', () => {
