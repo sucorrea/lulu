@@ -1,6 +1,9 @@
 /* tailwind.config.ts */
 import type { Config } from 'tailwindcss';
 
+const withAlpha = (variable: string): string =>
+  `color-mix(in srgb, var(${variable}) calc(<alpha-value> * 100%), transparent)`;
+
 const config: Config = {
   darkMode: ['class'],
   content: [
@@ -19,51 +22,51 @@ const config: Config = {
     },
     extend: {
       colors: {
-        border: 'var(--border)',
-        input: 'var(--input)',
-        ring: 'var(--ring)',
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
+        border: withAlpha('--border'),
+        input: withAlpha('--input'),
+        ring: withAlpha('--ring'),
+        background: withAlpha('--background'),
+        foreground: withAlpha('--foreground'),
         primary: {
-          DEFAULT: 'var(--primary)',
-          foreground: 'var(--primary-foreground)',
+          DEFAULT: withAlpha('--primary'),
+          foreground: withAlpha('--primary-foreground'),
         },
         secondary: {
-          DEFAULT: 'var(--secondary)',
-          foreground: 'var(--secondary-foreground)',
+          DEFAULT: withAlpha('--secondary'),
+          foreground: withAlpha('--secondary-foreground'),
         },
         destructive: {
-          DEFAULT: 'var(--destructive)',
-          foreground: 'var(--destructive-foreground)',
+          DEFAULT: withAlpha('--destructive'),
+          foreground: withAlpha('--destructive-foreground'),
         },
         success: {
-          DEFAULT: 'var(--success)',
-          foreground: 'var(--success-foreground)',
+          DEFAULT: withAlpha('--success'),
+          foreground: withAlpha('--success-foreground'),
         },
         warning: {
-          DEFAULT: 'var(--warning)',
-          foreground: 'var(--warning-foreground)',
+          DEFAULT: withAlpha('--warning'),
+          foreground: withAlpha('--warning-foreground'),
         },
         muted: {
-          DEFAULT: 'var(--muted)',
-          foreground: 'var(--muted-foreground)',
+          DEFAULT: withAlpha('--muted'),
+          foreground: withAlpha('--muted-foreground'),
         },
         accent: {
-          DEFAULT: 'var(--accent)',
-          foreground: 'var(--accent-foreground)',
+          DEFAULT: withAlpha('--accent'),
+          foreground: withAlpha('--accent-foreground'),
         },
         popover: {
-          DEFAULT: 'var(--popover)',
-          foreground: 'var(--popover-foreground)',
+          DEFAULT: withAlpha('--popover'),
+          foreground: withAlpha('--popover-foreground'),
         },
         card: {
-          DEFAULT: 'var(--card)',
-          foreground: 'var(--card-foreground)',
+          DEFAULT: withAlpha('--card'),
+          foreground: withAlpha('--card-foreground'),
         },
-        gold: 'var(--gold-foreground)',
-        'surface-warm': 'var(--surface-warm)',
-        'photo-scrim': 'var(--photo-scrim)',
-        'photo-scrim-foreground': 'var(--photo-scrim-foreground)',
+        gold: withAlpha('--gold-foreground'),
+        'surface-warm': withAlpha('--surface-warm'),
+        'photo-scrim': withAlpha('--photo-scrim'),
+        'photo-scrim-foreground': withAlpha('--photo-scrim-foreground'),
       },
       fontFamily: {
         serif: [
@@ -109,12 +112,12 @@ const config: Config = {
             height: '0',
           },
           to: {
-            height: 'var(--radix-accordion-content-height)',
+            height: withAlpha('--radix-accordion-content-height'),
           },
         },
         'accordion-up': {
           from: {
-            height: 'var(--radix-accordion-content-height)',
+            height: withAlpha('--radix-accordion-content-height'),
           },
           to: {
             height: '0',

@@ -1,3 +1,5 @@
+import { HOME_TIME_ZONE } from '@/lib/constants';
+
 import { months } from './constants';
 import { Person, PixTypes } from './types';
 
@@ -14,6 +16,26 @@ export const getParticipantPhotoUrl = (person: Person): string => {
   return person.photoUpdatedAt
     ? `${base}${sep}v=${person.photoUpdatedAt}`
     : base;
+};
+
+export const canOptimizeImage = (src: string): boolean =>
+  (src.startsWith('/') && !src.startsWith('//')) ||
+  src.startsWith('https://res.cloudinary.com/');
+
+export const getTodayKey = (
+  now: Date = new Date(),
+  timeZone: string = HOME_TIME_ZONE
+): string =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now);
+
+export const todayFromKey = (key: string): Date => {
+  const [year, month, day] = key.split('-').map(Number);
+  return new Date(year, month - 1, day);
 };
 
 export type Signos =

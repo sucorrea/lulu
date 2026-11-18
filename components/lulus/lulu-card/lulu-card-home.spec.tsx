@@ -13,8 +13,13 @@ vi.mock('@/services/queries/vaquinhaHistory', () => ({
 }));
 
 vi.mock('next/image', () => ({
-  default: vi.fn(({ src, alt }) => (
-    <img data-testid="next-image" src={src} alt={alt} />
+  default: vi.fn(({ src, alt, unoptimized }) => (
+    <img
+      data-testid="next-image"
+      data-unoptimized={String(Boolean(unoptimized))}
+      src={src}
+      alt={alt}
+    />
   )),
 }));
 
@@ -136,13 +141,13 @@ describe('LulusCardHome', () => {
       expect(screen.getByText('Ver mais informações')).toBeInTheDocument();
     });
 
-    it('should render the large photo with the participant name', () => {
+    it('should render the large decorative photo next to the visible name', () => {
       renderCard({ variant: 'featured', daysUntil: 9 });
 
       const photo = screen.getByTestId('featured-photo');
       const image = within(photo).getByTestId('next-image');
       expect(image).toHaveAttribute('src', mockParticipant.photoURL);
-      expect(image).toHaveAttribute('alt', 'John Doe');
+      expect(image).toHaveAttribute('alt', '');
       expect(
         within(photo).getByRole('heading', { name: 'John Doe' })
       ).toBeInTheDocument();
@@ -157,6 +162,35 @@ describe('LulusCardHome', () => {
       expect(within(photo).getByText('@johndoe').closest('a')).toHaveAttribute(
         'href',
         `${LINK_INSTAGRAM}johndoe`
+      );
+    });
+
+    it('should optimize Cloudinary photos and skip optimization for other hosts', () => {
+      const { unmount } = renderCard({
+        variant: 'featured',
+        daysUntil: 9,
+        participant: {
+          ...mockParticipant,
+          photoURL: 'https://res.cloudinary.com/demo/image/upload/a.jpg',
+        },
+      });
+      expect(screen.getByTestId('next-image')).toHaveAttribute(
+        'data-unoptimized',
+        'false'
+      );
+      unmount();
+
+      renderCard({
+        variant: 'featured',
+        daysUntil: 9,
+        participant: {
+          ...mockParticipant,
+          photoURL: 'https://lh3.googleusercontent.com/a.jpg',
+        },
+      });
+      expect(screen.getByTestId('next-image')).toHaveAttribute(
+        'data-unoptimized',
+        'true'
       );
     });
 

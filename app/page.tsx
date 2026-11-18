@@ -9,9 +9,13 @@ import PageLayout from '@/components/layout/page-layout';
 import Lulus from '@/components/lulus/lulus-interactive';
 import SkeletonLulusInteractive from '@/components/lulus/skeleton-lulus-interactive';
 import {
+  canOptimizeImage,
   getNextBirthday,
   getParticipantPhotoUrl,
+  getTodayKey,
+  todayFromKey,
 } from '@/components/lulus/utils';
+import { HOME_TIME_ZONE } from '@/lib/constants';
 
 const LulusDataFetcher = async () => {
   await headers();
@@ -29,17 +33,16 @@ const LulusDataFetcher = async () => {
     );
   }
 
-  const nextBirthday = getNextBirthday(participants);
+  const todayKey = getTodayKey();
+  const nextBirthday = getNextBirthday(participants, todayFromKey(todayKey));
   const lcpPhotoUrl = nextBirthday
     ? getParticipantPhotoUrl(nextBirthday)
     : null;
-  if (lcpPhotoUrl) {
+  if (lcpPhotoUrl && !canOptimizeImage(lcpPhotoUrl)) {
     preload(lcpPhotoUrl, { as: 'image', fetchPriority: 'high' });
   }
-  return <Lulus initialParticipants={participants} />;
+  return <Lulus initialParticipants={participants} todayKey={todayKey} />;
 };
-
-const HOME_TIME_ZONE = 'America/Sao_Paulo';
 
 const getMonthEyebrow = (today: Date): string => {
   const month = new Intl.DateTimeFormat('pt-BR', {

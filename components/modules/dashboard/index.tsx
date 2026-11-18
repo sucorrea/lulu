@@ -11,16 +11,17 @@ import BirthdayCalendar from './birthday-calendar';
 
 type DashboardPageProps = {
   participants: Person[];
+  todayKey?: string;
 };
 
-const DashboardPage = ({ participants }: DashboardPageProps) => (
+const DashboardPage = ({ participants, todayKey }: DashboardPageProps) => (
   <PageLayout>
     <Header
       title="Agenda das Lulus"
       description="Os aniversários do ano, a partir de agora, e os signos das Lulus."
     />
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <BirthdayCalendar participants={participants} />
+      <BirthdayCalendar participants={participants} todayKey={todayKey} />
       <Card className="lulu-card">
         <CardHeader className="p-2">
           <CardTitle className="lulu-header mb-2 text-xl">

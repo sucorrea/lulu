@@ -23,7 +23,12 @@ import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
 import LinkIconWithText from '../link-with-icon';
 import MoreInforAccordion from '../more-info';
 import { Person } from '../types';
-import { formatDate, getParticipantPhotoUrl, getSigno } from '../utils';
+import {
+  canOptimizeImage,
+  formatDate,
+  getParticipantPhotoUrl,
+  getSigno,
+} from '../utils';
 import NextBirthdayBanner from './next-birthday-banner';
 import ZodiacIcon from '../zodiac-icon';
 
@@ -184,10 +189,10 @@ const LulusCardHome = ({
           {photoUrl ? (
             <Image
               src={photoUrl}
-              alt={participant.name}
+              alt=""
               fill
               preload
-              unoptimized
+              unoptimized={!canOptimizeImage(photoUrl)}
               sizes="(min-width: 768px) 448px, 100vw"
               className="object-cover"
             />
@@ -202,10 +207,10 @@ const LulusCardHome = ({
           {user && (
             <EditLink
               token={token}
-              className="absolute right-2 top-2 bg-card/90"
+              className="absolute right-2 top-2 bg-card/90 shadow-lulu-md"
             />
           )}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(42,10,20,0.88)] via-[rgba(42,10,20,0.6)] to-transparent px-4 pb-3 pt-10 text-white">
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-photo-scrim via-photo-scrim/70 to-transparent px-4 pb-3 pt-10 text-white">
             <NextBirthdayBanner daysUntil={daysUntil} />
             <h2 className="mt-1.5 break-words font-serif text-3xl font-bold leading-none text-white">
               {participant.name}

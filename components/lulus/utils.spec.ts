@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
+  canOptimizeImage,
+  getTodayKey,
+  todayFromKey,
   getParticipantPhotoUrl,
   getSigno,
   getGivesToPicture,
@@ -659,5 +662,62 @@ describe('groupBirthdaysByMonthFrom', () => {
     const groups = groupBirthdaysByMonthFrom(people, today);
     expect(groups[0].people.map((p) => p.day)).toEqual([3, 25]);
     expect(groups[2].people[0].day).toBe(10);
+  });
+});
+
+describe('getTodayKey', () => {
+  it('returns the São Paulo date when UTC has already moved to the next day', () => {
+    expect(getTodayKey(new Date('2026-11-19T01:30:00Z'))).toBe('2026-11-18');
+  });
+
+  it('returns the next day once midnight passes in São Paulo', () => {
+    expect(getTodayKey(new Date('2026-11-19T03:30:00Z'))).toBe('2026-11-19');
+  });
+
+  it('accepts a custom time zone', () => {
+    expect(getTodayKey(new Date('2026-11-19T01:30:00Z'), 'UTC')).toBe(
+      '2026-11-19'
+    );
+  });
+});
+
+describe('todayFromKey', () => {
+  it('builds a local date at midnight from the key', () => {
+    const date = todayFromKey('2026-11-18');
+    expect(date.getFullYear()).toBe(2026);
+    expect(date.getMonth()).toBe(10);
+    expect(date.getDate()).toBe(18);
+    expect(date.getHours()).toBe(0);
+  });
+
+  it('round-trips with getDaysUntilBirthday', () => {
+    expect(
+      getDaysUntilBirthday(new Date('1990-11-19'), todayFromKey('2026-11-18'))
+    ).toBe(1);
+  });
+});
+
+describe('canOptimizeImage', () => {
+  it('accepts local paths', () => {
+    expect(canOptimizeImage('/luluzinha_no_background.png')).toBe(true);
+    expect(canOptimizeImage('/photos/a.jpg?v=123')).toBe(true);
+  });
+
+  it('accepts Cloudinary URLs', () => {
+    expect(
+      canOptimizeImage('https://res.cloudinary.com/demo/image/upload/a.jpg?v=1')
+    ).toBe(true);
+  });
+
+  it('rejects other hosts, protocol-relative and blob URLs', () => {
+    expect(canOptimizeImage('https://lh3.googleusercontent.com/a.jpg')).toBe(
+      false
+    );
+    expect(canOptimizeImage('//res.cloudinary.com/a.jpg')).toBe(false);
+    expect(canOptimizeImage('blob:http://localhost/123')).toBe(false);
+    expect(canOptimizeImage('https://res.cloudinary.com.evil.com/a.jpg')).toBe(
+      false
+    );
+    expect(canOptimizeImage('')).toBe(false);
   });
 });

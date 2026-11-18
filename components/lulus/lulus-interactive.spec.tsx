@@ -407,6 +407,24 @@ describe('LulusInteractive', () => {
       expect(screen.getAllByTestId('participant-card')).toHaveLength(18);
     });
 
+    it('should use the todayKey prop instead of the system clock', () => {
+      vi.setSystemTime(new Date(2026, 2, 1, 12));
+      render(
+        <LulusInteractive
+          initialParticipants={groupParticipants}
+          todayKey="2026-11-18"
+        />
+      );
+
+      expect(screen.getByTestId('next-birthday-card')).toHaveTextContent(
+        'Aline'
+      );
+      expect(screen.getByTestId('next-birthday-card')).toHaveAttribute(
+        'data-days',
+        '9'
+      );
+    });
+
     it('should hide the featured card when the month filter excludes it', () => {
       render(<LulusInteractive initialParticipants={groupParticipants} />);
 

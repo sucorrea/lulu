@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   getNextBirthday: vi.fn(),
   getParticipantPhotoUrl: vi.fn(),
   preload: vi.fn(),
+  lulusProps: vi.fn(),
 }));
 
 vi.mock('next/headers', () => ({
@@ -18,7 +19,10 @@ vi.mock('@/app/actions/participants', () => ({
 }));
 
 vi.mock('@/components/lulus/lulus-interactive', () => ({
-  default: () => <div data-testid="lulus-component">Lulus Component</div>,
+  default: (props: { todayKey?: string }) => {
+    mocks.lulusProps(props);
+    return <div data-testid="lulus-component">Lulus Component</div>;
+  },
 }));
 
 vi.mock('@/components/lulus/skeleton-lulus-interactive', () => ({
@@ -34,7 +38,8 @@ vi.mock('@/components/error-state', () => ({
   ),
 }));
 
-vi.mock('@/components/lulus/utils', () => ({
+vi.mock('@/components/lulus/utils', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/components/lulus/utils')>()),
   getNextBirthday: mocks.getNextBirthday,
   getParticipantPhotoUrl: mocks.getParticipantPhotoUrl,
 }));
@@ -139,6 +144,48 @@ describe('Home Page', () => {
         fetchPriority: 'high',
       }
     );
+  });
+
+  it('should not preload optimizable photos, leaving it to next/image', async () => {
+    const mockParticipant = { id: 1, name: 'Alice' };
+    mocks.getParticipantsWithEditTokens.mockResolvedValueOnce([
+      mockParticipant,
+    ]);
+    mocks.getNextBirthday.mockReturnValueOnce(mockParticipant);
+    mocks.getParticipantPhotoUrl.mockReturnValueOnce(
+      'https://res.cloudinary.com/demo/image/upload/a.jpg'
+    );
+
+    await act(async () => {
+      render(<Home />);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('lulus-component')).toBeInTheDocument();
+    });
+
+    expect(mocks.preload).not.toHaveBeenCalled();
+  });
+
+  it('should compute today in São Paulo once and share it with the client', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-11-19T01:30:00Z'));
+
+    await act(async () => {
+      render(<Home />);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('lulus-component')).toBeInTheDocument();
+    });
+
+    expect(mocks.lulusProps).toHaveBeenCalledWith(
+      expect.objectContaining({ todayKey: '2026-11-18' })
+    );
+    const today = mocks.getNextBirthday.mock.calls[0][1] as Date;
+    expect([today.getFullYear(), today.getMonth(), today.getDate()]).toEqual([
+      2026, 10, 18,
+    ]);
   });
 
   it('should not call preload when participant has no photo URL', async () => {

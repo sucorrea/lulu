@@ -5,20 +5,31 @@ import Image from 'next/image';
 
 import { Person } from '@/components/lulus/types';
 import {
+  canOptimizeImage,
   getInitials,
   getParticipantPhotoUrl,
+  getTodayKey,
   groupBirthdaysByMonthFrom,
+  todayFromKey,
 } from '@/components/lulus/utils';
 import { cn } from '@/lib/utils';
 
 type BirthdayCalendarProps = {
   participants: Person[];
+  todayKey?: string;
 };
 
-const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
+const BirthdayCalendar = ({
+  participants,
+  todayKey,
+}: BirthdayCalendarProps) => {
   const groups = useMemo(
-    () => groupBirthdaysByMonthFrom(participants),
-    [participants]
+    () =>
+      groupBirthdaysByMonthFrom(
+        participants,
+        todayFromKey(todayKey ?? getTodayKey())
+      ),
+    [participants, todayKey]
   );
 
   return (
@@ -59,10 +70,11 @@ const BirthdayCalendar = ({ participants }: BirthdayCalendarProps) => {
                     {photo ? (
                       <Image
                         src={photo}
-                        alt={person.name}
+                        alt=""
                         width={36}
                         height={36}
-                        unoptimized
+                        sizes="36px"
+                        unoptimized={!canOptimizeImage(photo)}
                         className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-accent"
                       />
                     ) : (

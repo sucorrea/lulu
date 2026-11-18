@@ -19,7 +19,9 @@ import {
   filteredAndSortedParticipantsV2,
   getDaysUntilBirthday,
   getNextBirthday,
+  getTodayKey,
   SORT_UPCOMING,
+  todayFromKey,
 } from './utils';
 import BadgeLulu from './badge-lulu';
 
@@ -37,9 +39,13 @@ const BadgeLuluParticipants = dynamic(
 
 interface LulusInteractiveProps {
   initialParticipants: Person[];
+  todayKey?: string;
 }
 
-const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
+const LulusInteractive = ({
+  initialParticipants,
+  todayKey,
+}: LulusInteractiveProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<string>(SORT_UPCOMING);
   const [filterMonth, setFilterMonth] = useState('all');
@@ -54,9 +60,14 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     staleTime: 5 * 60 * 1000,
   });
 
+  const today = useMemo(
+    () => todayFromKey(todayKey ?? getTodayKey()),
+    [todayKey]
+  );
+
   const nextBirthday = useMemo(
-    () => getNextBirthday(participantsList),
-    [participantsList]
+    () => getNextBirthday(participantsList, today),
+    [participantsList, today]
   );
 
   const filteredParticipants = useMemo(
@@ -66,9 +77,10 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
         searchTerm,
         filterMonth,
         sortBy,
-        assignments?.byResponsible
+        assignments?.byResponsible,
+        today
       ),
-    [participantsList, searchTerm, filterMonth, sortBy, assignments]
+    [participantsList, searchTerm, filterMonth, sortBy, assignments, today]
   );
 
   const featured = useMemo(
@@ -125,7 +137,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           <LulusCardHome
             participant={featured}
             variant="featured"
-            daysUntil={getDaysUntilBirthday(featured.date)}
+            daysUntil={getDaysUntilBirthday(featured.date, today)}
             user={isAdmin}
             participants={participantsList}
           />
@@ -152,7 +164,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
             >
               <LulusCardHome
                 participant={participant}
-                daysUntil={getDaysUntilBirthday(participant.date)}
+                daysUntil={getDaysUntilBirthday(participant.date, today)}
                 user={isAdmin}
                 participants={participantsList}
               />

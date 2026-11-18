@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { getParticipants } from '@/services/participants-server';
 import PageError from '@/components/layout/page-error';
 import DashboardPage from '@/components/modules/dashboard';
+import { getTodayKey } from '@/components/lulus/utils';
 
 const Dashboard = async () => {
   await headers();
@@ -24,7 +25,7 @@ const Dashboard = async () => {
     );
   }
 
-  return <DashboardPage participants={participants} />;
+  return <DashboardPage participants={participants} todayKey={getTodayKey()} />;
 };
 
 export default Dashboard;

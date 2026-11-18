@@ -53,13 +53,21 @@ describe('BirthdayCalendar', () => {
     expect(screen.getAllByText('AGORA')).toHaveLength(1);
   });
 
-  it('shows photo with alt equal to name and the day', () => {
+  it('shows a decorative photo next to the visible name and the day', () => {
     render(<BirthdayCalendar participants={people} />);
-    const bob = screen.getByAltText('Bob');
-    expect(bob.tagName).toBe('IMG');
-    const item = bob.closest('li') as HTMLElement;
+    const item = screen.getByText('Bob').closest('li') as HTMLElement;
+    const photo = item.querySelector('img') as HTMLImageElement;
+    expect(photo).not.toBeNull();
+    expect(photo).toHaveAttribute('alt', '');
     expect(within(item).getByText('25')).toBeInTheDocument();
-    expect(within(item).getByText('Bob')).toBeInTheDocument();
+  });
+
+  it('uses the todayKey prop instead of the system clock', () => {
+    render(<BirthdayCalendar participants={people} todayKey="2026-01-05" />);
+    const headings = screen
+      .getAllByRole('heading', { level: 3 })
+      .map((h) => h.textContent);
+    expect(headings).toEqual(['Janeiro', 'Novembro', 'Dezembro']);
   });
 
   it('sorts people by day within the month', () => {
@@ -71,7 +79,8 @@ describe('BirthdayCalendar', () => {
 
   it('falls back to initials when there is no photo', () => {
     render(<BirthdayCalendar participants={people} />);
-    expect(screen.queryByAltText('Carol')).not.toBeInTheDocument();
+    const item = screen.getByText('Carol').closest('li') as HTMLElement;
+    expect(item.querySelector('img')).toBeNull();
     expect(screen.getByText('C')).toBeInTheDocument();
   });
 
