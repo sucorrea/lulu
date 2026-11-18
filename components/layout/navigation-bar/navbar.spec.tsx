@@ -68,6 +68,7 @@ vi.mock('./hooks/use-navbar', () => ({
   useNavbar: vi.fn(),
 }));
 
+import { NAV_ITEMS } from '@/lib/nav-config';
 import { Navbar } from './navbar';
 import { useNavbar as mockUseNavbar } from './hooks/use-navbar';
 
@@ -181,6 +182,18 @@ describe('Navbar', () => {
 
     ['Particip.', 'Dash.', 'Hist.', 'Audit.'].forEach((text) => {
       expect(screen.queryByText(text)).not.toBeInTheDocument();
+    });
+  });
+
+  it('should expose every NAV_ITEMS label as accessible name for admin', () => {
+    mockUseNavbarFn.mockReturnValue({ ...defaultNavbarData, isAdmin: true });
+    render(<Navbar />);
+
+    NAV_ITEMS.forEach(({ label, href }) => {
+      expect(screen.getByRole('link', { name: label })).toHaveAttribute(
+        'href',
+        href
+      );
     });
   });
 

@@ -163,4 +163,22 @@ describe('Footer', () => {
       expect(el).toHaveClass('min-h-[44px]');
     });
   });
+
+  it('should set aria-current on the active link only', () => {
+    mockUsePathname.mockReturnValue('/galeria');
+    render(<Footer />);
+    expect(screen.getByTestId('link-/galeria')).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    expect(screen.getByTestId('link-/')).not.toHaveAttribute('aria-current');
+  });
+
+  it('should toggle aria-expanded on the Mais button', () => {
+    render(<Footer />);
+    const button = screen.getByRole('button', { name: 'Mais' });
+    expect(button).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(button);
+    expect(button).toHaveAttribute('aria-expanded', 'true');
+  });
 });

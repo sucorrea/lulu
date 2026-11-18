@@ -30,7 +30,7 @@ const NavLink = memo(function NavLink({
   const content = (
     <>
       <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-      <span>{label}</span>
+      <span className="sr-only xl:not-sr-only">{label}</span>
     </>
   );
 
@@ -39,6 +39,8 @@ const NavLink = memo(function NavLink({
       <Link
         href={href}
         aria-current="page"
+        aria-label={label}
+        title={label}
         className={`${linkBaseClass} bg-muted text-foreground cursor-default pointer-events-none opacity-80`}
       >
         {content}
@@ -49,6 +51,8 @@ const NavLink = memo(function NavLink({
   return (
     <Link
       href={href}
+      aria-label={label}
+      title={label}
       className={`${linkBaseClass} text-muted-foreground hover:text-foreground hover:bg-muted`}
       onClick={onClick}
     >

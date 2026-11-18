@@ -44,6 +44,7 @@ const Footer = () => {
             key={href}
             className={`${itemClass} ${colorClass(isCurrentRoute(pathname, href))}`}
             href={href}
+            aria-current={isCurrentRoute(pathname, href) ? 'page' : undefined}
             data-testid={`link-${href}`}
             aria-label={label}
             title={label}
@@ -59,6 +60,7 @@ const Footer = () => {
           className={`${itemClass} ${colorClass(isMoreActive)}`}
           aria-label="Mais"
           aria-haspopup="dialog"
+          aria-expanded={moreOpen}
           onClick={() => setMoreOpen(true)}
         >
           <Ellipsis className="size-[18px] sm:size-5" aria-hidden />

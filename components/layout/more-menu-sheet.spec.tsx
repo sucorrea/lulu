@@ -8,15 +8,18 @@ vi.mock('next/link', () => ({
     children,
     className,
     onClick,
+    'aria-current': ariaCurrent,
   }: {
     href: string;
     children: React.ReactNode;
     className?: string;
     onClick?: () => void;
+    'aria-current'?: 'page';
   }) => (
     <a
       href={href}
       className={className}
+      aria-current={ariaCurrent}
       onClick={(event) => {
         event.preventDefault();
         onClick?.();
@@ -25,6 +28,10 @@ vi.mock('next/link', () => ({
       {children}
     </a>
   ),
+}));
+
+vi.mock('next/navigation', () => ({
+  usePathname: vi.fn(() => '/sobre'),
 }));
 
 vi.mock('vaul', () => ({
@@ -92,5 +99,15 @@ describe('MoreMenuSheet', () => {
     screen.getAllByRole('link').forEach((link) => {
       expect(link).toHaveClass('min-h-[44px]');
     });
+  });
+
+  it('should mark the current route with aria-current and text-primary', () => {
+    render(<MoreMenuSheet open onOpenChange={onOpenChange} isAdmin />);
+    const sobre = screen.getByRole('link', { name: /Sobre/ });
+    expect(sobre).toHaveAttribute('aria-current', 'page');
+    expect(sobre).toHaveClass('text-primary');
+    expect(screen.getByRole('link', { name: /Auditoria/ })).not.toHaveAttribute(
+      'aria-current'
+    );
   });
 });
