@@ -6,6 +6,8 @@ import {
   filteredAndSortedParticipantsV2,
   formatDate,
   getNextBirthday,
+  getDaysUntilBirthday,
+  SORT_UPCOMING,
   birthdayStats,
   signsStats,
   formatDates,
@@ -511,5 +513,73 @@ describe('utils', () => {
       expect(meses[11].label).toBe('Dezembro');
       expect(meses[11].value).toBe('12');
     });
+  });
+});
+
+describe('getDaysUntilBirthday', () => {
+  const today = new Date(2026, 10, 18, 15, 30);
+
+  it('conta dias até a data no ano corrente', () => {
+    expect(getDaysUntilBirthday('1980-11-27', today)).toBe(9);
+  });
+
+  it('vira o ano quando a data já passou', () => {
+    expect(getDaysUntilBirthday('1980-01-10', today)).toBe(53);
+  });
+
+  it('retorna 0 no dia do aniversário', () => {
+    expect(getDaysUntilBirthday('1980-11-18', today)).toBe(0);
+  });
+
+  it('usa dia/mês UTC da data salva', () => {
+    expect(getDaysUntilBirthday(new Date('1980-11-19'), today)).toBe(1);
+  });
+
+  it('29/02 em ano não bissexto conta até 01/03', () => {
+    expect(getDaysUntilBirthday('1980-02-29', new Date(2027, 1, 27))).toBe(2);
+  });
+});
+
+describe('ordenação por próximas', () => {
+  const fixedToday = new Date(2026, 10, 18);
+  const people: Person[] = [
+    { ...mockPerson, id: 1, name: 'A', date: '1980-01-10', month: '01' },
+    { ...mockPerson, id: 2, name: 'B', date: '1980-11-27', month: '11' },
+    { ...mockPerson, id: 3, name: 'C', date: '1980-11-18', month: '11' },
+    { ...mockPerson, id: 4, name: 'D', date: '1980-06-05', month: '06' },
+  ];
+
+  it('ordena por próximas a partir de hoje com sortBy "upcoming"', () => {
+    const result = filteredAndSortedParticipantsV2(
+      people,
+      '',
+      'all',
+      SORT_UPCOMING,
+      undefined,
+      fixedToday
+    );
+    expect(result.map((p) => p.id)).toEqual([3, 2, 1, 4]);
+  });
+
+  it('getNextBirthday devolve quem faz aniversário hoje', () => {
+    const result = getNextBirthday(
+      [
+        { ...mockPerson, id: 1, name: 'A', date: '1980-11-18' },
+        { ...mockPerson, id: 2, name: 'B', date: '1980-11-20' },
+      ],
+      new Date(2026, 10, 18, 20)
+    );
+    expect(result?.id).toBe(1);
+  });
+
+  it('getNextBirthday desempata pelo nome', () => {
+    const result = getNextBirthday(
+      [
+        { ...mockPerson, id: 1, name: 'Zoe', date: '1980-11-20' },
+        { ...mockPerson, id: 2, name: 'Ana', date: '1980-11-20' },
+      ],
+      fixedToday
+    );
+    expect(result?.id).toBe(2);
   });
 });

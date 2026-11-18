@@ -1,6 +1,10 @@
 import { months } from './constants';
 import { Person, PixTypes } from './types';
 
+export const SORT_UPCOMING = 'upcoming';
+
+const MS_PER_DAY = 86400000;
+
 export const getParticipantPhotoUrl = (person: Person): string => {
   const base = person.photoURL ?? person.picture ?? '';
   if (!base) {
@@ -185,7 +189,8 @@ export const filteredAndSortedParticipantsV2 = (
   searchTerm: string,
   filterMonth: string,
   sortBy: string,
-  assignmentsMap?: AssignmentRecord
+  assignmentsMap?: AssignmentRecord,
+  today?: Date
 ) =>
   participants
     .filter((p) => {
@@ -210,6 +215,11 @@ export const filteredAndSortedParticipantsV2 = (
             new Date(a.date).getDate() -
             (Number.parseInt(b.month) * 100 + new Date(b.date).getDate())
           );
+        case SORT_UPCOMING:
+          return (
+            getDaysUntilBirthday(a.date, today) -
+            getDaysUntilBirthday(b.date, today)
+          );
         default:
           return 0;
       }
@@ -223,32 +233,45 @@ export const formatDate = (date: Date): string =>
     month: '2-digit',
   });
 
-export const getNextBirthday = (participants: Person[]): Person | null => {
-  const today = new Date();
-  const currentYear = today.getFullYear();
+export const getDaysUntilBirthday = (
+  date: Date | string,
+  today: Date = new Date()
+): number => {
+  const birth = new Date(date);
+  const month = birth.getUTCMonth();
+  const day = birth.getUTCDate();
+  const startOfToday = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  let next = new Date(today.getFullYear(), month, day);
+  if (next < startOfToday) {
+    next = new Date(today.getFullYear() + 1, month, day);
+  }
+  const startUtc = Date.UTC(
+    startOfToday.getFullYear(),
+    startOfToday.getMonth(),
+    startOfToday.getDate()
+  );
+  const nextUtc = Date.UTC(next.getFullYear(), next.getMonth(), next.getDate());
+  return Math.round((nextUtc - startUtc) / MS_PER_DAY);
+};
 
-  const upcomingBirthdays = participants
-    .map((person) => {
-      const birthDate = new Date(person.date);
-      const birthdayThisYear = new Date(
-        currentYear,
-        birthDate.getMonth(),
-        birthDate.getDate()
-      );
+export const getNextBirthday = (
+  participants: Person[],
+  today: Date = new Date()
+): Person | null => {
+  const sorted = participants
+    .map((person) => ({
+      person,
+      days: getDaysUntilBirthday(person.date, today),
+    }))
+    .sort(
+      (a, b) => a.days - b.days || a.person.name.localeCompare(b.person.name)
+    );
 
-      if (birthdayThisYear < today) {
-        birthdayThisYear.setFullYear(currentYear + 1);
-      }
-
-      return {
-        person,
-        nextBirthday: birthdayThisYear,
-        timeUntil: birthdayThisYear.getTime() - today.getTime(),
-      };
-    })
-    .sort((a, b) => a.timeUntil - b.timeUntil);
-
-  return upcomingBirthdays.length > 0 ? upcomingBirthdays[0].person : null;
+  return sorted.length > 0 ? sorted[0].person : null;
 };
 
 export const birthdayStats = (participants: Person[]) =>
