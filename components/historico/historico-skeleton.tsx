@@ -8,12 +8,12 @@ import TimelineSkeleton from './timeline-skeleton';
 export const HistoricoSkeleton = () => (
   <PageLayout>
     <div className="space-y-2">
-      <Skeleton className="h-8 w-64" />
-      <Skeleton className="h-5 w-96" />
+      <Skeleton className="h-8 w-64 max-w-full" />
+      <Skeleton className="h-5 w-96 max-w-full" />
     </div>
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-      <Skeleton className="h-10 w-40" />
-      <Skeleton className="h-10 w-48" />
+      <Skeleton className="h-10 w-40 max-w-full" />
+      <Skeleton className="h-10 w-48 max-w-full" />
     </div>
     <TimelineSkeleton />
   </PageLayout>

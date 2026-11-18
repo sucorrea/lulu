@@ -28,21 +28,28 @@ const TimelineItem = memo(function TimelineItem({
     <Card
       className={cn(
         'p-0',
-        'relative',
+        'relative min-w-0 bg-surface-warm',
         'transition-all duration-300',
-        'hover:shadow-lg hover:-translate-y-1',
+        'hover:shadow-lulu-md hover:-translate-y-0.5',
         'animate-in fade-in slide-in-from-left-4 duration-500'
       )}
     >
       <div
-        className="absolute -left-[2.6rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-primary border-4 border-background"
+        className="absolute -left-[2.1rem] top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-4 border-background bg-accent sm:-left-[2.6rem]"
         aria-hidden="true"
       />
       <CardContent className={cn('pt-4', !isAdmin && 'p-2')}>
         <div className="flex flex-1 items-center gap-2 flex-wrap">
-          <span className="font-medium">{item.birthdayPersonName}</span>
-          <ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="font-medium">{item.responsibleName}</span>
+          <span className="min-w-0 break-words font-serif text-lg font-bold text-primary">
+            {item.birthdayPersonName}
+          </span>
+          <ArrowLeft
+            className="h-4 w-4 shrink-0 text-gold"
+            aria-hidden="true"
+          />
+          <span className="min-w-0 break-words font-medium">
+            {item.responsibleName}
+          </span>
         </div>
         {isAdmin && (onEdit || onDelete) && (
           <div className="flex items-center justify-end">
@@ -127,15 +134,15 @@ export const VaquinhaHistoryTimeline = memo(function VaquinhaHistoryTimeline({
           <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
             <h2
               id={`year-${year}`}
-              className="text-2xl font-bold flex items-center gap-2"
+              className="flex items-center gap-2 font-serif text-2xl font-bold text-primary"
             >
-              <Calendar className="h-6 w-6" aria-hidden="true" />
+              <Calendar className="h-6 w-6 text-gold" aria-hidden="true" />
               <span>{year}</span>
             </h2>
           </div>
 
           <ol
-            className="space-y-4 ml-8 border-l-2 border-muted pl-8 list-none"
+            className="ml-3 min-w-0 list-none space-y-4 border-l-2 border-accent/50 pl-6 sm:ml-4 sm:pl-8"
             aria-label={`Registros de ${year}`}
           >
             {[...groupedByYear[year]]

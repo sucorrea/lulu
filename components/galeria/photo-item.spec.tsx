@@ -270,7 +270,7 @@ describe('PhotoItem', () => {
       const { container } = renderPhotoItem();
 
       const button = container.querySelector('button');
-      expect(button).toHaveClass('overflow-hidden', 'rounded');
+      expect(button).toHaveClass('overflow-hidden', 'rounded-2xl');
     });
 
     it('should have correct width and height classes for image', () => {
