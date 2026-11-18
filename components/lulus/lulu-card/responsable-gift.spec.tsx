@@ -99,7 +99,7 @@ describe('ResponsableGift', () => {
 
       expect(screen.getAllByTestId('skeleton').length).toBeGreaterThan(0);
       expect(
-        screen.queryByText(/não participa da vaquinha esse ano/)
+        screen.queryByText('Não participa da vaquinha este ano')
       ).not.toBeInTheDocument();
     });
   });
@@ -120,7 +120,7 @@ describe('ResponsableGift', () => {
       );
 
       expect(
-        screen.getByText(/não participa da vaquinha esse ano/)
+        screen.getByText('Não participa da vaquinha este ano')
       ).toBeInTheDocument();
     });
 
@@ -156,8 +156,11 @@ describe('ResponsableGift', () => {
       );
 
       const textElement = container.querySelector('p');
-      expect(textElement).toHaveClass('text-primary');
-      expect(textElement).toHaveClass('text-sm');
+      expect(textElement).toHaveTextContent(
+        'Não participa da vaquinha este ano'
+      );
+      expect(textElement).toHaveClass('italic', 'text-muted-foreground');
+      expect(container.firstElementChild).toHaveClass('bg-surface-warm');
     });
   });
 
@@ -284,8 +287,14 @@ describe('ResponsableGift', () => {
         />
       );
 
-      expect(screen.getByText('Responsável pela vaquinha')).toBeInTheDocument();
-      expect(screen.getByText(/Jane Smith/)).toBeInTheDocument();
+      expect(screen.getByText('Responsável pela vaquinha')).toHaveClass(
+        'uppercase',
+        'text-gold'
+      );
+      expect(screen.getByText('Jane Smith')).toHaveClass(
+        'font-serif',
+        'text-primary'
+      );
     });
 
     it('should apply correct avatar classes', () => {
@@ -311,8 +320,7 @@ describe('ResponsableGift', () => {
       );
 
       const avatar = screen.getByTestId('avatar');
-      expect(avatar).toHaveClass('h-12');
-      expect(avatar).toHaveClass('w-12');
+      expect(avatar).toHaveClass('h-10', 'w-10', 'ring-accent');
     });
 
     it('should render fallback with first letter of name', () => {
@@ -363,7 +371,7 @@ describe('ResponsableGift', () => {
       );
 
       expect(
-        screen.getByText(/não participa da vaquinha esse ano/)
+        screen.getByText('Não participa da vaquinha este ano')
       ).toBeInTheDocument();
     });
   });
@@ -465,7 +473,7 @@ describe('ResponsableGift', () => {
       );
 
       expect(
-        screen.getByText(/não participa da vaquinha esse ano/)
+        screen.getByText('Não participa da vaquinha este ano')
       ).toBeInTheDocument();
     });
 
@@ -575,7 +583,7 @@ describe('ResponsableGift', () => {
         />
       );
 
-      const divElement = container.querySelector('div.bg-muted');
+      const divElement = container.querySelector('div.bg-surface-warm');
       expect(divElement).toBeInTheDocument();
     });
 

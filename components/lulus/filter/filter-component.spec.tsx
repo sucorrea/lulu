@@ -72,7 +72,7 @@ describe('FilterBar', () => {
   const defaultProps = {
     searchTerm: '',
     setSearchTerm: vi.fn(),
-    sortBy: 'date',
+    sortBy: 'upcoming',
     setSortBy: vi.fn(),
     filterMonth: 'all',
     setFilterMonth: vi.fn(),
@@ -148,6 +148,9 @@ describe('FilterBar', () => {
 
   it('should render sort options', () => {
     render(<FilterBar {...defaultProps} />);
+    expect(screen.getByTestId('select-item-upcoming')).toHaveTextContent(
+      'Próximas'
+    );
     expect(screen.getByTestId('select-item-date')).toBeDefined();
     expect(screen.getByTestId('select-item-name')).toBeDefined();
   });
@@ -155,7 +158,15 @@ describe('FilterBar', () => {
   it('should have correct default sortBy value', () => {
     render(<FilterBar {...defaultProps} />);
     const selects = screen.getAllByTestId('select');
-    expect(selects[0].getAttribute('data-value')).toBe('date');
+    expect(selects[0].getAttribute('data-value')).toBe('upcoming');
+  });
+
+  it('should list Próximas as the first sort option', () => {
+    render(<FilterBar {...defaultProps} />);
+    const items = screen
+      .getAllByTestId(/^select-item-/)
+      .map((item) => item.dataset.testid);
+    expect(items[0]).toBe('select-item-upcoming');
   });
 
   it('should have correct default filterMonth value', () => {

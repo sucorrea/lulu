@@ -1,6 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import { CURRENT_YEAR } from '@/lib/constants';
 import LulusInteractive from './lulus-interactive';
+import { participants as fixtureParticipants } from './mockdata';
 import { Person } from './types';
 
 const mockUseUserVerification = vi.fn();
@@ -38,7 +40,15 @@ vi.mock('./filter/filter', () => ({
     setFilterMonth: (value: string) => void;
   }) => (
     <div data-testid="filter-component">
-      Filter Component {searchTerm} {filterMonth} {sortBy}
+      Filter Component {searchTerm} {filterMonth}
+      <span data-testid="sort-by">{sortBy}</span>
+      <button
+        type="button"
+        data-testid="set-december-filter"
+        onClick={() => setFilterMonth('12')}
+      >
+        Apply december
+      </button>
       <button
         type="button"
         data-testid="set-search-filter"
@@ -63,30 +73,23 @@ vi.mock('./filter/filter', () => ({
   ),
 }));
 
-vi.mock('./badge-lulu-participants', () => ({
-  default: () => {
-    const total = mockUseGetCurrentYearAssignments();
-    const { data: assignments, isLoading, isError } = total;
-    const count =
-      isLoading || isError
-        ? null
-        : Object.keys(assignments?.byBirthday ?? {}).length;
-    return <div>{`${count ?? '—'} Participantes da vaquinha`}</div>;
-  },
-}));
-
 vi.mock('./lulu-card/lulu-card-home', () => ({
   default: ({
     participant,
-    isNextBirthday,
+    variant,
+    daysUntil,
   }: {
     participant: Person;
-    isNextBirthday?: boolean;
+    variant?: 'default' | 'featured';
+    daysUntil: number;
   }) => (
     <div
-      data-testid={isNextBirthday ? 'next-birthday-card' : 'participant-card'}
+      data-testid={
+        variant === 'featured' ? 'next-birthday-card' : 'participant-card'
+      }
+      data-days={daysUntil}
     >
-      {participant.name}
+      <h2>{participant.name}</h2>
     </div>
   ),
 }));
@@ -179,12 +182,14 @@ describe('LulusInteractive', () => {
       expect(screen.getByTestId('filter-component')).toBeInTheDocument();
     });
 
-    it('should show total participants badge with correct count', () => {
+    it('should show total participants badge with correct count', async () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
-      expect(screen.getByText(/3 Participantes/)).toBeInTheDocument();
+      expect(
+        await screen.findByText(`3 na vaquinha em ${CURRENT_YEAR}`)
+      ).toBeInTheDocument();
     });
 
-    it('should show dash instead of zero when assignments are loading', () => {
+    it('should show dash instead of zero when assignments are loading', async () => {
       mockUseGetCurrentYearAssignments.mockReturnValue({
         data: undefined,
         isLoading: true,
@@ -194,11 +199,11 @@ describe('LulusInteractive', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
 
       expect(
-        screen.getByText(/— Participantes da vaquinha/)
+        await screen.findByText(`— na vaquinha em ${CURRENT_YEAR}`)
       ).toBeInTheDocument();
     });
 
-    it('should show dash instead of zero when assignments query fails', () => {
+    it('should show dash instead of zero when assignments query fails', async () => {
       mockUseGetCurrentYearAssignments.mockReturnValue({
         data: undefined,
         isLoading: false,
@@ -208,7 +213,7 @@ describe('LulusInteractive', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
 
       expect(
-        screen.getByText(/— Participantes da vaquinha/)
+        await screen.findByText(`— na vaquinha em ${CURRENT_YEAR}`)
       ).toBeInTheDocument();
     });
 
@@ -355,6 +360,112 @@ describe('LulusInteractive', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
       const cards = screen.getAllByTestId('participant-card');
       expect(cards.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Home with the group fixture', () => {
+    const groupParticipants: Person[] = [
+      ...fixtureParticipants,
+      {
+        id: 19,
+        name: 'Izadora',
+        fullName: 'Izadora Vivian',
+        date: new Date('1980-02-14'),
+        month: '02',
+        city: 'OURINHOS',
+      },
+    ];
+    const fixtureByBirthday = Object.fromEntries(
+      groupParticipants.slice(0, 17).map((p) => [p.id, {}])
+    );
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date(2026, 10, 18, 12));
+      mockUseGetCurrentYearAssignments.mockReturnValue({
+        data: { byResponsible: {}, byBirthday: fixtureByBirthday },
+        isLoading: false,
+        isError: false,
+      });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should show the next birthday only once, in the featured card', () => {
+      render(<LulusInteractive initialParticipants={groupParticipants} />);
+
+      expect(screen.getAllByRole('heading', { name: 'Aline' })).toHaveLength(1);
+      expect(screen.getByTestId('next-birthday-card')).toHaveTextContent(
+        'Aline'
+      );
+      expect(screen.getByTestId('next-birthday-card')).toHaveAttribute(
+        'data-days',
+        '9'
+      );
+      expect(screen.getAllByTestId('participant-card')).toHaveLength(18);
+    });
+
+    it('should hide the featured card when the month filter excludes it', () => {
+      render(<LulusInteractive initialParticipants={groupParticipants} />);
+
+      fireEvent.click(screen.getByTestId('set-december-filter'));
+
+      expect(
+        screen.queryByTestId('next-birthday-card')
+      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('heading', { name: 'Aline' })).toBeNull();
+      const cards = screen.getAllByTestId('participant-card');
+      expect(cards).toHaveLength(1);
+      expect(cards[0]).toHaveTextContent('Cássia');
+    });
+
+    it('should sort by upcoming birthdays by default', () => {
+      render(<LulusInteractive initialParticipants={groupParticipants} />);
+
+      expect(screen.getByTestId('sort-by')).toHaveTextContent('upcoming');
+      const names = screen
+        .getAllByTestId('participant-card')
+        .map((card) => card.textContent);
+      expect(names.slice(0, 3)).toEqual(['Cássia', 'Deborah', 'Ana Paula']);
+      expect(names.slice(-2)).toEqual(['Camila', 'Vládia']);
+      expect(screen.getByText('Cássia').closest('div')).toHaveAttribute(
+        'data-days',
+        '23'
+      );
+    });
+
+    it('should show the group badges', async () => {
+      render(<LulusInteractive initialParticipants={groupParticipants} />);
+
+      expect(screen.getByText('Somos 19 Lulus')).toBeInTheDocument();
+      expect(
+        await screen.findByText(`17 na vaquinha em ${CURRENT_YEAR}`)
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('Admin', () => {
+    it('should show the Sorteio button for admin', () => {
+      mockUseUserVerification.mockReturnValue({
+        user: { id: '1' },
+        isAdmin: true,
+        isLoading: false,
+      });
+
+      render(<LulusInteractive initialParticipants={mockParticipants} />);
+
+      expect(screen.getByRole('link', { name: /Sorteio/ })).toHaveAttribute(
+        'href',
+        '/sorteio'
+      );
+    });
+
+    it('should not show the Sorteio button for non admin', () => {
+      render(<LulusInteractive initialParticipants={mockParticipants} />);
+
+      expect(screen.queryByRole('link', { name: /Sorteio/ })).toBeNull();
     });
   });
 });

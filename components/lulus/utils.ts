@@ -212,8 +212,8 @@ export const filteredAndSortedParticipantsV2 = (
         case 'date':
           return (
             Number.parseInt(a.month) * 100 +
-            new Date(a.date).getDate() -
-            (Number.parseInt(b.month) * 100 + new Date(b.date).getDate())
+            new Date(a.date).getUTCDate() -
+            (Number.parseInt(b.month) * 100 + new Date(b.date).getUTCDate())
           );
         case SORT_UPCOMING:
           return (

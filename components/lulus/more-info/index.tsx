@@ -18,7 +18,9 @@ const MoreInfoAccordion = ({
 }: MoreInfoAccordionProps) => (
   <Accordion type="single" collapsible className="w-full p-0 m-0">
     <AccordionItem value="item-1">
-      <AccordionTrigger>{text}</AccordionTrigger>
+      <AccordionTrigger className="min-h-11 font-sans font-semibold">
+        {text}
+      </AccordionTrigger>
       <AccordionContent>{children}</AccordionContent>
     </AccordionItem>
   </Accordion>

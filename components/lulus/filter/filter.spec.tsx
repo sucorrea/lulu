@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Filter from './filter';
 import { useDisclosure } from '@/hooks/use-disclosure';
+import { SORT_UPCOMING } from '../utils';
 
 vi.mock('@/hooks/use-disclosure', () => ({
   useDisclosure: vi.fn(() => ({
@@ -83,7 +84,7 @@ describe('Filter', () => {
     setFilterMonth: vi.fn(),
     searchTerm: '',
     setSearchTerm: vi.fn(),
-    sortBy: 'date',
+    sortBy: SORT_UPCOMING,
     setSortBy: vi.fn(),
   };
 
@@ -198,6 +199,17 @@ describe('Filter', () => {
       expect(badge.textContent).toBe('1');
     });
 
+    it('should not count the upcoming sort as an active filter', () => {
+      render(<Filter {...defaultProps} sortBy="upcoming" />);
+      expect(screen.queryByTestId('badge')).toBeNull();
+      expect(screen.queryByText('Limpar filtros')).toBeNull();
+    });
+
+    it('should count the calendar date sort as an active filter', () => {
+      render(<Filter {...defaultProps} sortBy="date" />);
+      expect(screen.getByTestId('badge').textContent).toBe('1');
+    });
+
     it('should show badge with count 2 when two filters are active', () => {
       render(
         <Filter {...defaultProps} searchTerm="test" filterMonth="janeiro" />
@@ -266,7 +278,7 @@ describe('Filter', () => {
 
       expect(setSearchTerm).toHaveBeenCalledWith('');
       expect(setFilterMonth).toHaveBeenCalledWith('all');
-      expect(setSortBy).toHaveBeenCalledWith('date');
+      expect(setSortBy).toHaveBeenCalledWith('upcoming');
     });
 
     it('should have ghost variant on clear button', () => {

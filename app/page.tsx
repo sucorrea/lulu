@@ -39,10 +39,25 @@ const LulusDataFetcher = async () => {
   return <Lulus initialParticipants={participants} />;
 };
 
+const HOME_TIME_ZONE = 'America/Sao_Paulo';
+
+const getMonthEyebrow = (today: Date): string => {
+  const month = new Intl.DateTimeFormat('pt-BR', {
+    month: 'long',
+    timeZone: HOME_TIME_ZONE,
+  }).format(today);
+  const year = new Intl.DateTimeFormat('pt-BR', {
+    year: 'numeric',
+    timeZone: HOME_TIME_ZONE,
+  }).format(today);
+  return `${month.charAt(0).toUpperCase()}${month.slice(1)} · ${year}`;
+};
+
 const Home = () => (
   <PageLayout>
     <Header
-      title="Participantes"
+      eyebrow={getMonthEyebrow(new Date())}
+      title="Nossa roda de amigas"
       description="Veja quem faz parte dessa rede de carinho e amizade"
     />
     <Suspense fallback={<SkeletonLulusInteractive />}>

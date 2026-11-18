@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { CURRENT_YEAR } from '@/lib/constants';
 import BadgeLuluParticipants from './badge-lulu-participants';
 
 const mockUseGetCurrentYearAssignments = vi.fn();
@@ -28,7 +29,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(screen.getByText(/3 Participantes da vaquinha/)).toBeInTheDocument();
+    expect(
+      screen.getByText(`3 na vaquinha em ${CURRENT_YEAR}`)
+    ).toBeInTheDocument();
   });
 
   it('should display dash when assignments are loading', () => {
@@ -40,7 +43,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(screen.getByText(/— Participantes da vaquinha/)).toBeInTheDocument();
+    expect(
+      screen.getByText(`— na vaquinha em ${CURRENT_YEAR}`)
+    ).toBeInTheDocument();
   });
 
   it('should display dash when assignments query fails', () => {
@@ -52,7 +57,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(screen.getByText(/— Participantes da vaquinha/)).toBeInTheDocument();
+    expect(
+      screen.getByText(`— na vaquinha em ${CURRENT_YEAR}`)
+    ).toBeInTheDocument();
   });
 
   it('should display zero when byBirthday is empty', () => {
@@ -64,7 +71,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(screen.getByText(/0 Participantes da vaquinha/)).toBeInTheDocument();
+    expect(
+      screen.getByText(`0 na vaquinha em ${CURRENT_YEAR}`)
+    ).toBeInTheDocument();
   });
 
   it('should display zero when assignments data is undefined', () => {
@@ -76,19 +85,8 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(screen.getByText(/0 Participantes da vaquinha/)).toBeInTheDocument();
-  });
-
-  it('should render GiftIcon', () => {
-    mockUseGetCurrentYearAssignments.mockReturnValue({
-      data: { byBirthday: { '2025-01-01': {} } },
-      isLoading: false,
-      isError: false,
-    });
-
-    const { container } = render(<BadgeLuluParticipants />);
-
-    const giftIcon = container.querySelector('.lucide-gift');
-    expect(giftIcon).toBeInTheDocument();
+    expect(
+      screen.getByText(`0 na vaquinha em ${CURRENT_YEAR}`)
+    ).toBeInTheDocument();
   });
 });

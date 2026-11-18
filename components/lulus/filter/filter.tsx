@@ -8,7 +8,7 @@ import { GenericBottomSheet } from '@/components/dialog/bottom-sheet';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useIsMobile } from '@/providers/device-provider';
 
-import { meses } from '../utils';
+import { meses, SORT_UPCOMING } from '../utils';
 import FilterBar from './filter-component';
 
 interface FilterProps {
@@ -34,13 +34,13 @@ const Filter = ({
   const activeFiltersCount = [
     searchTerm,
     filterMonth !== 'all',
-    sortBy !== 'date',
+    sortBy !== SORT_UPCOMING,
   ].filter(Boolean).length;
 
   const handleClearFilters = () => {
     setSearchTerm('');
     setFilterMonth('all');
-    setSortBy('date');
+    setSortBy(SORT_UPCOMING);
   };
 
   const filterBarContent = (

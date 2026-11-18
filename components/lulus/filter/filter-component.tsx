@@ -3,6 +3,8 @@ import { Search, SortAsc, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { SelectWithOptions } from '@/components/ui/select-with-options';
 
+import { SORT_UPCOMING } from '../utils';
+
 interface FilterBarProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
@@ -14,6 +16,7 @@ interface FilterBarProps {
 }
 
 const SORT_OPTIONS = [
+  { value: SORT_UPCOMING, label: 'Próximas' },
   { value: 'date', label: 'Ordenar por data' },
   { value: 'name', label: 'Ordenar por nome' },
 ] as const;

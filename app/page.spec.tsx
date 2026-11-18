@@ -1,5 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import Home from './page';
 
 const mocks = vi.hoisted(() => ({
@@ -52,9 +52,22 @@ describe('Home Page', () => {
     mocks.getParticipantPhotoUrl.mockReturnValue(null);
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should render page title', () => {
     render(<Home />);
-    expect(screen.getByText('Participantes')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Nossa roda de amigas'
+    );
+  });
+
+  it('should render the current month and year as eyebrow', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 10, 18, 12));
+    render(<Home />);
+    expect(screen.getByText('Novembro · 2026')).toBeInTheDocument();
   });
 
   it('should render page description', () => {

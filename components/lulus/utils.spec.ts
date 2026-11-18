@@ -284,6 +284,42 @@ describe('utils', () => {
       expect(result[2].name).toBe('Alice');
     });
 
+    it('should read the stored UTC day when sorting by date in a negative offset timezone', () => {
+      const originalTz = process.env.TZ;
+      process.env.TZ = 'America/Sao_Paulo';
+      try {
+        const sameMonth: Person[] = [
+          {
+            ...mockPerson,
+            id: 1,
+            name: 'Quinze',
+            month: '03',
+            date: new Date('1980-03-15'),
+          },
+          {
+            ...mockPerson,
+            id: 2,
+            name: 'Primeiro',
+            month: '03',
+            date: new Date('1980-03-01'),
+          },
+        ];
+        const result = filteredAndSortedParticipantsV2(
+          sameMonth,
+          '',
+          'all',
+          'date'
+        );
+        expect(result.map((p) => p.name)).toEqual(['Primeiro', 'Quinze']);
+      } finally {
+        if (originalTz === undefined) {
+          delete process.env.TZ;
+        } else {
+          process.env.TZ = originalTz;
+        }
+      }
+    });
+
     it('should filter by gives_to search term', () => {
       const result = filteredAndSortedParticipantsV2(
         participants,
