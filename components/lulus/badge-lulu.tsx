@@ -1,11 +1,19 @@
 interface BadgeLuluProps {
-  text: string;
+  value: number | string;
+  label: string;
+  testId?: string;
 }
 
-const BadgeLulu = ({ text }: BadgeLuluProps) => (
-  <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-primary">
-    {text}
-  </span>
+const BadgeLulu = ({ value, label, testId = 'badge-lulu' }: BadgeLuluProps) => (
+  <p
+    data-testid={testId}
+    className="flex items-center gap-2 px-4 text-sm font-medium text-muted-foreground first:pl-0"
+  >
+    <span className="font-serif text-3xl font-bold leading-none text-primary lining-nums">
+      {value}
+    </span>
+    {label}
+  </p>
 );
 
 export default BadgeLulu;

@@ -115,6 +115,18 @@ describe('LulusCardHome', () => {
       ).toBeInTheDocument();
     });
 
+    it('should place the banner above the photo, never over it', () => {
+      renderCard({ variant: 'featured', daysUntil: 9 });
+
+      const banner = screen.getByTestId('next-birthday-banner');
+      const photo = screen.getByTestId('featured-photo');
+      expect(photo).not.toContainElement(banner);
+      expect(
+        banner.compareDocumentPosition(photo) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
+    });
+
     it('should show the today label', () => {
       renderCard({ variant: 'featured', daysUntil: 0 });
 
@@ -135,10 +147,10 @@ describe('LulusCardHome', () => {
       renderCard({ variant: 'featured', daysUntil: 9 });
 
       expect(
-        await screen.findByText('Responsável pela vaquinha')
+        await screen.findByText('responsável pela vaquinha')
       ).toBeInTheDocument();
       expect(screen.getByText('Jane Smith')).toBeInTheDocument();
-      expect(screen.getByText('Ver mais informações')).toBeInTheDocument();
+      expect(screen.getByText('mais detalhes')).toBeInTheDocument();
     });
 
     it('should render the large decorative photo next to the visible name', () => {
@@ -228,16 +240,26 @@ describe('LulusCardHome', () => {
       renderCard({ daysUntil: 53 });
 
       const counter = screen.getByTestId('days-until');
+      expect(within(counter).getByText('faltam')).toBeInTheDocument();
       expect(within(counter).getByText('53')).toBeInTheDocument();
       expect(within(counter).getByText('dias')).toBeInTheDocument();
+      expect(counter).toHaveAttribute(
+        'aria-label',
+        'Faltam 53 dias para o aniversário'
+      );
     });
 
     it('should show singular label for one day', () => {
       renderCard({ daysUntil: 1 });
 
       const counter = screen.getByTestId('days-until');
+      expect(within(counter).getByText('falta')).toBeInTheDocument();
       expect(within(counter).getByText('1')).toBeInTheDocument();
       expect(within(counter).getByText('dia')).toBeInTheDocument();
+      expect(counter).toHaveAttribute(
+        'aria-label',
+        'Falta 1 dia para o aniversário'
+      );
     });
 
     it('should show Hoje! for zero days', () => {
@@ -246,6 +268,8 @@ describe('LulusCardHome', () => {
       const counter = screen.getByTestId('days-until');
       expect(within(counter).getByText('Hoje!')).toBeInTheDocument();
       expect(within(counter).queryByText('dias')).not.toBeInTheDocument();
+      expect(within(counter).queryByText('faltam')).not.toBeInTheDocument();
+      expect(counter).toHaveAttribute('aria-label', 'Aniversário hoje');
     });
 
     it('should render the name as a heading', () => {
@@ -272,7 +296,7 @@ describe('LulusCardHome', () => {
         'href',
         `${LINK_INSTAGRAM}johndoe`
       );
-      expect(screen.getByText('Ver mais informações')).toBeInTheDocument();
+      expect(screen.getByText('mais detalhes')).toBeInTheDocument();
     });
 
     it('should link the sign to the horoscope', () => {
@@ -293,7 +317,7 @@ describe('LulusCardHome', () => {
     it('should show whatsapp, pix and qrcode when opening the accordion', () => {
       renderCard();
 
-      fireEvent.click(screen.getByText('Ver mais informações'));
+      fireEvent.click(screen.getByText('mais detalhes'));
 
       expect(screen.getByTestId('whatsapp-info')).toBeInTheDocument();
       expect(screen.getByTestId('pix-info')).toBeInTheDocument();
@@ -309,7 +333,7 @@ describe('LulusCardHome', () => {
         },
       });
 
-      fireEvent.click(screen.getByText('Ver mais informações'));
+      fireEvent.click(screen.getByText('mais detalhes'));
 
       expect(screen.queryByTestId('whatsapp-info')).not.toBeInTheDocument();
       expect(screen.queryByTestId('pix-info')).not.toBeInTheDocument();
@@ -320,7 +344,7 @@ describe('LulusCardHome', () => {
       renderCard();
 
       expect(
-        await screen.findByText('Responsável pela vaquinha')
+        await screen.findByText('responsável pela vaquinha')
       ).toBeInTheDocument();
     });
 

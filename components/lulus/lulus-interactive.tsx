@@ -118,8 +118,8 @@ const LulusInteractive = ({
 
   return (
     <div className="min-h-screen">
-      <div className="mb-4 flex flex-wrap gap-2">
-        <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
+      <div className="mb-5 flex flex-wrap items-center gap-y-2 divide-x divide-accent/60">
+        <BadgeLulu value={participantsList.length} label="Lulus" />
         <BadgeLuluParticipants />
       </div>
       {isAdmin && (

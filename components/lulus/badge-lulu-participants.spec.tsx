@@ -29,9 +29,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(
-      screen.getByText(`3 na vaquinha em ${CURRENT_YEAR}`)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('badge-lulu-participants')).toHaveTextContent(
+      `3na vaquinha de ${CURRENT_YEAR}`
+    );
   });
 
   it('should display dash when assignments are loading', () => {
@@ -43,9 +43,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(
-      screen.getByText(`— na vaquinha em ${CURRENT_YEAR}`)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('badge-lulu-participants')).toHaveTextContent(
+      `—na vaquinha de ${CURRENT_YEAR}`
+    );
   });
 
   it('should display dash when assignments query fails', () => {
@@ -57,9 +57,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(
-      screen.getByText(`— na vaquinha em ${CURRENT_YEAR}`)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('badge-lulu-participants')).toHaveTextContent(
+      `—na vaquinha de ${CURRENT_YEAR}`
+    );
   });
 
   it('should display zero when byBirthday is empty', () => {
@@ -71,9 +71,9 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(
-      screen.getByText(`0 na vaquinha em ${CURRENT_YEAR}`)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('badge-lulu-participants')).toHaveTextContent(
+      `0na vaquinha de ${CURRENT_YEAR}`
+    );
   });
 
   it('should display zero when assignments data is undefined', () => {
@@ -85,8 +85,8 @@ describe('BadgeLuluParticipants', () => {
 
     render(<BadgeLuluParticipants />);
 
-    expect(
-      screen.getByText(`0 na vaquinha em ${CURRENT_YEAR}`)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('badge-lulu-participants')).toHaveTextContent(
+      `0na vaquinha de ${CURRENT_YEAR}`
+    );
   });
 });

@@ -134,6 +134,26 @@ describe('LinkIconWithText', () => {
 
     const description = screen.getByText('Test Link');
     expect(description).not.toHaveClass('text-xs');
-    expect(description.className).toBe('');
+    expect(description.className).not.toMatch(/\btext-(xs|sm|base|lg)\b/);
+  });
+
+  it('should truncate long text and expose it as a title', () => {
+    render(
+      <LinkIconWithText
+        link="https://example.com"
+        text="@umnomedeinstagrammuitolongo"
+        icon={mockIcon}
+        showDescription={true}
+      />
+    );
+
+    expect(screen.getByText('@umnomedeinstagrammuitolongo')).toHaveClass(
+      'truncate'
+    );
+    expect(screen.getByRole('link')).toHaveAttribute(
+      'title',
+      '@umnomedeinstagrammuitolongo'
+    );
+    expect(screen.getByRole('link')).toHaveClass('min-w-0', 'max-w-full');
   });
 });

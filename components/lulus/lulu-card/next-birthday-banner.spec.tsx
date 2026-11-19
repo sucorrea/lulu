@@ -23,15 +23,16 @@ describe('getNextBirthdayLabel', () => {
 });
 
 describe('NextBirthdayBanner', () => {
-  it('should render the label as a wine pill', () => {
+  it('should render the label as a full-width wine strip', () => {
     render(<NextBirthdayBanner daysUntil={9} />);
 
-    const pill = screen.getByText('Próxima aniversariante · faltam 9 dias');
-    expect(pill).toHaveClass(
-      'rounded-full',
+    const strip = screen.getByText('Próxima aniversariante · faltam 9 dias');
+    expect(strip).toHaveClass(
       'bg-primary',
-      'text-primary-foreground'
+      'text-primary-foreground',
+      'text-center'
     );
+    expect(strip).not.toHaveClass('rounded-full', 'absolute');
   });
 
   it('should render today label', () => {

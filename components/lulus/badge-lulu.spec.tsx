@@ -3,28 +3,42 @@ import { render, screen } from '@testing-library/react';
 import BadgeLulu from './badge-lulu';
 
 describe('BadgeLulu', () => {
-  it('should render text', () => {
-    render(<BadgeLulu text="Somos 3 Lulus" />);
+  it('should render value and label', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
 
-    expect(screen.getByText('Somos 3 Lulus')).toBeInTheDocument();
+    expect(screen.getByTestId('badge-lulu')).toHaveTextContent('3Lulus');
   });
 
-  it('should render as a white pill with border', () => {
-    render(<BadgeLulu text="Somos 3 Lulus" />);
+  it('should highlight the value with the serif font', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
 
-    expect(screen.getByText('Somos 3 Lulus')).toHaveClass(
-      'rounded-full',
-      'border',
-      'border-border',
-      'bg-card',
+    expect(screen.getByText('3')).toHaveClass(
+      'font-serif',
+      'font-bold',
       'text-primary',
-      'font-semibold'
+      'lining-nums'
     );
   });
 
-  it('should not render an icon', () => {
-    const { container } = render(<BadgeLulu text="Test" />);
+  it('should vertically center the value with the label', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
 
-    expect(container.querySelector('svg')).not.toBeInTheDocument();
+    const badge = screen.getByTestId('badge-lulu');
+    expect(badge).toHaveClass('items-center');
+    expect(badge).not.toHaveClass('items-baseline');
+  });
+
+  it('should not render as a pill', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
+
+    const badge = screen.getByTestId('badge-lulu');
+    expect(badge).not.toHaveClass('rounded-full');
+    expect(badge).not.toHaveClass('border');
+  });
+
+  it('should accept a custom test id', () => {
+    render(<BadgeLulu value="—" label="Lulus" testId="custom" />);
+
+    expect(screen.getByTestId('custom')).toHaveTextContent('—Lulus');
   });
 });

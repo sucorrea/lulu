@@ -172,7 +172,7 @@ describe('LulusInteractive', () => {
 
       render(<LulusInteractive initialParticipants={mockParticipants} />);
 
-      expect(screen.getByText(/Somos 3 Lulus/)).toBeInTheDocument();
+      expect(screen.getByTestId('badge-lulu')).toHaveTextContent('3Lulus');
     });
   });
 
@@ -185,8 +185,8 @@ describe('LulusInteractive', () => {
     it('should show total participants badge with correct count', async () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
       expect(
-        await screen.findByText(`3 na vaquinha em ${CURRENT_YEAR}`)
-      ).toBeInTheDocument();
+        await screen.findByTestId('badge-lulu-participants')
+      ).toHaveTextContent(`3na vaquinha de ${CURRENT_YEAR}`);
     });
 
     it('should show dash instead of zero when assignments are loading', async () => {
@@ -199,8 +199,8 @@ describe('LulusInteractive', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
 
       expect(
-        await screen.findByText(`— na vaquinha em ${CURRENT_YEAR}`)
-      ).toBeInTheDocument();
+        await screen.findByTestId('badge-lulu-participants')
+      ).toHaveTextContent(`—na vaquinha de ${CURRENT_YEAR}`);
     });
 
     it('should show dash instead of zero when assignments query fails', async () => {
@@ -213,8 +213,8 @@ describe('LulusInteractive', () => {
       render(<LulusInteractive initialParticipants={mockParticipants} />);
 
       expect(
-        await screen.findByText(`— na vaquinha em ${CURRENT_YEAR}`)
-      ).toBeInTheDocument();
+        await screen.findByTestId('badge-lulu-participants')
+      ).toHaveTextContent(`—na vaquinha de ${CURRENT_YEAR}`);
     });
 
     it('should render participant cards', () => {
@@ -457,10 +457,10 @@ describe('LulusInteractive', () => {
     it('should show the group badges', async () => {
       render(<LulusInteractive initialParticipants={groupParticipants} />);
 
-      expect(screen.getByText('Somos 19 Lulus')).toBeInTheDocument();
+      expect(screen.getByTestId('badge-lulu')).toHaveTextContent('19Lulus');
       expect(
-        await screen.findByText(`17 na vaquinha em ${CURRENT_YEAR}`)
-      ).toBeInTheDocument();
+        await screen.findByTestId('badge-lulu-participants')
+      ).toHaveTextContent(`17na vaquinha de ${CURRENT_YEAR}`);
     });
   });
 

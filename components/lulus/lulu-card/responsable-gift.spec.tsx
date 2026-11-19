@@ -287,8 +287,7 @@ describe('ResponsableGift', () => {
         />
       );
 
-      expect(screen.getByText('Responsável pela vaquinha')).toHaveClass(
-        'uppercase',
+      expect(screen.getByText('responsável pela vaquinha')).toHaveClass(
         'text-gold'
       );
       expect(screen.getByText('Jane Smith')).toHaveClass(
@@ -689,7 +688,7 @@ describe('ResponsableGift', () => {
         />
       );
 
-      expect(screen.getByText('Responsável pela vaquinha')).toBeInTheDocument();
+      expect(screen.getByText('responsável pela vaquinha')).toBeInTheDocument();
       expect(screen.getByText(/Jane Smith/)).toBeInTheDocument();
     });
   });

@@ -22,12 +22,14 @@ vi.mock('@/components/ui/button', () => ({
   Button: ({
     onClick,
     size,
+    variant,
     className,
     children,
     'data-testid': testId,
   }: {
     onClick?: () => void;
     size?: string;
+    variant?: string;
     className?: string;
     children: React.ReactNode;
     'data-testid'?: string;
@@ -35,6 +37,7 @@ vi.mock('@/components/ui/button', () => ({
     <button
       onClick={onClick}
       data-size={size}
+      data-variant={variant}
       className={className}
       data-testid={testId}
     >
@@ -174,11 +177,10 @@ describe('NavbarUserSection', () => {
       'px-4',
       'min-h-11',
       'text-xs',
-      'text-destructive-foreground',
-      'transition-colors',
-      'bg-destructive',
-      'hover:bg-destructive/90'
+      'transition-colors'
     );
+    expect(logoutButton).toHaveAttribute('data-variant', 'outline');
+    expect(logoutButton).not.toHaveClass('bg-destructive');
   });
 
   it('should set logout button size to sm', () => {

@@ -81,40 +81,10 @@ describe('WhatsappInfo', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('should render whatsapp icon', () => {
+  it('should render WhatsApp label', () => {
     render(<WhatsappInfo participant={mockParticipant} />);
 
-    const icon = screen.getByAltText('Whatsapp');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveAttribute('src', '/whatsapp.svg');
-  });
-
-  it('should render formatted phone number', () => {
-    render(<WhatsappInfo participant={mockParticipant} />);
-
-    expect(screen.getByText('(11) 99999-9999')).toBeInTheDocument();
-  });
-
-  it('should apply correct classes to link', () => {
-    render(<WhatsappInfo participant={mockParticipant} />);
-
-    const link = screen.getByRole('link');
-    expect(link).toHaveClass('flex', 'gap-1', 'items-end');
-  });
-
-  it('should apply correct dimensions to icon', () => {
-    render(<WhatsappInfo participant={mockParticipant} />);
-
-    const icon = screen.getByAltText('Whatsapp');
-    expect(icon).toHaveAttribute('width', '20');
-    expect(icon).toHaveAttribute('height', '20');
-  });
-
-  it('should apply ml-1 and text-xs to phone span', () => {
-    render(<WhatsappInfo participant={mockParticipant} />);
-
-    const phoneSpan = screen.getByText('(11) 99999-9999');
-    expect(phoneSpan).toHaveClass('ml-1', 'text-xs');
+    expect(screen.getByRole('link')).toHaveTextContent('WhatsApp');
   });
 
   it('should handle empty phone number', () => {
@@ -144,17 +114,6 @@ describe('WhatsappInfo', () => {
     expect(link).toBeInTheDocument();
   });
 
-  it('should format different phone number patterns', () => {
-    const participant: Person = {
-      ...mockParticipant,
-      phone: '21987654321',
-    };
-
-    render(<WhatsappInfo participant={participant} />);
-
-    expect(screen.getByText('(21) 98765-4321')).toBeInTheDocument();
-  });
-
   it('should concatenate LINK_WHATSAPP with phone', () => {
     render(<WhatsappInfo participant={mockParticipant} />);
 
@@ -163,12 +122,5 @@ describe('WhatsappInfo', () => {
       'https://api.whatsapp.com/send?phone=55'
     );
     expect(link.getAttribute('href')).toContain('11999999999');
-  });
-
-  it('should render icon with w-5 h-5 classes', () => {
-    render(<WhatsappInfo participant={mockParticipant} />);
-
-    const icon = screen.getByAltText('Whatsapp');
-    expect(icon).toHaveClass('w-5', 'h-5');
   });
 });

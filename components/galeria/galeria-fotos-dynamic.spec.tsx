@@ -3,10 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/dynamic', () => ({
-  default: (
-    _importFn: unknown,
-    options?: { loading?: () => ReactNode }
-  ) => {
+  default: (_importFn: unknown, options?: { loading?: () => ReactNode }) => {
     const Loading = options?.loading;
     return () => (Loading ? <Loading /> : null);
   },

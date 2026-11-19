@@ -1,5 +1,5 @@
 'use client';
-
+import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -141,9 +141,21 @@ interface DaysCounterProps {
   daysUntil: number;
 }
 
+const getDaysUntilAriaLabel = (daysUntil: number): string => {
+  if (daysUntil === 0) {
+    return 'Aniversário hoje';
+  }
+  if (daysUntil === 1) {
+    return 'Falta 1 dia para o aniversário';
+  }
+  return `Faltam ${daysUntil} dias para o aniversário`;
+};
+
 const DaysCounter = ({ daysUntil }: DaysCounterProps) => (
   <div
     data-testid="days-until"
+    role="img"
+    aria-label={getDaysUntilAriaLabel(daysUntil)}
     className="ml-auto shrink-0 self-start text-center text-xs font-bold uppercase tracking-wide text-gold"
   >
     {daysUntil === 0 ? (
@@ -152,6 +164,9 @@ const DaysCounter = ({ daysUntil }: DaysCounterProps) => (
       </span>
     ) : (
       <>
+        <span className="block">
+          {daysUntil === 1 ? 'falta' : 'faltam'}
+        </span>
         <span className="block font-serif text-3xl leading-none text-primary">
           {daysUntil}
         </span>
@@ -181,6 +196,7 @@ const LulusCardHome = ({
           : 'p-3.5 shadow-lulu-sm md:p-3.5'
       )}
     >
+      {featured && <NextBirthdayBanner daysUntil={daysUntil} />}
       {featured ? (
         <div
           data-testid="featured-photo"
@@ -211,8 +227,7 @@ const LulusCardHome = ({
             />
           )}
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-photo-scrim via-photo-scrim/70 to-transparent px-4 pb-3 pt-10 text-white">
-            <NextBirthdayBanner daysUntil={daysUntil} />
-            <h2 className="mt-1.5 break-words font-serif text-3xl font-bold leading-none text-white">
+            <h2 className="break-words font-serif text-3xl font-bold leading-none text-white">
               {participant.name}
             </h2>
             <ParticipantMeta participant={participant} featured />
@@ -241,33 +256,23 @@ const LulusCardHome = ({
           <DaysCounter daysUntil={daysUntil} />
         </div>
       )}
+      <MoreInforAccordion className={twMerge(featured && 'px-2')}>
+        <div className="grid grid-cols-2 gap-2 pt-2">
+          {participant.phone && <WhatsappInfo participant={participant} />}
+          {participant.pix_key && <PixInfo participant={participant} />}
+        </div>
+        {participant.pix_key && (
+          <div className="mt-2 flex justify-center">
+            <PixQRCode participant={participant} />
+          </div>
+        )}
+      </MoreInforAccordion>
       <div className={cn('flex flex-col', featured && 'px-3.5 pb-3.5')}>
         <div className="mt-3">
           <ResponsableGift
             participant={participant}
             participants={participants}
           />
-        </div>
-        <div className="mt-3 border-t border-border pt-1">
-          <MoreInforAccordion>
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              {participant.phone && (
-                <div className="flex min-h-11 items-center justify-center rounded-xl bg-surface-warm px-2">
-                  <WhatsappInfo participant={participant} />
-                </div>
-              )}
-              {participant.pix_key && (
-                <div className="flex min-h-11 items-center justify-center rounded-xl bg-surface-warm px-2">
-                  <PixInfo participant={participant} />
-                </div>
-              )}
-            </div>
-            {participant.pix_key && (
-              <div className="mt-2 flex justify-center">
-                <PixQRCode participant={participant} />
-              </div>
-            )}
-          </MoreInforAccordion>
         </div>
       </div>
     </Card>

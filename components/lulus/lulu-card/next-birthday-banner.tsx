@@ -15,9 +15,12 @@ export const getNextBirthdayLabel = (daysUntil: number): string => {
 };
 
 const NextBirthdayBanner = ({ daysUntil }: NextBirthdayBannerProps) => (
-  <span className="inline-block rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground">
+  <p
+    data-testid="next-birthday-banner"
+    className="bg-primary px-4 py-2 text-center text-sm font-semibold text-primary-foreground"
+  >
     {getNextBirthdayLabel(daysUntil)}
-  </span>
+  </p>
 );
 
 export default NextBirthdayBanner;

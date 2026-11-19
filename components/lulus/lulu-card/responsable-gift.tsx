@@ -66,8 +66,8 @@ const ResponsableGift = ({
         </AvatarFallback>
       </Avatar>
       <div className="min-w-0">
-        <p className="text-xs font-bold uppercase tracking-widest text-gold">
-          Responsável pela vaquinha
+        <p className="text-xs font-bold tracking-widest text-gold">
+          responsável pela vaquinha
         </p>
         <p className="break-words font-serif text-xl font-bold leading-tight text-primary">
           {organizer.name}

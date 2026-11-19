@@ -22,7 +22,9 @@ const BadgeLuluParticipants = () => {
 
   return (
     <BadgeLulu
-      text={`${totalParticipants ?? '—'} na vaquinha em ${CURRENT_YEAR}`}
+      testId="badge-lulu-participants"
+      value={totalParticipants ?? '—'}
+      label={`na vaquinha de ${CURRENT_YEAR}`}
     />
   );
 };
