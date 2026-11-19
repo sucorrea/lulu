@@ -3,10 +3,7 @@ import {
   VaquinhaHistory,
   VaquinhaHistoryInput,
   fetchAllVaquinhaHistory,
-  fetchVaquinhaHistoryById,
   fetchVaquinhaHistoryByYear,
-  fetchVaquinhaHistoryByResponsible,
-  fetchVaquinhaHistoryByBirthdayPerson,
   fetchAvailableYears,
   addVaquinhaHistory,
   updateVaquinhaHistory,
@@ -22,39 +19,11 @@ export const useGetAllVaquinhaHistory = () => {
   });
 };
 
-export const useGetVaquinhaHistoryById = (id: string) => {
-  return useQuery<VaquinhaHistory | null>({
-    queryKey: ['vaquinha-history', id],
-    queryFn: () => fetchVaquinhaHistoryById(id),
-    enabled: !!id,
-  });
-};
-
 export const useGetVaquinhaHistoryByYear = (year: number | null) => {
   return useQuery<VaquinhaHistory[]>({
     queryKey: ['vaquinha-history', 'year', year],
     queryFn: () => fetchVaquinhaHistoryByYear(year!),
     enabled: year !== null,
-    retry: 2,
-  });
-};
-
-export const useGetVaquinhaHistoryByResponsible = (responsibleId: number) => {
-  return useQuery<VaquinhaHistory[]>({
-    queryKey: ['vaquinha-history', 'responsible', responsibleId],
-    queryFn: () => fetchVaquinhaHistoryByResponsible(responsibleId),
-    enabled: !!responsibleId,
-    retry: 2,
-  });
-};
-
-export const useGetVaquinhaHistoryByBirthdayPerson = (
-  birthdayPersonId: number
-) => {
-  return useQuery<VaquinhaHistory[]>({
-    queryKey: ['vaquinha-history', 'birthday-person', birthdayPersonId],
-    queryFn: () => fetchVaquinhaHistoryByBirthdayPerson(birthdayPersonId),
-    enabled: !!birthdayPersonId,
     retry: 2,
   });
 };
@@ -135,11 +104,6 @@ export const useGetCurrentYearAssignments = () => {
     retry: 2,
     staleTime: 5 * 60 * 1000,
   });
-};
-
-export const useGetAssignmentForParticipant = (participantId: number) => {
-  const { data } = useGetCurrentYearAssignments();
-  return data?.byResponsible[participantId] ?? null;
 };
 
 export type OrganizerAssignmentResult = {

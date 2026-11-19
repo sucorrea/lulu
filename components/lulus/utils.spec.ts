@@ -5,15 +5,12 @@ import {
   todayFromKey,
   getParticipantPhotoUrl,
   getSigno,
-  getGivesToPicture,
   filteredAndSortedParticipantsV2,
   formatDate,
   getNextBirthday,
   getDaysUntilBirthday,
   SORT_UPCOMING,
-  birthdayStats,
   signsStats,
-  formatDates,
   getInitials,
   groupBirthdaysByMonthFrom,
   NameKey,
@@ -184,29 +181,6 @@ describe('utils', () => {
     it('icon from ZODIAC_ICONS should match icon from getSigno', () => {
       const signo = getSigno(new Date(2000, 2, 21)); // Áries
       expect(ZODIAC_ICONS[signo.label]).toBe(signo.icon);
-    });
-  });
-
-  describe('getGivesToPicture', () => {
-    const participants: Person[] = [
-      { ...mockPerson, id: 1, name: 'Person 1' },
-      { ...mockPerson, id: 2, name: 'Person 2' },
-      { ...mockPerson, id: 3, name: 'Person 3' },
-    ];
-
-    it('should return the correct person by id', () => {
-      const result = getGivesToPicture(2, participants);
-      expect(result.name).toBe('Person 2');
-    });
-
-    it('should return empty object when person not found', () => {
-      const result = getGivesToPicture(999, participants);
-      expect(result).toEqual({});
-    });
-
-    it('should handle empty participants array', () => {
-      const result = getGivesToPicture(1, []);
-      expect(result).toEqual({});
     });
   });
 
@@ -407,28 +381,6 @@ describe('utils', () => {
     });
   });
 
-  describe('birthdayStats', () => {
-    it('should return stats for all months', () => {
-      const participants: Person[] = [
-        { ...mockPerson, id: 1, date: new Date('2000-01-15') },
-        { ...mockPerson, id: 2, date: new Date('2000-01-20') },
-        { ...mockPerson, id: 3, date: new Date('2000-02-15') },
-      ];
-
-      const result = birthdayStats(participants);
-      expect(result).toHaveLength(12);
-      expect(result[0].total).toBe(2);
-      expect(result[1].total).toBe(1);
-      expect(result[2].total).toBe(0);
-    });
-
-    it('should handle empty participants', () => {
-      const result = birthdayStats([]);
-      expect(result).toHaveLength(12);
-      expect(result.every((stat) => stat.total === 0)).toBe(true);
-    });
-  });
-
   describe('signsStats', () => {
     it('should return stats for zodiac signs', () => {
       const participants: Person[] = [
@@ -481,22 +433,6 @@ describe('utils', () => {
     it('should handle undefined and null', () => {
       const result = cn('base-class', undefined, null);
       expect(result).toContain('base-class');
-    });
-  });
-
-  describe('formatDates', () => {
-    it('should format date in English format', () => {
-      const date = new Date(2024, 4, 15);
-      const result = formatDates(date);
-      expect(result).toContain('May');
-      expect(result).toContain('15');
-    });
-
-    it('should handle different months', () => {
-      const date = new Date(2024, 11, 25);
-      const result = formatDates(date);
-      expect(result).toContain('December');
-      expect(result).toContain('25');
     });
   });
 

@@ -8,7 +8,6 @@ import {
 } from './galeriaComments';
 import * as firebase from './firebase';
 import * as firestore from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
 
 vi.mock('./firebase', () => ({
   db: {},
@@ -46,10 +45,6 @@ vi.mock('firebase/firestore', () => {
   };
 });
 
-vi.mock('uuid', () => ({
-  v4: vi.fn(),
-}));
-
 describe('galeriaComments', () => {
   const mockPhotoId = 'photo-123';
   const mockCommentId = 'comment-456';
@@ -73,7 +68,9 @@ describe('galeriaComments', () => {
     };
 
     (firestore.doc as Mock).mockReturnValue(mockDocRef);
-    (uuidv4 as Mock).mockReturnValue(mockCommentId);
+    vi.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue(
+      mockCommentId as `${string}-${string}-${string}-${string}-${string}`
+    );
   });
 
   describe('addCommentToPhoto', () => {

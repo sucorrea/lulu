@@ -9,7 +9,7 @@ export const Image = async () => {
   const year = new Date().getFullYear();
 
   const imageBuffer = readFileSync(
-    join(process.cwd(), 'public', 'fotos', 'faLulu.jpg')
+    join(process.cwd(), 'assets', 'og', 'fa-lulu.jpg')
   );
   const faLuluSrc = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`;
 

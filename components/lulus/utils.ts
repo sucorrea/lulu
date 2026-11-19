@@ -1,6 +1,5 @@
 import { HOME_TIME_ZONE } from '@/lib/constants';
 
-import { months } from './constants';
 import { Person, PixTypes } from './types';
 
 export const SORT_UPCOMING = 'upcoming';
@@ -175,9 +174,6 @@ export const NameKey: Record<PixTypes, string> = {
   none: 'Nenhum',
 };
 
-export const getGivesToPicture = (id: number, participants: Person[]): Person =>
-  participants.find((p) => p.id === id) ?? ({} as Person);
-
 type AssignmentRecord = Record<
   number,
   { birthdayPersonId: number; birthdayPersonName: string }
@@ -296,13 +292,6 @@ export const getNextBirthday = (
   return sorted.length > 0 ? sorted[0].person : null;
 };
 
-export const birthdayStats = (participants: Person[]) =>
-  months.map((month, index) => ({
-    name: month,
-    total: participants.filter((p) => new Date(p.date).getMonth() === index)
-      .length,
-  }));
-
 export const signsStats = (participants: Person[]) => {
   const signsMap: Record<string, number> = {};
 
@@ -319,13 +308,6 @@ export const signsStats = (participants: Person[]) => {
     name,
     total,
   }));
-};
-
-export const formatDates = (date: Date): string => {
-  return new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'long',
-  }).format(date);
 };
 
 export const getInitials = (name: string): string => {
