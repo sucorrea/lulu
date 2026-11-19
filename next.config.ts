@@ -41,7 +41,10 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV !== 'production',
   additionalPrecacheEntries: [{ url: '/offline', revision }],
   exclude: [/.map$/, /^manifest.*\.js$/],
-  globPublicPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff2}'],
+  globPublicPatterns: [
+    '*.{js,css,html,ico,png,jpg,jpeg,svg,woff2}',
+    'icons/**/*.{png,svg}',
+  ],
 });
 
 const securityHeaders = [
