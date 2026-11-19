@@ -23,7 +23,7 @@ export const NavbarBrand = memo(function NavbarBrand({
           priority
         />
         <span className="lulu-header text-xl md:text-2xl text-nowrap font-bold">
-          Luluzinha
+          {'Luluzinha'}
           <span className="hidden md:inline">{` ${currentYear}`}</span>
         </span>
       </Link>

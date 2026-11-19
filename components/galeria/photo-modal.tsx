@@ -44,7 +44,7 @@ const PhotoModal = memo(function PhotoModal() {
   } = useDisclosure();
   const handleDownload = useCallback(() => {
     if (photo) {
-      downloadPhoto(photo);
+      void downloadPhoto(photo);
     }
   }, [photo]);
 
@@ -154,7 +154,7 @@ const PhotoModal = memo(function PhotoModal() {
               variant="destructive"
               className="w-full"
               onClick={() => {
-                deletePhoto(photo);
+                void deletePhoto(photo);
                 onCloseDeletePhoto();
               }}
             >

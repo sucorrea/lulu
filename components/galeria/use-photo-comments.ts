@@ -37,7 +37,7 @@ export const usePhotoComments = ({
   );
 
   const addComment = useCallback(
-    async (text: string) => {
+    (text: string) => {
       if (!user || !selectedPhoto) {
         return;
       }
@@ -73,7 +73,7 @@ export const usePhotoComments = ({
   );
 
   const editComment = useCallback(
-    async (commentId: string, text: string) => {
+    (commentId: string, text: string) => {
       if (!selectedPhoto) {
         return;
       }
@@ -99,7 +99,7 @@ export const usePhotoComments = ({
   );
 
   const deleteComment = useCallback(
-    async (commentId: string) => {
+    (commentId: string) => {
       if (!selectedPhoto) {
         return;
       }

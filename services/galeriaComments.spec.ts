@@ -452,68 +452,39 @@ describe('galeriaComments', () => {
       expect(unsubscribe).toBe(mockUnsubscribe);
     });
 
-    it('should call callback with empty array if document does not exist', () => {
-      const mockCallback = vi.fn();
-      const mockUnsubscribe = vi.fn();
+    it.each([
+      {
+        scenario: 'document does not exist',
+        exists: false,
+        data: { comments: [] },
+      },
+      { scenario: 'comments field is missing', exists: true, data: {} },
+      { scenario: 'comments is empty', exists: true, data: { comments: [] } },
+    ])(
+      'should call callback with empty array if $scenario',
+      ({ exists, data }) => {
+        const mockCallback = vi.fn();
+        const mockUnsubscribe = vi.fn();
 
-      (firestore.onSnapshot as Mock).mockImplementation(
-        (ref, callback: (snap: typeof mockSnapshot) => void) => {
-          const snap = {
-            exists: () => false,
-            data: () => ({ comments: [] }),
-          };
-          callback(snap);
-          return mockUnsubscribe;
-        }
-      );
+        (firestore.onSnapshot as Mock).mockImplementation(
+          (
+            ref,
+            callback: (snap: {
+              exists: () => boolean;
+              data: () => object;
+            }) => void
+          ) => {
+            callback({ exists: () => exists, data: () => data });
+            return mockUnsubscribe;
+          }
+        );
 
-      const unsubscribe = listenPhotoComments(mockPhotoId, mockCallback);
+        const unsubscribe = listenPhotoComments(mockPhotoId, mockCallback);
 
-      expect(mockCallback).toHaveBeenCalledWith([]);
-      expect(unsubscribe).toBe(mockUnsubscribe);
-    });
-
-    it('should call callback with empty array if comments field is missing', () => {
-      const mockCallback = vi.fn();
-      const mockUnsubscribe = vi.fn();
-
-      (firestore.onSnapshot as Mock).mockImplementation(
-        (ref, callback: (snap: typeof mockSnapshot) => void) => {
-          const snap = {
-            exists: () => true,
-            data: () => ({ comments: [] }),
-          };
-          callback(snap);
-          return mockUnsubscribe;
-        }
-      );
-
-      const unsubscribe = listenPhotoComments(mockPhotoId, mockCallback);
-
-      expect(mockCallback).toHaveBeenCalledWith([]);
-      expect(unsubscribe).toBe(mockUnsubscribe);
-    });
-
-    it('should call callback with empty array if comments is empty', () => {
-      const mockCallback = vi.fn();
-      const mockUnsubscribe = vi.fn();
-
-      (firestore.onSnapshot as Mock).mockImplementation(
-        (ref, callback: (snap: typeof mockSnapshot) => void) => {
-          const snap = {
-            exists: () => true,
-            data: () => ({ comments: [] }),
-          };
-          callback(snap);
-          return mockUnsubscribe;
-        }
-      );
-
-      const unsubscribe = listenPhotoComments(mockPhotoId, mockCallback);
-
-      expect(mockCallback).toHaveBeenCalledWith([]);
-      expect(unsubscribe).toBe(mockUnsubscribe);
-    });
+        expect(mockCallback).toHaveBeenCalledWith([]);
+        expect(unsubscribe).toBe(mockUnsubscribe);
+      }
+    );
 
     it('should return unsubscribe function', () => {
       const mockCallback = vi.fn();

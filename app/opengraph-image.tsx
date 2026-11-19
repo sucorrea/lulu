@@ -5,7 +5,7 @@ import { join } from 'node:path';
 export const alt = 'Luluzinha — Vaquinhas de aniversário entre amigas';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const Image = async () => {
+export const Image = () => {
   const year = new Date().getFullYear();
 
   const imageBuffer = readFileSync(

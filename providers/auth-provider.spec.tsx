@@ -49,7 +49,7 @@ describe('AuthProvider', () => {
     const { result } = renderAuth();
 
     expect(result.current.isLoading).toBe(true);
-    expect(result.current.user).toBe(null);
+    expect(result.current.user).toBeNull();
     expect(result.current.isLogged).toBe(false);
     expect(result.current.isAdmin).toBe(false);
   });
@@ -109,7 +109,7 @@ describe('AuthProvider', () => {
     const { result } = renderAuth();
 
     await waitFor(() => {
-      expect(result.current.user).toBe(null);
+      expect(result.current.user).toBeNull();
       expect(result.current.isLogged).toBe(false);
       expect(result.current.isLoading).toBe(false);
     });
@@ -143,7 +143,7 @@ describe('AuthProvider', () => {
     await waitFor(() => {
       expect(mockSignOut).toHaveBeenCalled();
       expect(result.current.isAdmin).toBe(false);
-      expect(result.current.user).toBe(null);
+      expect(result.current.user).toBeNull();
     });
   });
 
@@ -176,7 +176,7 @@ describe('AuthProvider', () => {
       resolveClaim({ claims: { admin: true } });
     });
 
-    expect(result.current.user).toBe(null);
+    expect(result.current.user).toBeNull();
     expect(result.current.isAdmin).toBe(false);
   });
 

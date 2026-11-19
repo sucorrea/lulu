@@ -16,19 +16,17 @@ const LIST_OPTIONS = {
   resource_type: 'image' as const,
 };
 
-export const listAllGalleryUrls = async (): Promise<string[]> => {
-  const urls: string[] = [];
-  let nextCursor: string | undefined;
+const listGalleryPage = async (cursor?: string): Promise<string[]> => {
+  const result = (await cloudinary.api.resources({
+    ...LIST_OPTIONS,
+    next_cursor: cursor,
+  })) as CloudinaryListResponse;
 
-  do {
-    const result = (await cloudinary.api.resources({
-      ...LIST_OPTIONS,
-      next_cursor: nextCursor,
-    })) as CloudinaryListResponse;
+  const urls = result.resources.map((resource) => resource.secure_url);
 
-    urls.push(...result.resources.map((resource) => resource.secure_url));
-    nextCursor = result.next_cursor;
-  } while (nextCursor);
-
-  return urls;
+  return result.next_cursor
+    ? [...urls, ...(await listGalleryPage(result.next_cursor))]
+    : urls;
 };
+
+export const listAllGalleryUrls = (): Promise<string[]> => listGalleryPage();

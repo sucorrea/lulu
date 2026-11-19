@@ -186,7 +186,7 @@ export const useSorteio = () => {
       );
       setStep('saved');
       closeConfirmDialog();
-      refetchCurrentHistory();
+      void refetchCurrentHistory();
     } catch {
       toast.error('Erro ao salvar o sorteio. Tente novamente.');
     }

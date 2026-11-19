@@ -48,9 +48,9 @@ interface GalleryContextType {
   prevPhoto: () => void;
   toggleLike: (index: number) => void;
   deletePhoto: (photo: string) => Promise<void>;
-  addComment: (text: string) => Promise<void>;
-  editComment: (commentId: string, text: string) => Promise<void>;
-  deleteComment: (commentId: string) => Promise<void>;
+  addComment: (text: string) => void;
+  editComment: (commentId: string, text: string) => void;
+  deleteComment: (commentId: string) => void;
   refetch: () => void;
 }
 
@@ -158,7 +158,7 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
         if (selectedPhoto === photo) {
           closePhoto();
         }
-        refetch();
+        void refetch();
         toast.success('Foto excluída com sucesso.', {
           position: 'bottom-center',
         });

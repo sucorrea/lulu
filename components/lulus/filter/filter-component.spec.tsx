@@ -100,7 +100,7 @@ describe('FilterBar', () => {
   it('should render filter month select', () => {
     render(<FilterBar {...defaultProps} />);
     const selects = screen.getAllByTestId('select');
-    expect(selects.length).toBe(2);
+    expect(selects).toHaveLength(2);
   });
 
   it('should render search icon', () => {

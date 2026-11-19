@@ -243,7 +243,7 @@ describe('LulusInteractive', () => {
         />
       );
 
-      expect(screen.queryByTestId('next-birthday-card')).toBeInTheDocument();
+      expect(screen.getByTestId('next-birthday-card')).toBeInTheDocument();
     });
   });
 
@@ -335,7 +335,7 @@ describe('LulusInteractive', () => {
         <LulusInteractive initialParticipants={participantWithPastBirthday} />
       );
 
-      expect(screen.queryByTestId('next-birthday-card')).toBeInTheDocument();
+      expect(screen.getByTestId('next-birthday-card')).toBeInTheDocument();
     });
   });
 

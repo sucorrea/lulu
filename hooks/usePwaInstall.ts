@@ -64,13 +64,15 @@ const handleInstallClick = (
   if (!prompt) {
     return;
   }
-  prompt.prompt();
-  prompt.userChoice.then((choice) => {
-    if (choice.outcome === 'accepted') {
-      markDismissed();
-    }
-    clearPrompt();
-  });
+  void prompt.prompt();
+  prompt.userChoice
+    .then((choice) => {
+      if (choice.outcome === 'accepted') {
+        markDismissed();
+      }
+    })
+    .catch(() => {})
+    .finally(clearPrompt);
 };
 
 const showInstallToast = (

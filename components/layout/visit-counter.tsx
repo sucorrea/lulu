@@ -20,7 +20,7 @@ export const VisitCounter = () => {
       return;
     }
     sessionStorage.setItem(STORAGE_KEY, '1');
-    incrementSiteVisits();
+    void incrementSiteVisits();
   }, []);
 
   if (count === null) {

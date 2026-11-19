@@ -42,7 +42,7 @@ export const useAddVaquinhaHistory = () => {
   return useMutation({
     mutationFn: (data: VaquinhaHistoryInput) => addVaquinhaHistory(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };
@@ -59,7 +59,7 @@ export const useUpdateVaquinhaHistory = () => {
       data: Partial<VaquinhaHistoryInput>;
     }) => updateVaquinhaHistory(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };
@@ -70,7 +70,7 @@ export const useDeleteVaquinhaHistory = () => {
   return useMutation({
     mutationFn: (id: string) => deleteVaquinhaHistory(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };
@@ -127,7 +127,7 @@ export const useBatchAddVaquinhaHistory = () => {
     mutationFn: (items: VaquinhaHistoryInput[]) =>
       batchAddVaquinhaHistory(items),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };
