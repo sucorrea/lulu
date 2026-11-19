@@ -17,12 +17,14 @@ import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
 import {
   filteredAndSortedParticipantsV2,
+  SORT_UPCOMING,
+} from './participant-filters';
+import {
   getDaysUntilBirthday,
   getNextBirthday,
   getTodayKey,
-  SORT_UPCOMING,
   todayFromKey,
-} from './utils';
+} from './birthday';
 import BadgeLulu from './badge-lulu';
 
 const Filter = dynamic(() => import('./filter/filter'), {

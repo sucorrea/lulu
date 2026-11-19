@@ -4,7 +4,7 @@ import { QrCodePix } from 'qrcode-pix';
 import { QRCodeCanvas } from 'qrcode.react';
 
 import { Person } from './lulus/types';
-import { NameKey } from './lulus/utils';
+import { NameKey } from './lulus/pix-key-labels';
 
 interface PixQRCodeProps {
   participant: Person;

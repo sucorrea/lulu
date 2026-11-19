@@ -27,7 +27,7 @@ vi.mock('@/components/ui/avatar', () => ({
   )),
 }));
 
-vi.mock('../utils', () => ({
+vi.mock('../participant-photo', () => ({
   getParticipantPhotoUrl: vi.fn((participant: Person | null) => {
     return participant?.photoURL || null;
   }),

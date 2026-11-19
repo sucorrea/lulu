@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 import { getParticipants } from '@/services/participants-server';
 import PageError from '@/components/layout/page-error';
 import DashboardPage from '@/components/modules/dashboard';
-import { getTodayKey } from '@/components/lulus/utils';
+import { getTodayKey } from '@/components/lulus/birthday';
 
 const Dashboard = async () => {
   await headers();

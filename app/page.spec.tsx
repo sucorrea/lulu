@@ -38,9 +38,15 @@ vi.mock('@/components/error-state', () => ({
   ),
 }));
 
-vi.mock('@/components/lulus/utils', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/components/lulus/utils')>()),
+vi.mock('@/components/lulus/birthday', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/components/lulus/birthday')>()),
   getNextBirthday: mocks.getNextBirthday,
+}));
+
+vi.mock('@/components/lulus/participant-photo', async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import('@/components/lulus/participant-photo')
+  >()),
   getParticipantPhotoUrl: mocks.getParticipantPhotoUrl,
 }));
 

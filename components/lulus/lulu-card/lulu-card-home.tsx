@@ -23,12 +23,9 @@ import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
 import LinkIconWithText from '../link-with-icon';
 import MoreInforAccordion from '../more-info';
 import { Person } from '../types';
-import {
-  canOptimizeImage,
-  formatDate,
-  getParticipantPhotoUrl,
-  getSigno,
-} from '../utils';
+import { canOptimizeImage, getParticipantPhotoUrl } from '../participant-photo';
+import { formatDate } from '../birthday';
+import { getSigno } from '../zodiac';
 import NextBirthdayBanner from './next-birthday-banner';
 import ZodiacIcon from '../zodiac-icon';
 
@@ -164,9 +161,7 @@ const DaysCounter = ({ daysUntil }: DaysCounterProps) => (
       </span>
     ) : (
       <>
-        <span className="block">
-          {daysUntil === 1 ? 'falta' : 'faltam'}
-        </span>
+        <span className="block">{daysUntil === 1 ? 'falta' : 'faltam'}</span>
         <span className="block font-serif text-3xl leading-none text-primary">
           {daysUntil}
         </span>

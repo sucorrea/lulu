@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import type { SorteioPair } from '@/lib/sorteio';
 import { SorteioResultPreview } from './sorteio-result-preview';
 
-vi.mock('../lulus/utils', () => ({
+vi.mock('../lulus/birthday', () => ({
   formatDate: () => '15/06',
 }));
 

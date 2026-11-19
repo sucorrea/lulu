@@ -5,7 +5,7 @@ import { AlertTriangle, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import type { SorteioPair } from '@/lib/sorteio';
-import { formatDate } from '../lulus/utils';
+import { formatDate } from '../lulus/birthday';
 
 type SorteioResultPreviewProps = {
   pairs: SorteioPair[];

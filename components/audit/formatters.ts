@@ -1,4 +1,4 @@
-import { formatDate } from '@/components/lulus/utils';
+import { formatDate } from '@/components/lulus/birthday';
 
 export const formatValue = (value: unknown, fieldType: string): string => {
   if (value === null || value === undefined) {

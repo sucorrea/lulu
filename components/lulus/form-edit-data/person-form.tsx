@@ -13,7 +13,7 @@ import { SelectWithOptions } from '@/components/ui/select-with-options';
 import { useUpdateParticipantData } from '@/services/queries/updateParticipant';
 import { useUserVerification } from '@/hooks/user-verify';
 import { Person, PixTypes } from '../types';
-import { NameKey } from '../utils';
+import { NameKey } from '../pix-key-labels';
 import { defaultValuesPerson } from './utils';
 import { personSchema } from './validation';
 

@@ -62,8 +62,11 @@ vi.mock('./birthday-calendar', () => ({
   ),
 }));
 
-vi.mock('../../lulus/utils', () => ({
+vi.mock('../../lulus/months', () => ({
   monthDashboard: mockMonthDashboard,
+}));
+
+vi.mock('../../lulus/zodiac', () => ({
   signsStats: (participants: Person[]) => mockSignsStats(participants),
   ZODIAC_ICONS: {
     Áries: 'aries',

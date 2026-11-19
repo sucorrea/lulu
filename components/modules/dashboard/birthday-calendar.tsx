@@ -8,10 +8,12 @@ import {
   canOptimizeImage,
   getInitials,
   getParticipantPhotoUrl,
+} from '@/components/lulus/participant-photo';
+import {
   getTodayKey,
   groupBirthdaysByMonthFrom,
   todayFromKey,
-} from '@/components/lulus/utils';
+} from '@/components/lulus/birthday';
 import { cn } from '@/lib/utils';
 
 type BirthdayCalendarProps = {

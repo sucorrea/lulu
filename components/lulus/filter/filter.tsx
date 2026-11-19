@@ -8,7 +8,8 @@ import { GenericBottomSheet } from '@/components/dialog/bottom-sheet';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useIsMobile } from '@/providers/device-provider';
 
-import { meses, SORT_UPCOMING } from '../utils';
+import { meses } from '../months';
+import { SORT_UPCOMING } from '../participant-filters';
 import FilterBar from './filter-component';
 
 interface FilterProps {

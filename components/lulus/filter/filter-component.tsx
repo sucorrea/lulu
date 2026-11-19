@@ -3,7 +3,7 @@ import { Search, SortAsc, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { SelectWithOptions } from '@/components/ui/select-with-options';
 
-import { SORT_UPCOMING } from '../utils';
+import { SORT_UPCOMING } from '../participant-filters';
 
 interface FilterBarProps {
   searchTerm: string;

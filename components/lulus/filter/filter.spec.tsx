@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Filter from './filter';
 import { useDisclosure } from '@/hooks/use-disclosure';
-import { SORT_UPCOMING } from '../utils';
+import { SORT_UPCOMING } from '../participant-filters';
 
 vi.mock('@/hooks/use-disclosure', () => ({
   useDisclosure: vi.fn(() => ({

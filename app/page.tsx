@@ -10,11 +10,13 @@ import Lulus from '@/components/lulus/lulus-interactive';
 import SkeletonLulusInteractive from '@/components/lulus/skeleton-lulus-interactive';
 import {
   canOptimizeImage,
-  getNextBirthday,
   getParticipantPhotoUrl,
+} from '@/components/lulus/participant-photo';
+import {
+  getNextBirthday,
   getTodayKey,
   todayFromKey,
-} from '@/components/lulus/utils';
+} from '@/components/lulus/birthday';
 import { HOME_TIME_ZONE } from '@/lib/constants';
 
 const LulusDataFetcher = async () => {

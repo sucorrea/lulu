@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import type { Person } from '@/components/lulus/types';
 import { ParticipantSelection } from './participant-selection';
 
-vi.mock('../lulus/utils', () => ({
+vi.mock('../lulus/birthday', () => ({
   formatDate: () => '01/01',
 }));
 

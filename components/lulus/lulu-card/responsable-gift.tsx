@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Person } from '../types';
-import { getParticipantPhotoUrl } from '../utils';
+import { getParticipantPhotoUrl } from '../participant-photo';
 import { useGetOrganizerForParticipant } from '@/services/queries/vaquinhaHistory';
 
 interface ResponsableGiftProps {
