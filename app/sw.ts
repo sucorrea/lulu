@@ -9,18 +9,18 @@ declare global {
   }
 }
 
-const swSelf = globalThis as unknown as WorkerGlobalScope & SerwistGlobalConfig;
+declare const self: ServiceWorkerGlobalScope;
 
-// Regra específica para Firebase Storage: limita cache de imagens externas
-// (defaultCache usa cross-origin com maxEntries:32; fotos ~5MB cada = ~160MB)
-const firebaseStorageCache = {
-  matcher: /^https:\/\/firebasestorage\.googleapis\.com\/.*/i,
+const SEVEN_DAYS_IN_SECONDS = 7 * 24 * 60 * 60;
+
+const cloudinaryImagesCache = {
+  matcher: /^https:\/\/res\.cloudinary\.com\/.*/i,
   handler: new StaleWhileRevalidate({
-    cacheName: 'firebase-storage-images',
+    cacheName: 'cloudinary-images',
     plugins: [
       new ExpirationPlugin({
-        maxEntries: 16,
-        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 dias
+        maxEntries: 64,
+        maxAgeSeconds: SEVEN_DAYS_IN_SECONDS,
         maxAgeFrom: 'last-used',
       }),
     ],
@@ -28,11 +28,11 @@ const firebaseStorageCache = {
 };
 
 const serwist = new Serwist({
-  precacheEntries: swSelf.__SW_MANIFEST,
+  precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: [firebaseStorageCache, ...defaultCache],
+  runtimeCaching: [cloudinaryImagesCache, ...defaultCache],
   fallbacks: {
     entries: [
       {

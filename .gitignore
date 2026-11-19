@@ -72,3 +72,9 @@ serviceAccountKey.json
 # Claude Code
 CLAUDE.md
 .superpowers/
+
+# service worker gerado no build (Serwist)
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+/public/swe-worker-*.js.map

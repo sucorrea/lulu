@@ -10,7 +10,8 @@ vi.mock('@/lib/cloudinary', () => ({
   },
 }));
 
-import { GET, listAllGalleryUrls } from './route';
+import { listAllGalleryUrls } from '@/lib/cloudinary-gallery';
+import { GET } from './route';
 
 describe('GET /api/cloudinary/list', () => {
   beforeEach(() => {
