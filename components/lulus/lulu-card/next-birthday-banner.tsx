@@ -1,39 +1,26 @@
-import dynamic from 'next/dynamic';
-import { GiftIcon } from 'lucide-react';
-
-const Animation = dynamic(() => import('@/components/animation'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-muted" />
-  ),
-});
-
 interface NextBirthdayBannerProps {
-  daysForBirthday: number;
+  daysUntil: number;
 }
 
-const NextBirthdayBanner = ({ daysForBirthday }: NextBirthdayBannerProps) => (
-  <div className="mb-4 ml-1 rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-l-4 border-primary p-4 -mx-4 -mt-3">
-    <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 shrink-0 !overflow-x-hidden">
-          <GiftIcon className="h-6 w-6 text-primary animate-pulse" />
-        </div>
-        <div>
-          <p className="text-lg font-bold text-primary">
-            Próxima Aniversariante
-          </p>
-          <p className="text-2xl font-bold text-foreground">
-            {daysForBirthday === 1
-              ? `${daysForBirthday} dia`
-              : `${daysForBirthday} dias`}
-          </p>
-          <p className="text-xs text-muted-foreground">até o grande dia!</p>
-        </div>
-      </div>
-      <Animation className="h-16 w-16 shrink-0 xs: hidden" />
-    </div>
-  </div>
+const LABEL_PREFIX = 'Próxima aniversariante';
+
+export const getNextBirthdayLabel = (daysUntil: number): string => {
+  if (daysUntil === 0) {
+    return `${LABEL_PREFIX} · é hoje!`;
+  }
+  if (daysUntil === 1) {
+    return `${LABEL_PREFIX} · falta 1 dia`;
+  }
+  return `${LABEL_PREFIX} · faltam ${daysUntil} dias`;
+};
+
+const NextBirthdayBanner = ({ daysUntil }: NextBirthdayBannerProps) => (
+  <p
+    data-testid="next-birthday-banner"
+    className="bg-primary px-4 py-2 text-center text-sm font-semibold text-primary-foreground"
+  >
+    {getNextBirthdayLabel(daysUntil)}
+  </p>
 );
 
 export default NextBirthdayBanner;

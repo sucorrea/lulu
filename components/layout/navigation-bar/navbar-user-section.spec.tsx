@@ -22,12 +22,14 @@ vi.mock('@/components/ui/button', () => ({
   Button: ({
     onClick,
     size,
+    variant,
     className,
     children,
     'data-testid': testId,
   }: {
     onClick?: () => void;
     size?: string;
+    variant?: string;
     className?: string;
     children: React.ReactNode;
     'data-testid'?: string;
@@ -35,6 +37,7 @@ vi.mock('@/components/ui/button', () => ({
     <button
       onClick={onClick}
       data-size={size}
+      data-variant={variant}
       className={className}
       data-testid={testId}
     >
@@ -171,18 +174,16 @@ describe('NavbarUserSection', () => {
 
     const logoutButton = screen.getByRole('button', { name: 'Sair' });
     expect(logoutButton).toHaveClass(
-      'rounded-md',
-      'px-3',
-      'py-1',
+      'px-4',
+      'min-h-11',
       'text-xs',
-      'text-white',
-      'transition-colors',
-      'bg-red-500',
-      'hover:bg-red-600'
+      'transition-colors'
     );
+    expect(logoutButton).toHaveAttribute('data-variant', 'outline');
+    expect(logoutButton).not.toHaveClass('bg-destructive');
   });
 
-  it('should set logout button size to icon', () => {
+  it('should set logout button size to sm', () => {
     render(
       <NavbarUserSection
         {...defaultProps}
@@ -192,7 +193,7 @@ describe('NavbarUserSection', () => {
     );
 
     const logoutButton = screen.getByRole('button', { name: 'Sair' });
-    expect(logoutButton).toHaveAttribute('data-size', 'icon');
+    expect(logoutButton).toHaveAttribute('data-size', 'sm');
   });
 
   it('should have flex layout with gap when authenticated', () => {

@@ -24,8 +24,6 @@ coverage-report/
 # production
 /build
 
-# generated wasm (regenerated via postinstall)
-/public/wasm/
 
 # misc
 .DS_Store
@@ -68,3 +66,13 @@ docs-ai/*
 # Scripts e backups
 backups/
 serviceAccountKey.json
+
+# Claude Code
+CLAUDE.md
+.superpowers/
+
+# service worker gerado no build (Serwist)
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+/public/swe-worker-*.js.map

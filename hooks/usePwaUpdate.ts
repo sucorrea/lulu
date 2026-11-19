@@ -30,6 +30,14 @@ export const usePwaUpdate = () => {
       return;
     }
 
+    if (process.env.NODE_ENV === 'development') {
+      navigator.serviceWorker
+        .getRegistrations?.()
+        ?.then((regs) => regs.forEach((reg) => reg.unregister()))
+        .catch(() => {});
+      return;
+    }
+
     const registerSW = () => {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     };

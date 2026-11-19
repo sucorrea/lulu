@@ -3,56 +3,62 @@
 @tailwind utilities;
 
 :root {
-  --background: #fdfbf7;
-  --foreground: #111111;
-  --primary: #c62828;
-  --primary-foreground: #ffffff;
-  --secondary: #2d7dd2;
-  --secondary-foreground: #ffffff;
-  --accent: #f7c948;
-  --accent-foreground: #111111;
+  --background: #f8f4ec;
+  --foreground: #2a1a1f;
+  --primary: #7a1f35;
+  --primary-foreground: #f3e3c0;
+  --secondary: #f3e6cc;
+  --secondary-foreground: #7a1f35;
+  --accent: #c9a24a;
+  --accent-foreground: #2a1a1f;
+  --gold-foreground: #856520;
+  --surface-warm: #f8f1e4;
+  --photo-scrim: rgba(42, 10, 20, 0.9);
+  --photo-scrim-foreground: #f3e3c0;
   --muted: #f3ece0;
-  --muted-foreground: #4d4a45;
-  --destructive: #c62828;
+  --muted-foreground: #5e5050;
+  --destructive: #b42318;
   --destructive-foreground: #ffffff;
   --success: #4bbf73;
   --success-foreground: #ffffff;
   --warning: #ff9800;
   --warning-foreground: #111111;
   --card: #ffffff;
-  --card-foreground: #111111;
+  --card-foreground: #2a1a1f;
   --popover: #ffffff;
-  --popover-foreground: #111111;
-  --border: #d6cec0;
-  --input: #d6cec0;
-  --ring: #c62828;
+  --popover-foreground: #2a1a1f;
+  --border: #e7dcc8;
+  --input: #e7dcc8;
+  --ring: #7a1f35;
   --radius: 0.9rem;
 }
 
 .dark {
-  --background: #1f1a14;
-  --foreground: #f6efe3;
-  --primary: #ff6b6b;
-  --primary-foreground: #ffffff;
-  --secondary: #4c8edb;
-  --secondary-foreground: #ffffff;
-  --accent: #f8d478;
-  --accent-foreground: #1f1a14;
-  --muted: #3a3426;
-  --muted-foreground: #d5ccbe;
-  --destructive: #ff8a65;
-  --destructive-foreground: #1f1a14;
+  --background: #1e1416;
+  --foreground: #f3eadb;
+  --primary: #e08a9b;
+  --primary-foreground: #2a1218;
+  --secondary: #3d2a30;
+  --secondary-foreground: #e08a9b;
+  --accent: #d4b160;
+  --accent-foreground: #1e1416;
+  --gold-foreground: #d4b160;
+  --surface-warm: #34242a;
+  --muted: #3a2a2d;
+  --muted-foreground: #d3c6c0;
+  --destructive: #ff8a80;
+  --destructive-foreground: #1e1416;
   --success: #81c784;
-  --success-foreground: #1f1a14;
+  --success-foreground: #1e1416;
   --warning: #ffb74d;
-  --warning-foreground: #1f1a14;
-  --card: #2b251d;
-  --card-foreground: #f6efe3;
-  --popover: #2b251d;
-  --popover-foreground: #f6efe3;
-  --border: #5a5041;
-  --input: #5a5041;
-  --ring: #ff6b6b;
+  --warning-foreground: #1e1416;
+  --card: #2a1c1f;
+  --card-foreground: #f3eadb;
+  --popover: #2a1c1f;
+  --popover-foreground: #f3eadb;
+  --border: #4a3438;
+  --input: #4a3438;
+  --ring: #e08a9b;
 }
 
 @layer base {
@@ -61,12 +67,7 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family:
-      var(--font-inter),
-      system-ui,
-      -apple-system,
-      sans-serif;
+    @apply bg-background font-sans text-foreground antialiased;
   }
 
   h1,
@@ -75,11 +76,18 @@
   h4,
   h5,
   h6 {
-    font-family:
-      var(--font-inter),
-      system-ui,
-      -apple-system,
-      sans-serif;
+    @apply font-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-serif,
+  .lulu-header {
+    font-variant-numeric: lining-nums proportional-nums;
   }
 
   .lulu-button {
@@ -95,12 +103,6 @@
   }
 
   .lulu-header {
-    @apply font-bold text-primary tracking-tight;
-    font-family:
-      var(--font-inter),
-      system-ui,
-      -apple-system,
-      sans-serif;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.06);
+    @apply font-serif font-bold text-primary tracking-tight;
   }
 }

@@ -50,13 +50,17 @@ const CommentItem = memo(function CommentItem({
               Edite o texto do comentário e clique em Salvar
             </span>
             <div className="flex gap-1 mt-1 justify-end">
-              <Button size="sm" className="px-2 py-0.5" onClick={onSaveEdit}>
+              <Button
+                size="sm"
+                className="min-h-11 px-3 py-0.5"
+                onClick={onSaveEdit}
+              >
                 Salvar
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
-                className="px-2 py-0.5"
+                className="min-h-11 px-3 py-0.5"
                 onClick={onCancelEdit}
               >
                 Cancelar

@@ -1,6 +1,9 @@
 /* tailwind.config.ts */
 import type { Config } from 'tailwindcss';
 
+const withAlpha = (variable: string): string =>
+  `color-mix(in srgb, var(${variable}) calc(<alpha-value> * 100%), transparent)`;
+
 const config: Config = {
   darkMode: ['class'],
   content: [
@@ -19,47 +22,66 @@ const config: Config = {
     },
     extend: {
       colors: {
-        border: 'var(--border)',
-        input: 'var(--input)',
-        ring: 'var(--ring)',
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
+        border: withAlpha('--border'),
+        input: withAlpha('--input'),
+        ring: withAlpha('--ring'),
+        background: withAlpha('--background'),
+        foreground: withAlpha('--foreground'),
         primary: {
-          DEFAULT: 'var(--primary)',
-          foreground: 'var(--primary-foreground)',
+          DEFAULT: withAlpha('--primary'),
+          foreground: withAlpha('--primary-foreground'),
         },
         secondary: {
-          DEFAULT: 'var(--secondary)',
-          foreground: 'var(--secondary-foreground)',
+          DEFAULT: withAlpha('--secondary'),
+          foreground: withAlpha('--secondary-foreground'),
         },
         destructive: {
-          DEFAULT: 'var(--destructive)',
-          foreground: 'var(--destructive-foreground)',
+          DEFAULT: withAlpha('--destructive'),
+          foreground: withAlpha('--destructive-foreground'),
         },
         success: {
-          DEFAULT: 'var(--success)',
-          foreground: 'var(--success-foreground)',
+          DEFAULT: withAlpha('--success'),
+          foreground: withAlpha('--success-foreground'),
         },
         warning: {
-          DEFAULT: 'var(--warning)',
-          foreground: 'var(--warning-foreground)',
+          DEFAULT: withAlpha('--warning'),
+          foreground: withAlpha('--warning-foreground'),
         },
         muted: {
-          DEFAULT: 'var(--muted)',
-          foreground: 'var(--muted-foreground)',
+          DEFAULT: withAlpha('--muted'),
+          foreground: withAlpha('--muted-foreground'),
         },
         accent: {
-          DEFAULT: 'var(--accent)',
-          foreground: 'var(--accent-foreground)',
+          DEFAULT: withAlpha('--accent'),
+          foreground: withAlpha('--accent-foreground'),
         },
         popover: {
-          DEFAULT: 'var(--popover)',
-          foreground: 'var(--popover-foreground)',
+          DEFAULT: withAlpha('--popover'),
+          foreground: withAlpha('--popover-foreground'),
         },
         card: {
-          DEFAULT: 'var(--card)',
-          foreground: 'var(--card-foreground)',
+          DEFAULT: withAlpha('--card'),
+          foreground: withAlpha('--card-foreground'),
         },
+        gold: withAlpha('--gold-foreground'),
+        'surface-warm': withAlpha('--surface-warm'),
+        'photo-scrim': withAlpha('--photo-scrim'),
+        'photo-scrim-foreground': withAlpha('--photo-scrim-foreground'),
+      },
+      fontFamily: {
+        serif: [
+          'var(--font-cormorant)',
+          'Georgia',
+          'Cambria',
+          'Times New Roman',
+          'serif',
+        ],
+        sans: [
+          'var(--font-manrope)',
+          'system-ui',
+          '-apple-system',
+          'sans-serif',
+        ],
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -67,9 +89,9 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       boxShadow: {
-        'lulu-sm': '2px 2px 0px rgba(0, 0, 0, 0.15)',
-        'lulu-md': '3px 3px 0px rgba(0, 0, 0, 0.15)',
-        'lulu-lg': '4px 4px 0px rgba(0, 0, 0, 0.15)',
+        'lulu-sm': '0 2px 14px rgba(42, 26, 31, 0.06)',
+        'lulu-md': '0 6px 24px rgba(42, 26, 31, 0.08)',
+        'lulu-lg': '0 12px 40px rgba(42, 26, 31, 0.10)',
       },
       animation: {
         'lulu-bounce': 'lulu-bounce 0.5s ease-in-out',

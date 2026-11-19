@@ -3,7 +3,6 @@ import { assertAdmin } from '@/lib/auth-guard';
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   setDoc,
   updateDoc,
@@ -11,8 +10,6 @@ import {
   query,
   where,
   orderBy,
-  onSnapshot,
-  Query,
   writeBatch,
 } from 'firebase/firestore';
 
@@ -69,25 +66,6 @@ export const deleteVaquinhaHistory = async (id: string): Promise<void> => {
   await deleteDoc(ref);
 };
 
-export const fetchVaquinhaHistoryById = async (
-  id: string
-): Promise<VaquinhaHistory | null> => {
-  try {
-    const docRef = doc(db, 'vaquinha-history', id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      return docSnap.data() as VaquinhaHistory;
-    } else {
-      console.warn(`No history found with id: ${id}`);
-      return null;
-    }
-  } catch (error) {
-    console.error('Error fetching vaquinha history:', error);
-    return null;
-  }
-};
-
 export const fetchAllVaquinhaHistory = async (): Promise<VaquinhaHistory[]> => {
   const querySnapshot = await getDocs(
     query(collection(db, 'vaquinha-history'), orderBy('year', 'desc'))
@@ -121,74 +99,6 @@ export const fetchVaquinhaHistoryByYear = async (
       return a.birthdayDate.localeCompare(b.birthdayDate);
     }
     return a.birthdayPersonName.localeCompare(b.birthdayPersonName);
-  });
-};
-
-export const fetchVaquinhaHistoryByResponsible = async (
-  responsibleId: number
-): Promise<VaquinhaHistory[]> => {
-  const q = query(
-    collection(db, 'vaquinha-history'),
-    where('responsibleId', '==', responsibleId),
-    orderBy('year', 'desc')
-  );
-
-  const querySnapshot = await getDocs(q);
-  const data: VaquinhaHistory[] = [];
-
-  querySnapshot.forEach((doc) => {
-    data.push(doc.data() as VaquinhaHistory);
-  });
-
-  return data;
-};
-
-export const fetchVaquinhaHistoryByBirthdayPerson = async (
-  birthdayPersonId: number
-): Promise<VaquinhaHistory[]> => {
-  const q = query(
-    collection(db, 'vaquinha-history'),
-    where('birthdayPersonId', '==', birthdayPersonId),
-    orderBy('year', 'desc')
-  );
-
-  const querySnapshot = await getDocs(q);
-  const data: VaquinhaHistory[] = [];
-
-  querySnapshot.forEach((doc) => {
-    data.push(doc.data() as VaquinhaHistory);
-  });
-
-  return data;
-};
-
-export const listenVaquinhaHistory = (
-  callback: (history: VaquinhaHistory[]) => void,
-  year?: number
-) => {
-  let q: Query = query(
-    collection(db, 'vaquinha-history'),
-    orderBy('year', 'desc')
-  );
-
-  if (year) {
-    q = query(collection(db, 'vaquinha-history'), where('year', '==', year));
-  }
-
-  return onSnapshot(q, (snapshot) => {
-    const data: VaquinhaHistory[] = [];
-    snapshot.forEach((doc) => {
-      data.push(doc.data() as VaquinhaHistory);
-    });
-    if (year) {
-      data.sort((a, b) => {
-        if (a.birthdayDate && b.birthdayDate) {
-          return a.birthdayDate.localeCompare(b.birthdayDate);
-        }
-        return a.birthdayPersonName.localeCompare(b.birthdayPersonName);
-      });
-    }
-    callback(data);
   });
 };
 

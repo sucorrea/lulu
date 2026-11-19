@@ -1,10 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   useGetAllVaquinhaHistory,
-  useGetVaquinhaHistoryById,
   useGetVaquinhaHistoryByYear,
-  useGetVaquinhaHistoryByResponsible,
-  useGetVaquinhaHistoryByBirthdayPerson,
   useGetAvailableYears,
   useAddVaquinhaHistory,
   useUpdateVaquinhaHistory,
@@ -56,32 +53,6 @@ describe('vaquinhaHistory query hooks', () => {
     expect(options.retry).toBe(2);
   });
 
-  it('useGetVaquinhaHistoryById should disable when id is empty', () => {
-    useGetVaquinhaHistoryById('');
-
-    const options = mockUseQuery.mock.calls.at(-1)?.[0] as {
-      enabled: boolean;
-    };
-
-    expect(options.enabled).toBe(false);
-  });
-
-  it('useGetVaquinhaHistoryById should call fetch by id', () => {
-    useGetVaquinhaHistoryById('abc');
-
-    const options = mockUseQuery.mock.calls.at(-1)?.[0] as {
-      queryKey: (string | null)[];
-      queryFn: () => void;
-      enabled: boolean;
-    };
-
-    expect(options.queryKey).toEqual(['vaquinha-history', 'abc']);
-    expect(options.enabled).toBe(true);
-
-    options.queryFn();
-    expect(mockServices.fetchVaquinhaHistoryById).toHaveBeenCalledWith('abc');
-  });
-
   it('useGetVaquinhaHistoryByYear should disable when year is null', () => {
     useGetVaquinhaHistoryByYear(null);
 
@@ -103,46 +74,6 @@ describe('vaquinhaHistory query hooks', () => {
 
     options.queryFn();
     expect(mockServices.fetchVaquinhaHistoryByYear).toHaveBeenCalledWith(2024);
-  });
-
-  it('useGetVaquinhaHistoryByResponsible should configure query', () => {
-    useGetVaquinhaHistoryByResponsible(10);
-
-    const options = mockUseQuery.mock.calls.at(-1)?.[0] as {
-      queryKey: (string | number)[];
-      queryFn: () => void;
-      enabled: boolean;
-    };
-
-    expect(options.queryKey).toEqual(['vaquinha-history', 'responsible', 10]);
-    expect(options.enabled).toBe(true);
-
-    options.queryFn();
-    expect(mockServices.fetchVaquinhaHistoryByResponsible).toHaveBeenCalledWith(
-      10
-    );
-  });
-
-  it('useGetVaquinhaHistoryByBirthdayPerson should configure query', () => {
-    useGetVaquinhaHistoryByBirthdayPerson(5);
-
-    const options = mockUseQuery.mock.calls.at(-1)?.[0] as {
-      queryKey: (string | number)[];
-      queryFn: () => void;
-      enabled: boolean;
-    };
-
-    expect(options.queryKey).toEqual([
-      'vaquinha-history',
-      'birthday-person',
-      5,
-    ]);
-    expect(options.enabled).toBe(true);
-
-    options.queryFn();
-    expect(
-      mockServices.fetchVaquinhaHistoryByBirthdayPerson
-    ).toHaveBeenCalledWith(5);
   });
 
   it('useGetAvailableYears should configure query', () => {

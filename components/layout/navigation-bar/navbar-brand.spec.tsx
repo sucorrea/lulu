@@ -11,7 +11,8 @@ describe('NavbarBrand', () => {
 
   it('should render the brand text with current year', () => {
     render(<NavbarBrand currentYear={2026} />);
-    expect(screen.getByText('Luluzinha 2026')).toBeInTheDocument();
+    expect(screen.getByText('Luluzinha')).toBeInTheDocument();
+    expect(screen.getByText('2026')).toHaveClass('hidden', 'md:inline');
   });
 
   it('should render link to home page', () => {
@@ -22,7 +23,7 @@ describe('NavbarBrand', () => {
 
   it('should display correct year when different year is passed', () => {
     render(<NavbarBrand currentYear={2024} />);
-    expect(screen.getByText('Luluzinha 2024')).toBeInTheDocument();
+    expect(screen.getByText('2024')).toBeInTheDocument();
   });
 
   it('should have correct CSS classes for styling', () => {
@@ -39,8 +40,7 @@ describe('NavbarBrand', () => {
 
   it('should have proper text styling', () => {
     render(<NavbarBrand currentYear={2026} />);
-    const text = screen.getByText('Luluzinha 2026');
-    expect(text.className).toContain('lulu-header');
-    expect(text.className).toContain('font-bold');
+    const text = screen.getByText('Luluzinha');
+    expect(text).toHaveClass('lulu-header', 'font-bold');
   });
 });

@@ -62,8 +62,11 @@ vi.mock('./birthday-calendar', () => ({
   ),
 }));
 
-vi.mock('../../lulus/utils', () => ({
+vi.mock('../../lulus/months', () => ({
   monthDashboard: mockMonthDashboard,
+}));
+
+vi.mock('../../lulus/zodiac', () => ({
   signsStats: (participants: Person[]) => mockSignsStats(participants),
   ZODIAC_ICONS: {
     Áries: 'aries',
@@ -108,10 +111,12 @@ describe('DashboardPage', () => {
   it('should render main heading and description', () => {
     render(<DashboardPage participants={mockParticipants} />);
 
-    expect(screen.getByText('Dashboard das Lulus')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Agenda das Lulus' })
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Visão geral dos aniversários e signos das participantes, em um painel simples e visual.'
+        'Os aniversários do ano, a partir de agora, e os signos das Lulus.'
       )
     ).toBeInTheDocument();
   });
@@ -195,7 +200,7 @@ describe('DashboardPage', () => {
 
     const icons = screen.getAllByTestId('zodiac-icon');
     expect(icons.length).toBeGreaterThan(0);
-    expect(icons[0]).toHaveAttribute('class', 'text-white');
+    expect(icons[0]).toHaveAttribute('class', 'text-primary-foreground');
   });
 
   it('should keep expected layout classes', () => {
@@ -207,7 +212,7 @@ describe('DashboardPage', () => {
     const innerDiv = container.querySelector('section > div');
     const grid = container.querySelector('.grid');
 
-    expect(section).toHaveClass('bg-muted/40', 'py-6', 'md:py-8');
+    expect(section).toHaveClass('bg-background', 'py-6', 'md:py-8');
     expect(innerDiv).toHaveClass('container', 'space-y-6');
     expect(grid).toHaveClass('grid-cols-1', 'gap-4', 'md:grid-cols-2');
   });

@@ -15,7 +15,16 @@ import { useGetCurrentYearAssignments } from '@/services/queries/vaquinhaHistory
 
 import LulusCardHome from './lulu-card/lulu-card-home';
 import { Person } from './types';
-import { filteredAndSortedParticipantsV2, getNextBirthday } from './utils';
+import {
+  filteredAndSortedParticipantsV2,
+  SORT_UPCOMING,
+} from './participant-filters';
+import {
+  getDaysUntilBirthday,
+  getNextBirthday,
+  getTodayKey,
+  todayFromKey,
+} from './birthday';
 import BadgeLulu from './badge-lulu';
 
 const Filter = dynamic(() => import('./filter/filter'), {
@@ -32,11 +41,15 @@ const BadgeLuluParticipants = dynamic(
 
 interface LulusInteractiveProps {
   initialParticipants: Person[];
+  todayKey?: string;
 }
 
-const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
+const LulusInteractive = ({
+  initialParticipants,
+  todayKey,
+}: LulusInteractiveProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('date');
+  const [sortBy, setSortBy] = useState<string>(SORT_UPCOMING);
   const [filterMonth, setFilterMonth] = useState('all');
 
   const { isAdmin } = useUserVerification();
@@ -49,26 +62,15 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const nextBirthday = useMemo(
-    () => getNextBirthday(participantsList),
-    [participantsList]
+  const today = useMemo(
+    () => todayFromKey(todayKey ?? getTodayKey()),
+    [todayKey]
   );
 
-  const daysForBirthday = useMemo(() => {
-    if (!nextBirthday) {
-      return 0;
-    }
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const bd = new Date(nextBirthday.date);
-    const next = new Date(currentYear, bd.getMonth(), bd.getDate());
-    if (today > next) {
-      next.setFullYear(currentYear + 1);
-    }
-    return Math.ceil(
-      Math.abs(next.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-    );
-  }, [nextBirthday]);
+  const nextBirthday = useMemo(
+    () => getNextBirthday(participantsList, today),
+    [participantsList, today]
+  );
 
   const filteredParticipants = useMemo(
     () =>
@@ -77,9 +79,26 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
         searchTerm,
         filterMonth,
         sortBy,
-        assignments?.byResponsible
+        assignments?.byResponsible,
+        today
       ),
-    [participantsList, searchTerm, filterMonth, sortBy, assignments]
+    [participantsList, searchTerm, filterMonth, sortBy, assignments, today]
+  );
+
+  const featured = useMemo(
+    () =>
+      nextBirthday && filteredParticipants.some((p) => p.id === nextBirthday.id)
+        ? nextBirthday
+        : null,
+    [nextBirthday, filteredParticipants]
+  );
+
+  const listParticipants = useMemo(
+    () =>
+      featured
+        ? filteredParticipants.filter((p) => p.id !== featured.id)
+        : filteredParticipants,
+    [featured, filteredParticipants]
   );
 
   const emptyStateMessage = useMemo(() => {
@@ -101,8 +120,10 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
 
   return (
     <div className="min-h-screen">
-      <BadgeLulu text={`Somos ${participantsList.length} Lulus`} />
-      <BadgeLuluParticipants />
+      <div className="mb-5 flex flex-wrap items-center gap-y-2 divide-x divide-accent/60">
+        <BadgeLulu value={participantsList.length} label="Lulus" />
+        <BadgeLuluParticipants />
+      </div>
       {isAdmin && (
         <div className="mb-4 flex justify-end">
           <Button asChild variant="outline" size="sm">
@@ -113,15 +134,14 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           </Button>
         </div>
       )}
-      {nextBirthday && (
-        <div className="mb-8">
+      {featured && (
+        <div className="mb-6">
           <LulusCardHome
-            participant={nextBirthday}
-            isNextBirthday
-            daysForBirthday={daysForBirthday}
+            participant={featured}
+            variant="featured"
+            daysUntil={getDaysUntilBirthday(featured.date, today)}
             user={isAdmin}
             participants={participantsList}
-            showDetails={false}
           />
         </div>
       )}
@@ -134,8 +154,8 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
-        <div className="grid grid-cols-1 gap-2 overflow-auto md:grid-cols-2 lg:grid-cols-3">
-          {filteredParticipants.map((participant, index) => (
+        <div className="grid grid-cols-1 gap-3 overflow-auto md:grid-cols-2 lg:grid-cols-3">
+          {listParticipants.map((participant, index) => (
             <div
               key={participant.id}
               className={
@@ -146,6 +166,7 @@ const LulusInteractive = ({ initialParticipants }: LulusInteractiveProps) => {
             >
               <LulusCardHome
                 participant={participant}
+                daysUntil={getDaysUntilBirthday(participant.date, today)}
                 user={isAdmin}
                 participants={participantsList}
               />

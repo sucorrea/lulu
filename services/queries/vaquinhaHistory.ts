@@ -3,10 +3,7 @@ import {
   VaquinhaHistory,
   VaquinhaHistoryInput,
   fetchAllVaquinhaHistory,
-  fetchVaquinhaHistoryById,
   fetchVaquinhaHistoryByYear,
-  fetchVaquinhaHistoryByResponsible,
-  fetchVaquinhaHistoryByBirthdayPerson,
   fetchAvailableYears,
   addVaquinhaHistory,
   updateVaquinhaHistory,
@@ -22,39 +19,11 @@ export const useGetAllVaquinhaHistory = () => {
   });
 };
 
-export const useGetVaquinhaHistoryById = (id: string) => {
-  return useQuery<VaquinhaHistory | null>({
-    queryKey: ['vaquinha-history', id],
-    queryFn: () => fetchVaquinhaHistoryById(id),
-    enabled: !!id,
-  });
-};
-
 export const useGetVaquinhaHistoryByYear = (year: number | null) => {
   return useQuery<VaquinhaHistory[]>({
     queryKey: ['vaquinha-history', 'year', year],
     queryFn: () => fetchVaquinhaHistoryByYear(year!),
     enabled: year !== null,
-    retry: 2,
-  });
-};
-
-export const useGetVaquinhaHistoryByResponsible = (responsibleId: number) => {
-  return useQuery<VaquinhaHistory[]>({
-    queryKey: ['vaquinha-history', 'responsible', responsibleId],
-    queryFn: () => fetchVaquinhaHistoryByResponsible(responsibleId),
-    enabled: !!responsibleId,
-    retry: 2,
-  });
-};
-
-export const useGetVaquinhaHistoryByBirthdayPerson = (
-  birthdayPersonId: number
-) => {
-  return useQuery<VaquinhaHistory[]>({
-    queryKey: ['vaquinha-history', 'birthday-person', birthdayPersonId],
-    queryFn: () => fetchVaquinhaHistoryByBirthdayPerson(birthdayPersonId),
-    enabled: !!birthdayPersonId,
     retry: 2,
   });
 };
@@ -73,7 +42,7 @@ export const useAddVaquinhaHistory = () => {
   return useMutation({
     mutationFn: (data: VaquinhaHistoryInput) => addVaquinhaHistory(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };
@@ -90,7 +59,7 @@ export const useUpdateVaquinhaHistory = () => {
       data: Partial<VaquinhaHistoryInput>;
     }) => updateVaquinhaHistory(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };
@@ -101,7 +70,7 @@ export const useDeleteVaquinhaHistory = () => {
   return useMutation({
     mutationFn: (id: string) => deleteVaquinhaHistory(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };
@@ -137,11 +106,6 @@ export const useGetCurrentYearAssignments = () => {
   });
 };
 
-export const useGetAssignmentForParticipant = (participantId: number) => {
-  const { data } = useGetCurrentYearAssignments();
-  return data?.byResponsible[participantId] ?? null;
-};
-
 export type OrganizerAssignmentResult = {
   assignment: VaquinhaHistory | null;
   isLoading: boolean;
@@ -163,7 +127,7 @@ export const useBatchAddVaquinhaHistory = () => {
     mutationFn: (items: VaquinhaHistoryInput[]) =>
       batchAddVaquinhaHistory(items),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
+      return queryClient.invalidateQueries({ queryKey: ['vaquinha-history'] });
     },
   });
 };

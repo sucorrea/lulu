@@ -14,10 +14,10 @@ describe('lib/cloudinary', () => {
     vi.resetModules();
   });
 
-  it('should configure cloudinary with env variables', async () => {
-    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = 'test-cloud';
-    process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY = 'test-key';
-    process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET = 'test-secret';
+  it('should configure cloudinary with server-only env variables', async () => {
+    vi.stubEnv('CLOUDINARY_CLOUD_NAME', 'test-cloud');
+    vi.stubEnv('CLOUDINARY_API_KEY', 'test-key');
+    vi.stubEnv('CLOUDINARY_API_SECRET', 'test-secret');
 
     await import('./cloudinary');
 
@@ -26,6 +26,28 @@ describe('lib/cloudinary', () => {
       api_key: 'test-key',
       api_secret: 'test-secret',
     });
+    vi.unstubAllEnvs();
+  });
+
+  it('should never read Cloudinary credentials from NEXT_PUBLIC_ variables', async () => {
+    vi.stubEnv('CLOUDINARY_API_SECRET', '');
+    vi.stubEnv('NEXT_PUBLIC_CLOUDINARY_API_SECRET', 'leaked-secret');
+
+    await import('./cloudinary');
+
+    expect(mockConfig.mock.calls[0][0]).not.toHaveProperty('api_secret');
+    vi.unstubAllEnvs();
+  });
+
+  it('should not pass undefined credentials that would override CLOUDINARY_URL', async () => {
+    vi.stubEnv('CLOUDINARY_CLOUD_NAME', '');
+    vi.stubEnv('CLOUDINARY_API_KEY', '');
+    vi.stubEnv('CLOUDINARY_API_SECRET', '');
+
+    await import('./cloudinary');
+
+    expect(mockConfig).toHaveBeenCalledWith({});
+    vi.unstubAllEnvs();
   });
 
   it('should export cloudinary v2 instance', async () => {

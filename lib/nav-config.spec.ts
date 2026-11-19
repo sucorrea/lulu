@@ -1,54 +1,70 @@
 import { describe, expect, it } from 'vitest';
 
-import { isCurrentRoute, NAV_ITEMS } from './nav-config';
+import {
+  filterNavByRole,
+  isCurrentRoute,
+  MOBILE_PRIMARY_NAV,
+  MORE_NAV_ITEMS,
+  NAV_ITEMS,
+} from './nav-config';
 
 describe('nav-config', () => {
   describe('NAV_ITEMS', () => {
-    it('should have 6 navigation items', () => {
-      expect(NAV_ITEMS).toHaveLength(6);
+    it('should list desktop items in order', () => {
+      expect(NAV_ITEMS.map((i) => i.label)).toEqual([
+        'Lulus',
+        'Agenda',
+        'Galeria',
+        'Histórico',
+        'Auditoria',
+        'Sobre',
+        'Sorteio',
+      ]);
+      expect(NAV_ITEMS.map((i) => i.href)).toEqual([
+        '/',
+        '/dashboard',
+        '/galeria',
+        '/historico',
+        '/auditoria',
+        '/sobre',
+        '/sorteio',
+      ]);
     });
 
-    it('should have correct structure for each item', () => {
-      NAV_ITEMS.forEach((item) => {
-        expect(item).toHaveProperty('href');
-        expect(item).toHaveProperty('label');
-        expect(item).toHaveProperty('icon');
-        expect(typeof item.href).toBe('string');
-        expect(typeof item.label).toBe('string');
-        expect(item.icon).toBeDefined();
+    it('should mark only Sorteio as adminOnly', () => {
+      expect(NAV_ITEMS.filter((i) => i.adminOnly).map((i) => i.label)).toEqual([
+        'Sorteio',
+      ]);
+    });
+
+    it('should not have shortLabel on any item', () => {
+      [...NAV_ITEMS, ...MOBILE_PRIMARY_NAV, ...MORE_NAV_ITEMS].forEach((i) => {
+        expect(i).not.toHaveProperty('shortLabel');
       });
     });
+  });
 
-    it('should include all main routes', () => {
-      const hrefs = NAV_ITEMS.map((i) => i.href);
-      expect(hrefs).toContain('/');
-      expect(hrefs).toContain('/dashboard');
-      expect(hrefs).toContain('/galeria');
-      expect(hrefs).toContain('/auditoria');
-      expect(hrefs).toContain('/historico');
-      expect(hrefs).toContain('/sobre');
+  describe('MOBILE_PRIMARY_NAV', () => {
+    it('should have the four primary items', () => {
+      expect(MOBILE_PRIMARY_NAV.map((i) => i.label)).toEqual([
+        'Lulus',
+        'Agenda',
+        'Galeria',
+        'Histórico',
+      ]);
+    });
+  });
+
+  describe('filterNavByRole', () => {
+    it('should hide admin items for non admin', () => {
+      expect(
+        filterNavByRole(MORE_NAV_ITEMS, false).map((i) => i.label)
+      ).toEqual(['Auditoria', 'Sobre']);
     });
 
-    it('should have shortLabel for items that need abbreviated labels on smaller screens', () => {
-      const participantes = NAV_ITEMS.find((i) => i.href === '/');
-      expect(participantes?.shortLabel).toBe('Particip.');
-
-      const dashboard = NAV_ITEMS.find((i) => i.href === '/dashboard');
-      expect(dashboard?.shortLabel).toBe('Dash.');
-
-      const historico = NAV_ITEMS.find((i) => i.href === '/historico');
-      expect(historico?.shortLabel).toBe('Hist.');
-
-      const auditoria = NAV_ITEMS.find((i) => i.href === '/auditoria');
-      expect(auditoria?.shortLabel).toBe('Audit.');
-    });
-
-    it('should allow shortLabel to be optional for items with short labels', () => {
-      const galeria = NAV_ITEMS.find((i) => i.href === '/galeria');
-      const sobre = NAV_ITEMS.find((i) => i.href === '/sobre');
-
-      expect(galeria?.label).toBe('Galeria');
-      expect(sobre?.label).toBe('Sobre');
+    it('should include Sorteio last for admin', () => {
+      const labels = filterNavByRole(MORE_NAV_ITEMS, true).map((i) => i.label);
+      expect(labels[labels.length - 1]).toBe('Sorteio');
     });
   });
 

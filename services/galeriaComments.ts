@@ -8,7 +8,6 @@ import {
   onSnapshot,
   runTransaction,
 } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
 
 export type GaleriaComment = {
   id: string;
@@ -27,7 +26,7 @@ export const addCommentToPhoto = async (
   const snap = await getDoc(ref);
   const commentWithId = {
     ...comment,
-    id: uuidv4(),
+    id: globalThis.crypto.randomUUID(),
     createdAt: new Date().toISOString(),
   };
   if (snap.exists()) {

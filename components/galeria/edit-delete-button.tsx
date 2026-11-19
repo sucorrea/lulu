@@ -21,7 +21,7 @@ const EditDeleteButton = ({
       <Button
         size="sm"
         variant="ghost"
-        className="px-2 py-0.5"
+        className="min-h-11 min-w-11 px-2 py-0.5"
         onClick={() => {
           onEdit(comentSelected);
         }}
@@ -32,13 +32,13 @@ const EditDeleteButton = ({
       <Button
         size="sm"
         variant="ghost"
-        className="px-2 py-0.5"
+        className="min-h-11 min-w-11 px-2 py-0.5"
         onClick={() => {
           onDelete(comentSelected.id);
         }}
         aria-label="Excluir comentário"
       >
-        <Trash2Icon size={15} className="text-red-500" />
+        <Trash2Icon size={15} className="text-destructive" />
       </Button>
     </div>
   );

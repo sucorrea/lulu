@@ -6,7 +6,7 @@ import { Check, CheckSquare, Square, Users } from 'lucide-react';
 import type { Person } from '@/components/lulus/types';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { formatDate } from '../lulus/utils';
+import { formatDate } from '../lulus/birthday';
 
 type ParticipantRowProps = {
   participant: Person;

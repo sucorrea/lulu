@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Dashboard | Luluzinha',
+  title: 'Agenda | Luluzinha',
   description:
-    'Dashboard da vaquinha. Calendário de aniversários e visão geral dos participantes.',
+    'Agenda das Lulus. Calendário de aniversários e signos das participantes.',
 };
 
 const DashboardLayout = ({

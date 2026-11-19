@@ -110,7 +110,9 @@ const SobrePage = () => {
               <CardContent className="p-4 md:p-5">
                 <div className="mb-3 flex items-center gap-2">
                   <Icon className="size-5 text-primary" aria-hidden />
-                  <h3 className="font-semibold text-foreground">{title}</h3>
+                  <h3 className="font-serif text-lg font-bold text-foreground">
+                    {title}
+                  </h3>
                 </div>
                 <ul className="space-y-1 text-sm text-muted-foreground">
                   {items.map((item) => (
@@ -133,7 +135,7 @@ const SobrePage = () => {
               <Loader2 className="size-8 text-primary" aria-hidden />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground">
+              <h3 className="font-serif text-lg font-bold text-foreground">
                 Desenvolvido por Su
               </h3>
               <p className="text-sm text-muted-foreground">

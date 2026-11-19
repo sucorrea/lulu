@@ -8,7 +8,8 @@ import { GenericBottomSheet } from '@/components/dialog/bottom-sheet';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useIsMobile } from '@/providers/device-provider';
 
-import { meses } from '../utils';
+import { meses } from '../months';
+import { SORT_UPCOMING } from '../participant-filters';
 import FilterBar from './filter-component';
 
 interface FilterProps {
@@ -34,13 +35,13 @@ const Filter = ({
   const activeFiltersCount = [
     searchTerm,
     filterMonth !== 'all',
-    sortBy !== 'date',
+    sortBy !== SORT_UPCOMING,
   ].filter(Boolean).length;
 
   const handleClearFilters = () => {
     setSearchTerm('');
     setFilterMonth('all');
-    setSortBy('date');
+    setSortBy(SORT_UPCOMING);
   };
 
   const filterBarContent = (
@@ -82,7 +83,7 @@ const Filter = ({
               onClick={handleClearFilters}
               variant="ghost"
               size="sm"
-              className="text-sm"
+              className="min-h-11 text-sm"
             >
               Limpar filtros
             </Button>

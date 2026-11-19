@@ -11,11 +11,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={theme as ToasterProps['theme']}
+      mobileOffset={{ bottom: 'calc(5rem + env(safe-area-inset-bottom))' }}
       className="toaster group !z-[100] [&_ol]:!pointer-events-auto"
       toastOptions={{
+        closeButtonAriaLabel: 'Fechar',
         classNames: {
           toast:
-            'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
+            'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-accent/40 group-[.toaster]:shadow-lg',
           description: 'group-[.toast]:text-muted-foreground',
           actionButton:
             'group-[.toast]:bg-primary group-[.toast]:text-primary-foreground',

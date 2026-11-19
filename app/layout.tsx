@@ -1,11 +1,12 @@
 import dynamic from 'next/dynamic';
-import { Inter } from 'next/font/google';
+import { Cormorant_Garamond, Manrope } from 'next/font/google';
 import { ReactNode } from 'react';
 
 import type { Metadata, Viewport } from 'next';
 
 import { Navbar } from '@/components/layout/navigation-bar/navbar';
 import { Toaster } from '@/components/ui/sonner';
+import { AuthProvider } from '@/providers/auth-provider';
 import { DeviceProvider } from '@/providers/device-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
@@ -33,11 +34,17 @@ const PwaInstallManager = dynamic(() =>
   }))
 );
 
-const inter = Inter({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['600', '700'],
+  variable: '--font-cormorant',
   display: 'swap',
-  preload: true,
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -46,7 +53,7 @@ export const metadata: Metadata = {
   ),
   title: `Luluzinha ${CURRENT_YEAR}`,
   description:
-    'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard, histórico e auditoria em tempo real.',
+    'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, agenda, histórico e auditoria em tempo real.',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
@@ -59,7 +66,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Luluzinha ${CURRENT_YEAR}`,
     description:
-      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
+      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, agenda e auditoria em tempo real.',
     type: 'website',
     locale: 'pt_BR',
   },
@@ -67,7 +74,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `Luluzinha ${CURRENT_YEAR}`,
     description:
-      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, dashboard e auditoria em tempo real.',
+      'PWA para organizar vaquinhas de aniversário entre amigas. Galeria social, agenda e auditoria em tempo real.',
   },
 };
 
@@ -77,8 +84,8 @@ export const viewport: Viewport = {
   maximumScale: 5,
   userScalable: true,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+    { media: '(prefers-color-scheme: light)', color: '#F8F4EC' },
+    { media: '(prefers-color-scheme: dark)', color: '#1E1416' },
   ],
 };
 
@@ -88,39 +95,43 @@ const RootLayout = ({
   children: ReactNode;
 }>) => {
   return (
-    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={`${cormorant.variable} ${manrope.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" />
       </head>
       <body className="antialiased">
         <ReactQueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <DeviceProvider>
-              <a
-                href="#main-content"
-                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
-              >
-                Pular para conteúdo principal
-              </a>
-              <Navbar />
-              <main id="main-content" className="pb-20 md:pb-0">
-                {children}
-              </main>
-              <Footer />
-              <div className="fixed bottom-20 right-3 z-30 md:bottom-3">
-                <VisitCounter />
-              </div>
-            </DeviceProvider>
-            <PwaUpdateManager />
-            <PwaInstallManager />
-            <Toaster />
-            <VaulPatch />
-          </ThemeProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <DeviceProvider>
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
+                >
+                  Pular para conteúdo principal
+                </a>
+                <Navbar />
+                <main id="main-content" className="pb-20 md:pb-0">
+                  {children}
+                  <VisitCounter />
+                </main>
+                <Footer />
+              </DeviceProvider>
+              <PwaUpdateManager />
+              <PwaInstallManager />
+              <Toaster />
+              <VaulPatch />
+            </ThemeProvider>
+          </AuthProvider>
         </ReactQueryProvider>
       </body>
     </html>

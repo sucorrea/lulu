@@ -20,7 +20,7 @@ export const VisitCounter = () => {
       return;
     }
     sessionStorage.setItem(STORAGE_KEY, '1');
-    incrementSiteVisits();
+    void incrementSiteVisits();
   }, []);
 
   if (count === null) {
@@ -28,12 +28,12 @@ export const VisitCounter = () => {
   }
 
   return (
-    <span
-      className="text-[10px] text-muted-foreground"
+    <p
+      className="py-4 text-center text-xs text-muted-foreground"
       title="Total de acessos ao site"
       aria-label={`Site acessado ${count} vezes`}
     >
       👀 {count.toLocaleString('pt-BR')} acessos
-    </span>
+    </p>
   );
 };

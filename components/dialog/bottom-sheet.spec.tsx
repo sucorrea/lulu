@@ -141,7 +141,7 @@ describe('GenericBottomSheet', () => {
     render(<GenericBottomSheet {...defaultProps}>Content</GenericBottomSheet>);
 
     const overlay = screen.getByTestId('drawer-overlay');
-    expect(overlay).toHaveClass('fixed', 'inset-0', 'z-50', 'bg-black/80');
+    expect(overlay).toHaveClass('fixed', 'inset-0', 'z-50', 'bg-photo-scrim');
   });
 
   it('should apply correct base classes to content', () => {
@@ -157,10 +157,10 @@ describe('GenericBottomSheet', () => {
       'flex',
       'h-auto',
       'flex-col',
-      'rounded-t-[10px]',
+      'rounded-t-3xl',
       'border',
       'border-border',
-      'bg-background'
+      'bg-card'
     );
   });
 

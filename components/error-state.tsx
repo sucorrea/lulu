@@ -16,7 +16,7 @@ const ErrorState = ({
     <div className="mb-4 rounded-full bg-destructive/10 p-4">
       <AlertCircle className="h-10 w-10 text-destructive" />
     </div>
-    <h3 className="text-xl font-bold mb-2">{title}</h3>
+    <h3 className="mb-2 font-serif text-2xl font-bold">{title}</h3>
     <p className="text-muted-foreground mb-6 max-w-md">{message}</p>
     {onRetry && (
       <Button onClick={onRetry} variant="outline">

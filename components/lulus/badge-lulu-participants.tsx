@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { GiftIcon } from 'lucide-react';
 
+import { CURRENT_YEAR } from '@/lib/constants';
 import { useGetCurrentYearAssignments } from '@/services/queries/vaquinhaHistory';
 import BadgeLulu from './badge-lulu';
 
@@ -22,8 +22,9 @@ const BadgeLuluParticipants = () => {
 
   return (
     <BadgeLulu
-      text={`${totalParticipants ?? '—'} Participantes da vaquinha`}
-      icon={<GiftIcon className="mr-2 h-4 w-4 shrink-0" />}
+      testId="badge-lulu-participants"
+      value={totalParticipants ?? '—'}
+      label={`na vaquinha de ${CURRENT_YEAR}`}
     />
   );
 };

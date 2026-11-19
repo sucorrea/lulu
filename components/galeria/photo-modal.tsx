@@ -44,7 +44,7 @@ const PhotoModal = memo(function PhotoModal() {
   } = useDisclosure();
   const handleDownload = useCallback(() => {
     if (photo) {
-      downloadPhoto(photo);
+      void downloadPhoto(photo);
     }
   }, [photo]);
 
@@ -80,8 +80,9 @@ const PhotoModal = memo(function PhotoModal() {
         open={isOpen}
         onOpenChange={(open) => !open && closePhoto()}
         title="Foto"
+        titleClassName="font-serif text-2xl"
         description={`${index + 1} de ${totalPhotos}`}
-        className="rounded"
+        className="rounded-2xl"
         footer={
           <div className="w-full max-w-md rounded-2xl border border-border bg-card p-4 shadow-lulu-md">
             <div className="mb-2 flex justify-between gap-4">
@@ -153,7 +154,7 @@ const PhotoModal = memo(function PhotoModal() {
               variant="destructive"
               className="w-full"
               onClick={() => {
-                deletePhoto(photo);
+                void deletePhoto(photo);
                 onCloseDeletePhoto();
               }}
             >

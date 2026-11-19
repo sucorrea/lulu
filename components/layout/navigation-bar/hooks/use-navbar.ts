@@ -11,13 +11,14 @@ interface UseNavbarResult {
   isLoadingUser: boolean;
   isLoginPage: boolean;
   userFirstName: string | null;
+  isAdmin: boolean;
   currentYear: number;
   handleLogout: () => void;
 }
 
 export const useNavbar = (): UseNavbarResult => {
   const pathname = usePathname();
-  const { user, isLoading, handleLogout } = useUserVerification();
+  const { user, isAdmin, isLoading, handleLogout } = useUserVerification();
 
   const isLoginPage = useMemo(() => pathname === '/login', [pathname]);
   const isAuthenticated = useMemo(() => !!user, [user]);
@@ -32,6 +33,7 @@ export const useNavbar = (): UseNavbarResult => {
     isLoadingUser: isLoading,
     isLoginPage,
     userFirstName,
+    isAdmin,
     currentYear,
     handleLogout: () => void handleLogout(),
   };

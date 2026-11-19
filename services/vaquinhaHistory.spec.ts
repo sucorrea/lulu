@@ -2,14 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   addVaquinhaHistory,
   deleteVaquinhaHistory,
-  fetchVaquinhaHistoryById,
   fetchAllVaquinhaHistory,
   fetchVaquinhaHistoryByYear,
   fetchAvailableYears,
-  fetchVaquinhaHistoryByResponsible,
-  fetchVaquinhaHistoryByBirthdayPerson,
   updateVaquinhaHistory,
-  listenVaquinhaHistory,
   VaquinhaHistoryInput,
 } from './vaquinhaHistory';
 
@@ -139,47 +135,6 @@ describe('vaquinhaHistory service', () => {
     });
   });
 
-  describe('fetchVaquinhaHistoryById', () => {
-    it('should fetch a vaquinha history entry by id', async () => {
-      const result = await fetchVaquinhaHistoryById('test-id');
-      expect(result).toBeDefined();
-      expect(result?.year).toBe(2024);
-    });
-
-    it('should return null and warn when doc does not exist', async () => {
-      const { getDoc } = await import('firebase/firestore');
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-      vi.mocked(getDoc).mockResolvedValueOnce({
-        exists: () => false,
-        data: () => null,
-        metadata: { fromCache: false, hasPendingWrites: false },
-        get: vi.fn(),
-        id: 'missing-id',
-        ref: {},
-      } as unknown as import('firebase/firestore').DocumentSnapshot);
-
-      const result = await fetchVaquinhaHistoryById('missing-id');
-
-      expect(result).toBeNull();
-      expect(warnSpy).toHaveBeenCalled();
-      warnSpy.mockRestore();
-    });
-
-    it('should return null on error', async () => {
-      const { getDoc } = await import('firebase/firestore');
-      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-      vi.mocked(getDoc).mockRejectedValueOnce(new Error('boom'));
-
-      const result = await fetchVaquinhaHistoryById('error-id');
-
-      expect(result).toBeNull();
-      expect(errorSpy).toHaveBeenCalled();
-      errorSpy.mockRestore();
-    });
-  });
-
   describe('fetchAllVaquinhaHistory', () => {
     it('should fetch all vaquinha history entries', async () => {
       const result = await fetchAllVaquinhaHistory();
@@ -196,96 +151,11 @@ describe('vaquinhaHistory service', () => {
     });
   });
 
-  describe('fetchVaquinhaHistoryByResponsible', () => {
-    it('should fetch vaquinha history entries by responsible', async () => {
-      const result = await fetchVaquinhaHistoryByResponsible(1);
-      expect(result).toHaveLength(2);
-    });
-  });
-
-  describe('fetchVaquinhaHistoryByBirthdayPerson', () => {
-    it('should fetch vaquinha history entries by birthday person', async () => {
-      const result = await fetchVaquinhaHistoryByBirthdayPerson(2);
-      expect(result).toHaveLength(2);
-    });
-  });
-
   describe('fetchAvailableYears', () => {
     it('should fetch available years from history', async () => {
       const result = await fetchAvailableYears();
       expect(result).toContain(2024);
       expect(result).toContain(2023);
-    });
-  });
-
-  describe('listenVaquinhaHistory', () => {
-    it('should listen to history updates and return unsubscribe', async () => {
-      const { onSnapshot } = await import('firebase/firestore');
-      const callback = vi.fn();
-      const unsubscribe = vi.fn();
-
-      vi.mocked(onSnapshot).mockImplementationOnce((...args: unknown[]) => {
-        const listener = args[1] as
-          | {
-              forEach: (innerCallback: any) => void;
-            }
-          | ((snapshot: { forEach: (innerCallback: any) => void }) => void);
-
-        const snapshot = {
-          forEach: (innerCallback: any) => {
-            innerCallback({ data: () => mockDocs[0] });
-          },
-        };
-
-        if (typeof listener === 'function') {
-          listener(snapshot);
-        } else {
-          (
-            listener as {
-              forEach: (innerCallback: any) => void;
-            }
-          ).forEach(snapshot.forEach);
-        }
-
-        return unsubscribe;
-      });
-
-      const result = listenVaquinhaHistory(callback);
-
-      expect(result).toBe(unsubscribe);
-      expect(callback).toHaveBeenCalledWith([mockDocs[0]]);
-    });
-
-    it('should apply year filter when provided', async () => {
-      const { onSnapshot, where } = await import('firebase/firestore');
-
-      vi.mocked(onSnapshot).mockImplementationOnce((...args: unknown[]) => {
-        const listener = args[1] as
-          | {
-              forEach: (innerCallback: any) => void;
-            }
-          | ((snapshot: { forEach: (innerCallback: any) => void }) => void);
-
-        const snapshot = {
-          forEach: (_innerCallback: any) => {},
-        };
-
-        if (typeof listener === 'function') {
-          listener(snapshot);
-        } else {
-          (
-            listener as {
-              forEach: (innerCallback: any) => void;
-            }
-          ).forEach(snapshot.forEach);
-        }
-
-        return vi.fn();
-      });
-
-      listenVaquinhaHistory(vi.fn(), 2024);
-
-      expect(where).toHaveBeenCalledWith('year', '==', 2024);
     });
   });
 

@@ -53,6 +53,24 @@ describe('VisitCounter', () => {
     );
   });
 
+  it('renders as static centered text without fixed positioning', async () => {
+    let fireCallback: (count: number) => void = vi.fn();
+    mocks.listenSiteVisits.mockImplementation((cb: (count: number) => void) => {
+      fireCallback = cb;
+      return vi.fn();
+    });
+
+    const { container } = renderCounter();
+
+    await act(async () => {
+      fireCallback(5);
+    });
+
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper).toHaveClass('text-center');
+    expect(wrapper.className).not.toContain('fixed');
+  });
+
   it('displays correct aria-label with count', async () => {
     let fireCallback: (count: number) => void = vi.fn();
     mocks.listenSiteVisits.mockImplementation((cb: (count: number) => void) => {

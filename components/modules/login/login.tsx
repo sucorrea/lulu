@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
+  const handleAuth = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -95,10 +95,12 @@ const LoginPage = () => {
       return (
         <span className="flex items-center justify-center">
           <svg
-            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-foreground"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
           >
             <circle
               className="opacity-25"
@@ -134,19 +136,19 @@ const LoginPage = () => {
             </p>
           </div>
 
-          <h2 className="mb-6 text-center text-xl font-semibold text-foreground">
+          <h2 className="mb-6 text-center font-serif text-2xl font-bold text-foreground">
             {isLogin ? 'Entrar' : 'Criar conta'}
           </h2>
 
           {error && (
-            <div className="bg-destructive/10 text-destructive p-3 rounded-md mb-4 text-sm">
+            <div className="bg-destructive/10 text-destructive p-3 rounded-xl mb-4 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleAuth} className="space-y-4">
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="email"
                 placeholder="Email"
@@ -158,7 +160,7 @@ const LoginPage = () => {
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Senha"
@@ -170,7 +172,7 @@ const LoginPage = () => {
               <button
                 type="button"
                 onClick={onToggle}
-                className="absolute right-3 top-3"
+                className="absolute right-0 top-0 flex h-11 w-11 items-center justify-center"
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -221,7 +223,12 @@ const LoginPage = () => {
                 onClick={handleGoogleSignIn}
                 disabled={loading}
               >
-                <svg viewBox="0 0 24 24" className="mr-2 h-5 w-5">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="mr-2 h-5 w-5"
+                  aria-hidden="true"
+                  focusable="false"
+                >
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     fill="#4285F4"

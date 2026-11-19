@@ -4,23 +4,25 @@ import Header from '@/components/layout/header';
 import PageLayout from '@/components/layout/page-layout';
 import { Person } from '@/components/lulus/types';
 import { cn } from '@/lib/utils';
-import { monthDashboard, signsStats, ZODIAC_ICONS } from '../../lulus/utils';
+import { monthDashboard } from '../../lulus/months';
+import { signsStats, ZODIAC_ICONS } from '../../lulus/zodiac';
 import ZodiacIcon from '../../lulus/zodiac-icon';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import BirthdayCalendar from './birthday-calendar';
 
 type DashboardPageProps = {
   participants: Person[];
+  todayKey?: string;
 };
 
-const DashboardPage = ({ participants }: DashboardPageProps) => (
+const DashboardPage = ({ participants, todayKey }: DashboardPageProps) => (
   <PageLayout>
     <Header
-      title="Dashboard das Lulus"
-      description="Visão geral dos aniversários e signos das participantes, em um painel simples e visual."
+      title="Agenda das Lulus"
+      description="Os aniversários do ano, a partir de agora, e os signos das Lulus."
     />
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <BirthdayCalendar participants={participants} />
+      <BirthdayCalendar participants={participants} todayKey={todayKey} />
       <Card className="lulu-card">
         <CardHeader className="p-2">
           <CardTitle className="lulu-header mb-2 text-xl">
@@ -38,15 +40,15 @@ const DashboardPage = ({ participants }: DashboardPageProps) => (
                 <div key={month} className="text-center">
                   <div
                     className={cn(
-                      'w-full aspect-square rounded-lg flex items-center justify-center text-sm font-bold transition-all',
+                      'flex aspect-square w-full items-center justify-center rounded-lg font-serif text-lg font-bold transition-all motion-reduce:transition-none',
                       count > 0
-                        ? 'bg-primary text-white shadow-md'
+                        ? 'bg-primary text-primary-foreground shadow-md'
                         : 'bg-muted text-muted-foreground'
                     )}
                   >
                     {count}
                   </div>
-                  <span className="text-[10px] text-muted-foreground mt-1 block">
+                  <span className="mt-1 block text-[11px] text-muted-foreground">
                     {month}
                   </span>
                 </div>
@@ -83,7 +85,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => (
                         {ZODIAC_ICONS[s.name] && (
                           <ZodiacIcon
                             icon={ZODIAC_ICONS[s.name]}
-                            className="text-white"
+                            className="text-primary-foreground"
                           />
                         )}
                       </div>
@@ -97,7 +99,7 @@ const DashboardPage = ({ participants }: DashboardPageProps) => (
                       aria-label={`${s.name}: ${s.total} participante${s.total === 1 ? '' : 's'}`}
                     />
                     <span
-                      className="w-4 shrink-0 text-right text-sm font-bold text-primary"
+                      className="w-5 shrink-0 text-right font-serif text-base font-bold text-primary"
                       aria-hidden="true"
                     >
                       {s.total}

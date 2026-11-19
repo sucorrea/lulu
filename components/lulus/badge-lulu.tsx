@@ -1,24 +1,19 @@
-import { ReactNode } from 'react';
-
-import { Users } from 'lucide-react';
-
-import { Badge } from '../ui/badge';
-
 interface BadgeLuluProps {
-  text: string;
-  icon?: ReactNode;
+  value: number | string;
+  label: string;
+  testId?: string;
 }
 
-const BadgeLulu = ({ text, icon }: BadgeLuluProps) => (
-  <div className="flex md:justify-end xs:justify-center mb-2">
-    <Badge
-      variant="secondary"
-      className="w-fit bg-primary px-3 py-2 text-sm shadow-lulu-sm"
-    >
-      {icon ?? <Users className="mr-2 h-4 w-4 shrink-0" />}
-      <span className="font-semibold">{text}</span>
-    </Badge>
-  </div>
+const BadgeLulu = ({ value, label, testId = 'badge-lulu' }: BadgeLuluProps) => (
+  <p
+    data-testid={testId}
+    className="flex items-center gap-2 px-4 text-sm font-medium text-muted-foreground first:pl-0"
+  >
+    <span className="font-serif text-3xl font-bold leading-none text-primary lining-nums">
+      {value}
+    </span>
+    {label}
+  </p>
 );
 
 export default BadgeLulu;

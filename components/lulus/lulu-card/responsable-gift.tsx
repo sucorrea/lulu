@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Person } from '../types';
-import { getParticipantPhotoUrl } from '../utils';
+import { getParticipantPhotoUrl } from '../participant-photo';
 import { useGetOrganizerForParticipant } from '@/services/queries/vaquinhaHistory';
 
 interface ResponsableGiftProps {
@@ -29,50 +29,49 @@ const ResponsableGift = ({
 
   if (isLoading) {
     return (
-      <div className="bg-muted flex items-center justify-center border-2 p-2 rounded-lg">
-        <div className="flex gap-3">
-          <Skeleton className="h-12 w-12 shrink-0 rounded-full" />
-          <div className="flex flex-col gap-1">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-4 w-32" />
-          </div>
+      <div className="flex items-center gap-2.5 rounded-2xl bg-surface-warm p-2.5">
+        <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
+        <div className="flex flex-col gap-1">
+          <Skeleton className="h-3 w-32" />
+          <Skeleton className="h-4 w-20" />
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="bg-muted flex items-center justify-center border-2 p-2 rounded-lg">
-      <div className="flex gap-3">
-        {!assignment || !organizer ? (
-          <div>
-            <p className="text-primary text-sm">
-              Lulu não participa da vaquinha esse ano
-            </p>
-          </div>
-        ) : (
-          <>
-            <Avatar
-              className="w-12 h-12"
-              key={getParticipantPhotoUrl(organizer)}
-            >
-              <AvatarImage
-                src={getParticipantPhotoUrl(organizer)}
-                alt={organizer.name}
-                width={56}
-                height={56}
-              />
-              <AvatarFallback>
-                {(organizer.name ?? '').charAt(0).toUpperCase() || '?'}
-              </AvatarFallback>
-            </Avatar>
+  if (!assignment || !organizer) {
+    return (
+      <div className="flex items-center justify-center rounded-2xl bg-surface-warm p-2.5">
+        <p className="text-sm italic text-muted-foreground">
+          Não participa da vaquinha este ano
+        </p>
+      </div>
+    );
+  }
 
-            <div>
-              <p className="text-primary text-sm">Responsável pela vaquinha</p>
-              <p className="">{organizer.name}</p>
-            </div>
-          </>
-        )}
+  return (
+    <div className="flex items-center gap-2.5 rounded-2xl bg-surface-warm p-2.5">
+      <Avatar
+        className="h-10 w-10 ring-2 ring-accent ring-offset-2 ring-offset-surface-warm"
+        key={getParticipantPhotoUrl(organizer)}
+      >
+        <AvatarImage
+          src={getParticipantPhotoUrl(organizer)}
+          alt={organizer.name}
+          width={40}
+          height={40}
+        />
+        <AvatarFallback className="bg-primary text-sm font-bold text-primary-foreground">
+          {(organizer.name ?? '').charAt(0).toUpperCase() || '?'}
+        </AvatarFallback>
+      </Avatar>
+      <div className="min-w-0">
+        <p className="text-xs font-bold tracking-widest text-gold">
+          responsável pela vaquinha
+        </p>
+        <p className="break-words font-serif text-xl font-bold leading-tight text-primary">
+          {organizer.name}
+        </p>
       </div>
     </div>
   );

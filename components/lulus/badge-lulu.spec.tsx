@@ -1,60 +1,44 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Gift } from 'lucide-react';
 import BadgeLulu from './badge-lulu';
 
 describe('BadgeLulu', () => {
-  it('should render text', () => {
-    render(<BadgeLulu text="Somos 3 Lulus" />);
+  it('should render value and label', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
 
-    expect(screen.getByText('Somos 3 Lulus')).toBeInTheDocument();
+    expect(screen.getByTestId('badge-lulu')).toHaveTextContent('3Lulus');
   });
 
-  it('should render default Users icon when icon prop is not provided', () => {
-    const { container } = render(<BadgeLulu text="Test" />);
+  it('should highlight the value with the serif font', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
 
-    const usersIcon = container.querySelector('.lucide-users');
-    expect(usersIcon).toBeInTheDocument();
-  });
-
-  it('should render custom icon when icon prop is provided', () => {
-    const { container } = render(
-      <BadgeLulu
-        text="17 Participantes"
-        icon={<Gift data-testid="custom-icon" />}
-      />
-    );
-
-    expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
-    const usersIcon = container.querySelector('.lucide-users');
-    expect(usersIcon).not.toBeInTheDocument();
-  });
-
-  it('should have correct container layout classes', () => {
-    const { container } = render(<BadgeLulu text="Test" />);
-
-    const wrapper = container.firstElementChild;
-    expect(wrapper).toHaveClass(
-      'flex',
-      'md:justify-end',
-      'xs:justify-center',
-      'mb-2'
+    expect(screen.getByText('3')).toHaveClass(
+      'font-serif',
+      'font-bold',
+      'text-primary',
+      'lining-nums'
     );
   });
 
-  it('should apply font-semibold to text', () => {
-    const { container } = render(<BadgeLulu text="Test" />);
+  it('should vertically center the value with the label', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
 
-    const span = container.querySelector('.font-semibold');
-    expect(span).toBeInTheDocument();
-    expect(span).toHaveTextContent('Test');
+    const badge = screen.getByTestId('badge-lulu');
+    expect(badge).toHaveClass('items-center');
+    expect(badge).not.toHaveClass('items-baseline');
   });
 
-  it('should render badge with secondary variant styling', () => {
-    const { container } = render(<BadgeLulu text="Test" />);
+  it('should not render as a pill', () => {
+    render(<BadgeLulu value={3} label="Lulus" />);
 
-    const badge = container.querySelector('.bg-primary');
-    expect(badge).toBeInTheDocument();
-    expect(badge).toHaveClass('shadow-lulu-sm', 'px-3', 'py-2', 'text-sm');
+    const badge = screen.getByTestId('badge-lulu');
+    expect(badge).not.toHaveClass('rounded-full');
+    expect(badge).not.toHaveClass('border');
+  });
+
+  it('should accept a custom test id', () => {
+    render(<BadgeLulu value="—" label="Lulus" testId="custom" />);
+
+    expect(screen.getByTestId('custom')).toHaveTextContent('—Lulus');
   });
 });

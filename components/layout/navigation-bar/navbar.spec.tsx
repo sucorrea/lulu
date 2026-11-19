@@ -68,6 +68,7 @@ vi.mock('./hooks/use-navbar', () => ({
   useNavbar: vi.fn(),
 }));
 
+import { NAV_ITEMS } from '@/lib/nav-config';
 import { Navbar } from './navbar';
 import { useNavbar as mockUseNavbar } from './hooks/use-navbar';
 
@@ -79,6 +80,7 @@ describe('Navbar', () => {
     isLoadingUser: false,
     isLoginPage: false,
     userFirstName: null,
+    isAdmin: false,
     currentYear: 2026,
     handleLogout: vi.fn(),
   };
@@ -160,6 +162,39 @@ describe('Navbar', () => {
     expect(screen.getByTestId('link-/auditoria')).toBeInTheDocument();
     expect(screen.getByTestId('link-/historico')).toBeInTheDocument();
     expect(screen.getByTestId('link-/sobre')).toBeInTheDocument();
+  });
+
+  it('should show Sorteio link for admin', () => {
+    mockUseNavbarFn.mockReturnValue({ ...defaultNavbarData, isAdmin: true });
+    render(<Navbar />);
+
+    expect(screen.getByTestId('link-/sorteio')).toBeInTheDocument();
+  });
+
+  it('should hide Sorteio link for non admin', () => {
+    render(<Navbar />);
+
+    expect(screen.queryByTestId('link-/sorteio')).not.toBeInTheDocument();
+  });
+
+  it('should not render abbreviated labels', () => {
+    render(<Navbar />);
+
+    ['Particip.', 'Dash.', 'Hist.', 'Audit.'].forEach((text) => {
+      expect(screen.queryByText(text)).not.toBeInTheDocument();
+    });
+  });
+
+  it('should expose every NAV_ITEMS label as accessible name for admin', () => {
+    mockUseNavbarFn.mockReturnValue({ ...defaultNavbarData, isAdmin: true });
+    render(<Navbar />);
+
+    NAV_ITEMS.forEach(({ label, href }) => {
+      expect(screen.getByRole('link', { name: label })).toHaveAttribute(
+        'href',
+        href
+      );
+    });
   });
 
   it('should use navbar hook to get data', () => {

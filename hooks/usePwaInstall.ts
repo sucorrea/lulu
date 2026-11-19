@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'pwa-install-dismissed';
+const SESSION_KEY = 'pwa-install-shown';
+const TOAST_ID = 'pwa-install';
 
 const isAlreadyInstalled = () =>
   globalThis.window?.matchMedia('(display-mode: standalone)').matches;
@@ -22,6 +24,20 @@ const markDismissed = () => {
   } catch {}
 };
 
+const wasShownInSession = () => {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
+const markShownInSession = () => {
+  try {
+    sessionStorage.setItem(SESSION_KEY, 'true');
+  } catch {}
+};
+
 const isIosSafari = () => {
   const ua = navigator.userAgent;
   const isSafari = /safari/i.test(ua) && !/chrome|crios|fxios/i.test(ua);
@@ -33,7 +49,9 @@ const isIosSafari = () => {
 const showIosToast = () => {
   toast('Instale o app Luluzinha!', {
     description: 'Toque em Compartilhar ↑ e depois "Adicionar à Tela Início".',
+    id: TOAST_ID,
     duration: 12000,
+    closeButton: true,
     onDismiss: markDismissed,
   });
 };
@@ -46,13 +64,15 @@ const handleInstallClick = (
   if (!prompt) {
     return;
   }
-  prompt.prompt();
-  prompt.userChoice.then((choice) => {
-    if (choice.outcome === 'accepted') {
-      markDismissed();
-    }
-    clearPrompt();
-  });
+  void prompt.prompt();
+  prompt.userChoice
+    .then((choice) => {
+      if (choice.outcome === 'accepted') {
+        markDismissed();
+      }
+    })
+    .catch(() => {})
+    .finally(clearPrompt);
 };
 
 const showInstallToast = (
@@ -61,7 +81,9 @@ const showInstallToast = (
 ) => {
   toast('Instale o app Luluzinha!', {
     description: 'Adicione ao seu dispositivo para acesso rápido.',
-    duration: Infinity,
+    id: TOAST_ID,
+    duration: 15000,
+    closeButton: true,
     action: {
       label: 'Instalar',
       onClick: () => handleInstallClick(getPrompt, clearPrompt),
@@ -81,6 +103,10 @@ export const usePwaInstall = () => {
     }
 
     if (isIosSafari()) {
+      if (wasShownInSession()) {
+        return;
+      }
+      markShownInSession();
       showIosToast();
       return;
     }
@@ -90,6 +116,10 @@ export const usePwaInstall = () => {
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       deferredPrompt = event as BeforeInstallPromptEvent;
+      if (wasShownInSession()) {
+        return;
+      }
+      markShownInSession();
       showInstallToast(
         () => deferredPrompt,
         () => {

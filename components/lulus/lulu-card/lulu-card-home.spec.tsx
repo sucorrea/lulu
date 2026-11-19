@@ -1,1030 +1,415 @@
 /* eslint-disable @next/next/no-img-element */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import LulusCardHome from './lulu-card-home';
 import type { Person } from '../types';
+import { LINK_HOROSCOPO_DIARIO, LINK_INSTAGRAM } from '../constants';
+
+const mockUseGetOrganizerForParticipant = vi.fn();
+
+vi.mock('@/services/queries/vaquinhaHistory', () => ({
+  useGetOrganizerForParticipant: (participantId: number) =>
+    mockUseGetOrganizerForParticipant(participantId),
+}));
 
 vi.mock('next/image', () => ({
-  default: vi.fn(({ src, alt, width, height }) => (
+  default: vi.fn(({ src, alt, unoptimized }) => (
     <img
       data-testid="next-image"
+      data-unoptimized={String(Boolean(unoptimized))}
       src={src}
       alt={alt}
-      width={width}
-      height={height}
     />
   )),
 }));
 
 vi.mock('next/link', () => ({
-  default: vi.fn(({ children, href, title, className }) => (
-    <a data-testid="next-link" href={href} title={title} className={className}>
+  default: vi.fn(({ children, href, className, ...rest }) => (
+    <a
+      href={href}
+      className={className}
+      aria-label={rest['aria-label']}
+      target={rest.target}
+    >
       {children}
     </a>
   )),
 }));
 
-vi.mock('../zodiac-icon', () => ({
-  default: vi.fn(({ icon }) => (
-    <div data-testid="zodiac-icon" data-icon={icon} />
-  )),
-}));
-
-vi.mock('lucide-react', () => ({
-  CakeIcon: vi.fn(({ size, className }) => (
-    <div data-testid="cake-icon" data-size={size} className={className} />
-  )),
-  Edit2Icon: vi.fn(({ size, className }) => (
-    <div data-testid="edit-icon" data-size={size} className={className} />
-  )),
-  GiftIcon: vi.fn(({ size, className }) => (
-    <div data-testid="gift-icon" data-size={size} className={className} />
-  )),
-}));
-
-vi.mock('@/components/ui/avatar', () => ({
-  Avatar: vi.fn(({ children, className }) => (
-    <div data-testid="avatar" className={className}>
-      {children}
-    </div>
-  )),
-  AvatarImage: vi.fn(({ src, alt }) => (
-    // eslint-disable-next-line jsx-a11y/alt-text
-    <img data-testid="avatar-image" data-src={src} data-alt={alt} />
-  )),
-  AvatarFallback: vi.fn(({ children, className }) => (
-    <div data-testid="avatar-fallback" className={className}>
-      {children}
-    </div>
-  )),
-}));
-
-vi.mock('@/components/ui/card', () => ({
-  Card: vi.fn(({ children, className }) => (
-    <div data-testid="card" className={className}>
-      {children}
-    </div>
-  )),
-  CardContent: vi.fn(({ children, className }) => (
-    <div data-testid="card-content" className={className}>
-      {children}
-    </div>
-  )),
-}));
-
 vi.mock('@/components/ui/tooltip', () => ({
-  TooltipProvider: vi.fn(({ children }) => (
-    <div data-testid="tooltip-provider">{children}</div>
-  )),
-  Tooltip: vi.fn(({ children }) => <div data-testid="tooltip">{children}</div>),
-  TooltipTrigger: vi.fn(({ children, asChild }) => (
-    <div data-testid="tooltip-trigger" data-as-child={asChild}>
-      {children}
-    </div>
-  )),
+  TooltipProvider: vi.fn(({ children }) => <div>{children}</div>),
+  Tooltip: vi.fn(({ children }) => <div>{children}</div>),
+  TooltipTrigger: vi.fn(({ children }) => <div>{children}</div>),
   TooltipContent: vi.fn(({ children }) => (
     <div data-testid="tooltip-content">{children}</div>
   )),
 }));
 
 vi.mock('../../pix-info', () => ({
-  default: vi.fn(({ participant }) => (
-    <div data-testid="pix-info" data-pix-key={participant.pix_key}>
-      Pix Info
-    </div>
-  )),
+  default: vi.fn(() => <div data-testid="pix-info">Pix Info</div>),
 }));
 
 vi.mock('../../qrcode-pix', () => ({
-  default: vi.fn(({ participant }) => (
-    <div data-testid="qrcode-pix" data-pix-key={participant.pix_key}>
-      QR Code
-    </div>
-  )),
+  default: vi.fn(() => <div data-testid="qrcode-pix">QR Code</div>),
 }));
 
 vi.mock('../../whatsapp-info', () => ({
-  default: vi.fn(({ participant }) => (
-    <div data-testid="whatsapp-info" data-phone={participant.phone}>
-      Whatsapp Info
-    </div>
-  )),
+  default: vi.fn(() => <div data-testid="whatsapp-info">Whatsapp Info</div>),
 }));
-
-vi.mock('../link-with-icon', () => ({
-  default: vi.fn(({ link, text, icon, showDescription }) => (
-    <div
-      data-testid="link-with-icon"
-      data-link={link}
-      data-text={text}
-      data-show-description={showDescription}
-    >
-      {icon}
-      {text}
-    </div>
-  )),
-}));
-
-vi.mock('../more-info', () => ({
-  default: vi.fn(({ children }) => (
-    <div data-testid="more-info-accordion">{children}</div>
-  )),
-}));
-
-vi.mock('./responsable-gift', () => ({
-  default: vi.fn(({ participant, participants }) => (
-    <div
-      data-testid="responsable-gift"
-      data-participant-id={participant.id}
-      data-participants-count={participants.length}
-    >
-      Responsable Gift
-    </div>
-  )),
-}));
-
-vi.mock('@/components/animation', () => ({
-  default: vi.fn(({ className }) => (
-    <div data-testid="animation" className={className}>
-      Animation
-    </div>
-  )),
-}));
-
-const isDaysLabel = (content: string): boolean => {
-  const trimmed = content.trim();
-  const parts = trimmed.split(/\s+/u);
-
-  if (parts.length !== 2) {
-    return false;
-  }
-
-  const [numberText, label] = parts;
-  const value = Number(numberText);
-
-  return (
-    Number.isInteger(value) &&
-    value >= 0 &&
-    (label === 'dia' || label === 'dias')
-  );
-};
 
 const mockParticipant = {
   id: 1,
   editToken: 'encrypted-1',
   name: 'John Doe',
   date: '1990-01-15',
-  photoURL: 'https://example.com/photo.jpg',
-  email: 'john@example.com',
+  month: '01',
+  photoURL: 'https://res.cloudinary.com/demo/photo.jpg',
   phone: '1234567890',
   instagram: 'johndoe',
   pix_key: '12345678900',
   pix_key_type: 'cpf',
 } as unknown as Person;
 
-const mockParticipants: Person[] = [
-  mockParticipant,
-  {
-    id: 2,
-    name: 'Jane Smith',
-    date: '1992-06-20',
-    photoURL: null,
-    email: null,
-    phone: null,
-    instagram: null,
-    pix_key: null,
-    pix_key_type: null,
-  },
-] as unknown as Person[];
+const organizer = {
+  id: 2,
+  name: 'Jane Smith',
+  date: '1992-06-20',
+  month: '06',
+} as unknown as Person;
+
+const mockParticipants: Person[] = [mockParticipant, organizer];
+
+const renderCard = (props: Partial<Parameters<typeof LulusCardHome>[0]> = {}) =>
+  render(
+    <LulusCardHome
+      participant={mockParticipant}
+      participants={mockParticipants}
+      user={false}
+      daysUntil={53}
+      {...props}
+    />
+  );
 
 describe('LulusCardHome', () => {
   beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 10, 18, 12));
     vi.clearAllMocks();
-  });
-
-  describe('Basic Rendering', () => {
-    it('should render card component', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getByTestId('card')).toBeInTheDocument();
-      expect(screen.getByTestId('card-content')).toBeInTheDocument();
-    });
-
-    it('should render participant name', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getByText('John Doe')).toBeInTheDocument();
-    });
-
-    it('should render avatar with participant photo', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      const avatarImage = screen.getByTestId('avatar-image');
-      expect(avatarImage).toBeInTheDocument();
-    });
-
-    it('should render avatar fallback with first letter', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getByTestId('avatar-fallback')).toHaveTextContent('J');
-    });
-
-    it('should render avatar fallback with question mark when name is empty', () => {
-      const participantWithoutName = { ...mockParticipant, name: '' };
-      render(
-        <LulusCardHome
-          participant={participantWithoutName}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getByTestId('avatar-fallback')).toHaveTextContent('?');
-    });
-
-    it('should render avatar fallback with question mark when name is null', () => {
-      const participantWithoutName = {
-        ...mockParticipant,
-        name: null,
-      } as unknown as Person;
-      render(
-        <LulusCardHome
-          participant={participantWithoutName}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getByTestId('avatar-fallback')).toHaveTextContent('?');
+    mockUseGetOrganizerForParticipant.mockReturnValue({
+      assignment: { responsibleId: 2 },
+      isLoading: false,
+      isError: false,
     });
   });
 
-  describe('Next Birthday Banner', () => {
-    it('should render next birthday banner when isNextBirthday is true', async () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={true}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-      expect(screen.getByText('Próxima Aniversariante')).toBeInTheDocument();
-      expect(screen.getByTestId('gift-icon')).toBeInTheDocument();
-      await waitFor(() => {
-        expect(screen.getByTestId('animation')).toBeInTheDocument();
-      });
-    });
-
-    it('should not render next birthday banner when isNextBirthday is false', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
+  describe('featured variant', () => {
+    it('should show the plural days label', () => {
+      renderCard({ variant: 'featured', daysUntil: 9 });
 
       expect(
-        screen.queryByText('Próxima aniversariante')
-      ).not.toBeInTheDocument();
-      expect(screen.queryByTestId('gift-icon')).not.toBeInTheDocument();
-    });
-
-    it('should display singular "dia" when 1 day until birthday', () => {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      const tomorrowParticipant = {
-        ...mockParticipant,
-        date: `${today.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`,
-      };
-
-      render(
-        <LulusCardHome
-          participant={tomorrowParticipant}
-          isNextBirthday={true}
-          user={false}
-          participants={[tomorrowParticipant]}
-        />
-      );
-
-      const texts = screen.queryAllByText(/até o grande dia!/);
-      expect(texts.length).toBeGreaterThan(0);
-    });
-
-    it('should display plural "dias" when multiple days until birthday', () => {
-      const today = new Date();
-      const futureDate = new Date(today);
-      futureDate.setDate(today.getDate() + 5);
-      const futureParticipant = {
-        ...mockParticipant,
-        date: `${today.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`,
-      };
-
-      render(
-        <LulusCardHome
-          participant={futureParticipant}
-          isNextBirthday={true}
-          user={false}
-          participants={[futureParticipant]}
-        />
-      );
-
-      expect(
-        screen.getByText((content) => isDaysLabel(content))
+        screen.getByText('Próxima aniversariante · faltam 9 dias')
       ).toBeInTheDocument();
-      expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
-    });
-  });
-
-  describe('Card Styling', () => {
-    it('should apply next birthday border style when isNextBirthday is true', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={true}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      const card = screen.getByTestId('card');
-      expect(card).toHaveClass('border-primary');
-      expect(card).toHaveClass('border-2');
-      expect(card).toHaveClass('shadow-lulu-lg');
     });
 
-    it('should apply default shadow style when isNextBirthday is false', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
+    it('should place the banner above the photo, never over it', () => {
+      renderCard({ variant: 'featured', daysUntil: 9 });
 
-      const card = screen.getByTestId('card');
-      expect(card).toHaveClass('shadow-lulu-sm');
+      const banner = screen.getByTestId('next-birthday-banner');
+      const photo = screen.getByTestId('featured-photo');
+      expect(photo).not.toContainElement(banner);
+      expect(
+        banner.compareDocumentPosition(photo) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
     });
 
-    it('should have lulu-card class', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      const card = screen.getByTestId('card');
-      expect(card).toHaveClass('lulu-card');
-    });
-  });
-
-  describe('User Edit Link', () => {
-    it('should render edit link when user is true and showDetails is true', () => {
-      render(
-        <TooltipProvider>
-          <LulusCardHome
-            participant={mockParticipant}
-            isNextBirthday={false}
-            user={true}
-            participants={mockParticipants}
-            showDetails={true}
-          />
-        </TooltipProvider>
-      );
-
-      expect(screen.getByTestId('next-link')).toBeInTheDocument();
-      expect(screen.getByTestId('edit-icon')).toBeInTheDocument();
-    });
-
-    it('should not render edit link when user is false', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      expect(screen.queryByTestId('edit-icon')).not.toBeInTheDocument();
-    });
-
-    it('should not render edit link when showDetails is false', () => {
-      render(
-        <TooltipProvider>
-          <LulusCardHome
-            participant={mockParticipant}
-            isNextBirthday={false}
-            user={true}
-            participants={mockParticipants}
-            showDetails={false}
-          />
-        </TooltipProvider>
-      );
-
-      expect(screen.queryByTestId('edit-icon')).not.toBeInTheDocument();
-    });
-
-    it('should generate correct edit link with encrypted ID', () => {
-      render(
-        <TooltipProvider>
-          <LulusCardHome
-            participant={mockParticipant}
-            isNextBirthday={false}
-            user={true}
-            participants={mockParticipants}
-          />
-        </TooltipProvider>
-      );
-
-      const link = screen.getByTestId('next-link');
-      expect(link).toHaveAttribute('href', 'participantes/encrypted-1');
-    });
-
-    it('should render tooltip components when user is true and showDetails is true', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={true}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      expect(screen.getByTestId('tooltip-provider')).toBeInTheDocument();
-      expect(screen.getByTestId('tooltip')).toBeInTheDocument();
-      expect(screen.getByTestId('tooltip-trigger')).toBeInTheDocument();
-      expect(screen.getByTestId('tooltip-content')).toBeInTheDocument();
-    });
-
-    it('should render tooltip content with "Editar" text', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={true}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      const tooltipContent = screen.getByTestId('tooltip-content');
-      expect(tooltipContent).toHaveTextContent('Editar');
-    });
-
-    it('should set asChild prop to true on TooltipTrigger', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={true}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      const tooltipTrigger = screen.getByTestId('tooltip-trigger');
-      expect(tooltipTrigger).toHaveAttribute('data-as-child', 'true');
-    });
-
-    it('should not render tooltip components when user is false', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      expect(screen.queryByTestId('tooltip')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('tooltip-trigger')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('tooltip-content')).not.toBeInTheDocument();
-    });
-
-    it('should not render tooltip components when showDetails is false', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={true}
-          participants={mockParticipants}
-          showDetails={false}
-        />
-      );
-
-      expect(screen.queryByTestId('tooltip')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('tooltip-trigger')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('tooltip-content')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('Participant Information', () => {
-    it('should render cake icon', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getByTestId('cake-icon')).toBeInTheDocument();
-    });
-
-    it('should render zodiac sign icon', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      const zodiacIcon = screen.getByTestId('zodiac-icon');
-      expect(zodiacIcon).toBeInTheDocument();
-      expect(zodiacIcon.dataset?.icon).toBe('capricorn');
-    });
-
-    it('should render instagram link when instagram is provided', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getAllByTestId('link-with-icon')).toHaveLength(2);
-    });
-
-    it('should not render instagram link when instagram is null', () => {
-      const participantWithoutInstagram = {
-        ...mockParticipant,
-        instagram: null,
-      } as unknown as Person;
-      render(
-        <LulusCardHome
-          participant={participantWithoutInstagram}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getAllByTestId('link-with-icon')).toHaveLength(1);
-    });
-
-    it('should not render instagram link when instagram is undefined', () => {
-      const participantWithoutInstagram = {
-        ...mockParticipant,
-        instagram: undefined,
-      } as unknown as Person;
-      render(
-        <LulusCardHome
-          participant={participantWithoutInstagram}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getAllByTestId('link-with-icon')).toHaveLength(1);
-    });
-
-    it('should not render instagram link when instagram is empty string', () => {
-      const participantWithoutInstagram = {
-        ...mockParticipant,
-        instagram: '',
-      } as unknown as Person;
-      render(
-        <LulusCardHome
-          participant={participantWithoutInstagram}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getAllByTestId('link-with-icon')).toHaveLength(1);
-    });
-  });
-
-  describe('showDetails Prop', () => {
-    it('should render details section when showDetails is true', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      expect(screen.getByTestId('more-info-accordion')).toBeInTheDocument();
-      expect(screen.getByTestId('responsable-gift')).toBeInTheDocument();
-    });
-
-    it('should not render details section when showDetails is false', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={false}
-        />
-      );
+    it('should show the today label', () => {
+      renderCard({ variant: 'featured', daysUntil: 0 });
 
       expect(
-        screen.queryByTestId('more-info-accordion')
+        screen.getByText('Próxima aniversariante · é hoje!')
+      ).toBeInTheDocument();
+    });
+
+    it('should show the singular days label', () => {
+      renderCard({ variant: 'featured', daysUntil: 1 });
+
+      expect(
+        screen.getByText('Próxima aniversariante · falta 1 dia')
+      ).toBeInTheDocument();
+    });
+
+    it('should show the responsible and the more info accordion', async () => {
+      renderCard({ variant: 'featured', daysUntil: 9 });
+
+      expect(
+        await screen.findByText('responsável pela vaquinha')
+      ).toBeInTheDocument();
+      expect(screen.getByText('Jane Smith')).toBeInTheDocument();
+      expect(screen.getByText('mais detalhes')).toBeInTheDocument();
+    });
+
+    it('should render the large decorative photo next to the visible name', () => {
+      renderCard({ variant: 'featured', daysUntil: 9 });
+
+      const photo = screen.getByTestId('featured-photo');
+      const image = within(photo).getByTestId('next-image');
+      expect(image).toHaveAttribute('src', mockParticipant.photoURL);
+      expect(image).toHaveAttribute('alt', '');
+      expect(
+        within(photo).getByRole('heading', { name: 'John Doe' })
+      ).toBeInTheDocument();
+    });
+
+    it('should show date, sign and instagram over the photo', () => {
+      renderCard({ variant: 'featured', daysUntil: 9 });
+
+      const photo = screen.getByTestId('featured-photo');
+      expect(within(photo).getByText('15/01')).toBeInTheDocument();
+      expect(within(photo).getByText('Capricórnio')).toBeInTheDocument();
+      expect(within(photo).getByText('@johndoe').closest('a')).toHaveAttribute(
+        'href',
+        `${LINK_INSTAGRAM}johndoe`
+      );
+    });
+
+    it('should optimize Cloudinary photos and skip optimization for other hosts', () => {
+      const { unmount } = renderCard({
+        variant: 'featured',
+        daysUntil: 9,
+        participant: {
+          ...mockParticipant,
+          photoURL: 'https://res.cloudinary.com/demo/image/upload/a.jpg',
+        },
+      });
+      expect(screen.getByTestId('next-image')).toHaveAttribute(
+        'data-unoptimized',
+        'false'
+      );
+      unmount();
+
+      renderCard({
+        variant: 'featured',
+        daysUntil: 9,
+        participant: {
+          ...mockParticipant,
+          photoURL: 'https://lh3.googleusercontent.com/a.jpg',
+        },
+      });
+      expect(screen.getByTestId('next-image')).toHaveAttribute(
+        'data-unoptimized',
+        'true'
+      );
+    });
+
+    it('should show the initial instead of a broken image without photo', () => {
+      renderCard({
+        variant: 'featured',
+        daysUntil: 9,
+        participant: { ...mockParticipant, photoURL: undefined },
+      });
+
+      const photo = screen.getByTestId('featured-photo');
+      expect(within(photo).queryByRole('img')).not.toBeInTheDocument();
+      expect(within(photo).queryByTestId('next-image')).not.toBeInTheDocument();
+      expect(within(photo).getByText('J')).toBeInTheDocument();
+    });
+
+    it('should not show the days counter column', () => {
+      renderCard({ variant: 'featured', daysUntil: 9 });
+
+      expect(screen.queryByTestId('days-until')).not.toBeInTheDocument();
+    });
+
+    it('should show the edit link for admin', () => {
+      renderCard({ variant: 'featured', daysUntil: 9, user: true });
+
+      expect(screen.getByRole('link', { name: 'Editar' })).toHaveAttribute(
+        'href',
+        'participantes/encrypted-1'
+      );
+    });
+  });
+
+  describe('default variant', () => {
+    it('should show the number of days with plural label', () => {
+      renderCard({ daysUntil: 53 });
+
+      const counter = screen.getByTestId('days-until');
+      expect(within(counter).getByText('faltam')).toBeInTheDocument();
+      expect(within(counter).getByText('53')).toBeInTheDocument();
+      expect(within(counter).getByText('dias')).toBeInTheDocument();
+      expect(counter).toHaveAttribute(
+        'aria-label',
+        'Faltam 53 dias para o aniversário'
+      );
+    });
+
+    it('should show singular label for one day', () => {
+      renderCard({ daysUntil: 1 });
+
+      const counter = screen.getByTestId('days-until');
+      expect(within(counter).getByText('falta')).toBeInTheDocument();
+      expect(within(counter).getByText('1')).toBeInTheDocument();
+      expect(within(counter).getByText('dia')).toBeInTheDocument();
+      expect(counter).toHaveAttribute(
+        'aria-label',
+        'Falta 1 dia para o aniversário'
+      );
+    });
+
+    it('should show Hoje! for zero days', () => {
+      renderCard({ daysUntil: 0 });
+
+      const counter = screen.getByTestId('days-until');
+      expect(within(counter).getByText('Hoje!')).toBeInTheDocument();
+      expect(within(counter).queryByText('dias')).not.toBeInTheDocument();
+      expect(within(counter).queryByText('faltam')).not.toBeInTheDocument();
+      expect(counter).toHaveAttribute('aria-label', 'Aniversário hoje');
+    });
+
+    it('should render the name as a heading', () => {
+      renderCard();
+
+      expect(
+        screen.getByRole('heading', { name: 'John Doe' })
+      ).toBeInTheDocument();
+    });
+
+    it('should not render the featured photo or label', () => {
+      renderCard();
+
+      expect(screen.queryByTestId('featured-photo')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/Próxima aniversariante/)
       ).not.toBeInTheDocument();
-      expect(screen.queryByTestId('responsable-gift')).not.toBeInTheDocument();
     });
 
-    it('should default showDetails to true when not provided', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
+    it('should show the instagram link and the accordion', () => {
+      renderCard();
 
-      expect(screen.getByTestId('more-info-accordion')).toBeInTheDocument();
+      expect(screen.getByText('@johndoe').closest('a')).toHaveAttribute(
+        'href',
+        `${LINK_INSTAGRAM}johndoe`
+      );
+      expect(screen.getByText('mais detalhes')).toBeInTheDocument();
     });
 
-    it('should render phone info when phone is provided and showDetails is true', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
+    it('should link the sign to the horoscope', () => {
+      renderCard();
+
+      expect(screen.getByText('Capricórnio').closest('a')).toHaveAttribute(
+        'href',
+        `${LINK_HOROSCOPO_DIARIO}capricornio/`
       );
+    });
+
+    it('should not show instagram when missing', () => {
+      renderCard({ participant: { ...mockParticipant, instagram: '' } });
+
+      expect(screen.queryByText('@johndoe')).not.toBeInTheDocument();
+    });
+
+    it('should show whatsapp, pix and qrcode when opening the accordion', () => {
+      renderCard();
+
+      fireEvent.click(screen.getByText('mais detalhes'));
 
       expect(screen.getByTestId('whatsapp-info')).toBeInTheDocument();
-    });
-
-    it('should not render phone info when phone is null', () => {
-      const participantWithoutPhone = {
-        ...mockParticipant,
-        phone: null,
-      } as unknown as Person;
-      render(
-        <LulusCardHome
-          participant={participantWithoutPhone}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      expect(screen.queryByTestId('whatsapp-info')).not.toBeInTheDocument();
-    });
-
-    it('should render pix info when pix_key is provided and showDetails is true', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
       expect(screen.getByTestId('pix-info')).toBeInTheDocument();
-    });
-
-    it('should not render pix info when pix_key is null', () => {
-      const participantWithoutPix = {
-        ...mockParticipant,
-        pix_key: null,
-      } as unknown as Person;
-      render(
-        <LulusCardHome
-          participant={participantWithoutPix}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
-      expect(screen.queryByTestId('pix-info')).not.toBeInTheDocument();
-    });
-
-    it('should render pix qrcode when pix_key is provided and showDetails is true', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
-
       expect(screen.getByTestId('qrcode-pix')).toBeInTheDocument();
     });
 
-    it('should not render pix qrcode when pix_key is null', () => {
-      const participantWithoutPix = {
-        ...mockParticipant,
-        pix_key: null,
-      } as unknown as Person;
-      render(
-        <LulusCardHome
-          participant={participantWithoutPix}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={true}
-        />
-      );
+    it('should hide whatsapp and pix when the data is missing', () => {
+      renderCard({
+        participant: {
+          ...mockParticipant,
+          phone: undefined,
+          pix_key: undefined,
+        },
+      });
 
+      fireEvent.click(screen.getByText('mais detalhes'));
+
+      expect(screen.queryByTestId('whatsapp-info')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('pix-info')).not.toBeInTheDocument();
       expect(screen.queryByTestId('qrcode-pix')).not.toBeInTheDocument();
     });
-  });
 
-  describe('calculateDaysUntilBirthday', () => {
-    it('should calculate days correctly for birthday in current year', () => {
-      const today = new Date();
-      const futureDate = new Date(today);
-      futureDate.setDate(today.getDate() + 10);
-      const futureParticipant = {
-        ...mockParticipant,
-        date: `${today.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`,
-      };
-
-      render(
-        <LulusCardHome
-          participant={futureParticipant}
-          isNextBirthday={true}
-          user={false}
-          participants={[futureParticipant]}
-        />
-      );
+    it('should show the responsible block', async () => {
+      renderCard();
 
       expect(
-        screen.getByText((content) => isDaysLabel(content))
+        await screen.findByText('responsável pela vaquinha')
       ).toBeInTheDocument();
-      expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
     });
 
-    it('should calculate days correctly when birthday has passed this year', () => {
-      const today = new Date();
-      const pastDate = new Date(today);
-      pastDate.setDate(today.getDate() - 10);
-      const pastParticipant = {
-        ...mockParticipant,
-        date: `${today.getFullYear()}-${String(pastDate.getMonth() + 1).padStart(2, '0')}-${String(pastDate.getDate()).padStart(2, '0')}`,
-      };
-
-      render(
-        <LulusCardHome
-          participant={pastParticipant}
-          isNextBirthday={true}
-          user={false}
-          participants={[pastParticipant]}
-        />
-      );
+    it('should show the no participation message without responsible', async () => {
+      mockUseGetOrganizerForParticipant.mockReturnValue({
+        assignment: null,
+        isLoading: false,
+        isError: false,
+      });
+      renderCard();
 
       expect(
-        screen.getByText((content) => isDaysLabel(content))
+        await screen.findByText('Não participa da vaquinha este ano')
       ).toBeInTheDocument();
-      expect(screen.getByText('até o grande dia!')).toBeInTheDocument();
+    });
+
+    it('should show the avatar initial', () => {
+      renderCard({
+        participant: { ...mockParticipant, name: 'zoe', photoURL: undefined },
+      });
+
+      expect(screen.getByText('Z')).toBeInTheDocument();
+    });
+
+    it('should show question mark without name', () => {
+      renderCard({
+        participant: {
+          ...mockParticipant,
+          name: '',
+          photoURL: undefined,
+        },
+      });
+
+      expect(screen.getByText('?')).toBeInTheDocument();
     });
   });
 
-  describe('ResponsableGift Component', () => {
-    it('should render responsable gift component with correct props', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
+  describe('admin edit link', () => {
+    it('should show the edit link with the encrypted token', () => {
+      renderCard({ user: true });
 
-      const responsableGift = screen.getByTestId('responsable-gift');
-      expect(responsableGift).toHaveAttribute(
-        'data-participant-id',
-        String(mockParticipant.id)
+      expect(screen.getByRole('link', { name: 'Editar' })).toHaveAttribute(
+        'href',
+        'participantes/encrypted-1'
       );
-      expect(responsableGift).toHaveAttribute(
-        'data-participants-count',
-        String(mockParticipants.length)
-      );
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('should handle participant with minimal data', () => {
-      const minimalParticipant: Person = {
-        id: 1,
-        name: 'Min User',
-        date: '1990-01-01',
-        photoURL: null,
-        email: null,
-        phone: null,
-        instagram: null,
-        pix_key: null,
-        pix_key_type: null,
-      } as unknown as Person;
-
-      render(
-        <LulusCardHome
-          participant={minimalParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={[minimalParticipant]}
-        />
-      );
-
-      expect(screen.getByText('Min User')).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip-content')).toHaveTextContent('Editar');
     });
 
-    it('should handle empty participants array', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={[]}
-        />
-      );
+    it('should fall back to the id without token', () => {
+      renderCard({
+        user: true,
+        participant: { ...mockParticipant, editToken: undefined },
+      });
 
-      expect(screen.getByTestId('card')).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Editar' })).toHaveAttribute(
+        'href',
+        'participantes/1'
+      );
     });
 
-    it('should handle participant with all optional fields undefined', () => {
-      const participantUndefined: Person = {
-        id: 1,
-        name: 'Test User',
-        date: '1990-01-01',
-        photoURL: undefined,
-        email: undefined,
-        phone: undefined,
-        instagram: undefined,
-        pix_key: undefined,
-        pix_key_type: undefined,
-      } as unknown as Person;
-
-      render(
-        <LulusCardHome
-          participant={participantUndefined}
-          isNextBirthday={false}
-          user={false}
-          participants={[participantUndefined]}
-        />
-      );
-
-      expect(screen.getByText('Test User')).toBeInTheDocument();
-    });
-
-    it('should handle very long participant name', () => {
-      const longNameParticipant = {
-        ...mockParticipant,
-        name: 'A'.repeat(100),
-      };
-
-      render(
-        <LulusCardHome
-          participant={longNameParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      expect(screen.getByText('A'.repeat(100))).toBeInTheDocument();
-    });
-  });
-
-  describe('Layout Classes', () => {
-    it('should have correct avatar classes', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      const avatar = screen.getByTestId('avatar');
-      expect(avatar).toHaveClass('h-20');
-      expect(avatar).toHaveClass('w-20');
-      expect(avatar).toHaveClass('border-4');
-      expect(avatar).toHaveClass('border-primary/20');
-    });
-
-    it('should have correct card classes', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-        />
-      );
-
-      const card = screen.getByTestId('card');
-      expect(card).toHaveClass('mx-auto');
-      expect(card).toHaveClass('w-full');
-      expect(card).toHaveClass('max-w-md');
-    });
-  });
-
-  describe('Combined Props Scenarios', () => {
-    it('should render correctly with isNextBirthday and user both true', () => {
-      render(
-        <TooltipProvider>
-          <LulusCardHome
-            participant={mockParticipant}
-            isNextBirthday={true}
-            user={true}
-            participants={mockParticipants}
-            showDetails={true}
-          />
-        </TooltipProvider>
-      );
-
-      expect(screen.getByText('Próxima Aniversariante')).toBeInTheDocument();
-      expect(screen.getByTestId('edit-icon')).toBeInTheDocument();
-      expect(screen.getByTestId('more-info-accordion')).toBeInTheDocument();
-    });
-
-    it('should render correctly with all props false except required', () => {
-      render(
-        <LulusCardHome
-          participant={mockParticipant}
-          isNextBirthday={false}
-          user={false}
-          participants={mockParticipants}
-          showDetails={false}
-        />
-      );
+    it('should not show the edit link for non admin', () => {
+      renderCard({ user: false });
 
       expect(
-        screen.queryByText('Próxima aniversariante')
-      ).not.toBeInTheDocument();
-      expect(screen.queryByTestId('edit-icon')).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('more-info-accordion')
+        screen.queryByRole('link', { name: 'Editar' })
       ).not.toBeInTheDocument();
     });
   });

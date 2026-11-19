@@ -15,10 +15,16 @@ const LinkIconWithText = ({
   icon,
   showDescription,
 }: LinkIconWithTextProps) => (
-  <Link href={link} target="_blank" rel="noopener noreferrer">
-    <div className="flex items-center gap-1">
+  <Link
+    href={link}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="min-w-0 max-w-full"
+    title={text}
+  >
+    <div className="flex min-w-0 items-center gap-1">
       {icon}
-      {!!showDescription && <p className="md:text-sm xs: text-xs">{text}</p>}
+      {!!showDescription && <p className="truncate">{text}</p>}
     </div>
   </Link>
 );
