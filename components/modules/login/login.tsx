@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
+  const handleAuth = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -99,6 +99,8 @@ const LoginPage = () => {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
           >
             <circle
               className="opacity-25"
@@ -221,7 +223,12 @@ const LoginPage = () => {
                 onClick={handleGoogleSignIn}
                 disabled={loading}
               >
-                <svg viewBox="0 0 24 24" className="mr-2 h-5 w-5">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="mr-2 h-5 w-5"
+                  aria-hidden="true"
+                  focusable="false"
+                >
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     fill="#4285F4"
