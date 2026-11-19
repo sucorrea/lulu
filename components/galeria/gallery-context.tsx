@@ -14,17 +14,15 @@ import {
 import { toast } from 'sonner';
 
 import { useUserVerification } from '@/hooks/user-verify';
-import {
-  addCommentToPhoto,
-  deleteCommentFromPhoto,
-  editCommentOnPhoto,
-  GaleriaComment,
-} from '@/services/galeriaComments';
+import type { GaleriaComment } from '@/services/galeriaComments';
 import { likePhoto, unlikePhoto } from '@/services/galeriaLikes';
 import { deleteGalleryPhoto } from '@/services/queries/deleteGalleryPhoto';
 import { useGetGalleryImages } from '@/services/queries/fetchParticipants';
 
+import { likesReducer } from './gallery-reducers';
 import { useGalleryRealtime } from './use-gallery-realtime';
+import { usePhotoComments } from './use-photo-comments';
+import { usePhotoNavigation } from './use-photo-navigation';
 import { onGetPhotoId } from './utils';
 
 export interface PhotoStats {
@@ -32,24 +30,6 @@ export interface PhotoStats {
   likesCount: number;
   commentCount: number;
 }
-
-interface LikeState {
-  likes: { [photo: string]: string[] };
-}
-
-type LikeAction = {
-  type: 'toggle';
-  photo: string;
-  userId: string;
-  isCurrentlyLiked: boolean;
-};
-
-type CommentState = Record<string, GaleriaComment[]>;
-
-type CommentAction =
-  | { type: 'add'; photo: string; comment: GaleriaComment }
-  | { type: 'edit'; photo: string; commentId: string; text: string }
-  | { type: 'delete'; photo: string; commentId: string };
 
 interface GalleryContextType {
   photos: string[];
@@ -76,116 +56,59 @@ interface GalleryContextType {
 
 const GalleryContext = createContext<GalleryContextType | null>(null);
 
+const EMPTY_STATS: PhotoStats = {
+  isLiked: false,
+  likesCount: 0,
+  commentCount: 0,
+};
+
 export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const { user, isAdmin } = useUserVerification();
   const { data, isLoading, isError, refetch } = useGetGalleryImages();
   const photos = useMemo(() => data ?? [], [data]);
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [, startTransition] = useTransition();
 
   const getPhotoId = useCallback((photo: string) => onGetPhotoId(photo), []);
-
   const { firestoreLikes, firestoreComments } = useGalleryRealtime(
     photos,
     getPhotoId
   );
-  const [optimisticLikes, setOptimisticLikes] = useOptimistic<
-    LikeState,
-    LikeAction
-  >({ likes: firestoreLikes }, (state, action) => {
-    if (action.type === 'toggle') {
-      const currentLikes = state.likes[action.photo] ?? [];
-      const alreadyLiked = currentLikes.includes(action.userId);
-      let newLikes: string[];
-      if (action.isCurrentlyLiked) {
-        newLikes = currentLikes.filter((uid) => uid !== action.userId);
-      } else if (alreadyLiked) {
-        newLikes = currentLikes;
-      } else {
-        newLikes = [...currentLikes, action.userId];
-      }
-      return {
-        ...state,
-        likes: { ...state.likes, [action.photo]: newLikes },
-      };
-    }
-    return state;
+
+  const navigation = usePhotoNavigation(photos);
+  const { selectedPhoto, closePhoto } = navigation;
+
+  const comments = usePhotoComments({
+    user,
+    selectedPhoto,
+    firestoreComments,
+    getPhotoId,
   });
 
-  const [optimisticComments, setOptimisticComments] = useOptimistic<
-    CommentState,
-    CommentAction
-  >(firestoreComments, (state, action) => {
-    const current = state[action.photo] ?? [];
-    if (action.type === 'add') {
-      return { ...state, [action.photo]: [...current, action.comment] };
-    }
-    if (action.type === 'edit') {
-      return {
-        ...state,
-        [action.photo]: current.map((c) =>
-          c.id === action.commentId ? { ...c, comment: action.text } : c
-        ),
-      };
-    }
-    if (action.type === 'delete') {
-      return {
-        ...state,
-        [action.photo]: current.filter((c) => c.id !== action.commentId),
-      };
-    }
-    return state;
-  });
-
-  const selectedPhoto =
-    selectedIndex === null ? null : (photos[selectedIndex] ?? null);
-
-  const selectPhoto = useCallback((index: number) => {
-    setSelectedIndex(index);
-  }, []);
-
-  const closePhoto = useCallback(() => setSelectedIndex(null), []);
-
-  const nextPhoto = useCallback(
-    () =>
-      setSelectedIndex((prev) =>
-        prev === null ? null : (prev + 1) % photos.length
-      ),
-    [photos.length]
-  );
-
-  const prevPhoto = useCallback(
-    () =>
-      setSelectedIndex((prev) =>
-        prev === null ? null : (prev - 1 + photos.length) % photos.length
-      ),
-    [photos.length]
+  const [optimisticLikes, setOptimisticLikes] = useOptimistic(
+    { likes: firestoreLikes },
+    likesReducer
   );
 
   const getPhotoStats = useCallback(
     (index: number): PhotoStats => {
       const photo = photos[index];
       if (!photo) {
-        return { isLiked: false, likesCount: 0, commentCount: 0 };
+        return EMPTY_STATS;
       }
 
       const effectiveLikes =
         optimisticLikes.likes[photo] ?? firestoreLikes[photo] ?? [];
-      const isLiked = user ? effectiveLikes.includes(user.uid) : false;
-      const likesCount = effectiveLikes.length;
-      const commentCount = firestoreComments[photo]?.length ?? 0;
 
-      return { isLiked, likesCount, commentCount };
+      return {
+        isLiked: user ? effectiveLikes.includes(user.uid) : false,
+        likesCount: effectiveLikes.length,
+        commentCount: firestoreComments[photo]?.length ?? 0,
+      };
     },
     [photos, optimisticLikes.likes, firestoreLikes, firestoreComments, user]
-  );
-
-  const getComments = useCallback(
-    (photo: string) => optimisticComments[photo] ?? [],
-    [optimisticComments]
   );
 
   const toggleLike = useCallback(
@@ -200,8 +123,7 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const photoId = getPhotoId(photo);
-      const stats = getPhotoStats(index);
-      const isCurrentlyLiked = stats.isLiked;
+      const isCurrentlyLiked = getPhotoStats(index).isLiked;
 
       startTransition(async () => {
         setOptimisticLikes({
@@ -223,67 +145,6 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       });
     },
     [photos, user, router, getPhotoId, getPhotoStats, setOptimisticLikes]
-  );
-
-  const addComment = useCallback(
-    async (text: string) => {
-      if (!user || !selectedPhoto) {
-        return;
-      }
-      const photoId = getPhotoId(selectedPhoto);
-      const optimisticComment: GaleriaComment = {
-        id: `opt-${globalThis.crypto.randomUUID()}`,
-        userId: user.uid,
-        displayName: user.displayName ?? user.email ?? 'Usuário',
-        comment: text.trim(),
-        createdAt: new Date().toISOString(),
-      };
-
-      startTransition(async () => {
-        setOptimisticComments({
-          type: 'add',
-          photo: selectedPhoto,
-          comment: optimisticComment,
-        });
-
-        try {
-          await addCommentToPhoto(photoId, {
-            userId: user.uid,
-            displayName: user.displayName ?? user.email ?? 'Usuário',
-            comment: text.trim(),
-          });
-        } catch (error) {
-          console.error('Error adding comment:', error);
-        }
-      });
-    },
-    [user, selectedPhoto, getPhotoId, setOptimisticComments]
-  );
-
-  const editComment = useCallback(
-    async (commentId: string, text: string) => {
-      if (!selectedPhoto) {
-        return;
-      }
-      const photoId = getPhotoId(selectedPhoto);
-      const trimmed = text.trim();
-
-      startTransition(async () => {
-        setOptimisticComments({
-          type: 'edit',
-          photo: selectedPhoto,
-          commentId,
-          text: trimmed,
-        });
-
-        try {
-          await editCommentOnPhoto(photoId, commentId, trimmed);
-        } catch (error) {
-          console.error('Error editing comment:', error);
-        }
-      });
-    },
-    [selectedPhoto, getPhotoId, setOptimisticComments]
   );
 
   const deletePhoto = useCallback(
@@ -311,30 +172,6 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
     [selectedPhoto, closePhoto, refetch, isDeleting]
   );
 
-  const deleteComment = useCallback(
-    async (commentId: string) => {
-      if (!selectedPhoto) {
-        return;
-      }
-      const photoId = getPhotoId(selectedPhoto);
-
-      startTransition(async () => {
-        setOptimisticComments({
-          type: 'delete',
-          photo: selectedPhoto,
-          commentId,
-        });
-
-        try {
-          await deleteCommentFromPhoto(photoId, commentId);
-        } catch (error) {
-          console.error('Error deleting comment:', error);
-        }
-      });
-    },
-    [selectedPhoto, getPhotoId, setOptimisticComments]
-  );
-
   const value = useMemo(
     () => ({
       photos,
@@ -343,19 +180,11 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       isDeleting,
       user,
       isAdmin,
-      selectedIndex,
-      selectedPhoto,
+      ...navigation,
+      ...comments,
       getPhotoStats,
-      getComments,
-      selectPhoto,
-      closePhoto,
-      nextPhoto,
-      prevPhoto,
       toggleLike,
       deletePhoto,
-      addComment,
-      editComment,
-      deleteComment,
       refetch,
     }),
     [
@@ -365,19 +194,11 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       isDeleting,
       user,
       isAdmin,
-      selectedIndex,
-      selectedPhoto,
+      navigation,
+      comments,
       getPhotoStats,
-      getComments,
-      selectPhoto,
-      closePhoto,
-      nextPhoto,
-      prevPhoto,
       toggleLike,
       deletePhoto,
-      addComment,
-      editComment,
-      deleteComment,
       refetch,
     ]
   );
