@@ -32,15 +32,6 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-vi.mock('brazilian-values', () => ({
-  formatToPhone: (phone: string) => {
-    if (!phone) {
-      return '';
-    }
-    return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-  },
-}));
-
 vi.mock('./lulus/constants', () => ({
   LINK_WHATSAPP: 'https://api.whatsapp.com/send?phone=55',
 }));

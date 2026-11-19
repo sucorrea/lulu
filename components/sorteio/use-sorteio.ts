@@ -123,7 +123,7 @@ export const useSorteio = () => {
   }, []);
 
   const runSorteio = useCallback(() => {
-    if (!participants) {
+    if (!participants || isLoadingPreviousHistory) {
       return;
     }
 
@@ -153,7 +153,12 @@ export const useSorteio = () => {
         error instanceof Error ? error.message : 'Erro ao realizar o sorteio'
       );
     }
-  }, [participants, selectedParticipantIds, previousYearHistory]);
+  }, [
+    participants,
+    selectedParticipantIds,
+    previousYearHistory,
+    isLoadingPreviousHistory,
+  ]);
 
   const backToSelection = useCallback(() => {
     setSorteioResult(null);

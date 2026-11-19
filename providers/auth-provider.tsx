@@ -37,13 +37,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let latestEvent = 0;
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      const event = ++latestEvent;
       setUser(currentUser);
-      setIsAdmin(currentUser ? await readAdminClaim(currentUser) : false);
+      const admin = currentUser ? await readAdminClaim(currentUser) : false;
+      if (event !== latestEvent) {
+        return;
+      }
+      setIsAdmin(admin);
       setIsLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      latestEvent++;
+      unsubscribe();
+    };
   }, []);
 
   const handleLogout = useCallback(async () => {

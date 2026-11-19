@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import type { User } from 'firebase/auth';
 
@@ -145,6 +145,39 @@ describe('AuthProvider', () => {
       expect(result.current.isAdmin).toBe(false);
       expect(result.current.user).toBe(null);
     });
+  });
+
+  it('should ignore a slow admin check from an earlier auth event', async () => {
+    let emit: (user: User | null) => void = () => {};
+    mockOnAuthStateChanged.mockImplementation(
+      (_: unknown, callback: (u: User | null) => void) => {
+        emit = callback;
+        return vi.fn();
+      }
+    );
+    let resolveClaim: (value: {
+      claims: { admin: boolean };
+    }) => void = () => {};
+    mockGetIdTokenResult.mockReturnValue(
+      new Promise((resolve) => {
+        resolveClaim = resolve;
+      })
+    );
+
+    const { result } = renderAuth();
+
+    await act(async () => {
+      emit({ uid: 'admin-1' } as User);
+    });
+    await act(async () => {
+      emit(null);
+    });
+    await act(async () => {
+      resolveClaim({ claims: { admin: true } });
+    });
+
+    expect(result.current.user).toBe(null);
+    expect(result.current.isAdmin).toBe(false);
   });
 
   it('should unsubscribe on unmount', () => {

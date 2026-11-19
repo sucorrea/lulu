@@ -35,9 +35,18 @@ describe('lib/cloudinary', () => {
 
     await import('./cloudinary');
 
-    expect(mockConfig).toHaveBeenCalledWith(
-      expect.objectContaining({ api_secret: '' })
-    );
+    expect(mockConfig.mock.calls[0][0]).not.toHaveProperty('api_secret');
+    vi.unstubAllEnvs();
+  });
+
+  it('should not pass undefined credentials that would override CLOUDINARY_URL', async () => {
+    vi.stubEnv('CLOUDINARY_CLOUD_NAME', '');
+    vi.stubEnv('CLOUDINARY_API_KEY', '');
+    vi.stubEnv('CLOUDINARY_API_SECRET', '');
+
+    await import('./cloudinary');
+
+    expect(mockConfig).toHaveBeenCalledWith({});
     vi.unstubAllEnvs();
   });
 
